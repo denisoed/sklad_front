@@ -1,0 +1,48 @@
+:root {
+  --text-white: #fff;
+  --text-black: rgba(0, 0, 0, 0.8);
+  --text-title: rgba(0, 0, 0, 0.8);
+  --text-description: rgba(0, 0, 0, 0.54);
+  --main-bg: #f7f7f7;
+  --border-radius: 10px;
+  --box-shadow: rgb(149 157 165 / 20%) 0px 2px 7px;
+  --dialog-bg: rgba(247, 247, 247, 0.4);
+  --scrollbar-bg: rgba(138, 138, 138, 0.4);
+  
+  // new
+  --q-primary-rgb: 188, 163, 127;
+  --block-bg: #fff;
+  --q-primary-text: #BCA37F;
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+.body--dark {
+  --text-white: rgba(0, 0, 0, 0.8);
+  --text-black: rgba(255, 255, 255, 0.8);
+  --text-title: rgba(255, 255, 255, 0.8);
+  --text-description: rgba(255, 255, 255, 0.54);
+  --main-bg: #222831;
+  --border-radius: 10px;
+  --box-shadow: rgb(44 44 44 / 20%) 0px 2px 7px;
+  --dialog-bg: rgba(0, 0, 0, 0.4);
+
+  // new
+  --q-dark-page: var(--main-bg);
+  --q-dark: var(--main-bg);
+  --q-negative: #ff7549;
+  --block-bg: #393E46;
+  --q-primary-text: #fff;
+  --border-color: rgba(255, 255, 255, 0.1);
+
+  .text-grey {
+    color: #e3e3e3 !important;
+  }
+
+  .text-deep-orange {
+    color: #ff7549 !important;
+  }
+
+  .bg-deep-orange {
+    background: #ff7549 !important;
+  }
+}
