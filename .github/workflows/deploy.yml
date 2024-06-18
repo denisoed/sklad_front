@@ -36,4 +36,4 @@ jobs:
           docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest &&
           docker stop sklad_front || true &&
           docker rm sklad_front || true &&
-          docker run -d --name sklad_front -p 80:80 ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest"
+          docker run -d --name sklad_front --restart=always --log-driver=syslog ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest"
