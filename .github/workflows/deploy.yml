@@ -21,7 +21,7 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build {{ secrets.BUILD_PARAMS }} -t ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest .
+        docker build ${{ secrets.BUILD_PARAMS }} -t ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest .
         docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest
 
     - name: Set up SSH
@@ -36,5 +36,5 @@ jobs:
           docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest &&
           docker stop sklad_front || true &&
           docker rm sklad_front || true &&
-          docker run -d --name sklad_front --restart=always --log-driver=syslog {{ secrets.PARAMS }} ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest &&
+          docker run -d --name sklad_front --restart=always --log-driver=syslog ${{ secrets.PARAMS }} ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest &&
           docker image prune -a -f --filter 'until=24h'"
