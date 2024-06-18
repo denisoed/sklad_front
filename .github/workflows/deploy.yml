@@ -12,15 +12,15 @@ jobs:
           echo ✅ SSH connection successful &&
           echo ✅ Pulling from GitHub &&
           git pull &&
-          running_containers=$(docker ps -q --filter ancestor=motlitleetcode) &&
+          running_containers=$(docker ps -q --filter ancestor=sklad_front) &&
           if [ -n \"$running_containers\" ]; then
           echo ✅ Stopping and removing running containers &&
           docker stop $running_containers &&
           docker rm $running_containers
           fi &&
           echo ✅ Building Docker Image &&
-          docker build -t motlitleetcode . &&
+          docker build -t sklad_front . &&
           echo ✅ Running Docker Container &&
-          docker run -d -p 80:3000 -p 443:443 --name motlitleetcode motlitleetcode &&
+          docker run -d -p 80:3000 -p 443:443 --name sklad_front sklad_front &&
           echo ✅ Deployed successfully &&
           exit"
