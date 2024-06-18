@@ -10,7 +10,6 @@ jobs:
         run: |
           sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.USER_NAME }}@${{ secrets.SERVER_ADDRESS }} "
           echo ✅ SSH connection successful &&
-          cd ~/${{ secrets.APP_ROOT }}/ &&
           echo ✅ Pulling from GitHub &&
           git pull &&
           running_containers=$(docker ps -q --filter ancestor=motlitleetcode) &&
