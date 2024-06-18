@@ -31,10 +31,9 @@ jobs:
 
     - name: Deploy Docker container on remote server
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
-          docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest
-          docker stop sklad_front || true
-          docker rm sklad_front || true
-          docker run -d --name sklad_front -p 80:80 ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest
-EOF
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin &&
+          docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest &&
+          docker stop sklad_front || true &&
+          docker rm sklad_front || true &&
+          docker run -d --name sklad_front -p 80:80 ghcr.io/${{ secrets.GHCR_USERNAME }}/sklad_front:latest"
