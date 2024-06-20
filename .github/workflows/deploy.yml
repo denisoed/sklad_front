@@ -29,12 +29,6 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Check Output Parameters
-      run: |
-        echo "Got tag name ${{ steps.release.outputs.tag_name }}"
-        echo "Got release version ${{ steps.release.outputs.version }}"
-        echo "Upload release artifacts to ${{ steps.release.outputs.upload_url }}"
-
     - name: Deploy Docker container on remote server
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
