@@ -74,7 +74,7 @@ export default defineComponent({
   border-bottom-right-radius: 30px;
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 3;
   background: var(--main-bg);
 
   .logo {
