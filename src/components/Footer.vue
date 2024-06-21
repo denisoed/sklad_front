@@ -1,10 +1,10 @@
 <template>
   <nav class="menu block-bg flex items-center">
-    <router-link class="router-link" :to="indexLink" exact>
+    <router-link class="router-link" :to="indexLink" exact v-vibrate>
       <q-icon name="mdi-home-outline" />
       <span>Главная</span>
     </router-link>
-    <router-link class="router-link" :to="productsLink">
+    <router-link class="router-link" :to="productsLink" v-vibrate>
       <q-icon name="mdi-cart-outline" />
       <span>Товары</span>
     </router-link>
@@ -15,12 +15,13 @@
       round
       dense
       to="/create-product"
+      v-vibrate
     />
-    <router-link class="router-link" :to="statisticLink">
+    <router-link class="router-link" :to="statisticLink" v-vibrate>
       <q-icon name="mdi-chart-box-outline" />
       <span>Отчеты</span>
     </router-link>
-    <router-link class="router-link" :to="bucketLink">
+    <router-link class="router-link" :to="bucketLink" v-vibrate>
       <q-icon name="mdi-basket-outline">
         <div v-if="hasInBucket" class="has-in-backet" />
       </q-icon>

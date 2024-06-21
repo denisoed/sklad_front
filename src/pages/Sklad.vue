@@ -45,17 +45,6 @@
           accent-color="rgb(255 95 95 / 20%)"
         />
       </div>
-      <div class="fixed-bottom-right q-pb-lg q-mb-md q-mr-md fixed">
-        <q-btn
-          color="primary"
-          push
-          class="q-mb-xl"
-          round
-          icon="mdi-plus"
-          size="lg"
-          :to="createNewProductLink"
-        />
-      </div>
     </div>
     <QRModal :opened="qrModalOpened" @close="qrModalOpened = false" />
   </q-page>
@@ -103,9 +92,6 @@ export default defineComponent({
     const costsLink = computed(() => `/sklad/${params?.skladId}/costs`)
     const settingsLink = computed(() => `/sklad/${params?.skladId}/settings`)
     const productsWithMinSizesLink = computed(() => `/sklad/${params?.skladId}/products-with-min-sizes`)
-    const createNewProductLink = computed(() =>
-      `/sklad/${params?.skladId}/create-product?${params?.categoryId ? 'category=' + params?.categoryId : ''}`
-    )
     
     return {
       logout,
@@ -122,7 +108,6 @@ export default defineComponent({
       READ_PRODUCTS_WITH_MIN_SIZES,
       qrModalOpened,
       settingsLink,
-      createNewProductLink
     }
   }
 })
