@@ -1,19 +1,25 @@
-// NOTE: use class "v-click-out-ignore" for ignore v-click-out
+// ---------------------- //
+// ONLY TELEGRAM WEB APP
+// ---------------------- //
 
-import { boot } from 'quasar/wrappers'
+import { boot } from 'quasar/wrappers';
 
-export default boot(async ({ app }) => {
+export default boot(({ app }) => {
   app.directive('vibrate', {
-    beforeMount(el) {
-      el.onClick = () => {
-        if (window?.Telegram?.WebApp?.HapticFeedback) {
-          window?.Telegram?.WebApp?.HapticFeedback.selectionChanged()
+    mounted(el, binding) {
+      el.onClick = function() {
+        if (window?.Telegram?.WebApp) {
+          if (binding?.modifiers?.success) {
+            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+          } else {
+            window.Telegram.WebApp.HapticFeedback.selectionChanged();
+          }
         }
-      }
-      document.addEventListener('click', el.onClick)
+      };
+      el.addEventListener('click', el.onClick);
     },
-    unmounted: el => {
-      document.removeEventListener('click', el.onClick)
+    unmounted(el) {
+      el.removeEventListener('click', el.onClick);
     },
-  })
-})
+  });
+});
