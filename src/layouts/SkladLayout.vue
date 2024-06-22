@@ -1,20 +1,22 @@
 <template>
   <q-layout view="lhh lpr lFf">
-    <!-- Page -->
-    <q-page-container>
-      <transition
-        enter-active-class="animated fadeIn"
-        leave-active-class="animated fadeOut"
-        appear
-        :duration="300"
-      >
-        <router-view />
-      </transition>
-    </q-page-container>
-
-    <q-footer>
-      <Footer />
-    </q-footer>
+    <q-pull-to-refresh @refresh="refresh">
+      <!-- Page -->
+      <q-page-container>
+        <transition
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+          appear
+          :duration="300"
+        >
+          <router-view />
+        </transition>
+      </q-page-container>
+  
+      <q-footer>
+        <Footer />
+      </q-footer>
+    </q-pull-to-refresh>
   </q-layout>
 </template>
 
@@ -45,6 +47,11 @@ export default defineComponent({
     } = useProfile()
     const { bluetoothAutoConnect } = useBluetooth()
 
+    function refresh(done) {
+      window.location.reload()
+      done()
+    }
+
     watch(profile, (val) => {
       if (val) {
         fetchSklads(val.id)
@@ -67,6 +74,10 @@ export default defineComponent({
       fetchSklad()
       bluetoothAutoConnect()
     })
+
+    return {
+      refresh
+    }
   }
 })
 </script>

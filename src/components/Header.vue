@@ -1,16 +1,14 @@
 <template>
   <div class="header container q-gap-sm">
-    <q-pull-to-refresh @refresh="refresh">
-      <div class="flex items-center cursor-pointer">
-        <q-btn icon="menu" push round @click="toggleMenu" />
-        <UserInfo
-          :fullname="profile?.fullname"
-          :telegram-id="profile?.telegramId"
-          class="q-mx-auto"
-        />
-        <NotifyList :history="histories" />
-      </div>
-    </q-pull-to-refresh>
+    <div class="flex items-center cursor-pointer">
+      <q-btn icon="menu" push round @click="toggleMenu" />
+      <UserInfo
+        :fullname="profile?.fullname"
+        :telegram-id="profile?.telegramId"
+        class="q-mx-auto"
+      />
+      <NotifyList :history="histories" />
+    </div>
   </div>
 </template>
 
@@ -44,11 +42,6 @@ export default defineComponent({
     const { logout } = useJwtMethods()
     const { profile } = useProfile()
 
-    function refresh(done) {
-      window.location.reload()
-      done()
-    }
-
     function toggleMenu() {
       emit('toggle-menu');
     }
@@ -57,7 +50,6 @@ export default defineComponent({
       Logo,
       sklad,
       logout,
-      refresh,
       HOME_ROUTE,
       profile,
       toggleMenu
