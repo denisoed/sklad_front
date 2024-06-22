@@ -632,7 +632,7 @@ export default defineComponent({
       const uploaded = await uploadImg(product.image)
       if (!uploadImageError.value) {
         try {
-          await createProduct({
+          const response = await createProduct({
             data: {
               name: product.name,
               sklad: product.sklad?.value,
@@ -654,7 +654,7 @@ export default defineComponent({
             showSuccess('Товар успешно создан!')
             createHistory({
               action: HISTORY_CREATE,
-              productId: product.id,
+              productId: response.data.createProduct.product.id,
               skladId: product.sklad.value,
               json: {
                 name: product.name,

@@ -132,9 +132,10 @@ const useHistory = () => {
   }
 
   const historyResult = computed(() => {
-    const histories = historyRes.value?.listHistories || []
+    const histories = historyRes.value?.listHistories
+    if (!histories?.length) return []
     return histories.map(a => ({
-      productId: a.product.id,
+      productId: a?.product?.id,
       sklad: a.sklad.name,
       action: a.action,
       json: a.json,

@@ -92,7 +92,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .menu {
   width: 100%;
-  height: 70px;
+  height: 86px;
   overflow: hidden;
   position: relative;
   box-shadow: var(--box-shadow);
