@@ -62,7 +62,7 @@
       :opened="openedNewSkladModal"
       :create-gql="CREATE_SKLAD"
       :update-gql="UPDATE_SKLAD"
-      :extend-create-params="{ users: profile?.id }"
+      :extend-create-params="{ users: profile?.id, owner: profile?.id }"
       @close="onCloseModal"
       @finished="refetchSklads"
       @on-create-new="onCreateNew"

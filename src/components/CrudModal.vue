@@ -21,6 +21,7 @@
               label="Введите название"
               class="full-width"
               autofocus
+              enterkeyhint="done"
             />
             <div class="flex full-width flex-start">
               <p class="full-width text-left q-mb-sm">Выберите цвет для визуального отличия</p>

@@ -69,6 +69,9 @@ export const SKLAD = gql`
       minSizes
       useNumberOfSizes
       goal
+      owner {
+        id
+      }
       users {
         id
         fullname

@@ -4,36 +4,39 @@
     position="bottom"
     @update:model-value="close"
   >
-  <q-card style="width: 350px">
-    <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
-        <div class="flex justify-center full-width q-mt-sm">
-          <q-input
-            outlined
-            color="primary"
-            class="full-width"
-            debounce="500"
-            hint="Cотрудник, к которому будут присвоины полномочия"
-            placeholder="Введите телеграмм ID"
-            dense
-            :model-value="formData.telegramId"
-            @update:model-value="findUser"
-            :readonly="!!user"
-            :loading="loadingUsers"
-          >
-            <template #append v-if="!loadingUsers">
-              <q-icon v-if="isValidEmail" name="check" class="text-green" />
-              <q-icon v-else name="search" />
-            </template>
-    
-            <q-menu v-if="formData.telegramId" fit no-focus v-model="menu">
-              <q-list style="min-width: 100px">
-                <q-item clickable v-close-popup v-for="(u, i) of users" :key="i" @click="selectUser(u)">
-                  <q-item-section>{{ u.fullname || u.telegramId }}</q-item-section>
-                </q-item>              
-              </q-list>
-            </q-menu>
-          </q-input>
-          <div class="q-py-md">
+    <q-card style="width: 350px" class="new-employee">
+      <q-card-section class="flex no-wrap column row items-center no-wrap q-pa-none q-pb-xl">
+        <div class="flex justify-center full-width">
+          <div class="q-px-md q-pt-md q-pb-sm full-width new-employee_field">
+            <q-input
+              outlined
+              color="primary"
+              class="full-width"
+              debounce="500"
+              hint="Сотрудник, к которому будут присвоины полномочия"
+              placeholder="Введите телеграмм ID"
+              enterkeyhint="done"
+              dense
+              :model-value="formData.telegramId"
+              @update:model-value="findUser"
+              :readonly="!!user"
+              :loading="loadingUsers"
+            >
+              <template #append v-if="!loadingUsers">
+                <q-icon v-if="isValidEmail" name="check" class="text-green" />
+                <q-icon v-else name="search" />
+              </template>
+      
+              <q-menu v-if="formData.telegramId" fit no-focus v-model="menu">
+                <q-list style="min-width: 100px">
+                  <q-item clickable v-close-popup v-for="(u, i) of users" :key="i" @click="selectUser(u)">
+                    <q-item-section>{{ u.fullname || u.telegramId }}</q-item-section>
+                  </q-item>              
+                </q-list>
+              </q-menu>
+            </q-input>
+          </div>
+          <div class="new-employee_checkboxes q-px-sm q-pb-md">
             <!-- <q-checkbox v-model="allPermissions" label="Дать все права" />
             <q-separator /> -->
             <q-checkbox
@@ -46,23 +49,25 @@
               class="full-width"
             />
           </div>
-          <q-separator class="full-width q-mb-md" />
-          <div class="flex justify-between no-wrap q-gap-md full-width">
-            <q-btn
-              class="button-size"
-              color="grey"
-              icon="mdi-close"
-              push
-              @click="close"
-            />
-            <q-btn
-              class="button-size"
-              color="primary"
-              icon="mdi-check"
-              push
-              :disabled="!isValidEmail"
-              @click="submit"
-            />
+          <div class="flex column q-px-md full-width q-gap-md">
+            <q-separator class="full-width" />
+            <div class="flex justify-between no-wrap q-gap-md full-width">
+              <q-btn
+                class="button-size"
+                color="grey"
+                icon="mdi-close"
+                push
+                @click="close"
+              />
+              <q-btn
+                class="button-size"
+                color="primary"
+                icon="mdi-check"
+                push
+                :disabled="!isValidEmail"
+                @click="submit"
+              />
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -158,7 +163,7 @@ export default defineComponent({
       menu.value = true
       loadUsers(
         null,
-        { where: { telegramId_contains: val }},
+        { where: { telegramId_contains: val, id_ne: sklad.value?.owner?.id }},
         { fetchPolicy: 'network-only' }
       )
     }
@@ -184,12 +189,7 @@ export default defineComponent({
       }))
     })
 
-    const users = computed(() => {
-      const list = resultUsers.value?.users;
-      if (!list?.length) return [];
-      const skladUsers = sklad.value?.users;
-      return list.filter(user => skladUsers.every(su => su.id !== user.id));
-    })
+    const users = computed(() => resultUsers.value?.users || [])
 
     return {
       close,
@@ -207,3 +207,19 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.new-employee {
+  &_field {
+    position: sticky;
+    top: 0;
+    background: var(--q-dark);
+    z-index: 1;
+  }
+
+  &_checkboxes {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+</style>
