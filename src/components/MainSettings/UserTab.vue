@@ -7,7 +7,11 @@
     <!-- Info -->
     <div class="user-tab_info block-bg flex column q-pa-md q-mb-sm">
       <div class="flex items-center">
-        <UserInfo :fullname="profile?.fullname" :telegram-id="profile?.telegramId" />
+        <UserInfo
+          :fullname="profile?.fullname"
+          :telegram-id="profile?.telegramId"
+          @click="copyTgId"
+        />
         <q-btn @click="switchEdit" round push class="q-ml-auto bg-white" size="sm">
           <q-icon name="mdi-pencil" color="primary" />
         </q-btn>
@@ -99,7 +103,7 @@ import {
   reactive,
   watch
 } from 'vue'
-import { LocalStorage } from 'quasar';
+import { LocalStorage, copyToClipboard } from 'quasar';
 import Dropdown from 'src/components/Dropdown/index.vue'
 import UserInfo from 'src/components/UserInfo.vue'
 import useProfile from 'src/modules/useProfile'
@@ -180,6 +184,11 @@ export default defineComponent({
       }
     }
 
+    function copyTgId() {
+      copyToClipboard(profile.value.telegramId)
+      showSuccess('Telegram ID скопирован')
+    }
+
     watch(locale, (lang) => {
       LocalStorage.set(I18N_LOCALE, lang)
     })
@@ -206,7 +215,8 @@ export default defineComponent({
       price,
       refillWallet,
       subscrExpiredAt,
-      subscrHasExpired
+      subscrHasExpired,
+      copyTgId
     }
   }
 })

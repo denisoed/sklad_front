@@ -6,6 +6,7 @@
         :fullname="profile?.fullname"
         :telegram-id="profile?.telegramId"
         class="q-mx-auto"
+        @click="goToProfile"
       />
       <NotifyList :history="histories" />
     </div>
@@ -14,11 +15,14 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 import Logo from 'src/assets/logo.svg'
 import useSklads from 'src/modules/useSklads'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
 import { HOME_ROUTE } from 'src/router/routes'
 import useProfile from 'src/modules/useProfile'
+import { MAIN_SETTINGS_ROUTE } from 'src/router/routes'
+
 import NotifyList from 'src/components/NotifyList.vue'
 import UserInfo from 'src/components/UserInfo.vue'
 
@@ -41,9 +45,14 @@ export default defineComponent({
     } = useSklads()
     const { logout } = useJwtMethods()
     const { profile } = useProfile()
+    const { push } = useRouter()
 
     function toggleMenu() {
       emit('toggle-menu');
+    }
+
+    function goToProfile() {
+      push({ path: MAIN_SETTINGS_ROUTE })
     }
 
     return {
@@ -52,7 +61,8 @@ export default defineComponent({
       logout,
       HOME_ROUTE,
       profile,
-      toggleMenu
+      toggleMenu,
+      goToProfile
     }
   }
 })

@@ -3,7 +3,7 @@ import useJwtMethods from 'src/modules/auth/useJwtMethods'
 
 export default boot(async () => {
   const telegram = window?.Telegram?.WebApp;
-  if (telegram) {
+  if (telegram?.initData) {
     telegram.expand()
     const { telegramAuth } = useJwtMethods()
     await telegramAuth()

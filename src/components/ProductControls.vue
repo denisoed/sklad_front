@@ -43,6 +43,7 @@
         <BulkPrintDialog
           title="Печать ценников"
           @on-finish="onFinishPrint"
+          class="hidden"
         >
           <q-btn
             round
@@ -140,11 +141,11 @@ export default defineComponent({
   left: 50%;
   bottom: -100%;
   transform: translateX(-50%);
-  box-shadow: rgba(100, 100, 111, 0.2) 0px -2px 9px 0px;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   transition: all 0.3s ease;
   z-index: 3000;
+  border-top: 1px solid var(--border-color);
 
   &_title {
     background-color: rgba(0, 0, 0, 0.03);
