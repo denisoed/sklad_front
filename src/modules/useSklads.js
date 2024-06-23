@@ -68,8 +68,8 @@ const useSklads = () => {
           fetchPolicy: 'network-only'
         })
         skladStore.setSklad(data?.sklad)
-      } catch (error) {
-        showError('Ошибка при отправке запроса на сервер!')
+      } catch (error) {;
+        showError('Неизвестная ошибка. Перегрузите приложение!')
       }
     } else {
       clearSklad()
@@ -93,7 +93,7 @@ const useSklads = () => {
       })
       skladStore.setSklads(data?.sklads)
     } catch (error) {
-      showError('Ошибка при отправке запроса на сервер!')
+      showError('Неизвестная ошибка. Перегрузите приложение!')
     } finally {
       isLoading.value = false;
     }
@@ -122,7 +122,7 @@ const useSklads = () => {
       skladStore.setSkladProducts(data?.sklads)
       return data?.sklads;
     } catch (error) {
-      showError('Ошибка при отправке запроса на сервер!')
+      showError('Неизвестная ошибка. Перегрузите приложение!')
     } finally {
       isLoading.value = false;
     }
@@ -141,7 +141,7 @@ const useSklads = () => {
         }
       })
     } catch (error) {
-      showError('Ошибка при отправке запроса на сервер!')
+      showError('Неизвестная ошибка. Перегрузите приложение!')
     } finally {
       isLoading.value = false;
     }
@@ -174,7 +174,7 @@ const useSklads = () => {
         fetchSklad()
         showSuccess('Список участников обновлен!')
       } catch (error) {
-        showError('Ошибка при отправке запроса на сервер!')
+        showError('Неизвестная ошибка. Перегрузите приложение!')
       } finally {
         isLoading.value = false
       }
@@ -201,7 +201,7 @@ const useSklads = () => {
         fetchSklad()
         showSuccess('Полномочия обновлены!')
       } catch (error) {
-        showError('Ошибка при отправке запроса на сервер!')
+        showError('Неизвестная ошибка. Перегрузите приложение!')
       } finally {
         isLoading.value = false
       }
@@ -231,7 +231,7 @@ const useSklads = () => {
         fetchSklad()
         showSuccess('Список участников обновлен!')  
       } catch (error) {
-        showError('Ошибка при отправке запроса на сервер!')
+        showError('Неизвестная ошибка. Перегрузите приложение!')
       } finally {
         isLoading.value = false
       }

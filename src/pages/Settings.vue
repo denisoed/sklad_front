@@ -70,7 +70,7 @@
         </q-tab-panel>
         <q-tab-panel name="accesses" class="q-px-sm">
           <Employee
-            :users="sklad?.users || []"
+            :users="users"
             class="q-mt-md full-width"
           />
         </q-tab-panel>
@@ -194,6 +194,10 @@ export default defineComponent({
       () => removeSkladLoading.value || isLoadingSklad.value || updateSkladLoading.value
     )
 
+    const users = computed(() =>
+      sklad.value?.users.filter(u => u?.id !== sklad.value?.owner?.id) || []
+    )
+
     async function updateForm() {
       await updateSklad({
         id: sklad.value?.id,
@@ -243,7 +247,7 @@ export default defineComponent({
     })
 
     return {
-      sklad,
+      users,
       updateSkladLoading,
       formData,
       updateForm,

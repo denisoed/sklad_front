@@ -33,7 +33,7 @@ const useSizes = () => {
       })
       sizesStore.setSizes(data?.sizes)
     } catch (error) {
-      showError('Ошибка при отправке запроса на сервер!')
+      showError('Неизвестная ошибка. Перегрузите приложение!')
     } finally {
       isLoading.value = false;
     }

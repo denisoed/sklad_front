@@ -152,9 +152,7 @@ export default defineComponent({
     }
 
     const rows = computed(() => {
-      const list = users.value || []
-      const filtered = list.filter((l) => l.id !== profile.value.id)
-      return filtered.map(f => ({
+      return users.value.map(f => ({
         id: f.id,
         name: f.fullname,
         telegramId: f.telegramId,
