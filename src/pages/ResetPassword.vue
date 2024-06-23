@@ -47,7 +47,7 @@
             />
           </q-card-actions>
           <q-card-section class="text-center q-pa-sm q-pb-md">
-            <router-link to="/register" class="text-grey-5">
+            <router-link to="/register" class="text-grey-5" v-vibrate>
               {{ $t('regNew') }}
             </router-link>
           </q-card-section>

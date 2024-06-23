@@ -33,6 +33,7 @@
           @mousedown="onMouseDown(category)"
           @touchstart="onMouseDown(category)"
           v-ripple
+          v-vibrate
         >
           <div
             class="categories_card-color"

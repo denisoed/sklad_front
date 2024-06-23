@@ -18,6 +18,7 @@
               class="notify-list_item block-bg q-pa-md"
               :style="`border-color: ${h.actionColor}2A`"
               :to="`/product/${h.productId}`"
+              v-vibrate
             >
               <!-- <div class="notify-list_alert" /> -->
               <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>

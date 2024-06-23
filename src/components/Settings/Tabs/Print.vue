@@ -26,6 +26,7 @@
         @mousedown="onMouseDown(template)"
         @touchstart="onMouseDown(template)"
         v-ripple
+        v-vibrate
       >
         <div
           class="templates_card-color"

@@ -18,6 +18,7 @@
             <router-link
               to="/auth"
               class="text-grey-5"
+              v-vibrate
             >
               {{ $t('register.confirm.btn') }}
             </router-link>

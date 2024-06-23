@@ -32,6 +32,7 @@
           <router-link
             :to="`/sklad/${selectedSkladId}`"
             class="q-mb-sm text-subtitle2 text-underline"
+            v-vibrate
           >
             Перейти на склад
           </router-link>

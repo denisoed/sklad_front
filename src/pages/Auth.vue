@@ -76,6 +76,7 @@
             <router-link
               :to="email ? `/forgot-password?email=${email}` : '/forgot-password'"
               class="text-grey-5 flex items-center"
+              v-vibrate
             >
               <q-icon
                 name="mdi-lock-reset"
@@ -103,6 +104,7 @@
             <router-link
               to="/register"
               class="text-grey-5 flex flex-center q-gap-sm"
+              v-vibrate
             >
               {{ $t('regNew') }}
               <q-icon name="mdi-account-plus" size="sm" />

@@ -11,6 +11,7 @@
     <router-link
       class="bucket-card_content"
       :to="`/product/${productId}`"
+      v-vibrate
     >
       <div class="bucket-card_info q-mb-sm">
         <q-img
