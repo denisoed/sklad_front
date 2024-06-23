@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div @click="mainMenu = true">
+    <div @click="mainMenu = true" v-vibrate>
       <slot />
     </div>
     <q-dialog

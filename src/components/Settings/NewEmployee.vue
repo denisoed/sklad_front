@@ -29,7 +29,7 @@
       
               <q-menu v-if="formData.telegramId" fit no-focus v-model="menu">
                 <q-list style="min-width: 100px">
-                  <q-item clickable v-close-popup v-for="(u, i) of users" :key="i" @click="selectUser(u)">
+                  <q-item clickable v-close-popup v-for="(u, i) of users" :key="i" @click="selectUser(u)" v-vibrate>
                     <q-item-section>{{ u.fullname || u.telegramId }}</q-item-section>
                   </q-item>              
                 </q-list>

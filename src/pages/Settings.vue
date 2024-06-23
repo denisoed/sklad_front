@@ -105,6 +105,7 @@
               >
                 <q-item-section
                   @click="onRemoveSklad"
+                  v-vibrate
                 >
                   <div class="flex items-center">
                     <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />

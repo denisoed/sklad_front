@@ -13,6 +13,7 @@
       spinner-size="md"
       spinner-color="grey"
       class="cursor-pointer absolute-top-left full-width full-height"
+      v-vibrate
     />
 
     <q-file

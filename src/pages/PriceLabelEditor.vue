@@ -17,6 +17,7 @@
           @touchmove="touchElement"
           @touchend="stopDragging"
           @click="clickCanvas"
+          v-vibrate
         >
           Your browser does not support the canvas element.
         </canvas>
@@ -33,7 +34,7 @@
           <q-btn push color="primary" round icon="mdi-plus" v-vibrate>
             <q-menu anchor="bottom right" self="top right">
               <q-list style="min-width: 100px">
-                <q-item clickable v-close-popup @click="addText">
+                <q-item clickable v-close-popup @click="addText" v-vibrate>
                   <q-item-section>Добавить текст</q-item-section>
                 </q-item>
               </q-list>

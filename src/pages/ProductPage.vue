@@ -278,6 +278,7 @@
                   >
                     <q-item-section
                       @click="cancel('remove')"
+                      v-vibrate
                     >
                       <div class="flex items-center">
                         <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
@@ -334,10 +335,6 @@
         </div>
       </q-form>
     </div>
-
-    <div class="hidden speech-recog">
-      <RecFormData @on-result="onRecResult" />
-    </div>
   </q-page>
 </template>
 
@@ -355,7 +352,6 @@ import InputPlusMinus from 'src/components/InputPlusMinus.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import ProductSizes from 'src/components/Product/ProductSizes.vue'
-import RecFormData from 'src/components/Product/RecFormData.vue'
 import {
   UPLOAD,
   CREATE_PRODUCT,
@@ -421,7 +417,6 @@ export default defineComponent({
   components: {
     ColorPicker,
     ImageUploader,
-    RecFormData,
     PageTitle,
     InputPrice,
     ModalCountToBucket,
@@ -787,10 +782,6 @@ export default defineComponent({
       product.discountDays = dates
     }
 
-    function onRecResult(res) {
-      Object.assign(product, res?.finalTokens);
-    }
-
     function loadData() {
       resetAll();
       fetchSizes(profile.value.id)
@@ -910,7 +901,6 @@ export default defineComponent({
       CAN_UPDATE_PRODUCT,
       CAN_ADD_PRODUCT,
       READ_HISTORY,
-      onRecResult,
       CREATE_SKLAD,
       onCreateNew,
       refetchSklads

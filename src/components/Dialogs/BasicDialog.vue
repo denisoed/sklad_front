@@ -1,6 +1,6 @@
 <template>
   <div class="basic-dialog">
-    <div @click="onOpen">
+    <div @click="onOpen" v-vibrate>
       <slot />
     </div>
     <!-- Preview dialog -->

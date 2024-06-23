@@ -15,7 +15,7 @@
                 </template>
                 <template v-slot:append>
                   <q-icon :name="visibilityPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                    @click="visibilityPassword = !visibilityPassword" class="cursor-pointer">
+                    @click="visibilityPassword = !visibilityPassword" class="cursor-pointer" v-vibrate>
                   </q-icon>
                 </template>
               </q-input>
@@ -27,7 +27,7 @@
                 </template>
                 <template v-slot:append>
                   <q-icon :name="visibilityPasswordConfirm ? 'mdi-eye-off' : 'mdi-eye'"
-                    @click="visibilityPasswordConfirm = !visibilityPasswordConfirm" class="cursor-pointer">
+                    @click="visibilityPasswordConfirm = !visibilityPasswordConfirm" class="cursor-pointer" v-vibrate>
                   </q-icon>
                 </template>
               </q-input>

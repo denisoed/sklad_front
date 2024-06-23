@@ -8,11 +8,11 @@
   --box-shadow: rgb(149 157 165 / 20%) 0px 2px 7px;
   --dialog-bg: rgba(247, 247, 247, 0.4);
   --scrollbar-bg: rgba(138, 138, 138, 0.4);
+  --q-primary: #BCA37F;
   
   // new
-  --q-primary-rgb: 188, 163, 127;
   --block-bg: #fff;
-  --q-primary-text: #BCA37F;
+  --q-primary-text: var(--q-primary);
   --border-color: rgba(0, 0, 0, 0.1);
 }
 

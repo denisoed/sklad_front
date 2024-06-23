@@ -17,6 +17,7 @@
             :key="c"
             :style="{ background: c }"
             @click="handlerClick(c)"
+            v-vibrate
           >
             <div class="color-picker-pick" v-show="pick === c">
               <svg style="width:auto;height:40px;" viewBox="0 0 24 24">

@@ -38,7 +38,7 @@ export default defineComponent({
       theme: {
         mode: LocalStorage.getItem(IS_DARK_MODE) ? 'dark' : 'light'
       },
-      colors: ['#BCA37F'],
+      colors: ['var(--q-primary)'],
       chart: {
         id: 'line-chart',
         toolbar: {

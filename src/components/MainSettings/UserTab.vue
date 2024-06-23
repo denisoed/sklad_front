@@ -11,6 +11,7 @@
           :fullname="profile?.fullname"
           :telegram-id="profile?.telegramId"
           @click="copyTgId"
+          v-vibrate
         />
         <q-btn @click="switchEdit" v-vibrate round push class="q-ml-auto bg-white" size="sm">
           <q-icon name="mdi-pencil" color="primary" />

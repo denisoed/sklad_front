@@ -1,7 +1,7 @@
 <template>
   <div class="header container q-gap-sm">
     <div class="flex items-center cursor-pointer">
-      <q-btn icon="menu" push round @click="toggleMenu" />
+      <q-btn icon="menu" push round @click="toggleMenu" v-vibrate />
       <UserInfo
         :fullname="profile?.fullname"
         :telegram-id="profile?.telegramId"

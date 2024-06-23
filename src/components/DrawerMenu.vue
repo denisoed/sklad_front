@@ -70,7 +70,6 @@ import {
 import UserInfo from 'src/components/UserInfo.vue'
 import FeedbackDialog from 'src/components/FeedbackDialog/index.vue'
 import useProfile from 'src/modules/useProfile'
-import useJwtMethods from 'src/modules/auth/useJwtMethods'
 
 const MENU_LIST = [
   {
@@ -98,12 +97,6 @@ export default defineComponent({
   },
   setup() {
     const { profile } = useProfile()
-    const { logout, revokeToken } = useJwtMethods()
-
-    function changeAccount() {
-      revokeToken()
-      logout()
-    }
 
     const MENU_LIST_BOTTOM = [
       {
@@ -112,14 +105,6 @@ export default defineComponent({
         separator: false,
         disable: false,
         to: '/main-settings'
-      },
-      {
-        icon: 'mdi-logout',
-        color: 'deep-orange',
-        label: 'Выйти',
-        separator: false,
-        disable: false,
-        action: changeAccount
       }
     ]
 

@@ -65,6 +65,7 @@
                   <q-icon
                     :name="visibilityPassword ? 'mdi-eye-off' : 'mdi-eye'"
                     @click="visibilityPassword = !visibilityPassword"
+                    v-vibrate
                     class="cursor-pointer"
                   >
                   </q-icon>

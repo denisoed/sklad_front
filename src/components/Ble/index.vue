@@ -29,7 +29,7 @@
             <q-menu anchor="bottom right" self="top right">
               <q-list style="min-width: 100px">
                 <q-item clickable v-close-popup>
-                  <q-item-section @click="openedBleEditorDialog = true">
+                  <q-item-section @click="openedBleEditorDialog = true" v-vibrate>
                     Редактировать
                   </q-item-section>
                 </q-item>
@@ -37,6 +37,7 @@
                   <q-item-section
                     class="text-deep-orange"
                     @click="disconnectDevice(device.id)"
+                    v-vibrate
                   >
                     Удалить
                   </q-item-section>

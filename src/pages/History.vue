@@ -37,6 +37,7 @@
             :props="props"
             @click="push(`/product/${props.row.productId}`)"
             class="cursor-pointer"
+            v-vibrate
           >
             <q-td
               key="action"
