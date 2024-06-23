@@ -147,7 +147,6 @@ export default defineComponent({
     PriceLabelControls,
   },
   setup() {
-    const openedControls = ref(false)
     const locked = ref(true)
     const canvas = ref(null);
     const ctx = reactive({
@@ -567,7 +566,6 @@ export default defineComponent({
       selectTouchElement,
       columns,
       rows,
-      openedControls,
       locked,
       lockHandler,
       lock,

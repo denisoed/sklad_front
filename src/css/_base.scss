@@ -10,6 +10,7 @@ body {
   height: 100vh;
   overflow: auto;
   background-color: var(--main-bg);
+  top: 0 !important;
 }
 
 button { touch-action: manipulation !important; }

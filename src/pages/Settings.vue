@@ -148,6 +148,7 @@ import SettingsPrint from 'src/components/Settings/Tabs/Print.vue'
 import SettingsGoal from 'src/components/Settings/Tabs/Goal.vue'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
+import useProfile from 'src/modules/useProfile'
 import useHelpers from 'src/modules/useHelpers'
 import { useRoute, useRouter } from 'vue-router'
 import {
@@ -168,6 +169,7 @@ export default defineComponent({
     const { push, replace } = useRouter()
     const tab = ref(query?.tab || 'main')
     const { showError, showSuccess } = useHelpers()
+    const { profile } = useProfile()
     const {
       error: updateSkladError,
       loading: updateSkladLoading,
@@ -195,7 +197,7 @@ export default defineComponent({
     )
 
     const users = computed(() =>
-      sklad.value?.users.filter(u => u?.id !== sklad.value?.owner?.id) || []
+      sklad.value?.users.filter(u => u?.id !== sklad.value?.owner?.id && u?.id !== profile.value?.id) || []
     )
 
     async function updateForm() {
