@@ -82,6 +82,7 @@
               tabindex="3"
               :loading="isLoading"
               :disable="!password || !passwordConfirm"
+              v-vibrate
             ></q-btn>
           </q-card-actions>
         </q-card>

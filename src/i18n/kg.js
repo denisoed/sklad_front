@@ -10,6 +10,13 @@ export default ({
   incorrectPassword: 'Пароль не совпадает',
   create: 'Создать',
   update: 'Обновить',
+  offline: 'Интернет байланышы жок',
+  footer: {
+    home: 'Үй',
+    products: 'Товарлар',
+    statistic: 'Отчеттор',
+    bucket: 'Араба',
+  },
   auth: {
     title: 'Авторизация',
     btn: 'Вход',
@@ -58,7 +65,8 @@ export default ({
       },
       theme: {
         title: 'Тиркеменин темасы',
-        descr: 'Карангы тема'
+        light: 'Жарык тема',
+        dark: 'Карангы тема'
       },
       logout: 'Чыгуу',
     },

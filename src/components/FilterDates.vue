@@ -13,6 +13,7 @@
       round
       color="primary"
       class="q-ml-auto"
+      v-vibrate
     >
       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
         <q-date
@@ -22,9 +23,9 @@
           :options="optionsFn"
         >
           <div class="row items-center no-wrap justify-end q-gap-xs">
-            <q-btn label="Отмена" rounded color="grey" flat v-close-popup />
-            <q-btn label="Очистить" rounded color="deep-orange" flat @click="clear" />
-            <q-btn label="OK" rounded color="primary" flat @click="filterByCalendar" v-close-popup />
+            <q-btn label="Отмена" rounded color="grey" flat v-close-popup v-vibrate />
+            <q-btn label="Очистить" rounded color="deep-orange" flat @click="clear" v-vibrate />
+            <q-btn label="OK" rounded color="primary" flat @click="filterByCalendar" v-close-popup v-vibrate />
           </div>
           <p class="text-grey q-mt-md q-mb-none text-caption">Двойное нажатие по дате вернёт результат за один день.</p>
         </q-date>

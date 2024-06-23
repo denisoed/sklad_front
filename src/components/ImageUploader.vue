@@ -39,6 +39,7 @@
         color="deep-orange"
         size="sm"
         @click="clear"
+        v-vibrate
       >
         <q-icon
           name="mdi-image-remove"
@@ -52,6 +53,7 @@
         size="sm"
         class="q-mt-md"
         @click="zoomImage"
+        v-vibrate
       >
         <q-icon
           name="mdi-eye"
@@ -75,6 +77,7 @@
           size="sm"
           @click="dialog = false"
           class="absolute-top-right q-mr-md q-mt-md"
+          v-vibrate
         >
           <q-icon
             name="mdi-close"

@@ -18,8 +18,8 @@
           Повышай эффективность, экономь время и деньги.
         </div>
         <div class="start-page_buttons q-mt-md flex  no-wrap q-gap-md">
-          <q-btn to="/register" push>Создать аккаунт</q-btn>
-          <q-btn to="/auth" push color="primary">Войти</q-btn>
+          <q-btn to="/register" push v-vibrate>Создать аккаунт</q-btn>
+          <q-btn to="/auth" push color="primary" v-vibrate>Войти</q-btn>
         </div>
       </div>
 

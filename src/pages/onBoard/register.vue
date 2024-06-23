@@ -44,6 +44,7 @@
               color="primary"
               @click="addStartSizes"
               :disable="!sizes && !sizesCreated"
+              v-vibrate
             >
               <q-icon name="mdi-plus" />
             </q-btn>
@@ -72,11 +73,11 @@
         <h3 class="text-subtitle1 text-bold q-mb-sm">Приступим</h3>
       </div>
       <div class="flex justify-between full-width q-mt-auto">
-        <q-btn v-if="step === 0" @click="prevStep" color="grey" push style="width: 120px;">Пропустить</q-btn>
-        <q-btn v-if="step === 0" @click="nextStep" color="primary" push style="width: 120px;">Начать</q-btn>
-        <q-btn v-if="step === 3" class="q-ml-auto" color="primary" push @click="openedNewSkladModal = true">Создать склад</q-btn>
-        <q-btn v-if="step === 2 && sizesCreated" @click="nextStep" color="primary" push class="q-ml-auto">Продолжить</q-btn>
-        <q-btn v-if="step === 1" color="primary" push class="q-ml-auto">Добавить товар</q-btn>
+        <q-btn v-vibrate v-if="step === 0" @click="prevStep" color="grey" push style="width: 120px;">Пропустить</q-btn>
+        <q-btn v-vibrate v-if="step === 0" @click="nextStep" color="primary" push style="width: 120px;">Начать</q-btn>
+        <q-btn v-vibrate v-if="step === 3" class="q-ml-auto" color="primary" push @click="openedNewSkladModal = true">Создать склад</q-btn>
+        <q-btn v-vibrate v-if="step === 2 && sizesCreated" @click="nextStep" color="primary" push class="q-ml-auto">Продолжить</q-btn>
+        <q-btn v-vibrate v-if="step === 1" color="primary" push class="q-ml-auto">Добавить товар</q-btn>
       </div>
     </div>
 

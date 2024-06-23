@@ -8,7 +8,7 @@
           style="border-bottom: 1px solid var(--border-color)"
         >
           <h6 class="q-ma-none text-grey text-subtitle1">Настроить размеры</h6>
-          <q-btn color="primary" round @click="openedCrudSizesModal = true">
+          <q-btn color="primary" round @click="openedCrudSizesModal = true" v-vibrate>
             <q-icon name="mdi-plus" />
           </q-btn>
         </div>

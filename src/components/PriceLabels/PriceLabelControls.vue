@@ -9,6 +9,7 @@
       size="md"
       class="price-label-controls_btn q-mr-md v-click-out-ignore"
       :disable="locked"
+      v-vibrate
     >
       <q-icon :name="m.icon" color="primary" />
     </q-btn>

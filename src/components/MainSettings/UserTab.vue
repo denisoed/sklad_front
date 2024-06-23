@@ -1,18 +1,18 @@
 <template>
   <div class="user-tab flex column q-gap-md">
-    <!-- <div v-else class="user-tab_subscr flex items-center justify-between q-pa-md">
+    <!-- <div class="user-tab_subscr flex items-center justify-between q-pa-md">
       <span class="text-bold text-white">Подписка</span>
       <span class="text-white">активна до: <span class="text-bold">{{ subscrExpiredAt }}</span></span>
     </div> -->
     <!-- Info -->
-    <div class="user-tab_info block-bg flex column q-pa-md q-mb-sm">
+    <div class="user-tab_info block-bg flex column q-pa-md">
       <div class="flex items-center">
         <UserInfo
           :fullname="profile?.fullname"
           :telegram-id="profile?.telegramId"
           @click="copyTgId"
         />
-        <q-btn @click="switchEdit" round push class="q-ml-auto bg-white" size="sm">
+        <q-btn @click="switchEdit" v-vibrate round push class="q-ml-auto bg-white" size="sm">
           <q-icon name="mdi-pencil" color="primary" />
         </q-btn>
       </div>
@@ -33,6 +33,7 @@
             style="height: 40px"
             @click="saveUserInfo"
             :disable="userInfo.fullname === profile?.fullname"
+            v-vibrate
           >
             <q-icon name="mdi-check" />
           </q-btn>
@@ -54,7 +55,7 @@
           </div>
           <div class="flex items-center justify-between q-gap-md">
             <q-toggle v-model="refillWallet" label="Автопополнение" dense />
-            <q-btn color="primary" push>Пополнить</q-btn>
+            <q-btn color="primary" push v-vibrate>Пополнить</q-btn>
           </div>
         </div>
       </template>
@@ -81,8 +82,9 @@
       </template>
       <template #body>
         <label class="flex items-center cursor-pointer">
-          <q-icon name="mdi-moon-waxing-crescent mdi-rotate-45" class="q-mr-md" />
-          <span>{{ $t('mainSettings.userTab.theme.descr') }}</span>
+          <q-icon v-if="isDark" name="mdi-moon-waxing-crescent mdi-rotate-45" class="q-mr-md" />
+          <q-icon v-else name="mdi-white-balance-sunny" class="q-mr-md" />
+          <span>{{ isDark ? $t('mainSettings.userTab.theme.dark') : $t('mainSettings.userTab.theme.light') }}</span>
           <q-toggle v-model="isDark" class="q-ml-auto" />
         </label>
       </template>

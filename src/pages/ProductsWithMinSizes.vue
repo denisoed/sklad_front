@@ -36,6 +36,7 @@
             size="md"
             class="q-mb-md"
             :to="`/sklad/${sklad?.id}/product/${p.id}`"
+            v-vibrate
           >
             <q-icon
               name="mdi-eye"

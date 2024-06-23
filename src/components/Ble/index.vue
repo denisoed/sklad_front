@@ -24,6 +24,7 @@
             class="text-primary"
             round
             dense
+            v-vibrate
           >
             <q-menu anchor="bottom right" self="top right">
               <q-list style="min-width: 100px">
@@ -53,6 +54,7 @@
             :disable="bluetoothAutoConnecting"
             round
             dense
+            v-vibrate
           />
         </li>
       </ul>
@@ -69,6 +71,7 @@
         color="primary"
         push
         @click="bluetoothStopScan"
+        v-vibrate
       >
         <q-spinner />
       </q-btn>
@@ -81,6 +84,7 @@
         :loading="bluetoothScanning"
         @click="bluetoothScan"
         icon="mdi-bluetooth"
+        v-vibrate
       />
     </div>
 

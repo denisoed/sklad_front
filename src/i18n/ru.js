@@ -10,6 +10,13 @@ export default ({
   incorrectPassword: 'Пароль не совпадает',
   create: 'Создать',
   update: 'Обновить',
+  offline: 'Нет соединения с интернетом',
+  footer: {
+    home: 'Главная',
+    products: 'Товары',
+    statistic: 'Отчеты',
+    bucket: 'Корзина',
+  },
   auth: {
     title: 'Авторизация',
     btn: 'Вход',
@@ -58,7 +65,8 @@ export default ({
       },
       theme: {
         title: 'Тема',
-        descr: 'Темная тема'
+        light: 'Светлая тема',
+        dark: 'Темная тема'
       },
       logout: 'Выйти',
     },

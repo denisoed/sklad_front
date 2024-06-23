@@ -96,6 +96,7 @@
                 icon="mdi-close"
                 push
                 @click="dialog = false"
+                v-vibrate
               />
               <q-btn
                 class="button-size"
@@ -104,6 +105,7 @@
                 push
                 :loading="loadingCost"
                 @click="save"
+                v-vibrate
               />
             </div>
           </q-card-section>
@@ -119,6 +121,7 @@
           push
           :loading="deleteLoading"
           @click="openDialog"
+          v-vibrate
         >
           <q-icon
             name="mdi-cash-plus"

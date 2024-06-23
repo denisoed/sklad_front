@@ -16,6 +16,7 @@
         color="white"
         text-color="primary"
         @click="dialog = true"
+        v-vibrate
       >
         <q-icon
           name="mdi-information-variant"
@@ -34,6 +35,7 @@
             size="sm"
             @click="dialog = false"
             class="absolute-top-right q-mr-md q-mt-md"
+            v-vibrate
           >
             <q-icon
               name="mdi-close"

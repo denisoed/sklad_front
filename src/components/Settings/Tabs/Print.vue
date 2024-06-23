@@ -42,7 +42,7 @@
       </router-link>
     </div>
     <div class="flex column items-center q-mt-lg">
-      <q-btn color="primary" push outline @click="openedNewTemplateModal = true">
+      <q-btn color="primary" push outline @click="openedNewTemplateModal = true" v-vibrate>
         Создать шаблон
       </q-btn>
     </div>

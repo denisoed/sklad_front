@@ -224,6 +224,7 @@
                     color="primary"
                     class="q-mt-sm"
                     to="/main-settings"
+                    v-vibrate
                   >
                     Настроить размеры
                   </q-btn>
@@ -251,6 +252,7 @@
               push
               color="secondary"
               class="q-mr-sm"
+              v-vibrate
             >
               <q-menu>
                 <q-list>
@@ -297,6 +299,7 @@
                   push
                   color="deep-orange"
                   mr="auto"
+                  v-vibrate
                 />
               </ModalCountToBucket>
               <ModalSizesToBucket
@@ -311,6 +314,7 @@
                   push
                   color="deep-orange"
                   mr="auto"
+                  v-vibrate
                 />
               </ModalSizesToBucket>
             </div>
@@ -324,6 +328,7 @@
               :disable="(isDirty || createProductLoading || updatedProductLoading)"
               :loading="uploadImageLoading || createProductLoading || updatedProductLoading"
               tabindex="8"
+              v-vibrate
             />
           </div>
         </div>

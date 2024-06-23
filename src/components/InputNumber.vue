@@ -27,6 +27,7 @@
             push
             @click="setNumber(n)"
             class="input-number_num"
+            v-vibrate
           />
           <q-btn
             style="width: 30%;height: 50px;"
@@ -35,6 +36,7 @@
             push
             @click="showing = false"
             class="input-number_save"
+            v-vibrate
           />
           <q-btn
             style="width: 30%;height: 50px;"
@@ -43,6 +45,7 @@
             push
             @click="removeNumber"
             class="input-number_clear"
+            v-vibrate
           />
         </div>
       </q-menu>

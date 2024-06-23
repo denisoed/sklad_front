@@ -79,6 +79,7 @@
         color="primary"
         class="q-mb-xl"
         @click="openedFilterHistory = true"
+        v-vibrate
       />
     </div>
   </q-page>

@@ -87,6 +87,7 @@
           :loading="deleteCategoryLoading"
           @click="openedNewCategoryModal = true"
           style="z-index: 2;"
+          v-vibrate
         >
           Добавить категорию
         </q-btn>

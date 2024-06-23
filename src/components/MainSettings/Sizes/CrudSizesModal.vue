@@ -39,6 +39,7 @@
                 icon="mdi-trash-can-outline"
                 push
                 @click="remove"
+                v-vibrate
               />
               <q-btn
                 class="button-size q-mr-auto"
@@ -46,6 +47,7 @@
                 icon="mdi-close"
                 push
                 @click="close"
+                v-vibrate
               />
               <q-btn
                 class="button-size"
@@ -54,6 +56,7 @@
                 push
                 :disabled="!formData.name || !formData.list"
                 @click="save"
+                v-vibrate
               />
             </div>
           </div>

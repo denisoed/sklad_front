@@ -15,6 +15,7 @@
             color="deep-orange"
             size="sm"
             v-close-popup
+            v-vibrate
           >
             <q-icon
               name="mdi-close"

@@ -94,6 +94,7 @@
           push
           color="secondary"
           class="q-mr-auto"
+          v-vibrate
         >
           <q-menu>
             <q-list>
@@ -123,6 +124,7 @@
           :loading="isLoading"
           :disable="isLoading"
           @click="updateForm"
+          v-vibrate
         />
       </div>
     </div>

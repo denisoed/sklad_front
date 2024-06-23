@@ -16,6 +16,7 @@
         flat
         round
         @click="onClear"
+        v-vibrate
       />
     </template>
   </q-input>

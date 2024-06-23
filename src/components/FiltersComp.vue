@@ -27,6 +27,7 @@
       color="white"
       text-color="black"
       @click="toggleLeftDrawer"
+      v-vibrate
     >
       <q-icon
         name="mdi-tune"
@@ -60,6 +61,7 @@
             label="Сбросить"
             push
             @click="clear"
+            v-vibrate
           />
           <q-btn
             class="button-size q-mr-auto"
@@ -67,6 +69,7 @@
             icon="mdi-close"
             push
             @click="leftDrawerOpen = false"
+            v-vibrate
           />
           <q-btn
             class="button-size"
@@ -74,6 +77,7 @@
             icon="mdi-check"
             push
             @click="leftDrawerOpen = false"
+            v-vibrate
           />
         </div>
       </q-card-section>

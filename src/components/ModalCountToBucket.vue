@@ -71,6 +71,7 @@
                 icon="mdi-close"
                 push
                 @click="close"
+                v-vibrate
               />
               <q-btn
                 class="button-size"
@@ -79,6 +80,7 @@
                 push
                 @click="submit"
                 :disable="!selectedCount"
+                v-vibrate
               />
             </div>
           </div>

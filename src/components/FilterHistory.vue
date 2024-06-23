@@ -86,6 +86,7 @@
               icon="mdi-trash-can-outline"
               push
               @click="clear"
+              v-vibrate
             />
             <q-btn
               class="button-size q-mr-auto"
@@ -93,6 +94,7 @@
               icon="mdi-close"
               push
               @click="close"
+              v-vibrate
             />
             <q-btn
               class="button-size"
@@ -100,6 +102,7 @@
               icon="search"
               push
               @click="search"
+              v-vibrate
             />
           </div>
         </div>

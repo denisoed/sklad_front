@@ -8,6 +8,7 @@
       :icon="isRecording ? 'mdi-microphone' : 'mdi-microphone-outline'"
       size="lg"
       @click="onClick"
+      v-vibrate
     />
   </div>
 </template>

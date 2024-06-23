@@ -56,9 +56,9 @@
             </div>
           </div>
           <div class="flex no-wrap q-mt-lg">
-            <q-btn v-if="selected" color="deep-orange" icon="mdi-trash-can-outline" push class="q-mr-md" @click="remove" />
-            <q-btn style="width: 100px;" color="primary" icon="check" push class="q-mr-md" @click="submit" />
-            <q-btn color="grey" icon="mdi-close" push @click="close" />
+            <q-btn v-if="selected" color="deep-orange" icon="mdi-trash-can-outline" push class="q-mr-md" @click="remove" v-vibrate />
+            <q-btn style="width: 100px;" color="primary" icon="check" push class="q-mr-md" @click="submit" v-vibrate />
+            <q-btn color="grey" icon="mdi-close" push @click="close" v-vibrate />
           </div>
         </div>
       </q-card-section>

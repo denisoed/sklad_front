@@ -34,8 +34,17 @@
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-lg">
-            <q-btn unelevated push color="primary" @click="submit" class="full-width text-white" :label="$t('reset.btn')"
-              tabindex="3" :loading="isLoading" :disable="!password || !passwordConfirm"></q-btn>
+            <q-btn
+              unelevated
+              push
+              color="primary"
+              @click="submit"
+              class="full-width text-white" :label="$t('reset.btn')"
+              tabindex="3"
+              :loading="isLoading"
+              :disable="!password || !passwordConfirm"
+              v-vibrate
+            />
           </q-card-actions>
           <q-card-section class="text-center q-pa-sm q-pb-md">
             <router-link to="/register" class="text-grey-5">

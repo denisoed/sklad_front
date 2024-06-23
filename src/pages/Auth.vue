@@ -12,7 +12,7 @@
             <!-- Login Providers -->
             <div class="flex column">
               <div class="page-login_providers-list d-flex justify-content-center mt-3">
-                <q-btn push :href="CONNECT_GOOGLE" class="full-width">
+                <q-btn push :href="CONNECT_GOOGLE" class="full-width" v-vibrate>
                   <div class="flex items-center justify-center q-gap-sm">
                     <q-icon name="mdi-google" class="text-primary" size="xs" />
                     <p class="text-grey-5 q-ma-none">{{ $t('auth.google') }}</p>
@@ -94,6 +94,7 @@
               :label="$t('auth.btn')"
               tabindex="3"
               :loading="isLoading"
+              v-vibrate
             ></q-btn>
           </q-card-actions>
           <q-card-section

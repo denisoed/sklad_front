@@ -7,6 +7,7 @@
         :telegram-id="profile?.telegramId"
         class="q-mx-auto"
         @click="goToProfile"
+        v-vibrate
       />
       <NotifyList :history="histories" />
     </div>

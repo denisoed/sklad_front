@@ -22,6 +22,7 @@
               :label="btnLabel"
               tabindex="3"
               :loading="isLoading"
+              v-vibrate
             ></q-btn>
           </q-card-actions>
         </q-card>

@@ -16,6 +16,7 @@
             round
             push
             size="md"
+            v-vibrate
           >
             <q-icon
               name="mdi-trash-can-outline"
@@ -33,6 +34,7 @@
             push
             size="md"
             class="q-ml-md"
+            v-vibrate
           >
             <q-icon
               name="mdi-pencil"
@@ -50,6 +52,7 @@
             push
             size="md"
             class="q-ml-md"
+            v-vibrate
           >
             <q-icon
               name="mdi-printer"
@@ -63,6 +66,7 @@
           size="md"
           class="q-ml-auto"
           @click="close"
+          v-vibrate
         >
           <q-icon
             name="mdi-close"

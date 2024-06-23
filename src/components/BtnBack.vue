@@ -5,6 +5,7 @@
     color="grey"
     push
     @click="onClick"
+    v-vibrate
   >
     <q-icon
       name="mdi-arrow-left"

@@ -76,6 +76,7 @@
                   class="full-width btn-sizes-btn"
                   :disable="!all && !s.has"
                   @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
+                  v-vibrate
                 >
                   <q-badge
                     v-if="s.countSelected"
@@ -94,6 +95,7 @@
                   icon="mdi-close"
                   push
                   @click="close"
+                  v-vibrate
                 />
                 <q-btn
                   class="button-size"
@@ -101,6 +103,7 @@
                   icon="mdi-check"
                   push
                   @click="submit"
+                  v-vibrate
                 />
               </div>
             </div>
@@ -125,6 +128,7 @@
                   icon="mdi-arrow-left"
                   push
                   @click="isStepTwo = false"
+                  v-vibrate
                 />
                 <q-btn
                   class="button-size"
@@ -132,6 +136,7 @@
                   icon="mdi-check"
                   push
                   @click="setSizeWithCounts"
+                  v-vibrate
                 />
               </div>
             </div>

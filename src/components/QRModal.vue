@@ -23,6 +23,7 @@
           icon="mdi-close"
           push
           @click="close"
+          v-vibrate
         />
       </q-card-section>
     </q-card>

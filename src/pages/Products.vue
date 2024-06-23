@@ -63,6 +63,7 @@
                 size="md"
                 class="q-mb-md"
                 :to="`/sklad/${sklad?.id}/product/${p.id}`"
+                v-vibrate
               >
                 <q-icon
                   name="mdi-eye"
@@ -80,6 +81,7 @@
                     push
                     icon="mdi-basket-plus-outline"
                     text-color="deep-orange"
+                    v-vibrate
                   />
                 </ModalCountToBucket>
                 <ModalSizesToBucket
@@ -93,6 +95,7 @@
                     push
                     icon="mdi-basket-plus-outline"
                     text-color="deep-orange"
+                    v-vibrate
                   />
                 </ModalSizesToBucket>
               </div>

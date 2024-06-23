@@ -99,6 +99,7 @@
         icon="mdi-close"
         text-color="deep-orange"
         @click="removeFromBucket(useNumberOfSizes ? { countSizes } : { sizes })"
+        v-vibrate
       />
       <ModalCountToBucket
         v-if="useNumberOfSizes"
@@ -120,6 +121,7 @@
           round
           size="sm"
           mr="auto"
+          v-vibrate
         />
       </ModalCountToBucket>
       <ModalSizesToBucket
@@ -144,6 +146,7 @@
           push
           round
           size="sm"
+          v-vibrate
         />
       </ModalSizesToBucket>
       <q-checkbox

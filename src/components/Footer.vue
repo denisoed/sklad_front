@@ -2,11 +2,11 @@
   <nav class="menu block-bg flex items-center">
     <router-link class="router-link" :to="indexLink" exact v-vibrate>
       <q-icon name="mdi-home-outline" />
-      <span>Главная</span>
+      <span>{{ $t('footer.home') }}</span>
     </router-link>
     <router-link class="router-link" :to="productsLink" v-vibrate>
       <q-icon name="mdi-cart-outline" />
-      <span>Товары</span>
+      <span>{{ $t('footer.products') }}</span>
     </router-link>
     <q-btn
       color="primary"
@@ -19,18 +19,14 @@
     />
     <router-link class="router-link" :to="statisticLink" v-vibrate>
       <q-icon name="mdi-chart-box-outline" />
-      <span>Отчеты</span>
+      <span>{{ $t('footer.statistic') }}</span>
     </router-link>
     <router-link class="router-link" :to="bucketLink" v-vibrate>
       <q-icon name="mdi-basket-outline">
         <div v-if="hasInBucket" class="has-in-backet" />
       </q-icon>
-      <span>Корзина</span>
+      <span>{{ $t('footer.bucket') }}</span>
     </router-link>
-    <div v-if="offline" class="offline flex justify-between items-center">
-      <span>Нет соединения с интернетом</span>
-      <q-icon name="mdi-wifi-off" />
-    </div>
   </nav>
 </template>
 
@@ -46,8 +42,6 @@ export default defineComponent({
     const { params } = useRoute()
     const { sklads } = useSklads()
     const { bucketProductsCount, loadBucketProducts } = useBucket()
-
-    const offline = ref(false);
 
     const hasInBucket = computed(() => bucketProductsCount.value)
     const indexLink = computed(() => '/')
@@ -67,23 +61,14 @@ export default defineComponent({
       );
     });
 
-    onMounted(() => {
-      window.addEventListener('online', () => {
-        offline.value = false;
-      });
-      
-      window.addEventListener('offline', () => {
-        offline.value = true;
-      });
-    });
+    
 
     return {
       statisticLink,
       indexLink,
       productsLink,
       bucketLink,
-      hasInBucket,
-      offline
+      hasInBucket
     }
   },
 })
@@ -152,18 +137,6 @@ export default defineComponent({
       transform: scale(1.1);
       opacity: 1;
     }
-  }
-
-  .offline {
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 0 4px;
-    text-align: left;
-    font-size: 10px;
-    color: #000;
-    background: var(--q-negative);
   }
 }
 </style>

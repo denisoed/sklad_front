@@ -17,6 +17,7 @@
         to="/"
         label="Вернуться на главную"
         no-caps
+        v-vibrate
       />
     </div>
   </div>

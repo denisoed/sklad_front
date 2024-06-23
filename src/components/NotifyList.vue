@@ -1,6 +1,6 @@
 <template>
   <div class="notify-list relative">
-    <q-btn @click="dialog = true" round push class="notify-list_btn text-grey">
+    <q-btn @click="dialog = true" round push class="notify-list_btn text-grey" v-vibrate>
       <q-icon name="mdi-bell-outline" />
       <div v-if="history?.length" class="notify-list_alert" />
     </q-btn>
@@ -9,7 +9,7 @@
         <q-card class="notify-list_wrap" style="width: 300px;">
           <q-card-section class="flex items-center q-pb-none">
             <div class="text-subtitle1">Уведомления</div>
-            <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup />
+            <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup v-vibrate />
           </q-card-section>
           <q-card-section v-if="historyRows?.length" class="flex column q-gap-md">
             <router-link

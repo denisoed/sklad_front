@@ -13,10 +13,11 @@
           :disable="disable"
           size="lg"
           outline
+          v-vibrate
         />
       </div>
       <div class="flex q-ml-auto q-mr-md q-mt-sm">
-        <q-btn @click="onEdit" icon="mdi-pencil" size="sm" round push color="primary" />
+        <q-btn @click="onEdit" icon="mdi-pencil" size="sm" round push color="primary" v-vibrate />
       </div>
     </div>
   </q-expansion-item>
