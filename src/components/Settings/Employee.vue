@@ -28,6 +28,9 @@
             {{ props.row.name }}
           </q-td>
           <q-td class="text-left">
+            {{ props.row.email }}
+          </q-td>
+          <q-td class="text-left">
             {{ props.row.telegramId }}
           </q-td>
           <q-td class="text-right">
@@ -71,7 +74,6 @@ import {
   ref
 } from 'vue'
 import { useQuasar } from 'quasar'
-import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
 import NewEmployee from 'src/components/Settings/NewEmployee.vue'
 
@@ -89,7 +91,6 @@ export default defineComponent({
   setup(props) {
     const $q = useQuasar()
     const { users } = toRefs(props)
-    const { profile } = useProfile()
     const {
       addNewUserToSklad,
       removeUserFromSklad,
@@ -112,6 +113,12 @@ export default defineComponent({
           label: 'Telegram ID',
           align: 'left',
           field: 'telegramId'
+        },
+        {
+          name: 'email',
+          label: 'Почта',
+          align: 'left',
+          field: 'email'
         },
         {
           name: 'action',
@@ -159,6 +166,7 @@ export default defineComponent({
         id: f.id,
         name: f.fullname,
         telegramId: f.telegramId,
+        email: f.email,
         permissions: f.permissions
       }));
     })

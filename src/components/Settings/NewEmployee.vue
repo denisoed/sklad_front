@@ -14,10 +14,10 @@
               class="full-width"
               debounce="500"
               hint="Сотрудник, к которому будут присвоины полномочия"
-              placeholder="Введите телеграмм ID"
+              placeholder="Введите телеграм ID или почту"
               enterkeyhint="done"
               dense
-              :model-value="formData.telegramId"
+              :model-value="formData.telegramId || formData.email"
               @update:model-value="findUser"
               :readonly="!!user"
               :loading="loadingUsers"
@@ -119,6 +119,7 @@ export default defineComponent({
     const formData = reactive({
       id: null,
       telegramId: null,
+      email: null,
       permissions: [],
       oldPermissions: [],
     })
@@ -136,6 +137,7 @@ export default defineComponent({
     function reset() {
       formData.id = null
       formData.telegramId = null
+      formData.email = null
       formData.permissions = []
       formData.oldPermissions = []
       isValidEmail.value = false
@@ -155,6 +157,7 @@ export default defineComponent({
       isValidEmail.value = true
       formData.id = user?.id
       formData.telegramId = user?.telegramId
+      formData.email = user?.email
       formData.oldPermissions = user?.permissions || []
       menu.value = false
     }
@@ -165,7 +168,15 @@ export default defineComponent({
       menu.value = true
       loadUsers(
         null,
-        { where: { telegramId_contains: val, id_ne: sklad.value?.owner?.id }},
+        {
+          where: {
+            _or: [
+              { email_contains: val },
+              { telegramId_contains: val },
+            ],
+            id_ne: sklad.value?.owner?.id
+          }
+        },
         { fetchPolicy: 'network-only' }
       )
     }
@@ -220,7 +231,7 @@ export default defineComponent({
   }
 
   &_checkboxes {
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: auto;
   }
 }
