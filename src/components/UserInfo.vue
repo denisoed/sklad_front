@@ -4,6 +4,7 @@
     <div class="flex column q-ml-sm">
       <div class="user_info-name text-bold text-subtitle1 q-mb-xs truncate">{{ fullname || 'Имя не указано' }}</div>
       <div v-if="telegramId" class="user_info-telegram-id text-grey truncate">ID: {{ telegramId }}</div>
+      <div v-else class="user_info-telegram-id text-grey truncate">{{ email }}</div>
     </div>
   </div>
 </template>
@@ -23,14 +24,18 @@ export default defineComponent({
       type: String,
       default: null
     },
+    email: {
+      type: String,
+      default: null
+    },
     telegramId: {
       type: Number,
       default: null
     }
   },
   setup(props) {
-    const { telegramId } = toRefs(props)
-    const avatar = computed(() => identicon(String(telegramId.value) || ''))
+    const { telegramId, email } = toRefs(props)
+    const avatar = computed(() => identicon(String(telegramId.value || email.value) || ''))
 
     return {
       avatar

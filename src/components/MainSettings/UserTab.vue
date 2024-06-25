@@ -10,6 +10,7 @@
         <UserInfo
           :fullname="profile?.fullname"
           :telegram-id="profile?.telegramId"
+          :email="profile?.email"
           @click="copyTgId"
           v-vibrate
         />

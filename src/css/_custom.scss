@@ -131,13 +131,16 @@ h6 {
 	width: 8px;
 	height: 8px;
 	background-color: var(--block-bg);
-  display: none;
 }
 
 *::-webkit-scrollbar-thumb
 {
 	background-color: var(--scrollbar-bg);
   border-radius: var(--border-radius);
+}
+
+body:not(.desktop) *::-webkit-scrollbar {
+  display: none;
 }
 
 .q-notifications__list--bottom {

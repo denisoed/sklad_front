@@ -5,6 +5,7 @@
       <UserInfo
         :fullname="profile?.fullname"
         :telegram-id="profile?.telegramId"
+        :email="profile?.email"
         class="q-mx-auto"
         @click="goToProfile"
         v-vibrate

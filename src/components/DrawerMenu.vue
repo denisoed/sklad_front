@@ -3,6 +3,7 @@
     <UserInfo
       :fullname="profile?.fullname"
       :telegram-id="profile?.telegramId"
+      :email="profile?.email"
       class="q-mr-auto q-mb-lg q-px-xs"
     />
     <q-list>
@@ -44,6 +45,7 @@
     <q-list class="q-mt-auto">
       <template v-for="(item, index) in MENU_LIST_BOTTOM" :key="index">
         <q-item
+          v-if="item.visible"
           :to="item?.to"
           @click="item?.action"
           :disable="item.disable"
@@ -72,6 +74,7 @@ import {
 import UserInfo from 'src/components/UserInfo.vue'
 import FeedbackDialog from 'src/components/FeedbackDialog/index.vue'
 import useProfile from 'src/modules/useProfile'
+import useJwtMethods from 'src/modules/auth/useJwtMethods'
 
 const MENU_LIST = [
   {
@@ -99,6 +102,12 @@ export default defineComponent({
   },
   setup() {
     const { profile } = useProfile()
+    const { logout, revokeToken } = useJwtMethods()
+
+    function changeAccount() {
+      revokeToken()
+      logout()
+    }
 
     const MENU_LIST_BOTTOM = [
       {
@@ -106,7 +115,17 @@ export default defineComponent({
         label: 'Настройки',
         separator: false,
         disable: false,
-        to: '/main-settings'
+        to: '/main-settings',
+        visible: true
+      },
+      {
+        icon: 'mdi-logout',
+        color: 'deep-orange',
+        label: 'Выйти',
+        separator: false,
+        disable: false,
+        visible: !window?.Telegram?.WebApp?.initData,
+        action: changeAccount
       }
     ]
 
