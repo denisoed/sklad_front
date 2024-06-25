@@ -262,6 +262,7 @@
                     :to="historyLink"
                     clickable
                     v-close-popup
+                    v-vibrate
                   >
                     <q-item-section>
                       <div class="flex no-wrap items-center">

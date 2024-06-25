@@ -16,6 +16,7 @@
           spinner-color="grey"
           class="cursor-pointer"
           @click="dialog = true"
+          v-vibrate
         />
       </div>
       <router-link

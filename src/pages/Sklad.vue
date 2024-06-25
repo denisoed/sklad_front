@@ -10,6 +10,7 @@
         icon="mdi-cart-arrow-up"
         :to="productsWithMinSizesLink"
         accent-color="rgb(255 0 0 / 30%)"
+        v-vibrate
       >
         <q-badge
           class="absolute-top-right q-mt-sm q-mr-sm"
@@ -25,6 +26,7 @@
         icon="mdi-cash"
         :to="costsLink"
         accent-color="rgb(255 255 0 / 20%)"
+        v-vibrate
       />
       <div class="flex no-wrap full-width q-gap-md">
         <BlockLink
@@ -34,6 +36,7 @@
           icon="mdi-history"
           :to="historyLink"
           accent-color="rgb(38 236 227 / 20%)"
+          v-vibrate
         />
         <BlockLink
           v-permissions="[READ_SETTINGS]"
@@ -43,6 +46,7 @@
           :to="settingsLink"
           class="q-mb-md"
           accent-color="rgb(255 95 95 / 20%)"
+          v-vibrate
         />
       </div>
     </div>

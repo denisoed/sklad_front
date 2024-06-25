@@ -71,7 +71,7 @@
       @close="openedFilterHistory = false"
       @on-search="onSearch"
     />
-    <div class="fixed-bottom-right q-pb-lg q-mb-md q-mr-md fixed">
+    <div class="fixed-bottom-right q-pb-xl q-mb-md q-mr-md fixed">
       <q-btn
         icon="search"
         round

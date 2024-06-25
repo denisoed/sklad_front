@@ -13,6 +13,7 @@
           exact
           clickable
           v-ripple
+          v-vibrate
         >
           <q-item-section avatar>
             <q-icon :name="item.icon" />
@@ -49,6 +50,7 @@
           exact
           clickable
           v-ripple
+          v-vibrate
         >
           <q-item-section avatar>
             <q-icon :name="item.icon" :color="item.color" />
