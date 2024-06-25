@@ -189,8 +189,9 @@ export default defineComponent({
     }
 
     function copyTgId() {
-      copyToClipboard(profile.value.telegramId)
-      showSuccess('Telegram ID скопирован')
+      if (!profile.value.email && !profile.value.telegramId) return
+      copyToClipboard(profile.value.email || profile.value.telegramId)
+      showSuccess(profile.value.email ? 'Почта скопирована' : 'Telegram ID скопирован')
     }
 
     watch(locale, (lang) => {
