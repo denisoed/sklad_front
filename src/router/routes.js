@@ -129,7 +129,7 @@ const routes = [
   },
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
+    redirect: HOME_ROUTE
   }
 ]
 
