@@ -12,19 +12,18 @@
       <div class="start-page_content flex column q-pa-lg q-gap-md q-mb-md">
         <div class="start-page_title flex column">
           Добро пожаловать
-          <span class="text-primary">на Склад</span>
+          <span>на Склад</span>
         </div>
         <div class="start-page_descr">
-          Повышай эффективность, экономь время и деньги.
+          Мы рады, что вы присоединились к нам. Теперь управление вашими товарами и продажами станет проще и удобнее.
         </div>
-        <div class="start-page_buttons q-mt-md flex  no-wrap q-gap-md">
-          <q-btn to="/register" push v-vibrate>Создать аккаунт</q-btn>
-          <q-btn to="/auth" push color="primary" v-vibrate>Войти</q-btn>
+        <div class="start-page_buttons q-mt-md flex justify-center no-wrap q-gap-md">
+          <TgAuthVue
+            mode="redirect"
+            telegram-login="MentoriusBot"
+            redirect-url="https://sklad.cfd"
+          />
         </div>
-      </div>
-
-      <div class="start-page_lang q-pa-md">
-        <q-icon name="mdi-earth" size="sm" class="q-mr-sm" />
       </div>
     </div>
   </q-page>
@@ -39,9 +38,13 @@ import { useRouter } from 'vue-router'
 import { CONNECT_GOOGLE } from 'src/config'
 import { HOME_ROUTE } from 'src/router/routes'
 import { useI18n } from 'vue-i18n'
+import TgAuthVue from 'src/components/TgAuth.vue'
 
 export default defineComponent({
-  name: 'AuthPage',
+  name: 'StartPage',
+  components: {
+    TgAuthVue,
+  },
   setup() {
     const { t: $t } = useI18n()
     const authForm = ref(null)
@@ -130,6 +133,10 @@ export default defineComponent({
     margin: 0;
     font-weight: 900;
     line-height: normal;
+
+    span {
+      color: #54a9eb;
+    }
 
     @media screen and (max-width: 576px) {
       font-size: 28px;
