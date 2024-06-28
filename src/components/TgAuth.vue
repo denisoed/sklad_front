@@ -40,35 +40,39 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['callback', 'loaded'])
-function onTelegramAuth (user) {
+
+const telegram = ref(null)
+
+function onTelegramAuth(user) {
   emit('callback', user)
 }
 
-const telegram = ref(null)
-const script = document.createElement("script")
-script.async = true
-script.src = 'https://telegram.org/js/telegram-widget.js?3'
-
-script.setAttribute('data-size', props.size)
-script.setAttribute('data-userpic', props.userpic)
-script.setAttribute('data-telegram-login', props.telegramLogin)
-script.setAttribute('data-request-access', props.requestAccess)
-
-script.onload = () => {
-  emit('loaded')
-}
-
-if (props.radius) script.setAttribute('data-radius', props.radius)
-
-if (props.mode === 'callback') {
-  window.onTelegramAuth = onTelegramAuth
-  script.setAttribute('data-onauth', 'window.onTelegramAuth(user)')
-} else {
-  script.setAttribute('data-auth-url', props.redirectUrl)
+function init() {
+  const script = document.createElement("script")
+  script.async = true
+  script.src = 'https://telegram.org/js/telegram-widget.js?22'
+  
+  script.setAttribute('data-size', props.size)
+  script.setAttribute('data-userpic', props.userpic)
+  script.setAttribute('data-telegram-login', props.telegramLogin)
+  script.setAttribute('data-request-access', props.requestAccess)
+  
+  script.onload = () => {
+    emit('loaded')
+  }
+  
+  if (props.radius) script.setAttribute('data-radius', props.radius)
+  
+  if (props.mode === 'callback') {
+    window.onTelegramAuth = onTelegramAuth
+    script.setAttribute('data-onauth', 'window.onTelegramAuth(user)')
+  } else {
+    script.setAttribute('data-auth-url', props.redirectUrl)
+  }
+  telegram.value.appendChild(script)
 }
 
 onMounted(() => {
-  telegram.value.appendChild(script)
-})
-
+  init();
+});
 </script>
