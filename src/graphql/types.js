@@ -345,8 +345,8 @@ export const ME = gql`
 `
 
 export const TELEGRAM_AUTH = gql`
-  mutation TelegramAuth($initData: String!) {
-    telegramAuth(initData: $initData) {
+  mutation TelegramAuth($initData: String!, $mode: String!) {
+    telegramAuth(initData: $initData, mode: $mode) {
       jwt
       refresh
     }

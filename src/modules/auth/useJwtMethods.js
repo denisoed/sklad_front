@@ -7,7 +7,7 @@ import {
   RESET_PASSWORD,
   TELEGRAM_AUTH
 } from 'src/graphql/types'
-import { AUTH_ROUTE } from 'src/router/routes'
+import { START_ROUTE } from 'src/router/routes'
 import { apolloClient, authClient } from 'src/boot/apollo'
 import useJwtTokens from 'src/modules/auth/useJwtTokens'
 import { api } from 'boot/axios'
@@ -45,14 +45,14 @@ const useJwtMethods = () => {
     }
   }
 
-  async function telegramAuth() {
+  async function telegramAuth(initData, mode = 'tg') {
     try {
-      const initData = window?.Telegram?.WebApp?.initData;
       const { data } = await apolloClient.mutate({
         mutation: TELEGRAM_AUTH,
-        variables: { initData }
+        variables: { initData, mode }
       })
       setTokens(data?.telegramAuth?.jwt, data?.telegramAuth?.refresh)
+      return data
     } catch (error) {
       throw error
     }
@@ -108,9 +108,9 @@ const useJwtMethods = () => {
   }
 
   async function logout() {
-    const isAuthPage = window.location.hash.includes(AUTH_ROUTE)
+    const isAuthPage = window.location.hash.includes(START_ROUTE)
     if (!isAuthPage) {
-      window.location.hash = AUTH_ROUTE
+      window.location.hash = START_ROUTE
     }
   }
 
