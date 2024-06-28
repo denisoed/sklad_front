@@ -19,9 +19,9 @@
         </div>
         <div class="start-page_buttons q-mt-md flex justify-center no-wrap q-gap-md">
           <TgAuthVue
-            mode="redirect"
-            telegram-login="MentoriusBot"
-            redirect-url="https://sklad.cfd"
+            mode="callback"
+            telegram-login="SkladManagerBot"
+            @callback="onTelegramAuth"
           />
         </div>
       </div>
@@ -30,15 +30,14 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import useProfile from 'src/modules/useProfile'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
 import { useRouter } from 'vue-router'
-import { CONNECT_GOOGLE } from 'src/config'
 import { HOME_ROUTE } from 'src/router/routes'
-import { useI18n } from 'vue-i18n'
 import TgAuthVue from 'src/components/TgAuth.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'StartPage',
@@ -47,14 +46,8 @@ export default defineComponent({
   },
   setup() {
     const { t: $t } = useI18n()
-    const authForm = ref(null)
-    const email = ref(null)
-    const password = ref(null)
-    const visibilityPassword = ref(false)
-    const isLoading = ref(false)
-
     const {
-      login,
+      telegramAuth
     } = useJwtMethods()
     const { push } = useRouter()
     const { fetchProfile } = useProfile()
@@ -62,36 +55,21 @@ export default defineComponent({
     const {
       showSuccess,
       showError,
-      isValidEmail
     } = useHelpers()
 
-    async function submit() {
-      authForm.value.validate().then(async success => {
-        if (success) {
-          try {
-            isLoading.value = true
-            await login(email.value, password.value)
-            fetchProfile()
-            showSuccess($t('auth.success'))
-            push(HOME_ROUTE)
-          } catch {
-            showError($t('auth.error'))
-          } finally {
-            isLoading.value = false
-          }
-        }
-      })
+    async function onTelegramAuth(user) {
+      try {
+        await telegramAuth(JSON.stringify(user), 'web');
+        fetchProfile()
+        showSuccess($t('auth.success'))
+        push(HOME_ROUTE)
+      } catch {
+        showError('Упс. Попробуйте позже.')
+      }
     }
 
     return {
-      email,
-      password,
-      visibilityPassword,
-      submit,
-      isLoading,
-      isValidEmail,
-      authForm,
-      CONNECT_GOOGLE,
+      onTelegramAuth,
     }
   }
 })

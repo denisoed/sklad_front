@@ -6,7 +6,7 @@ export default boot(async () => {
   if (telegram?.initData) {
     telegram.expand()
     const { telegramAuth } = useJwtMethods()
-    await telegramAuth()
+    await telegramAuth(JSON.stringify(telegram.initDataUnsafe), 'tg')
     telegram.ready()
   }
 })

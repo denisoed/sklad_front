@@ -32,7 +32,7 @@ const props = defineProps({
   },
   userpic: {
     type: Boolean,
-    default: true
+    default: false
   },
   radius: {
     type: String
