@@ -7,6 +7,7 @@
         src="~/assets/start-banner.png"
         alt="Welcome to team"
         class="start-page_banner"
+        spinner-size="sm"
       />
 
       <div class="start-page_content flex column q-pa-lg q-gap-md q-mb-md">

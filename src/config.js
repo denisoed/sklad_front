@@ -18,7 +18,7 @@ export const HISTORY_DELETE = 'delete'
 export const HISTORY_SOLD = 'sold'
 export const HISTORY_RETURN = 'return'
 
-export const MAIN_COLOR_DARK = '#404258'
+export const MAIN_COLOR_DARK = '#222831'
 export const MAIN_COLOR_LIGHT = '#f7f7f7'
 export const COLOR_ERROR = 'red-4'
 export const COLOR_SUCCESS = 'green-4'
