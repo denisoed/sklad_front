@@ -28,6 +28,7 @@ module.exports = configure(function (ctx) {
       'axios',
       'apollo',
       'theme',
+      'sentry',
       'permissions',
       'telegramAuth',
       'profile',
