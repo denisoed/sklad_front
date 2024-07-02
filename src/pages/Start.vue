@@ -22,6 +22,7 @@
           <TgAuthVue
             mode="callback"
             telegram-login="SkladManagerBot"
+            request-access="write"
             @callback="onTelegramAuth"
           />
         </div>
