@@ -26,7 +26,7 @@
               <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
               <div class="flex justify-between items-center">
                 <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
-                <div class="notify-list_item-date text-grey-5">{{ formatTimeAgo(h.created_at) }}</div>
+                <div class="notify-list_item-date text-grey-5 q-ml-auto">{{ formatTimeAgo(h.created_at) }}</div>
               </div>
             </router-link>
           </q-card-section>

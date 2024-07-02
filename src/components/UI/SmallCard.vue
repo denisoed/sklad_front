@@ -54,7 +54,11 @@ export default defineComponent({
 
   &_name {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    height: 100%;
     font-size: 14px;
     padding: 4px;
     box-sizing: border-box;
