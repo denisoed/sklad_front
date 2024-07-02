@@ -21,6 +21,7 @@
   "dependencies": {
     "@quasar/cli": "^2.3.0",
     "@quasar/extras": "^1.0.0",
+    "@sentry/vue": "^8.13.0",
     "@vue/apollo-composable": "^4.0.0-alpha.17",
     "@vueuse/core": "^10.1.2",
     "apexcharts": "^3.37.0",

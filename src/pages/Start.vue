@@ -112,6 +112,7 @@ export default defineComponent({
     margin: 0;
     font-weight: 900;
     line-height: normal;
+    text-align: center;
 
     span {
       color: #54a9eb;
@@ -130,7 +131,7 @@ export default defineComponent({
   }
 
   &_descr {
-    max-width: 300px;
+    text-align: center;
     color: var(--text-description);
   }
 }
