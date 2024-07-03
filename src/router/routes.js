@@ -128,6 +128,10 @@ const routes = [
     children: AUTH_ROUTES
   },
   {
+    path: '/post/:postId',
+    component: () => import('pages/Post.vue')
+  },
+  {
     path: '/:catchAll(.*)*',
     redirect: HOME_ROUTE
   }
