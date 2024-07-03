@@ -20,4 +20,4 @@ ENV API_URL=${api_url}
 
 RUN npm run build:pwa
 
-CMD ["node", "server.js"]
+CMD ["quasar", "serve", "dist/pwa -p 8080"]
