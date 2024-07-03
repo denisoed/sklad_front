@@ -22,7 +22,7 @@
       <MiniTabs
         :list="categories"
         :selected-id="selectedCategoryId"
-        class="mini-tabs-categories q-mb-md"
+        class="mini-tabs-categories q-pb-md"
         @on-change="onChangeCategory"
       />
 

@@ -26,7 +26,7 @@
       >
         <div class="card-product_title">
           <span class="text-primary">#{{ id }}</span>
-          <p v-if="name"><span>{{ sklad?.name }}:</span> {{ name }}</p>
+          <p v-if="name">{{ name }}</p>
           <p v-else><span>Не указано</span></p>
         </div>
         <div class="card-product_info">

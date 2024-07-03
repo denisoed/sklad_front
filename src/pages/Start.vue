@@ -13,7 +13,7 @@
       <div class="start-page_content flex column q-pa-lg q-gap-md q-mb-md">
         <div class="start-page_title flex column">
           Добро пожаловать
-          <span>на Склад</span>
+          <span>на Sklad</span>
         </div>
         <div class="start-page_descr">
           Мы рады, что вы присоединились к нам. Теперь управление вашими товарами и продажами станет проще и удобнее.
@@ -26,13 +26,19 @@
             @callback="onTelegramAuth"
           />
         </div>
+        <q-inner-loading :showing="loading">
+          <div class="flex column items-center q-gap-sm">
+            <q-spinner size="md" color="primary" />
+            <span>Подождите...</span>
+          </div>
+        </q-inner-loading>
       </div>
     </div>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import useProfile from 'src/modules/useProfile'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
@@ -59,19 +65,25 @@ export default defineComponent({
       showError,
     } = useHelpers()
 
+    const loading = ref(false)
+
     async function onTelegramAuth(user) {
       try {
+        loading.value = true
         await telegramAuth(JSON.stringify(user), 'web');
         fetchProfile()
         showSuccess($t('auth.success'))
         push(HOME_ROUTE)
       } catch {
         showError('Упс. Попробуйте позже.')
+      } finally {
+        loading.value = false
       }
     }
 
     return {
       onTelegramAuth,
+      loading
     }
   }
 })
@@ -95,6 +107,7 @@ export default defineComponent({
   }
 
   &_content {
+    position: relative;
     margin-top: auto;
     background: var(--main-bg);
     border-radius: var(--border-radius);
@@ -116,7 +129,7 @@ export default defineComponent({
     text-align: center;
 
     span {
-      color: #54a9eb;
+      color: var(--q-primary);
     }
 
     @media screen and (max-width: 576px) {

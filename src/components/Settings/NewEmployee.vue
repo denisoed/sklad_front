@@ -226,7 +226,6 @@ export default defineComponent({
   &_field {
     position: sticky;
     top: 0;
-    background: var(--q-dark);
     z-index: 1;
   }
 
