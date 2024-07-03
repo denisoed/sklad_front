@@ -18,6 +18,6 @@ ARG api_url
 ENV GRAPHQL_URI=${graphql_uri}
 ENV API_URL=${api_url}
 
-RUN npm run build:pwa
+RUN npm run build
 
 CMD ["node", "server.js"]
