@@ -13,7 +13,7 @@ app.use(helmet({
   contentSecurityPolicy: false,
 }))
 app.use(history())
-app.use(serveStatic('dist/spa'))
+app.use(serveStatic('dist/pwa'))
 
 app.listen(port, () => {
   console.log(`Server running on: ${port}`)
