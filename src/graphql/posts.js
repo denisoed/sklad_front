@@ -6,6 +6,7 @@ export const POST = gql`
       id
       title
       text
+      updated_at
     }
   }
 `
