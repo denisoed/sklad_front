@@ -14,7 +14,7 @@
         </q-btn>
         <div class="posts-title">Спискок статей</div>
       </div>
-      <div class="flex column q-gap-sm">
+      <div class="flex column q-gap-md">
         <router-link
           v-for="(post, i) in postsResult"
           :key="i"
@@ -27,12 +27,8 @@
   
             <q-card-section>
               <div class="text-h6">{{ post.title }}</div>
-              <div class="q-mt-sm text-subtitle2 updated-at">Обновлено: {{ post.updated_at }}</div>
+              <div class="q-mt-sm updated-at">Обновлено: {{ post.updated_at }}</div>
             </q-card-section>
-  
-            <!-- <q-card-section class="q-pt-none">
-              {{ post.description }}
-            </q-card-section> -->
           </q-card>
         </router-link>
       </div>
