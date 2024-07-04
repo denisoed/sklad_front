@@ -7,12 +7,12 @@
           size="md"
           color="grey"
           push
-          to="/"
+          to="/posts"
           v-vibrate
           >
           <q-icon name="mdi-arrow-left" />
         </q-btn>
-        <div class="updated-at">Обновлено: {{ updatedAt }}</div>
+        <div class="updated-at">Обновлено: {{ postResult?.updated_at }}</div>
       </div>
       <h1 class="q-my-none">{{ postResult?.title }}</h1>
       <VMarkdownView
@@ -23,17 +23,15 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { defineComponent, ref, onBeforeMount } from 'vue'
+import { defineComponent, onBeforeMount } from 'vue'
 import { VMarkdownView } from 'vue3-markdown'
 import 'vue3-markdown/dist/style.css'
 import usePosts from 'src/modules/usePosts'
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
 import 'moment/locale/ru'
 
 export default defineComponent({
-  name: 'StartPage',
+  name: 'PostPage',
   components: {
     VMarkdownView,
   },
@@ -41,11 +39,6 @@ export default defineComponent({
     const { loadPost, postResult } = usePosts()
 
     const route = useRoute()
-
-    const content = ref('## One of the world`s most popular markdown editors')
-    const mode = ref('dark')
-
-    const updatedAt = computed(() => moment(postResult.value?.updated_at).format('DD MMMM YYYY'))
 
     onBeforeMount(() => {
       loadPost(
@@ -58,10 +51,7 @@ export default defineComponent({
     })
 
     return {
-      content,
-      mode,
-      postResult,
-      updatedAt
+      postResult
     }
   }
 })

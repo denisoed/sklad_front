@@ -10,3 +10,18 @@ export const POST = gql`
     }
   }
 `
+
+export const POSTS = gql`
+  query Posts {
+    posts {
+      id
+      title
+      text
+      description
+      updated_at
+      banner {
+        url
+      }
+    }
+  }
+`
