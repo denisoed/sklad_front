@@ -77,17 +77,17 @@ import useProfile from 'src/modules/useProfile'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
 
 const MENU_LIST = [
+  // {
+  //   icon: 'mdi-account-group-outline',
+  //   label: 'Контакты',
+  //   separator: false,
+  //   disable: true,
+  //   to: '/contacts'
+  // },
   {
-    icon: 'mdi-account-group-outline',
-    label: 'Контакты',
-    separator: false,
-    disable: true,
-    to: '/contacts'
-  },
-  {
-    icon: 'help',
+    icon: 'mdi-book-open-page-variant',
     iconColor: 'primary',
-    label: 'Помошь',
+    label: 'Блог',
     separator: false,
     disable: false,
     to: '/posts'
