@@ -87,11 +87,13 @@ h6 {
 }
 
 .q-menu--dark,
+.q-card--dark,
 .q-table__card {
   box-shadow: var(--box-shadow);
 }
 
-.q-menu--dark {
+.q-menu--dark,
+.q-card {
   background: var(--block-bg);
 }
 

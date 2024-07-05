@@ -89,8 +89,8 @@ const MENU_LIST = [
     iconColor: 'primary',
     label: 'Помошь',
     separator: false,
-    disable: true,
-    to: '/help-center'
+    disable: false,
+    to: '/posts'
   }
 ]
 
