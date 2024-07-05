@@ -61,9 +61,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang="scss" scoped>
-.q-page {
-  min-height: calc(100vh - 86px) !important;
-}
-</style>

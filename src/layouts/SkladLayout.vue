@@ -90,8 +90,4 @@ export default defineComponent({
     margin-left: 8px;
   }
 }
-
-.q-page {
-  min-height: calc(100vh - 86px) !important;
-}
 </style>
