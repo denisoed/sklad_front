@@ -9,7 +9,7 @@
           push
           to="/"
           v-vibrate
-          >
+        >
           <q-icon name="mdi-arrow-left" />
         </q-btn>
         <div class="posts-title">Спискок статей</div>
@@ -19,6 +19,7 @@
           v-for="(post, i) in postsResult"
           :key="i"
           :to="post.link"
+          v-vibrate
         >
           <q-card
             class="my-card"
