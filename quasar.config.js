@@ -162,7 +162,7 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-webpack/developing-pwa/configuring-pwa
     pwa: {
-      workboxPluginMode: 'InjectManifest', // 'GenerateSW' or 'InjectManifest'
+      workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       // workboxOptions: {
       //   skipWaiting: true,
       //   clientsClaim: true
