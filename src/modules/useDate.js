@@ -71,7 +71,7 @@ const useDate = () => {
     const weeks = Math.floor(diffMilliseconds / (7 * 24 * 60 * 60 * 1000));
     const months = Math.floor(diffMilliseconds / (30 * 24 * 60 * 60 * 1000));
     if (minutes < 1) {
-      return 'Just now';
+      return 'только что';
     } else if (minutes < 60) {
       return `${minutes} ${pluralize(minutes, 'min')} назад`;
     } else if (hours < 24) {

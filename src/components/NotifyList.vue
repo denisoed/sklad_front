@@ -2,7 +2,7 @@
   <div class="notify-list relative">
     <q-btn @click="dialog = true" round push class="notify-list_btn text-grey" v-vibrate>
       <q-icon name="mdi-bell-outline" />
-      <div v-if="history?.length" class="notify-list_alert" />
+      <div v-if="hasNewHistory" class="notify-list_alert" />
     </q-btn>
     <q-dialog v-model="dialog" position="right" full-height>
       <q-swipe-to-close v-model="dialog" direction="right">
@@ -11,24 +11,27 @@
             <div class="text-subtitle1">Уведомления</div>
             <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup v-vibrate />
           </q-card-section>
-          <q-card-section v-if="historyRows?.length" class="flex column q-gap-md">
-            <router-link
-              v-for="(h, i) of historyRows"
-              :key="i"
-              class="notify-list_item block-bg q-pa-md"
-              :style="`border-color: ${h.actionColor}2A`"
-              :to="`/product/${h.productId}`"
-              v-vibrate
-            >
-              <!-- <div class="notify-list_alert" /> -->
-              <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>
-              <div class="notify-list_item-sklad text-grey q-mb-xs">Товар: <b>#{{ h.productId }}</b></div>
-              <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
-              <div class="flex justify-between items-center">
-                <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
-                <div class="notify-list_item-date text-grey-5 q-ml-auto">{{ formatTimeAgo(h.created_at) }}</div>
-              </div>
-            </router-link>
+          <q-card-section v-if="historyRows?.length" class="notify-list_items">
+            <div class="flex column q-gap-md">
+              <router-link
+                v-for="(h, i) of historyRows"
+                :key="i"
+                class="notify-list_item block-bg q-pa-md"
+                :style="`border-color: ${h.actionColor}2A`"
+                :class="{ 'notify-list_item--old': !h.isNew }"
+                :to="`/product/${h.productId}`"
+                v-vibrate
+              >
+                <div v-if="h.isNew" class="notify-list_alert" />
+                <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>
+                <div class="notify-list_item-sklad text-grey q-mb-xs">Товар: <b>#{{ h.productId }}</b></div>
+                <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
+                <div class="flex justify-between items-center">
+                  <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
+                  <div class="notify-list_item-date text-grey-5 q-ml-auto">{{ formatTimeAgo(h.created_at) }}</div>
+                </div>
+              </router-link>
+            </div>
           </q-card-section>
           <q-card-section v-else class="flex column items-center q-pt-xl">
             <q-icon name="mdi-history" size="md" color="grey" />
@@ -49,6 +52,7 @@ import {
 } from 'vue'
 import useHistory from 'src/modules/useHistory'
 import useDate from 'src/modules/useDate'
+import useSklads from 'src/modules/useSklads'
 
 export default defineComponent({
   name: 'NotifyList',
@@ -70,6 +74,8 @@ export default defineComponent({
       }));
     })
 
+    const hasNewHistory = computed(() => historyRows.value.some(h => h.isNew))
+
     watch(dialog, (val) => {
       if (val) {
         setViewedHistory()
@@ -79,7 +85,8 @@ export default defineComponent({
     return {
       dialog,
       formatTimeAgo,
-      historyRows
+      historyRows,
+      hasNewHistory
     }
   }
 })
@@ -97,15 +104,20 @@ export default defineComponent({
     height: 14px;
     border-radius: 100%;
     background-color: red;
-    border: 2px solid var(--main-bg);
     position: absolute;
     right: 10px;
     top: 8px;
     transition: all 0.2s ease;
   }
 
+  &_items {
+    height: 85vh;
+    overflow: auto;
+  }
+
   &_item {
     width: 100%;
+    display: block;
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
     border-right: 5px solid;
@@ -114,9 +126,9 @@ export default defineComponent({
     > .notify-list_alert {
       top: 5px;
       left: 5px;
-      opacity: 0.5;
-      width: 10px;
-      height: 10px;
+      opacity: 0.8;
+      width: 6px;
+      height: 6px;
     }
 
     &-body,
@@ -127,6 +139,10 @@ export default defineComponent({
     &-author,
     &-date {
       font-size: 12px;
+    }
+
+    &--old {
+      opacity: 0.6;
     }
   }
 }

@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import {
   CREATE_HISTORY,
   LIST_HISTORIES
@@ -19,10 +19,12 @@ import { apolloClient } from 'src/boot/apollo'
 import { useRoute } from 'vue-router'
 import { useLazyQuery } from '@vue/apollo-composable'
 import useProfile from 'src/modules/useProfile'
+import { useHistoriesStore } from 'src/stores/histories'
 
 const VIEWED_HISTORY = 'sklad_viewed_history'
 
 const useHistory = () => {
+  const historiesStore = useHistoriesStore()
   const { params } = useRoute()
   const { profile } = useProfile()
   const {
@@ -33,11 +35,13 @@ const useHistory = () => {
 
   const lastViewed = localStorage.getItem(VIEWED_HISTORY) || moment.utc().startOf(DAY).format(DATE_TIME_FORMAT)
 
-  function fetchHistory(where) {
+  function fetchHistory(where, limit = 100, start = 0) {
     load(
       null,
       {
         where,
+        start,
+        limit,
         sort: 'created_at:desc',
       },
       { fetchPolicy: 'network-only' }
@@ -132,7 +136,7 @@ const useHistory = () => {
   }
 
   const historyResult = computed(() => {
-    const histories = historyRes.value?.listHistories
+    const histories = historiesStore.getHistories;
     if (!histories?.length) return []
     return histories.map(a => ({
       productId: a?.product?.id,
@@ -140,9 +144,19 @@ const useHistory = () => {
       action: a.action,
       json: a.json,
       created_at: moment(a.created_at).format(DISPLAY_FORMAT),
-      fullname: a?.users_permissions_user?.fullname || a?.users_permissions_user?.email,
-      actionColor: HISTORY_ACTIONS_COLORS[a.action]
+      fullname: a?.users_permissions_user?.fullname ||
+        a?.users_permissions_user?.email ||
+        a.users_permissions_user?.telegramId,
+      actionColor: HISTORY_ACTIONS_COLORS[a.action],
+      isNew: moment(a.created_at).isAfter(lastViewed)
     }));
+  })
+
+  watch(historyRes, (val) => {
+    const histories = val?.listHistories
+    if (histories?.length) {
+      historiesStore.setHistories(histories)
+    }
   })
 
   return {
