@@ -1,13 +1,13 @@
 html {
   width: 100%;
-  // height: 100vh;
-  // overflow: hidden;
+  height: var(--tg-viewport-height);
+  overflow: hidden;
 }
 
 body {
   width: 100%;
   min-width: 350px;
-  // height: 100vh;
+  height: 100%;
   overflow: auto;
   background-color: var(--main-bg);
   top: 0 !important;
