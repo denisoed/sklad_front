@@ -48,8 +48,9 @@
                 v-else
                 class="feedback_popup-form flex column items-center q-gap-md"
               >
-                <div class="feedback_popup-form_text full-width text-subtitle1">
-                  Добавьте комментарии
+                <div class="feedback_popup-form_text flex items-center justify-between full-width text-subtitle1">
+                  <span>Добавьте комментарии</span>
+                  <q-img :src="selectedRatingImg" />
                 </div>
                 <q-input
                   v-model="comment"
@@ -90,7 +91,8 @@
 <script>
 import {
   defineComponent,
-  ref
+  ref,
+  computed
 } from 'vue';
 import useFeedback from 'src/modules/useFeedback'
 import useHelpers from 'src/modules/useHelpers'
@@ -140,6 +142,8 @@ export default defineComponent({
     const comment = ref(null);
     const sending = ref(false);
 
+    const selectedRatingImg = computed(() => BUTTONS.find(b => b.rating === selectedRating.value)?.src);
+
     function select(type) {
       selectedRating.value = type;
     }
@@ -178,7 +182,8 @@ export default defineComponent({
       open,
       close,
       BUTTONS,
-      sending
+      sending,
+      selectedRatingImg
     };
   }
 });
@@ -189,6 +194,12 @@ export default defineComponent({
   &_popup-body_buttons {
     .q-img {
       width: 40px;
+    }
+  }
+
+  &_popup-form_text {
+    .q-img {
+      width: 25px;
     }
   }
 }

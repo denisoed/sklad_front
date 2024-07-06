@@ -106,7 +106,7 @@ export default defineComponent({
   setup() {
     const { push } = useRouter()
 
-    const { fetchHistory, lastViewed, historyResult } = useHistory()
+    const { fetchHistory, historyResult } = useHistory()
     const { profile, subscrHasExpired } = useProfile()
     const { fetchSklads, sklads, onCreateNew } = useSklads()
     const openedNewSkladModal = ref(false)
@@ -133,7 +133,7 @@ export default defineComponent({
       if (newValue) {
         const ids = newValue?.map(s => s.id)
         if (ids?.length) {
-          fetchHistory({ sklad: ids, created_at_gte: lastViewed })
+          fetchHistory({ sklad: ids })
         }
       }
     }, {

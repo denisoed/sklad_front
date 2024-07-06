@@ -10,10 +10,10 @@
         indicator-color="primary"
         narrow-indicator
       >
-        <q-tab name="main" label="Основное" />
-        <q-tab name="sizes" label="Размеры" />
-        <q-tab name="accesses" label="Доступы" />
-        <q-tab name="goal" label="Цели" />
+        <q-tab name="main" label="Основное" v-vibrate />
+        <q-tab name="sizes" label="Размеры" v-vibrate />
+        <q-tab name="accesses" label="Доступы" v-vibrate />
+        <q-tab name="goal" label="Цели" v-vibrate />
       </q-tabs>
 
       <q-separator />
@@ -102,6 +102,7 @@
                 clickable
                 v-close-popup
                 py="10px"
+                v-vibrate
               >
                 <q-item-section
                   @click="onRemoveSklad"

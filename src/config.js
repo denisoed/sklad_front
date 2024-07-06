@@ -48,3 +48,5 @@ export const IS_DARK_MODE = 'sklad_is_dark_mode'
 
 // LINKS
 export const CONNECT_GOOGLE = `${process.env.API_URL}/connect/google`
+
+export const PAGINATION_LIMIT = 20
