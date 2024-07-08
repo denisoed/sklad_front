@@ -1,20 +1,20 @@
 <template>
   <q-layout view="lHh LpR lFf">
-    <!-- <q-pull-to-refresh @refresh="refresh">
-    </q-pull-to-refresh> -->
-    <q-page-container>
-      <transition
-        enter-active-class="animated fadeIn"
-        leave-active-class="animated fadeOut"
-        appear
-        :duration="300"
-      >
-        <router-view />
-      </transition>
-    </q-page-container>
-    <q-footer>
-      <Footer />
-    </q-footer>
+    <q-pull-to-refresh @refresh="refresh">
+      <q-page-container>
+        <transition
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+          appear
+          :duration="300"
+        >
+          <router-view />
+        </transition>
+      </q-page-container>
+      <q-footer>
+        <Footer />
+      </q-footer>
+    </q-pull-to-refresh>
   </q-layout>
 </template>
 
