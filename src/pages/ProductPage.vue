@@ -308,7 +308,7 @@
                 v-else
                 btn-size="md"
                 :sizes="product?.sizes"
-                :type-sizes="product?.typeSize.list"
+                :type-sizes="product?.typeSize?.list || []"
                 @submit="onAddSizesToBucket(product, $event)"
               >
                 <q-btn

@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lhh lpr lFf">
+  <q-layout view="lHh LpR lFf">
     <q-pull-to-refresh @refresh="refresh">
       <q-page-container>
         <transition
