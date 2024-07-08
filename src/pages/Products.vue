@@ -88,7 +88,7 @@
                 <ModalSizesToBucket
                   v-else
                   :sizes="p.sizes"
-                  :type-sizes="p.typeSize.list"
+                  :type-sizes="p?.typeSize?.list || []"
                   @submit="onAddSizesToBucket(p, $event)"
                 >
                   <q-btn
