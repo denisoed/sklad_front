@@ -11,16 +11,22 @@
       @toggle-menu="drawerModel = !drawerModel"
       :histories="historyResult"
     />
-    <q-page-container>
-      <transition
-        enter-active-class="animated fadeIn"
-        leave-active-class="animated fadeOut"
-        appear
-        :duration="300"
-      >
-        <router-view />
-      </transition>
-    </q-page-container>
+    <q-scroll-area
+      style="height:100vh;max-width:100%;"
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+    >
+      <q-page-container>
+        <transition
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+          appear
+          :duration="300"
+        >
+          <router-view />
+        </transition>
+      </q-page-container>
+    </q-scroll-area>
     <q-footer>
       <Footer />
     </q-footer>
@@ -74,7 +80,13 @@ export default defineComponent({
 
     return {
       drawerModel,
-      historyResult
+      historyResult,
+      thumbStyle: {
+        display: 'none'
+      },
+      barStyle: {
+        display: 'none'
+      }
     }
   }
 })
