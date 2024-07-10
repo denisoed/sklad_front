@@ -139,17 +139,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
 
-  &_header {
-    box-shadow: 0px 17px 21px -8px rgba(0,0,0,0.15);
-    padding: 12px 16px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: var(--main-bg);
-  }
-
   &_add {
     position: relative;
     width: 100%;
