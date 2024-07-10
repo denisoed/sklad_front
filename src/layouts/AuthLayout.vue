@@ -1,18 +1,22 @@
 <template>
   <q-layout view="lHh Lpr fff">
-    <q-pull-to-refresh @refresh="refresh">
-      <!-- Page -->
-      <q-page-container>
-        <transition
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-          appear
-          :duration="300"
+    <!-- Page -->
+    <q-page-container>
+      <transition
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+        appear
+        :duration="300"
+      >
+        <q-scroll-area
+          :thumb-style="thumbStyle"
+          :bar-style="barStyle"
+          style="height: 100vh; max-width: 100%;"
         >
           <router-view />
-        </transition>
-      </q-page-container>
-    </q-pull-to-refresh>
+        </q-scroll-area>
+      </transition>
+    </q-page-container>
   </q-layout>
 </template>
 
@@ -22,13 +26,17 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'AuthLayout',
   setup() {
-    function refresh(done) {
-      window.location.reload()
-      done()
+    const thumbStyle = {
+      display: 'none'
     }
 
+    const barStyle = {
+      display: 'none'
+    }
+  
     return {
-      refresh
+      thumbStyle,
+      barStyle
     }
   }
 })

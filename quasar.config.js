@@ -30,7 +30,7 @@ module.exports = configure(function (ctx) {
       'theme',
       'sentry',
       'permissions',
-      'telegramAuth',
+      'telegramInit',
       'profile',
       'i18n',
       'drag',
