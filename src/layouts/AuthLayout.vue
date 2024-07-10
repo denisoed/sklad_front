@@ -8,13 +8,7 @@
         appear
         :duration="300"
       >
-        <q-scroll-area
-          :thumb-style="thumbStyle"
-          :bar-style="barStyle"
-          style="height: 100vh; max-width: 100%;"
-        >
-          <router-view />
-        </q-scroll-area>
+        <router-view />
       </transition>
     </q-page-container>
   </q-layout>
@@ -25,19 +19,5 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'AuthLayout',
-  setup() {
-    const thumbStyle = {
-      display: 'none'
-    }
-
-    const barStyle = {
-      display: 'none'
-    }
-  
-    return {
-      thumbStyle,
-      barStyle
-    }
-  }
 })
 </script>

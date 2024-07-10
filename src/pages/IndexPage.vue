@@ -1,16 +1,5 @@
 <template>
   <q-page>
-    <q-drawer
-      v-model="drawerModel"
-      :width="300"
-      class="text-white"
-    >
-      <DrawerMenu />
-    </q-drawer>
-    <Header
-      @toggle-menu="drawerModel = !drawerModel"
-      :histories="historyResult"
-    />
     <div class="sklads q-mt-lg">
       <div class="sklads_cards" :class="{ 'sklads_cards--much': sklads?.length > 1 }">
         <Draggable
@@ -77,19 +66,15 @@
 import {
   defineComponent,
   computed,
-  ref,
-  watch
+  ref
 } from 'vue'
 import CrudModal from 'src/components/CrudModal.vue'
 import { useRouter } from 'vue-router'
-import DrawerMenu from 'src/components/DrawerMenu.vue'
-import Header from 'src/components/Header.vue'
 import {
   CREATE_SKLAD,
   UPDATE_SKLAD
 } from 'src/graphql/sklads'
 import useSklads from 'src/modules/useSklads'
-import useHistory from 'src/modules/useHistory'
 import useProfile from 'src/modules/useProfile'
 import SkladsStatistics from 'src/components/Sklads/Statistics.vue'
 import Draggable from 'vuedraggable'
@@ -100,17 +85,13 @@ export default defineComponent({
     CrudModal,
     SkladsStatistics,
     Draggable,
-    DrawerMenu,
-    Header
   },
   setup() {
     const { push } = useRouter()
 
-    const { fetchHistory, historyResult } = useHistory()
     const { profile, subscrHasExpired } = useProfile()
     const { fetchSklads, sklads, onCreateNew } = useSklads()
     const openedNewSkladModal = ref(false)
-    const drawerModel = ref(false)
 
     const skladsIDs = computed(
       () => sklads.value.map(s => s.id) || []
@@ -129,17 +110,6 @@ export default defineComponent({
       fetchSklads(profile.value.id)
     }
 
-    watch(sklads, (newValue) => {
-      if (newValue) {
-        const ids = newValue?.map(s => s.id)
-        if (ids?.length) {
-          fetchHistory({ sklad: ids })
-        }
-      }
-    }, {
-      immediate: true
-    })
-
     return {
       sklads,
       profile,
@@ -153,8 +123,6 @@ export default defineComponent({
       skladsIDs,
       refresh,
       push,
-      drawerModel,
-      historyResult
     }
   }
 })

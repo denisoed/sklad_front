@@ -13,8 +13,11 @@ export const BUCKET_ROUTE = '/bucket'
 export const PRODUCTS_ROUTE = '/products'
 export const STATISTIC_ROUTE = '/statistic'
 
-export const MAIN_ROUTES = [
+export const HEADER_ROUTES = [
   { path: HOME_ROUTE, component: () => import('pages/IndexPage.vue') },
+]
+
+export const MAIN_ROUTES = [
   { path: MAIN_SETTINGS_ROUTE, component: () => import('pages/MainSettings.vue') },
   { path: BUCKET_ROUTE, component: () => import('pages/Bucket.vue') },
   { path: PRODUCTS_ROUTE, component: () => import('pages/Products.vue') },
@@ -116,6 +119,11 @@ export const AUTH_ROUTES = [
 ]
 
 const routes = [
+  {
+    path: '/',
+    component: () => import('layouts/HeaderLayout.vue'),
+    children: HEADER_ROUTES
+  },
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),

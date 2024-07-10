@@ -1,5 +1,5 @@
 <template>
-  <div class="header container q-gap-sm">
+  <q-header class="header q-gap-sm">
     <div class="flex items-center cursor-pointer">
       <q-btn icon="menu" push round @click="toggleMenu" v-vibrate />
       <UserInfo
@@ -12,7 +12,7 @@
       />
       <NotifyList :history="histories" />
     </div>
-  </div>
+  </q-header>
 </template>
 
 <script>
@@ -76,8 +76,6 @@ export default defineComponent({
   padding: 12px 16px;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
-  position: sticky;
-  top: 0;
   z-index: 3;
   background: var(--main-bg);
 
