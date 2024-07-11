@@ -52,7 +52,6 @@ import {
 } from 'vue'
 import useHistory from 'src/modules/useHistory'
 import useDate from 'src/modules/useDate'
-import useSklads from 'src/modules/useSklads'
 
 export default defineComponent({
   name: 'NotifyList',

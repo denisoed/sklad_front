@@ -22,6 +22,19 @@ h6 {
   height: 350px;
 }
 
+@mixin gradientBg() {
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(175deg, rgba(34, 40, 49 ,1) 0%, rgba(var(--block-bg-rgb) ,1) 100%) !important;
+  }
+}
+
 .gradient-background {
   -webkit-filter: blur(1.875rem);
   filter: blur(1.875rem);
@@ -79,6 +92,8 @@ h6 {
 .q-drawer {
   background: var(--main-bg);
   box-shadow: var(--box-shadow);
+
+  @include gradientBg();
 }
 
 .q-dialog__inner > div {
@@ -181,16 +196,7 @@ h6 {
 }
 
 .body--dark {
-  &::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background: linear-gradient(175deg, rgba(34, 40, 49 ,1) 0%, rgba(var(--block-bg-rgb) ,1) 100%) !important;
-  }
+  @include gradientBg();
   
   .q-table thead {
     background: rgba(255, 255, 255, 0.05);

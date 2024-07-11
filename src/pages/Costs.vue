@@ -111,7 +111,7 @@
           </q-card-section>
         </q-card>
       </q-dialog>
-      <div class="fixed-bottom-right q-pb-lg q-mb-md q-mr-md fixed">
+      <div class="fixed-bottom-right q-mb-xl q-pb-md q-mr-md fixed">
         <q-btn
           v-permissions="[CAN_ADD_COST]"
           color="primary"
