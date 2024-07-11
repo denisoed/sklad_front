@@ -1,14 +1,13 @@
-import { useQuasar, LocalStorage } from 'quasar';
+import { LocalStorage, Dark } from 'quasar';
 import { ref } from 'vue';
 import { IS_DARK_MODE, MAIN_COLOR_DARK, MAIN_COLOR_LIGHT } from 'src/config'
 
 const useTheme = () => {
-  const $q = useQuasar();
+  const isDark = ref(LocalStorage.getItem(IS_DARK_MODE) || true)
 
-  const isDark = ref(LocalStorage.getItem(IS_DARK_MODE) || false)
-
-  function setMetaThemeColor() {
+  function setThemeColor() {
     const content = isDark.value ? MAIN_COLOR_DARK : MAIN_COLOR_LIGHT
+    Dark.set(isDark.value);
     document.querySelector(
       'meta[name="theme-color"]'
     ).setAttribute(
@@ -22,8 +21,8 @@ const useTheme = () => {
   }
 
   function toggleTheme() {
-    $q.dark.toggle();
-    setMetaThemeColor();
+    Dark.toggle();
+    setThemeColor();
     LocalStorage.set(IS_DARK_MODE, isDark.value);
     const telegram = window?.Telegram?.WebApp;
     if (telegram?.initData) {
@@ -33,7 +32,7 @@ const useTheme = () => {
   }
 
   return {
-    setMetaThemeColor,
+    setThemeColor,
     toggleTheme,
     isDark
   }

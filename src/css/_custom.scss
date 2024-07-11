@@ -1,5 +1,5 @@
 .q-tab-panels {
-  background-color: var(--main-bg);
+  background-color: transparent;
 }
 
 .q-field__native {
@@ -181,6 +181,17 @@ h6 {
 }
 
 .body--dark {
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(175deg, rgba(34, 40, 49 ,1) 0%, rgba(var(--block-bg-rgb) ,1) 100%) !important;
+  }
+  
   .q-table thead {
     background: rgba(255, 255, 255, 0.05);
   }
