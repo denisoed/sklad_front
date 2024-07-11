@@ -289,7 +289,7 @@ export default defineComponent({
           }
           if (!updateProductError.value) {
             refetchBucketProducts()
-            showSuccess('Размеры успешно проданы!')
+            showSuccess('Товары успешно проданы!')
           } else {
             showError('Произошла ошибка. Попробуйте позже.')
           }

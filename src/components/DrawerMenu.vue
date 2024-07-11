@@ -84,14 +84,14 @@ const MENU_LIST = [
   //   disable: true,
   //   to: '/contacts'
   // },
-  {
-    icon: 'mdi-book-open-page-variant',
-    iconColor: 'primary',
-    label: 'Блог',
-    separator: false,
-    disable: false,
-    to: '/posts'
-  }
+  // {
+  //   icon: 'mdi-book-open-page-variant',
+  //   iconColor: 'primary',
+  //   label: 'Блог',
+  //   separator: false,
+  //   disable: false,
+  //   to: '/posts'
+  // }
 ]
 
 export default defineComponent({

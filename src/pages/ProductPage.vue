@@ -110,7 +110,7 @@
             <InputPrice
               data-scroller="origPrice"
               v-model="product.origPrice"
-              label="Оптовая цена за 1 пару *"
+              label="Оптовая цена за 1 шт *"
               hint="Обязательное поле"
               clear
               :rules="[val => val?.length || 'Обязательное поле']"
@@ -121,7 +121,7 @@
             <InputPrice
               data-scroller="newPrice"
               v-model="product.newPrice"
-              label="Розничная цена за 1 пару"
+              label="Розничная цена за 1 шт"
               hint="Можно указать позже"
               clear
               tabindex="6"
@@ -144,7 +144,7 @@
                 </p>
                 <InputPrice
                   v-model="product.discountPrice"
-                  label="Скидочная цена за 1 пару"
+                  label="Скидочная цена за 1 шт"
                   clear
                   tabindex="7"
                   :rules="[

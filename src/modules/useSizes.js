@@ -61,7 +61,7 @@ const useSizes = () => {
       if (!deleteSizesError.value) {
         fetchSizes()
         // NOTE: add to history
-        showSuccess('Размеры успешно удалены!')
+        showSuccess('Товары успешно удалены!')
       } else {
         showError('Произошла ошибка. Попробуйте позже.')
       }

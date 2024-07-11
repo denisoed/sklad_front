@@ -116,7 +116,7 @@
               <InputPlusMinus
                 :max="selectedSize.count"
                 :model-value="selectedSize.countSelected"
-                :label="`Кол-во пар для размера <b>${selectedSize.size}</b>`"
+                :label="`Кол-во шт для размера <b>${selectedSize.size}</b>`"
                 class="q-my-auto"
                 @update:model-value="onChangeCount"
               />

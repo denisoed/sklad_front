@@ -328,7 +328,7 @@ export default defineComponent({
     function returnProduct(activity) {
       $q.dialog({
         title: 'Вернуть товар на склад?',
-        message: 'При возврате товара, Отчеты будет пересчитана',
+        message: 'При возврате товара, отчеты будет пересчитаны',
         cancel: true,
         persistent: true,
         ok: {

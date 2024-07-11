@@ -25,6 +25,11 @@ const useTheme = () => {
     $q.dark.toggle();
     setMetaThemeColor();
     LocalStorage.set(IS_DARK_MODE, isDark.value);
+    const telegram = window?.Telegram?.WebApp;
+    if (telegram?.initData) {
+      telegram.setBackgroundColor(isDark.value ? '#222831' : '#f7f7f7')
+      telegram.setHeaderColor(isDark.value ? '#222831' : '#f7f7f7')
+    }
   }
 
   return {

@@ -37,7 +37,7 @@
       <div v-permissions="[READ_ORIGINAL_PRICE]" class="col-12 q-mb-md">
         <InputPrice
           v-model="product.origPrice"
-          label="Оптовая цена за 1 пару"
+          label="Оптовая цена за 1 шт"
           clear
           tabindex="3"
         />
@@ -45,7 +45,7 @@
       <div class="col-12">
         <InputPrice
           v-model="product.newPrice"
-          label="Розничная цена за 1 пару"
+          label="Розничная цена за 1 шт"
           clear
           tabindex="4"
         />
