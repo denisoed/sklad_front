@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Настройки склада" /> 
+      <PageTitle :title="$t('Settings_4')" /> 
       <q-tabs
         v-model="tab"
         dense
@@ -10,10 +10,10 @@
         indicator-color="primary"
         narrow-indicator
       >
-        <q-tab name="main" label="Основное" v-vibrate />
-        <q-tab name="sizes" label="Размеры" v-vibrate />
-        <q-tab name="accesses" label="Доступы" v-vibrate />
-        <q-tab name="goal" label="Цели" v-vibrate />
+        <q-tab name="main" :label="$t('Settings_13')" v-vibrate />
+        <q-tab name="sizes" :label="$t('Settings_14')" v-vibrate />
+        <q-tab name="accesses" :label="$t('Settings_15')" v-vibrate />
+        <q-tab name="goal" :label="$t('Settings_16')" v-vibrate />
       </q-tabs>
 
       <q-separator />
@@ -26,7 +26,7 @@
               v-model="formData.name"
               outlined
               dense
-              placeholder="Название"
+              :placeholder="$t('Settings_29')"
               class="q-mt-sm"
             />
           </div>
@@ -48,21 +48,21 @@
           >
             <q-checkbox
               v-model="formData.useMinSizes"
-              label="Оповещать о товарах, которые скоро закончатся"
+              :label="$t('Settings_51')"
             />
             <div v-if="formData.useMinSizes" class="q-pa-sm">
               <h6
                 class="q-ma-none q-mb-sm text-subtitle2"
               >
-                Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада
+                Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел $t('Settings_57')" на главной странице склада
               </h6>
               <q-input
                 v-model="formData.minSizes"
                 type="number"
                 outlined
                 min="0"
-                label="Мин кол-во размеров в товаре"
-                hint="Значение должно быть больше или равно нулю"
+                :label="$t('Settings_64')"
+                :hint="$t('Settings_65')"
                 :rules="[val => val >= 0 || 'Значение должно быть больше или равно нулю']"
               />
             </div>
@@ -118,7 +118,7 @@
           </q-menu>
         </q-btn>
         <q-btn
-          label="Сохранить"
+          :label="$t('Settings_121')"
           push
           color="primary"
           class="q-ml-auto"
@@ -222,9 +222,9 @@ export default defineComponent({
           { where: { skladId: sklad.value?.id } },
           { fetchPolicy: 'network-only' }
         )
-        showSuccess('Запрос успешно выполнен!')
+        showSuccess($t('Settings_225'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('Settings_227'))
       }
     }
 

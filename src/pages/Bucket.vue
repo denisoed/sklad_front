@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Товаровы на продажу">
+      <PageTitle :title="$t('Bucket_4')">
         <div>
           <q-card-section class="q-pt-none text-primary">
             На этой странице отображаются товары выбранные для продажи.
@@ -67,7 +67,7 @@
       <div class="flex flex-center q-mt-lg">
         <q-btn
           v-if="bucketProducts?.length"
-          label="Продать товары"
+          :label="$t('Bucket_70')"
           push
           color="primary"
           @click="toSell"
@@ -77,7 +77,7 @@
         />
         <q-btn
           v-else
-          label="Добавить товары в корзину"
+          :label="$t('Bucket_80')"
           push
           color="primary"
           to="/products"
@@ -197,9 +197,9 @@ export default defineComponent({
           }
         })
         refetchBucketProducts()
-        showSuccess('Корзина успешно обновлена!')
+        showSuccess($t('Bucket_200'))
       } else {
-        showError('Не удалось обновить продукт. Попробуйте позже.')
+        showError($t('Bucket_202'))
       }
       selectedProduct.value = null
     }
@@ -219,9 +219,9 @@ export default defineComponent({
       })
       if (!deleteSaleProductError.value) {
         refetchBucketProducts()
-        showSuccess('Товар успешно удален!')
+        showSuccess($t('Bucket_222'))
       } else {
-        showError('Не удалось удалить продукт. Попробуйте позже.')
+        showError($t('Bucket_224'))
       }
       isLoading.value = false
     }
@@ -244,19 +244,19 @@ export default defineComponent({
 
     function toSell() {
       $q.dialog({
-        title: 'Вы уверены?',
-        message: 'Продать выбранные товары',
+        title: $t('Bucket_247'),
+        message: $t('Bucket_248'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'primary',
-          label: 'Продать',
+          label: $t('Bucket_253'),
           push: true,
         },
         cancel: {
           color: 'white',
           textColor: 'black', 
-          label: 'Отмена',
+          label: $t('Bucket_259'),
           push: true
         }
       }).onOk(async () => {
@@ -289,9 +289,9 @@ export default defineComponent({
           }
           if (!updateProductError.value) {
             refetchBucketProducts()
-            showSuccess('Товары успешно проданы!')
+            showSuccess($t('Bucket_292'))
           } else {
-            showError('Произошла ошибка. Попробуйте позже.')
+            showError($t('Bucket_294'))
           }
         } finally {
           isLoading.value = false

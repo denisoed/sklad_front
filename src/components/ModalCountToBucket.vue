@@ -12,7 +12,7 @@
           <p
             class="full-width text-left text-bold q-mb-none text-subtitle1"
           >
-            {{ title || 'Добавить товар в корзину' }}
+            {{ title || $t('ModalCountToBucket_15')" }}
           </p>
 
           <q-separator class="full-width q-my-sm" />
@@ -23,7 +23,7 @@
               outlined
               class="full-width"
               dense
-              label="Комментарий"
+              :label="$t('ModalCountToBucket_26')"
             />
           </div>
 
@@ -31,7 +31,7 @@
             <div class="flex no-wrap items-center q-gap-sm q-mb-md">
               <InputPrice
                 v-model="_discount"
-                label="Скидка"
+                :label="$t('ModalCountToBucket_34')"
                 clear
                 :color="_discount && 'white'"
                 :bg-color="_discount && 'primary'"
@@ -60,7 +60,7 @@
             <InputPlusMinus
               v-model="selectedCount"
               :max="max"
-              label="Кол-во товара для продажи"
+              :label="$t('ModalCountToBucket_63')"
               class="q-my-auto"
             />
             <q-separator class="full-width q-my-md" />

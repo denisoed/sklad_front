@@ -15,7 +15,7 @@
         />
         <q-inner-loading
           :showing="loading"
-          label="Ожидайте..."
+          :label="$t('index_18')"
           color="primary"
         />
       </div>
@@ -65,10 +65,10 @@ export default defineComponent({
         for (const p of bulkStore.getBulkProducts) {
           await removeProduct(p.id, p)
         }
-        showSuccess('Товары успешно удалены!')
+        showSuccess($t('index_68'))
         emit('on-finish')
       } catch (error) {
-        showError('Произошла ошибка, попробуйте позже...')
+        showError($t('index_71'))
         emit('on-error')
       } finally {
         step.value = 1;

@@ -56,7 +56,7 @@
             </label>
           </div>
           <div class="flex items-center justify-between q-gap-md">
-            <q-toggle v-model="refillWallet" label="Автопополнение" dense />
+            <q-toggle v-model="refillWallet" :label="$t('UserTab_59')" dense />
             <q-btn color="primary" push v-vibrate>Пополнить</q-btn>
           </div>
         </div>
@@ -139,12 +139,12 @@ const PRICES = [
 
 const LANGS = [
   {
-    label: 'Русский',
+    label: $t('UserTab_142'),
     value: 'ru-RU',
     flag: RU
   },
   {
-    label: 'Кыргызча',
+    label: $t('UserTab_147'),
     value: 'kg-KG',
     flag: KG
   },
@@ -191,7 +191,7 @@ export default defineComponent({
     function copyTgId() {
       if (!profile.value.email && !profile.value.telegramId) return
       copyToClipboard(profile.value.email || profile.value.telegramId)
-      showSuccess(profile.value.email ? 'Почта скопирована' : 'Telegram ID скопирован')
+      showSuccess(profile.value.email ? $t('UserTab_194') : $t('UserTab_194'))
     }
 
     watch(locale, (lang) => {

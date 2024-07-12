@@ -5,7 +5,7 @@
       <!-- Sklads -->
       <Selector
         v-model="product.sklad"
-        title-postfix="склад"
+        :title-postfix="$t('Step2_8')"
         :modal-params="{ users: profile?.id }"
         :modal-create-gql="CREATE_SKLAD"
         :options="skladsOptions"
@@ -13,7 +13,7 @@
         @on-refetch="refetchSklads"
         outlined
         class="q-mb-sm"
-        label="Склад"
+        :label="$t('Step2_16')"
         tabindex="1"
         clearable
       />
@@ -22,14 +22,14 @@
       <Selector
         v-if="product.sklad"
         v-model="product.category"
-        title-postfix="категорию"
+        :title-postfix="$t('Step2_25')"
         :modal-params="{ sklad: product.sklad }"
         :modal-create-gql="CREATE_CATEGORY"
         :options="categoriesOptions"
         @on-refetch="refetchCategories"
         outlined
         class="q-mb-sm"
-        label="Категория товара"
+        :label="$t('Step2_32')"
         tabindex="2"
         clearable
       />
@@ -37,7 +37,7 @@
       <div v-permissions="[READ_ORIGINAL_PRICE]" class="col-12 q-mb-md">
         <InputPrice
           v-model="product.origPrice"
-          label="Оптовая цена за 1 шт"
+          :label="$t('Step2_40')"
           clear
           tabindex="3"
         />
@@ -45,7 +45,7 @@
       <div class="col-12">
         <InputPrice
           v-model="product.newPrice"
-          label="Розничная цена за 1 шт"
+          :label="$t('Step2_48')"
           clear
           tabindex="4"
         />

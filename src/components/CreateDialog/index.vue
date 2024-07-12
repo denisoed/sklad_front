@@ -88,9 +88,9 @@ export default defineComponent({
         sending.value = true;
         await createFeedback({ rating: selectedRating.value, comment: comment.value })
         if (errorFeedback.value) {
-          showError('Неизвестная ошибка. Попробуйте позже.')
+          showError($t('index_91'))
         } else {
-          showSuccess('Ваш отзыв успешно отправлен!')
+          showSuccess($t('index_93'))
         }
       } finally {
         sending.value = false;

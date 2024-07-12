@@ -16,16 +16,16 @@
       <div class="businnes-goal_cards flex q-mt-md">
         <ChartCard
           class="businnes-goal_item q-mr-auto"
-          title="Касса"
+          :title="$t('BusinessGoal_19')"
           :body="priceTotal"
-          descr="заработано за год"
+          :descr="$t('BusinessGoal_21')"
           :loading="loadingActivities"
         />
         <ChartCard
           class="businnes-goal_item"
-          title="Товары"
+          :title="$t('BusinessGoal_26')"
           :body="`${soldCount}шт`"
-          descr="продано за год"
+          :descr="$t('BusinessGoal_28')"
           :loading="loadingActivities"
         />
       </div>

@@ -69,7 +69,7 @@ const useSklads = () => {
         })
         skladStore.setSklad(data?.sklad)
       } catch (error) {;
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showError($t('useSklads_72'))
       }
     } else {
       clearSklad()
@@ -93,7 +93,7 @@ const useSklads = () => {
       })
       skladStore.setSklads(data?.sklads)
     } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('useSklads_96'))
     } finally {
       isLoading.value = false;
     }
@@ -122,7 +122,7 @@ const useSklads = () => {
       skladStore.setSkladProducts(data?.sklads)
       return data?.sklads;
     } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('useSklads_125'))
     } finally {
       isLoading.value = false;
     }
@@ -141,7 +141,7 @@ const useSklads = () => {
         }
       })
     } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('useSklads_144'))
     } finally {
       isLoading.value = false;
     }
@@ -172,14 +172,14 @@ const useSklads = () => {
           ]
         });
         fetchSklad()
-        showSuccess('Список участников обновлен!')
+        showSuccess($t('useSklads_175'))
       } catch (error) {
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showError($t('useSklads_177'))
       } finally {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('useSklads_182'))
     }
   }
 
@@ -199,14 +199,14 @@ const useSklads = () => {
           ]
         });
         fetchSklad()
-        showSuccess('Полномочия обновлены!')
+        showSuccess($t('useSklads_202'))
       } catch (error) {
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showError($t('useSklads_204'))
       } finally {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('useSklads_209'))
     }
   }
 
@@ -229,41 +229,41 @@ const useSklads = () => {
           permissions: permissions?.map(p => ({ sklad: p.sklad.id, list: p.list  }))
         });
         fetchSklad()
-        showSuccess('Список участников обновлен!')  
+        showSuccess($t('useSklads_232'))  
       } catch (error) {
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showError($t('useSklads_234'))
       } finally {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('useSklads_239'))
     }
   }
 
   function removeSklad(skladId, callback) {
     $q.dialog({
-      title: 'Удалить склад?',
-      message: 'При удалении склада, вся информация о нём будет удалена навсегда. Вы уверены?',
+      title: $t('useSklads_245'),
+      message: $t('useSklads_246'),
       cancel: true,
       persistent: true,
       ok: {
         color: 'deep-orange',
-        label: 'Удалить',
+        label: $t('useSklads_251'),
         push: true
       },
       cancel: {
         color: 'white',
         textColor: 'black', 
-        label: 'Отмена',
+        label: $t('useSklads_257'),
         push: true,
       }
     }).onOk(async () => {
       await deleteSklad({ skladId });
       if (!removeSkladError.value) {
-        showSuccess('Склад успешно удалён!')
+        showSuccess($t('useSklads_263'))
         callback()
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('useSklads_266'))
       }
     })
   }

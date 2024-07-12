@@ -23,8 +23,8 @@
           :options="optionsFn"
         >
           <div class="row items-center no-wrap justify-end q-gap-xs">
-            <q-btn label="Отмена" rounded color="grey" flat v-close-popup v-vibrate />
-            <q-btn label="Очистить" rounded color="deep-orange" flat @click="clear" v-vibrate />
+            <q-btn :label="$t('FilterDates_26')" rounded color="grey" flat v-close-popup v-vibrate />
+            <q-btn :label="$t('FilterDates_27')" rounded color="deep-orange" flat @click="clear" v-vibrate />
             <q-btn label="OK" rounded color="primary" flat @click="filterByCalendar" v-close-popup v-vibrate />
           </div>
           <p class="text-grey q-mt-md q-mb-none text-caption">Двойное нажатие по дате вернёт результат за один день.</p>
@@ -46,15 +46,15 @@ import { FILTER_FORMAT, DAY, WEEK, MONTH } from 'src/config'
 
 const TABS = [
   {
-    label: 'День',
+    label: $t('FilterDates_49'),
     value: DAY
   },
   {
-    label: 'Неделя',
+    label: $t('FilterDates_53'),
     value: WEEK
   },
   {
-    label: 'Месяц',
+    label: $t('FilterDates_57'),
     value: MONTH
   },
 ]

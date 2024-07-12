@@ -75,7 +75,7 @@ export default defineComponent({
         showSuccess($t('auth.success'))
         push(HOME_ROUTE)
       } catch {
-        showError('Упс. Попробуйте позже.')
+        showError($t('Start_78'))
       } finally {
         loading.value = false
       }

@@ -40,8 +40,8 @@ import { HOME_ROUTE } from 'src/router/routes'
 export default defineComponent({
   name: 'BlockedPage',
   setup() {
-    const title = 'Аккаунт заблокирован'
-    const btnLabel = 'Оформить'
+    const title = $t('Blocked_43')
+    const btnLabel = $t('Blocked_44')
     const isLoading = ref(false)
 
     const { push } = useRouter()
@@ -51,7 +51,7 @@ export default defineComponent({
     async function submit() {
       try {
         isLoading.value = true
-        showSuccess('Подписка оформлена!')
+        showSuccess($t('Blocked_54'))
         push(HOME_ROUTE)
       } finally {
         isLoading.value = false

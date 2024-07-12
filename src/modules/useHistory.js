@@ -101,31 +101,31 @@ const useHistory = () => {
       [HISTORY_UPDATE]: (() => {
         const texts = {
           name: {
-            label: 'Обновлено название',
+            label: $t('useHistory_104'),
             value: `${json.old} -> ${json.new}`
           },
           color: {
-            label: 'Обновлён цвет',
+            label: $t('useHistory_108'),
             value: `${json.old} -> ${json.new}`
           },
           origPrice: {
-            label: 'Обновлена опт цена',
+            label: $t('useHistory_112'),
             value: `${json.old} -> ${json.new}`
           },
           newPrice: {
-            label: 'Обновлена роз цена',
+            label: $t('useHistory_116'),
             value: `${json.old} -> ${json.new}`
           },
           countSizes: {
-            label: 'Обновлено кол-во',
+            label: $t('useHistory_120'),
             value: `${json.old} -> ${json.new}`
           },
           removedSizes: {
-            label: 'Удалены размеры',
+            label: $t('useHistory_124'),
             value: json.sizes
           },
           addedSizes: {
-            label: 'Добавлены размеры',
+            label: $t('useHistory_128'),
             value: json.sizes
           },
         }

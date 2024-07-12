@@ -15,7 +15,7 @@
         />
         <q-inner-loading
           :showing="loading"
-          label="Ожидайте..."
+          :label="$t('index_18')"
           color="primary"
         />
       </div>
@@ -66,10 +66,10 @@ export default defineComponent({
         for (const id of ids) {
           await updateProductById(id, data)
         }
-        showSuccess('Товары успешно обновлены!')
+        showSuccess($t('index_69'))
         emit('on-finish')
       } catch (error) {
-        showError('Произошла ошибка, попробуйте позже...')
+        showError($t('index_72'))
         emit('on-error')
       } finally {
         step.value = 1;

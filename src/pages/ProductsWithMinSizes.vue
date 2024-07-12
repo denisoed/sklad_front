@@ -5,9 +5,9 @@
       class="flex column"
       style="width: 100%; max-width: 500px;"
     >
-      <PageTitle title="Остатки">
+      <PageTitle :title="$t('ProductsWithMinSizes_8')">
         <q-card-section class="q-pt-none">
-          На этой странице будут отображаться товары у которых осталось мало размеров.<br />Это можно регулировать в настройках, в разделе "Размеры"
+          На этой странице будут отображаться товары у которых осталось мало размеров.<br />Это можно регулировать в настройках, в разделе {{ $t('ProductsWithMinSizes_10') }}
         </q-card-section>
       </PageTitle>
       <div v-if="products?.length">

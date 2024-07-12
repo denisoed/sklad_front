@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle :title="isEdit ? 'Редактировать товар' : 'Добавить новый товар'" />
+      <PageTitle :title="isEdit ? $t('updateProduct') : $t('createNewProduct')" />
 
       <h6
         class="full-width text-center text-grey-5"
@@ -37,7 +37,7 @@
             <!-- Sklads -->
             <Selector
               v-model="product.sklad"
-              title-postfix="склад"
+              :title-postfix="$t('ProductPage_40')"
               :modal-params="{ users: profile?.id }"
               :modal-create-gql="CREATE_SKLAD"
               :options="skladsOptions"
@@ -46,8 +46,8 @@
               @clear="product.category = null"
               outlined
               class="q-mb-md"
-              label="Склад *"
-              hint="Привязать товар к складу"
+              :label="$t('ProductPage_49')"
+              :hint="$t('ProductPage_50')"
               tabindex="1"
               clearable
               :rules="[() => product.sklad || 'Обязательное поле']"
@@ -57,15 +57,15 @@
             <Selector
               v-if="product.sklad"
               v-model="product.category"
-              title-postfix="категорию"
+              :title-postfix="$t('ProductPage_60')"
               :modal-params="{ sklad: product.sklad?.value }"
               :modal-create-gql="CREATE_CATEGORY"
               :options="categoriesOptions"
               @on-refetch="refetchCategories"
               outlined
               class="q-mb-md"
-              label="Категория товара"
-              hint="Привязать товар к категории"
+              :label="$t('ProductPage_67')"
+              :hint="$t('ProductPage_68')"
               tabindex="2"
               clearable
             />
@@ -74,7 +74,7 @@
               :image="product.image"
               class="q-mb-md"
               tabindex="3"
-              hint="Обязательное поле"
+              :hint="$t('ProductPage_77')"
               :rules="[val => val?.length || 'Обязательное поле']"
               @on-change="product.image = $event"
               @clear="product.image = null"
@@ -85,8 +85,8 @@
                 <q-input
                   v-model="product.name"
                   outlined
-                  label="Название товара *"
-                  hint="Обязательное поле"
+                  :label="$t('ProductPage_88')"
+                  :hint="$t('ProductPage_89')"
                   :rules="[val => val?.length || 'Обязательное поле']"
                   tabindex="4"
                   class="full-width"
@@ -98,7 +98,7 @@
                 class="articul"
                 v-model="product.id"
                 outlined
-                label="Артикул(ID)"
+                :label="$t('ProductPage_101')"
                 readonly
               />
             </div>
@@ -110,8 +110,8 @@
             <InputPrice
               data-scroller="origPrice"
               v-model="product.origPrice"
-              label="Оптовая цена за 1 шт *"
-              hint="Обязательное поле"
+              :label="$t('ProductPage_113')"
+              :hint="$t('ProductPage_114')"
               clear
               :rules="[val => val?.length || 'Обязательное поле']"
               tabindex="5"
@@ -121,8 +121,8 @@
             <InputPrice
               data-scroller="newPrice"
               v-model="product.newPrice"
-              label="Розничная цена за 1 шт"
-              hint="Можно указать позже"
+              :label="$t('ProductPage_124')"
+              :hint="$t('ProductPage_125')"
               clear
               tabindex="6"
               :disable="isDiscountToday && product.withDiscount"
@@ -134,7 +134,7 @@
           >
             <q-checkbox
               v-model="product.withDiscount"
-              label="Установить скидку на этот товар"
+              :label="$t('ProductPage_137')"
             />
             <div v-if="product.withDiscount" class="col-12 q-pa-sm">
               <template v-if="product.discountDays">
@@ -144,13 +144,13 @@
                 </p>
                 <InputPrice
                   v-model="product.discountPrice"
-                  label="Скидочная цена за 1 шт"
+                  :label="$t('ProductPage_147')"
                   clear
                   tabindex="7"
                   :rules="[
-                    val => val?.length || 'Укажите скидку',
-                    val => +val !== 0 || 'Укажите скидку',
-                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || 'Скидка должна быть меньше Роз. цены'
+                    val => val?.length || $t('ProductPage_151'),
+                    val => +val !== 0 || $t('ProductPage_152'),
+                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || $t('ProductPage_153')
                   ]"
                 />
               </template>
@@ -193,7 +193,7 @@
                 <q-checkbox
                   :model-value="!product.useNumberOfSizes"
                   @update:model-value="product.useNumberOfSizes = !$event"
-                  label="Использовать размеры"
+                  :label="$t('ProductPage_196')"
                 />
               </div>
               <h6
@@ -323,7 +323,7 @@
             <q-btn
               v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad?.value }"
               type="submit"
-              :label="isEdit ? 'Обновить' : 'Создать'"
+              :label="isEdit ? $t('update') : $t('create')"
               push
               color="primary"
               class="q-ml-auto"
@@ -532,7 +532,7 @@ export default defineComponent({
           `${isAdd ? 'Добавлены размеры в товар' : 'Убраны размеры из товара'}: ${product.name}. Сумма: ${sum}`
         )
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('ProductPage_535'))
       }
     }
 
@@ -652,7 +652,7 @@ export default defineComponent({
             }
           })
           if (!createProductError.value) {
-            showSuccess('Товар успешно создан!')
+            showSuccess($t('ProductPage_655'))
             createHistory({
               action: HISTORY_CREATE,
               productId: response.data.createProduct.product.id,
@@ -668,13 +668,13 @@ export default defineComponent({
             clearDraft()
           } else {
             await removeImage({ id: uploaded.data.upload.id })
-            showError('Не удалось создать продукт. Проблемы на сервере.')
+            showError($t('ProductPage_671'))
           }
         } catch (error) {
-          showError('Не удалось создать продукт. Проблемы на сервере.')
+          showError($t('ProductPage_674'))
         }
       } else {
-        showError('Не удалось загрузить фото. Проблемы на сервере.')
+        showError($t('ProductPage_677'))
       }
     }
 
@@ -711,16 +711,16 @@ export default defineComponent({
             }
             generateHistoryForUpdate(editProduct.value?.product, product)
             Object.assign(copiedProductForDirty, product)
-            showSuccess('Продукт успешно обновлён!')
+            showSuccess($t('ProductPage_714'))
           } else {
             removeImage({ id: uploaded.data.upload.id })
-            showError('Не удалось обновить продукт. Проблемы на сервере.')
+            showError($t('ProductPage_717'))
           }
         } catch (error) {
-          showError('Не удалось обновить продукт. Проблемы на сервере.')
+          showError($t('ProductPage_720'))
         }
       } else {
-        showError('Не удалось загрузить фото. Проблемы на сервере.')
+        showError($t('ProductPage_723'))
       }
     }
 
@@ -741,19 +741,19 @@ export default defineComponent({
 
     function cancel(type) {
       $q.dialog({
-        title: type === 'remove' ? 'Удалить этот товар?' : 'Сбосить введенные значения?',
-        message: type === 'remove' ? 'При удалении товара, он пропадет со склада навсегда!' : 'Всё что Вы ввели будет стёрто!',
+        title: type === 'remove' ? $t('ProductPage_744') : $t('ProductPage_744'),
+        message: type === 'remove' ? $t('ProductPage_745') : $t('ProductPage_745'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: type === 'remove' ? 'Удалить' : 'Сбросить',
+          label: type === 'remove' ? $t('ProductPage_750') : $t('ProductPage_750'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black', 
-          label: 'Отмена',
+          label: $t('ProductPage_756'),
           push: true
         }
       }).onOk(async () => {
@@ -761,7 +761,7 @@ export default defineComponent({
           resetAll()
         } else {
           await removeProduct(params?.productId, product)
-          showSuccess('Товар успешно удалён!')
+          showSuccess($t('ProductPage_764'))
           push('/products')
         }
       })

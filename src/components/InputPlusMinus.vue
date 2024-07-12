@@ -22,7 +22,7 @@
         outlined
         :model-value="count"
         @update:model-value="onInput"
-        placeholder="Кол-во"
+        :placeholder="$t('InputPlusMinus_25')"
         dense
         height="50px"
         :min="0"

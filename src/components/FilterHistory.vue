@@ -18,7 +18,7 @@
               clearable
               use-chips
               :options="actions"
-              label="Поиск по событию"
+              :label="$t('FilterHistory_21')"
               behavior="menu"
             >
               <template v-slot:prepend>
@@ -48,7 +48,7 @@
               clearable
               use-chips
               :options="skladUsers"
-              label="Поиск по людям"
+              :label="$t('FilterHistory_51')"
               behavior="menu"
             >
               <template v-slot:prepend>
@@ -74,7 +74,7 @@
               v-model="formData.description"
               outlined
               clearable
-              label="Поиск по описанию"
+              :label="$t('FilterHistory_77')"
               class="full-width"
             />
           </div>

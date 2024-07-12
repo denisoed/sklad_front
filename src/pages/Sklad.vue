@@ -5,8 +5,8 @@
       <BlockLink
         v-if="useMinSizes && countProductsWithMinSizes"
         v-permissions="[READ_PRODUCTS_WITH_MIN_SIZES]"
-        title="Остатки"
-        caption="Последние размеры"
+        :title="$t('Sklad_8')"
+        :caption="$t('Sklad_9')"
         icon="mdi-cart-arrow-up"
         :to="productsWithMinSizesLink"
         accent-color="rgb(255 0 0 / 30%)"
@@ -21,8 +21,8 @@
       </BlockLink>
       <BlockLink
         v-permissions="[READ_COST]"
-        title="Расходы"
-        caption="Траты по складу"
+        :title="$t('Sklad_24')"
+        :caption="$t('Sklad_25')"
         icon="mdi-cash"
         :to="costsLink"
         accent-color="rgb(255 255 0 / 20%)"
@@ -31,8 +31,8 @@
       <div class="flex no-wrap full-width q-gap-md">
         <BlockLink
           v-permissions="[READ_HISTORY]"
-          title="История"
-          caption="Активность на складе"
+          :title="$t('Sklad_34')"
+          :caption="$t('Sklad_35')"
           icon="mdi-history"
           :to="historyLink"
           accent-color="rgb(38 236 227 / 20%)"
@@ -40,8 +40,8 @@
         />
         <BlockLink
           v-permissions="[READ_SETTINGS]"
-          title="Настройки"
-          caption="Настройки склада"
+          :title="$t('Sklad_43')"
+          :caption="$t('Sklad_44')"
           icon="mdi-cog-outline"
           :to="settingsLink"
           class="q-mb-md"

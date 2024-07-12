@@ -5,14 +5,14 @@
     <div class="flex full-width no-wrap q-gap-md q-my-md">
       <ChartCard
         class="full-width"
-        title="Заработано"
+        :title="$t('Statistics_8')"
         :body="priceTotal"
         :descr="`за ${selected.label}`"
         :loading="loadingActivities"
       />
       <ChartCard
         class="full-width"
-        title="Продано"
+        :title="$t('Statistics_15')"
         :body="`${soldCount}шт`"
         :descr="`за ${selected.label}`"
         :loading="loadingActivities"
@@ -34,15 +34,15 @@ import useDate from 'src/modules/useDate'
 
 const TABS = [
   {
-    label: 'День',
+    label: $t('Statistics_37'),
     value: DAY
   },
   {
-    label: 'Неделя',
+    label: $t('Statistics_41'),
     value: WEEK
   },
   {
-    label: 'Месяц',
+    label: $t('Statistics_45'),
     value: MONTH
   }
 ]
@@ -104,7 +104,7 @@ export default defineComponent({
     const lineChartSeries = computed(() => {
       return [
         {
-          name: 'Касса',
+          name: $t('Statistics_107'),
           data: lineChartCategories.map(d => {
             const values = listActivities.value.filter(a => moment(a.created_at).format(FILTER_FORMAT) === d)
             const total = values.reduce((prev, next) => {

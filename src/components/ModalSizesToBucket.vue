@@ -13,7 +13,7 @@
           <p
             class="full-width text-left text-bold q-mb-none text-subtitle1"
           >
-            {{ title || 'Добавить товар в корзину' }}
+            {{ title || $t('ModalSizesToBucket_16') }}
           </p>
 
           <q-separator class="full-width q-my-sm" />
@@ -30,14 +30,14 @@
                   outlined
                   class="full-width"
                   dense
-                  label="Комментарий"
+                  :label="$t('ModalSizesToBucket_33')"
                 />
               </div>
 
               <div class="flex no-wrap items-center q-gap-sm q-mb-md">
                 <InputPrice
                   v-model="_discount"
-                  label="Скидка"
+                  :label="$t('ModalSizesToBucket_40')"
                   clear
                   :color="_discount && 'white'"
                   :bg-color="_discount && 'primary'"
@@ -347,7 +347,7 @@ export default defineComponent({
 
     function submit() {
       if (_percentageDiscount.value && Number(_discount.value) > 100) {
-        return showError('Скидка не должна быть больше 100%')
+        return showError($t('ModalSizesToBucket_350'))
       }
       if (useForSale.value) {
         emit('submit', {

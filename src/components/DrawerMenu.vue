@@ -79,7 +79,7 @@ import useJwtMethods from 'src/modules/auth/useJwtMethods'
 const MENU_LIST = [
   // {
   //   icon: 'mdi-account-group-outline',
-  //   label: 'Контакты',
+  //   label: $t('DrawerMenu_82'),
   //   separator: false,
   //   disable: true,
   //   to: '/contacts'
@@ -87,7 +87,7 @@ const MENU_LIST = [
   // {
   //   icon: 'mdi-book-open-page-variant',
   //   iconColor: 'primary',
-  //   label: 'Блог',
+  //   label: $t('DrawerMenu_90'),
   //   separator: false,
   //   disable: false,
   //   to: '/posts'
@@ -112,7 +112,7 @@ export default defineComponent({
     const MENU_LIST_BOTTOM = [
       {
         icon: 'settings',
-        label: 'Настройки',
+        label: $t('DrawerMenu_115'),
         separator: false,
         disable: false,
         to: '/main-settings',
@@ -121,7 +121,7 @@ export default defineComponent({
       {
         icon: 'mdi-logout',
         color: 'deep-orange',
-        label: 'Выйти',
+        label: $t('DrawerMenu_124'),
         separator: false,
         disable: false,
         visible: !window?.Telegram?.WebApp?.initData,

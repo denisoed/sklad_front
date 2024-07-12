@@ -2,13 +2,13 @@
   <div class="sizes-presets flex column full-width">
     <div class="text-subtitle2">Готовые размеры</div>
     <q-checkbox
-      label="Размеры детской обуви"
+      :label="$t('SizesPresets_5')"
     />
     <q-checkbox
-      label="Размеры женской обуви"
+      :label="$t('SizesPresets_8')"
     />
     <q-checkbox
-      label="Размеры мужской обуви"
+      :label="$t('SizesPresets_11')"
     />
   </div>
 </template>

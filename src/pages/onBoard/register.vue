@@ -14,7 +14,7 @@
         <p class="q-mt-sm">Склад позволяет вести учёт товаров, мгновенно получать Отчеты по продажам, видеть товары, которые скоро закончатся и многое другое. Всем этим можно управлять с любого устройства.</p>
         <h3 class="text-subtitle1 text-bold q-mb-sm">Приступим к созданию</h3>
         <p class="q-mt-sm">Для примера, давайте создадим склад обуви.</p>
-        <p class="q-mt-sm">Для этого нажмите на заленую кнопку "Создать скалад". </p>
+        <p class="q-mt-sm">Для этого нажмите на заленую кнопку $t('register_17')". </p>
       </div>
       <div v-if="step === 2">
         <h2 class="flex items-center title text-h4 text-bold">02 - <span class="text-h5 q-ml-sm">Настройка размеров</span></h2>
@@ -37,7 +37,7 @@
               outlined
               dense
               class="q-pr-md full-width"
-              placeholder="Например: 36, 37, 38"
+              :placeholder="$t('register_40')"
               :disable="sizesCreated"
             />
             <q-btn
@@ -64,7 +64,7 @@
         <p class="q-mt-sm">
           В качестве названия категории, можно указать, например <b>Adidas</b>, где соответственно будет храниться вся обувь бренда <b>Adidas</b>.
         </p>
-        <p class="q-mt-sm">Чтобы продолжить, нажмите на залёную кнопку "Добавить категорию".</p>
+        <p class="q-mt-sm">Чтобы продолжить, нажмите на залёную кнопку $t('register_67')".</p>
       </div>
       <div v-if="step === 1">
         <h2 class="flex items-center title text-h4 text-bold">04 - <span class="text-h5 q-ml-sm">Создание товара</span></h2>
@@ -87,7 +87,7 @@
       :extend-create-params="{ users: profile?.id }"
       @close="onCloseModal"
       @on-create-new="onCreateNew"
-      title="склад"
+      :title="$t('register_90')"
     />
   </q-page>
 </template>
@@ -153,9 +153,9 @@ export default defineComponent({
       //   }
       // })
       // if (!updateSkladError.value) {
-      //   showSuccess('Новый размер добавлен!')
+      //   showSuccess($t('register_156'))
       // } else {
-      //   showError('Произошла ошибка! Попробуйте позже :(')
+      //   showError($t('register_158'))
       // }
       sizes.value = null
       sizesCreated.value = true

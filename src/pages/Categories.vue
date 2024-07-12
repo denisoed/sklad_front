@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Категории товаров">
+      <PageTitle :title="$t('Categories_4')">
         <div>
           <q-card-section class="q-pt-none text-primary">
             На этой странице находятся товары разбитые по категориям. Категории обеспечивают более удобный визуальный поиск.
@@ -104,7 +104,7 @@
       @close="onCloseModal"
       @remove="onRemove"
       @finished="refetch"
-      title="категорию"
+      :title="$t('Categories_107')"
     />
   </q-page>
 </template>
@@ -175,19 +175,19 @@ export default defineComponent({
 
     function onRemove(category) {
       $q.dialog({
-        title: 'Удалить категорию',
-        message: 'Вы уверены, что хотите удалить эту категорию?',
+        title: $t('Categories_178'),
+        message: $t('Categories_179'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('Categories_184'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('Categories_190'),
           push: true
         }
       }).onOk(async () => {
@@ -195,9 +195,9 @@ export default defineComponent({
         if (!deleteCategoryError.value) {
           refetch()
           // NOTE: add to history
-          showSuccess('Категория успешно удалёна!')
+          showSuccess($t('Categories_198'))
         } else {
-          showError('Произошла ошибка. Попробуйте позже.')
+          showError($t('Categories_200'))
         }
       })
     }

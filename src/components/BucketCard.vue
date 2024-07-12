@@ -278,8 +278,8 @@ export default defineComponent({
     const payMethod = computed(() => {
       if (payCash.value && payCard.value)
         return `Нал: ${cashSum.value || 0} + Карт: ${cardSum.value || 0}`
-      if (payCash.value) return 'Наличными'
-      if (payCard.value) return 'Картой'
+      if (payCash.value) return $t('BucketCard_281')
+      if (payCard.value) return $t('BucketCard_282')
       return null
     })
 
@@ -301,19 +301,19 @@ export default defineComponent({
 
     function removeFromBucket(payload) {
       $q.dialog({
-        title: 'Удалить этот товар из корзины?',
-        message: 'При удалении товара из корзины, его размеры вернутся обратно на склад.',
+        title: $t('BucketCard_304'),
+        message: $t('BucketCard_305'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('BucketCard_310'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black', 
-          label: 'Отмена',
+          label: $t('BucketCard_316'),
           push: true
         }
       }).onOk(() => {

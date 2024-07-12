@@ -30,7 +30,7 @@
         separator="cell"
         class="histories-table block-bg full-width q-mb-sm q-mt-md"
         hide-pagination
-        no-data-label="Нет данных"
+        :no-data-label="$t('History_33')"
       >
         <template #body="props">
           <q-tr
@@ -110,31 +110,31 @@ import {
 const columns = [
   {
     name: 'action',
-    label: 'Событие',
+    label: $t('History_113'),
     align: 'left',
     field: 'action',
   },
   {
     name: 'fullname',
-    label: 'Автор',
+    label: $t('History_119'),
     field: 'fullname',
     align: 'left',
   },
   {
     name: 'productId',
-    label: 'Товар',
+    label: $t('History_125'),
     field: 'productId',
     align: 'left',
   },
   {
     name: 'description',
-    label: 'Описание',
+    label: $t('History_131'),
     field: 'description',
     align: 'left',
   },
   {
     name: 'created_at',
-    label: 'Дата',
+    label: $t('History_137'),
     field: 'created_at',
     align: 'left',
   },
@@ -171,7 +171,7 @@ export default defineComponent({
     }
 
     const skladUsers = computed(() => sklad.value?.users || [])
-    const title = computed(() => query?.product ? `История по товару ${query?.product}` : 'История')
+    const title = computed(() => query?.product ? `История по товару ${query?.product}` : $t('History_174'))
 
     const historyRows = computed(() => {
       return historyResult.value.map(h => ({

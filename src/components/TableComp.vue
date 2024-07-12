@@ -9,8 +9,8 @@
       row-key="name"
       separator="cell"
       class="table full-width"
-      no-data-label="Нет данных"
-      rows-per-page-label="Записей на странице"
+      :no-data-label="$t('TableComp_12')"
+      :rows-per-page-label="$t('TableComp_13')"
     >
       <template #top-row="props">
         <slot v-bind="props" name="top-row" />

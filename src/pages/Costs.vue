@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Финансовые расходы">
+      <PageTitle :title="$t('Costs_4')">
         <div>
           <q-card-section class="q-pt-none text-primary">
             <b>Финансовые расходы</b> - помогут отследить какое кол-во финансов было потрачено за выбранный промежуток времени.
@@ -76,7 +76,7 @@
               <q-input
                 v-model="description"
                 outlined
-                placeholder="Например: На рекламу"
+                :placeholder="$t('Costs_79')"
                 class="q-mb-md full-width"
               />
               <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">Сколько потратили?</p>
@@ -84,7 +84,7 @@
                 ref="inputRef"
                 v-model="sum"
                 outlined
-                placeholder="Например: 250"
+                :placeholder="$t('Costs_87')"
                 class="q-mb-md full-width"
               />
             </div>
@@ -153,25 +153,25 @@ import { CAN_ADD_COST } from 'src/permissions'
 const columns = [
   {
     name: 'fullname',
-    label: 'Автор',
+    label: $t('Costs_156'),
     field: 'fullname',
     align: 'left',
   },
   {
     name: 'description',
-    label: 'Описание',
+    label: $t('Costs_162'),
     field: 'description',
     align: 'left',
   },
   {
     name: 'sum',
-    label: 'Сумма',
+    label: $t('Costs_168'),
     align: 'left',
     field: 'sum',
   },
   {
     name: 'created_at',
-    label: 'Дата',
+    label: $t('Costs_174'),
     field: 'created_at',
     align: 'left',
   },
@@ -232,29 +232,29 @@ export default defineComponent({
         dialog.value = false
         costsRefetch()
         history(HISTORY_CREATE, `Описание: ${description.value}. Сумма: ${sum.value}`)
-        showSuccess('Расходы сохранена!')
+        showSuccess($t('Costs_235'))
         description.value = null
         sum.value = null
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('Costs_239'))
       }
     }
     
     function remove(cost) {
       $q.dialog({
-        title: 'Удалить расход',
-        message: 'Вы уверены, что хотите удалить этот расход?',
+        title: $t('Costs_245'),
+        message: $t('Costs_246'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('Costs_251'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('Costs_257'),
           push: true
         }
       }).onOk(async () => {
@@ -262,9 +262,9 @@ export default defineComponent({
         if (!deleteError.value) {
           costsRefetch()
           // NOTE: add to history
-          showSuccess('Расход успешно удалён!')
+          showSuccess($t('Costs_265'))
         } else {
-          showError('Произошла ошибка. Попробуйте позже.')
+          showError($t('Costs_267'))
         }
       })
     }
@@ -275,7 +275,7 @@ export default defineComponent({
         id: c.id,
         fullname: c?.users_permissions_user?.fullname || 'n/a',
         description: c.description,
-        sum: format(c.sum, 'с'),
+        sum: format(c.sum, $t('with')),
         created_at: moment(c.created_at).local().format(DISPLAY_FORMAT),
       }));
     })
@@ -283,7 +283,7 @@ export default defineComponent({
     const costsSum = computed(() => {
       const costs = costsResult.value?.listCosts || []
       const sum = costs.reduce((prev, next) => prev + next.sum, 0)
-      return format(sum, 'с')
+      return format(sum, $t('with'))
     })
 
     return {

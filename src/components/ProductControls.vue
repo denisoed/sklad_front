@@ -8,7 +8,7 @@
     <div class="full-width flex justify-center q-pb-lg q-pt-xs">
       <div class="product-controls_wrap">
         <BulkRemoveDialog
-          title="Удаление"
+          :title="$t('ProductControls_11')"
           v-permissions="[CAN_REMOVE_PRODUCT]"
           @on-finish="onFinishRemove"
         >
@@ -26,7 +26,7 @@
         </BulkRemoveDialog>
         <BulkUpdateDialog
           v-permissions="[CAN_UPDATE_PRODUCT]"
-          title="Редактирование"
+          :title="$t('ProductControls_29')"
           @on-finish="onFinishUpdate"
         >
           <q-btn
@@ -43,7 +43,7 @@
           </q-btn>
         </BulkUpdateDialog>
         <BulkPrintDialog
-          title="Печать ценников"
+          :title="$t('ProductControls_46')"
           @on-finish="onFinishPrint"
           class="hidden"
         >
@@ -101,7 +101,7 @@ export default defineComponent({
     },
     title: {
       type: String,
-      default: 'Панель управления'
+      default: $t('ProductControls_104')"
     },
   },
   emits: ['on-finish-update', 'on-finish-remove', 'on-finish-print', 'on-close'],

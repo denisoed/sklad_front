@@ -20,7 +20,7 @@
       separator="cell"
       class="statistic-table full-width q-mb-sm"
       hide-pagination
-      no-data-label="Люди не добавлены"
+      :no-data-label="$t('Employee_23')"
     >
       <template #body="props">
         <q-tr :props="props">
@@ -104,7 +104,7 @@ export default defineComponent({
       return [
         {
           name: 'name',
-          label: 'Имя',
+          label: $t('Employee_107'),
           align: 'left',
           field: 'name'
         },
@@ -116,13 +116,13 @@ export default defineComponent({
         },
         {
           name: 'email',
-          label: 'Почта',
+          label: $t('Employee_119'),
           align: 'left',
           field: 'email'
         },
         {
           name: 'action',
-          label: 'Действия',
+          label: $t('Employee_125'),
           align: 'right',
           field: 'action'
         },
@@ -132,18 +132,18 @@ export default defineComponent({
     function remove(user) {
       $q.dialog({
         title: `Удалить ${user.name} из склада?`,
-        message: 'После удаления человека из склада, он больше не будет иметь доступ к складу.',
+        message: $t('Employee_135'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('Employee_140'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black', 
-          label: 'Отмена',
+          label: $t('Employee_146'),
           push: true
         }
       }).onOk(() => {

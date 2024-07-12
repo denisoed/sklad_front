@@ -69,10 +69,10 @@ const useProduct = () => {
         }
       })
       if (!saleProductError.value) {
-        showSuccess('Товар добавлен в корзину!')
+        showSuccess($t('useProduct_72'))
       }
     } else {
-      showError('Не удалось добавить в корзину. Попробуйте позже.')
+      showError($t('useProduct_75'))
     }
   }
 
@@ -102,10 +102,10 @@ const useProduct = () => {
         }
       })
       if (!saleProductError.value) {
-        showSuccess('Товар добавлен в корзину!')
+        showSuccess($t('useProduct_105'))
       }
     } else {
-      showError('Не удалось добавить в корзину. Попробуйте позже.')
+      showError($t('useProduct_108'))
     }
   }
 
@@ -127,7 +127,7 @@ const useProduct = () => {
         }
       })
     } else {
-      showError('Не удалось удалить продукт. Проблемы на сервере.')
+      showError($t('useProduct_130'))
     }
   }
 

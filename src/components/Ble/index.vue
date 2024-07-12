@@ -60,7 +60,7 @@
         </li>
       </ul>
       <span v-else class="text-grey-5 text-center text-subtitle2 q-my-md">
-        {{ bluetoothScanning ? 'Поиск устройств...' : 'Нет подключенных устройств' }}
+        {{ bluetoothScanning ? $t('index_63') : $t('index_63') }}
       </span>
     </div>
 
@@ -156,7 +156,7 @@ export default defineComponent({
           ...payload,
         }
         LocalStorage.set('sklad-ble-device', newData)
-        showSuccess('Изменения сохранены')
+        showSuccess($t('index_159'))
       }
     }
 

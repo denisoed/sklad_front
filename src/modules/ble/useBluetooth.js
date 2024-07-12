@@ -51,7 +51,7 @@ const useBluetooth = () => {
         }
       })
     } else {
-      showError('Ваш браузер не поддерживает блютуз')
+      showError($t('useBluetooth_54'))
       bleStore.setScanning(false)
     }
   }

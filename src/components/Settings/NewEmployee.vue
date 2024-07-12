@@ -13,8 +13,8 @@
               color="primary"
               class="full-width"
               debounce="500"
-              hint="Сотрудник, к которому будут присвоины полномочия"
-              placeholder="Введите телеграм ID или почту"
+              :hint="$t('NewEmployee_16')"
+              :placeholder="$t('NewEmployee_17')"
               enterkeyhint="done"
               dense
               :model-value="formData.telegramId || formData.email"
@@ -37,7 +37,7 @@
             </q-input>
           </div>
           <div class="new-employee_checkboxes q-px-sm q-pb-md">
-            <!-- <q-checkbox v-model="allPermissions" label="Дать все права" />
+            <!-- <q-checkbox v-model="allPermissions" :label="$t('NewEmployee_40')" />
             <q-separator /> -->
             <q-checkbox
               v-for="(p, i) of listPermissions"

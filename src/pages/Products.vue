@@ -196,7 +196,7 @@ import MiniTabs from 'src/components/Product/MiniTabs.vue'
 
 const ALL_TAB = {
   id: 0,
-  name: 'Все',
+  name: $t('Products_199'),
   color: '#fff'
 }
 

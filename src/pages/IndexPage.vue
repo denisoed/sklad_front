@@ -57,7 +57,7 @@
       @close="onCloseModal"
       @finished="refetchSklads"
       @on-create-new="onCreateNew"
-      title="склад"
+      :title="$t('IndexPage_60')"
     />
   </q-page>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Основные Настройки" /> 
+      <PageTitle :title="$t('MainSettings_4')" /> 
       <q-tabs
         v-model="tab"
         dense

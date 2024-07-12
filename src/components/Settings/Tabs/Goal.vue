@@ -3,8 +3,8 @@
     <h6 class="q-ma-none q-mb-sm text-subtitle1">Цель на год</h6>
     <InputPrice
       :model-value="goalValue"
-      label="Сумма"
-      hint="Отображается на главной странице склада"
+      :label="$t('Goal_6')"
+      :hint="$t('Goal_7')"
       clear
       :rules="[val => val?.length || 'Обязательное поле']"
       @update:model-value="onUpdate"

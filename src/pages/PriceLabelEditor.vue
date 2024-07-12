@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Редактирование ценника" />
+      <PageTitle :title="$t('PriceLabelEditor_4')" />
       <div
         id="editor"
         class="draggable-parent price-label_editor full-width flex flex-center"
@@ -49,7 +49,7 @@
           separator="cell"
           class="full-width table"
           hide-pagination
-          no-data-label="Список пуст"
+          :no-data-label="$t('PriceLabelEditor_52')"
         >
           <template #body="props">
             <q-tr :props="props">
@@ -61,7 +61,7 @@
               </q-td>
               <q-td class="text-right">
                 <div class="flex justify-end">
-                  <BasicDialog width="400px" title="Редактировать элемент">
+                  <BasicDialog width="400px" :title="$t('PriceLabelEditor_64')">
                     <q-btn
                       icon="mdi-pencil"
                       round
@@ -119,14 +119,14 @@
       </div>
       <div class="flex full-width q-pt-lg q-mt-auto">
         <q-btn
-          label="Удалить"
+          :label="$t('PriceLabelEditor_122')"
           color="deep-orange"
           outline
           class="q-mr-auto"
           v-vibrate
         />
         <q-btn
-          label="Сохранить"
+          :label="$t('PriceLabelEditor_129')"
           push
           color="primary"
           class="q-ml-auto"
@@ -524,19 +524,19 @@ export default defineComponent({
       return [
         {
           name: 'type',
-          label: 'Тип',
+          label: $t('PriceLabelEditor_527'),
           align: 'left',
           field: 'type'
         },
         {
           name: 'text',
-          label: 'Текст',
+          label: $t('PriceLabelEditor_533'),
           align: 'left',
           field: 'text'
         },
         {
           name: 'action',
-          label: 'Действия',
+          label: $t('PriceLabelEditor_539'),
           align: 'right',
           field: 'action'
         },

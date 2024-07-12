@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Отчеты по всем складам" />
+      <PageTitle :title="$t('Statistic_4')" />
       <FilterDates @on-change="load" />
       <div
         class="costs_type flex items-center q-pa-md q-mb-md q-mt-md"
@@ -53,7 +53,7 @@
         separator="cell"
         class="statistic-table full-width q-mb-sm"
         hide-pagination
-        no-data-label="Нет данных"
+        :no-data-label="$t('Statistic_56')"
       >
         <template #header="props">
           <q-tr :props="props">
@@ -94,7 +94,7 @@
                   color="primary"
                   size="sm"
                   class="q-mr-md"
-                  title="Перейти в товар"
+                  :title="$t('Statistic_97')"
                   :to="`/sklad/${props.row?.product?.sklad?.id}/product/${props.row?.product?.id}`"
                   v-vibrate
                 />
@@ -103,7 +103,7 @@
                   round
                   color="deep-orange"
                   size="sm"
-                  title="Возврат товара на склад"
+                  :title="$t('Statistic_106')"
                   @click="returnProduct(props.row)"
                   v-vibrate
                 />
@@ -256,20 +256,20 @@ export default defineComponent({
       const data = statisticFinanceResult.value?.statisticFinance
       return [
         {
-          label: 'Сумма имеющихся товаров по опт цене',
-          value: format(data?.sumAvailableProductsWholesalePrice, 'с'),
+          label: $t('Statistic_259'),
+          value: format(data?.sumAvailableProductsWholesalePrice, $t('with')),
           bg: 'rgb(255 255 0 / 8%)'
         },
         {
-          label: 'Потенциальный доход от имеющихся товаров',
-          value: format(data?.incomeFromAvailableProducts, 'с'),
+          label: $t('Statistic_264'),
+          value: format(data?.incomeFromAvailableProducts, $t('with')),
           bg: 'rgb(0 255 0 / 8%)'
         }
       ]
     })
 
     const costsSum = computed(() => {
-      const sum = format(resultListCostsSum.value?.listCostsSum?.sum, 'с')
+      const sum = format(resultListCostsSum.value?.listCostsSum?.sum, $t('with'))
       return sum
     })
 
@@ -315,31 +315,31 @@ export default defineComponent({
               },
               action: HISTORY_RETURN
             })
-            showSuccess('Размеры возвращены!')
+            showSuccess($t('Statistic_318'))
           }
         } else {
-          showError('Не удалось вернуть. Попробуйте позже.')
+          showError($t('Statistic_321'))
         }
       } catch {
-        showError('Не удалось вернуть. Попробуйте позже.')
+        showError($t('Statistic_324'))
       }
     }
 
     function returnProduct(activity) {
       $q.dialog({
-        title: 'Вернуть товар на склад?',
-        message: 'При возврате товара, отчеты будет пересчитаны',
+        title: $t('Statistic_330'),
+        message: $t('Statistic_331'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Вернуть',
+          label: $t('Statistic_336'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black', 
-          label: 'Отмена',
+          label: $t('Statistic_342'),
           push: true
         }
       }).onOk(() => {

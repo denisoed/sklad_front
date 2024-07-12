@@ -12,13 +12,13 @@
       <q-card class="full-width">
         <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            {{ item ? 'Обновить' : 'Создать' }} {{ title }}
+            {{ item ? $t('CrudModal_15') : $t('CrudModal_15') }} {{ title }}
           </p>
           <div class="flex justify-center q-gap-md full-width q-mt-md">
             <q-input
               v-model="formData.name"
               outlined
-              label="Введите название"
+              :label="$t('CrudModal_21')"
               class="full-width"
               autofocus
               enterkeyhint="done"
@@ -159,9 +159,9 @@ export default defineComponent({
       })
       if (!createError.value) {
         emit('on-create-new', data)
-        showSuccess('Запрос успешно выполнен!')
+        showSuccess($t('CrudModal_162'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('CrudModal_164'))
       }
     }
 
@@ -174,9 +174,9 @@ export default defineComponent({
         }
       })
       if (!updateError.value) {
-        showSuccess('Запрос успешно выполнен!')
+        showSuccess($t('CrudModal_177'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('CrudModal_179'))
       }
     }
 
@@ -189,7 +189,7 @@ export default defineComponent({
             await createToDB()
           }
         } catch (error) {
-          showError('Неизвестная ошибка. Проблемы на сервере.')
+          showError($t('CrudModal_192'))
         } finally {
           close()
           emit('finished')

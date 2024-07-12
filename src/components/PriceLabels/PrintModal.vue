@@ -69,7 +69,7 @@ export default defineComponent({
       try {
         // Print
       } catch (error) {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('PrintModal_72'))
       } finally {
         close()
         emit('finished')

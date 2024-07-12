@@ -155,9 +155,9 @@ export default defineComponent({
       })
       if (!createError.value) {
         emit('on-create-new', data)
-        showSuccess('Новые размеры созданы!')
+        showSuccess($t('CrudSizesModal_158'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('CrudSizesModal_160'))
       }
     }
     
@@ -170,9 +170,9 @@ export default defineComponent({
         }
       })
       if (!updateError.value) {
-        showSuccess('Размеры обновлены!')
+        showSuccess($t('CrudSizesModal_173'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('CrudSizesModal_175'))
       }
     }
 
@@ -185,7 +185,7 @@ export default defineComponent({
             await createToDB()
           }
         } catch (error) {
-          showError('Неизвестная ошибка. Проблемы на сервере.')
+          showError($t('CrudSizesModal_188'))
         } finally {
           close()
           emit('finished')

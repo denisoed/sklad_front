@@ -52,7 +52,7 @@
       @close="onClose"
       @remove="removeSizes"
       @finished="onFinish"
-      title="размеры"
+      :title="$t('SizesTab_55')"
     />
   </div>
 </template>

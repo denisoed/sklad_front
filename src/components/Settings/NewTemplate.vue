@@ -8,7 +8,7 @@
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width">
             <q-select outlined v-model="formData.type" emit-value map-options clearable :options="TYPES"
-              class="q-mb-md" label="Тип шаблона" behavior="menu">
+              class="q-mb-md" :label="$t('NewTemplate_11')" behavior="menu">
               <template v-slot:prepend>
                 <q-icon name="mdi-attachment" />
               </template>
@@ -28,7 +28,7 @@
               v-model="formData.name"
               outlined
               clearable
-              label="Название шаблона"
+              :label="$t('NewTemplate_31')"
               class="full-width q-mb-md"
             />
             <div class="flex no-wrap">
@@ -37,10 +37,10 @@
                 outlined
                 clearable
                 type="number"
-                label="Ширина"
+                :label="$t('NewTemplate_40')"
                 class="q-mr-md"
                 min="1"
-                hint="миллиметры"
+                :hint="$t('NewTemplate_43')"
                 style="flex: 1;"
               />
               <q-input
@@ -48,8 +48,8 @@
                 outlined
                 clearable
                 type="number"
-                label="Высота"
-                hint="миллиметры"
+                :label="$t('NewTemplate_51')"
+                :hint="$t('NewTemplate_52')"
                 min="1"
                 style="flex: 1;"
               />
@@ -106,7 +106,7 @@ export default defineComponent({
 
     const TYPES = [
       {
-        label: 'Ценник',
+        label: $t('NewTemplate_109'),
         value: 'price-label',
         color: 'rgb(0 0 255 / 50%)',
       },

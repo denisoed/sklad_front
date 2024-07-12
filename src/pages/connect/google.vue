@@ -59,15 +59,15 @@ export default defineComponent({
         try {
           const url = `/auth/google/callback?access_token=${access_token.value}`
           await connect(url)
-          showSuccess('Вы вошли в систему')
+          showSuccess($t('google_62'))
           window.location.href = window.location.origin
         } catch {
           error.value = true
-          showError('Не удалось получить ключ авторизации')
+          showError($t('google_66'))
         }
       } else {
         error.value = true
-        showError('Не удалось получить ключ авторизации')
+        showError($t('google_70'))
       }
     })
 

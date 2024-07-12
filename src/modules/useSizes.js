@@ -33,7 +33,7 @@ const useSizes = () => {
       })
       sizesStore.setSizes(data?.sizes)
     } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('useSizes_36'))
     } finally {
       isLoading.value = false;
     }
@@ -42,18 +42,18 @@ const useSizes = () => {
   function removeSizes(size) {
     $q.dialog({
       title: `Удалить "${size.name}"?`,
-      message: 'Вы уверены, что хотите удалить эти размеры?',
+      message: $t('useSizes_45'),
       cancel: true,
       persistent: true,
       ok: {
         color: 'deep-orange',
-        label: 'Удалить',
+        label: $t('useSizes_50'),
         push: true
       },
       cancel: {
         color: 'white',
         textColor: 'black',
-        label: 'Отмена',
+        label: $t('useSizes_56'),
         push: true
       }
     }).onOk(async () => {
@@ -61,9 +61,9 @@ const useSizes = () => {
       if (!deleteSizesError.value) {
         fetchSizes()
         // NOTE: add to history
-        showSuccess('Товары успешно удалены!')
+        showSuccess($t('useSizes_64'))
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('useSizes_66'))
       }
     })
   }

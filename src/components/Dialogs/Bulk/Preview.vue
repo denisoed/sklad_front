@@ -64,19 +64,19 @@ import { useBulkStore } from 'src/stores/bulk';
 const COLUMNS = [
   {
     name: 'image',
-    label: 'Фото',
+    label: $t('Preview_67'),
     field: 'image',
     align: 'left',
   },
   {
     name: 'name',
-    label: 'Название',
+    label: $t('Preview_73'),
     field: 'name',
     align: 'left',
   },
   {
     name: 'color',
-    label: 'Цвет',
+    label: $t('Preview_79'),
     field: 'color',
     align: 'left',
   },

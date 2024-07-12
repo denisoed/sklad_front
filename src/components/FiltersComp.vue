@@ -7,7 +7,7 @@
       v-model="selectedFilters.name_contains"
       outlined
       debounce="800"
-      label="Поиск по имени товара"
+      :label="$t('FiltersComp_10')"
       class="full-width block-bg"
       dense
       :autofocus="autofocus"
@@ -58,7 +58,7 @@
           <q-btn
             style="height:40px;"
             color="deep-orange"
-            label="Сбросить"
+            :label="$t('FiltersComp_61')"
             push
             @click="clear"
             v-vibrate

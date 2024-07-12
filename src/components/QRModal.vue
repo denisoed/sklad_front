@@ -106,7 +106,7 @@ export default defineComponent({
       if (val?.product) {
         push(decodedLink.value)
       } else {
-        showError('Товар не найден')
+        showError($t('QRModal_109'))
         close()
       }
     })

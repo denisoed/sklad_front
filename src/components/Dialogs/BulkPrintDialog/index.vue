@@ -8,14 +8,14 @@
           <div class="flex justify-between full-width q-gap-md">
             <q-btn
               push
-              label="Позже"
+              :label="$t('index_11')"
               @click="close"
               v-vibrate
             />
             <q-btn
               push
               color="primary"
-              label="Настройки"
+              :label="$t('index_18')"
               to="/main-settings"
               v-vibrate
             />
@@ -26,14 +26,14 @@
           <div class="flex justify-between full-width q-gap-md">
             <q-btn
               push
-              label="Позже"
+              :label="$t('index_29')"
               @click="close"
               v-vibrate
             />
             <q-btn
               push
               color="primary"
-              label="Настройки"
+              :label="$t('index_36')"
               to="/main-settings"
               v-vibrate
             />
@@ -46,7 +46,7 @@
         />
         <q-inner-loading
           :showing="loading"
-          label="Ожидайте..."
+          :label="$t('index_49')"
           color="primary"
         />
       </div>
@@ -132,10 +132,10 @@ export default defineComponent({
         for (const product of bulkStore.getBulkProducts) {
           await print(product);
         }
-        showSuccess('Ценники распечатаны!')
+        showSuccess($t('index_135'))
         emit('on-finish')
       } catch (error) {
-        showError('Произошла ошибка, попробуйте позже...')
+        showError($t('index_138'))
         emit('on-error')
       } finally {
         close()

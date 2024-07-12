@@ -15,7 +15,7 @@
         text-color="blue"
         unelevated
         to="/"
-        label="Вернуться на главную"
+        :label="$t('ErrorNotFound_18')"
         no-caps
         v-vibrate
       />

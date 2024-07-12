@@ -54,7 +54,7 @@
                 </div>
                 <q-input
                   v-model="comment"
-                  placeholder="Пишите всё, что думаете"
+                  :placeholder="$t('index_57')"
                   type="textarea"
                   cols="30"
                   rows="3"
@@ -153,9 +153,9 @@ export default defineComponent({
         sending.value = true;
         await createFeedback({ rating: selectedRating.value, comment: comment.value })
         if (errorFeedback.value) {
-          showError('Неизвестная ошибка. Попробуйте позже.')
+          showError($t('index_156'))
         } else {
-          showSuccess('Ваш отзыв успешно отправлен!')
+          showSuccess($t('index_158'))
         }
       } finally {
         sending.value = false;

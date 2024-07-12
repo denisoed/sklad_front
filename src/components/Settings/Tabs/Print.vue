@@ -12,7 +12,7 @@
           Список пуст
         </span>
         <p class="q-mt-md text-subtitle2 " style="max-width:350px;">
-          Для создания шаблона, воспользуйтесь кнопкой "Создать шаблон", под этим описанием.
+          Для создания шаблона, воспользуйтесь кнопкой {{ $t('Print_15') }}, под этим описанием.
         </p>
       </div>
     </h6>
@@ -122,29 +122,29 @@ export default defineComponent({
       if (!errorCreateTemplate.value) {
         refetchTemplates()
         openedNewTemplateModal.value = false
-        showSuccess('Шаблон создан!')
+        showSuccess($t('Print_125'))
         close()
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('Print_128'))
       }
       close()
     }
 
     async function onDelete(id) {
       $q.dialog({
-        title: 'Удалить шаблон?',
-        message: 'Вы уверены, что хотите удалить этот шаблон?',
+        title: $t('Print_135'),
+        message: $t('Print_136'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('Print_141'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('Print_147'),
           push: true
         }
       }).onOk(async () => {
@@ -152,10 +152,10 @@ export default defineComponent({
         if (!errorDeleteTemplate.value) {
           refetchTemplates()
           openedNewTemplateModal.value = false
-          showSuccess('Шаблон успешно удалён!')
+          showSuccess($t('Print_155'))
           close()
         } else {
-          showError('Произошла ошибка. Попробуйте позже.')
+          showError($t('Print_158'))
         }
         close()
       })
