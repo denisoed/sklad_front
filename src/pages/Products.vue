@@ -144,7 +144,7 @@
     />
 
     <!-- Dialog -->
-    <q-dialog v-model="imagePreviewDialog">
+    <q-dialog v-model="imagePreviewDialog" position="bottom">
       <q-card class="full-width">
         <q-img
           :src="imagePreview"

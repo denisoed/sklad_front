@@ -37,6 +37,20 @@
       <q-btn
         round
         push
+        color="white"
+        size="sm"
+        @click="zoomImage"
+        v-vibrate
+      >
+        <q-icon
+          name="mdi-eye"
+          color="black"
+        />
+      </q-btn>
+      <q-btn
+        round
+        push
+        class="q-mt-md"
         color="deep-orange"
         size="sm"
         @click="clear"
@@ -47,24 +61,10 @@
           color="white"
         />
       </q-btn>
-      <q-btn
-        round
-        push
-        color="white"
-        size="sm"
-        class="q-mt-md"
-        @click="zoomImage"
-        v-vibrate
-      >
-        <q-icon
-          name="mdi-eye"
-          color="black"
-        />
-      </q-btn>
     </div>
 
     <!-- Dialog -->
-    <q-dialog v-model="dialog">
+    <q-dialog v-model="dialog" position="bottom">
       <q-card class="full-width image-uploader_dialog-card">
         <q-img
           :src="imagePreview"
