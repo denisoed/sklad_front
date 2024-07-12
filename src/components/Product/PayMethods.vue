@@ -59,8 +59,8 @@ import {
   reactive,
   watch,
 } from 'vue'
+import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
-import debounce from 'lodash.debounce'
 
 const PAY_CASH = 'PAY_CASH';
 const PAY_CARD = 'PAY_CARD';

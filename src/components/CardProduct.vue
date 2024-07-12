@@ -15,7 +15,7 @@
           spinner-size="md"
           spinner-color="grey"
           class="cursor-pointer"
-          @click="dialog = true"
+          @click="$emit('open-image-preview')"
           v-vibrate
         />
       </div>
@@ -89,31 +89,6 @@
     <div class="card-product_controls flex column items-center">
       <slot />
     </div>
-
-    <!-- Dialog -->
-    <q-dialog v-model="dialog">
-      <q-card class="full-width">
-        <q-img
-          :src="image"
-          spinner-size="md"
-          spinner-color="grey"
-        />
-        <q-btn
-          round
-          push
-          color="deep-orange"
-          size="sm"
-          @click="dialog = false"
-          class="absolute-top-right q-mr-md q-mt-md"
-          v-vibrate
-        >
-          <q-icon
-            name="mdi-close"
-            color="white"
-          />
-        </q-btn>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
@@ -187,7 +162,6 @@ export default defineComponent({
   setup(props) {
     const TODAY = Date.now()
     const { sizes, discountDays } = toRefs(props)
-    const dialog = ref(false)
 
     const formattedSizes = computed(() => {
       return Object.values(sizes.value.reduce((acc, obj) => {
@@ -204,7 +178,6 @@ export default defineComponent({
 
     return {
       formattedSizes,
-      dialog,
       isDiscountToday,
       READ_ORIGINAL_PRICE
     }

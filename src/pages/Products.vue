@@ -54,6 +54,7 @@
             :count-sizes="p.countSizes"
             :sklad="p?.sklad"
             :use-number-of-sizes="p.useNumberOfSizes"
+            @open-image-preview="onOpenImagePreview(p.image?.url)"
             class="q-mb-md"
           >
             <div class="flex column full-height">
@@ -63,7 +64,7 @@
                 push
                 size="md"
                 class="q-mb-md"
-                :to="`/sklad/${sklad?.id}/product/${p.id}`"
+                :to="`/sklad/${p?.sklad?.id}/product/${p.id}`"
                 v-vibrate
               >
                 <q-icon
@@ -141,6 +142,31 @@
       @on-finish-remove="onFinishRemove"
       @on-finish-update="onFinishUpdate"
     />
+
+    <!-- Dialog -->
+    <q-dialog v-model="imagePreviewDialog">
+      <q-card class="full-width">
+        <q-img
+          :src="imagePreview"
+          spinner-size="md"
+          spinner-color="grey"
+        />
+        <q-btn
+          round
+          push
+          color="deep-orange"
+          size="sm"
+          v-close-popup
+          class="absolute-top-right q-mr-md q-mt-md"
+          v-vibrate
+        >
+          <q-icon
+            name="mdi-close"
+            color="white"
+          />
+        </q-btn>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -217,6 +243,8 @@ export default defineComponent({
       params?.skladId ||
         profile.value?.permissions?.map(p => p?.sklad?.id)[0]
     )
+    const imagePreviewDialog = ref(false)
+    const imagePreview = ref(null)
     const selectedCategoryId = ref(params?.categoryId || ALL_TAB.id)
     const selectedFilters = reactive({})
 
@@ -334,6 +362,11 @@ export default defineComponent({
       selectedCategoryId.value = id;
       loadData();
     }
+
+    function onOpenImagePreview(url) {
+      imagePreview.value = url
+      imagePreviewDialog.value = true
+    }
     
     onBeforeMount(() => {
       // onScrollToCard()
@@ -361,6 +394,9 @@ export default defineComponent({
       selectedCategoryId,
       skladProducts,
       listProducts,
+      imagePreviewDialog,
+      imagePreview,
+      onOpenImagePreview
     }
   }
 })
