@@ -8,6 +8,9 @@ function insertInlineStyles() {
       height: 100vh;
       overflow: hidden;
     }
+    body {
+      top: 0 !important;
+    }
   `.trim()
   document.head.appendChild(style)
 }
