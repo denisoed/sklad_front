@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, watch, onMounted, ref } from 'vue'
+import { defineComponent, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import useBucket from 'src/modules/useBucket'
 import useSklads from 'src/modules/useSklads'

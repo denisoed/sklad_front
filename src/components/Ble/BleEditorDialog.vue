@@ -7,7 +7,7 @@
     <q-card style="width: 350px">
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          Обязательные настройки принтера
+          {{ $t('BleEditorDialog_10') }}
         </p>
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width q-gap-md">
@@ -15,45 +15,45 @@
               v-model="formData.dpi"
               outlined
               clearable
-              label="Кол-во точек на дюйм(DPI) *"
+              :label="$t('BleEditorDialog_18')"
               class="full-width"
-              hint="Указано в документации принтера"
+              :hint="$t('BleEditorDialog_20')"
               :rules="[
-                (val) => !!val || 'Поле обязательно для заполнения',
+                (val) => !!val || $t('BleEditorDialog_22'),
               ]"
             />
             <q-input
               v-model="formData.width"
               outlined
               clearable
-              label="Ширина *"
-              hint="Ширина рабочей зоны в mm"
+              :label="$t('BleEditorDialog_29')"
+              :hint="$t('BleEditorDialog_30')"
               class="full-width"
               :rules="[
-                (val) => !!val || 'Поле обязательно для заполнения',
+                (val) => !!val || $t('BleEditorDialog_33'),
               ]"
             />
             <q-expansion-item
               dense
               dense-toggle
               expand-separator
-              label="Дополнительные настройки"
+              :label="$t('BleEditorDialog_40')"
             >
               <q-input
                 v-model="formData.height"
                 outlined
                 clearable
-                label="Высота"
-                hint="Высота рабочей зоны в mm"
+                :label="$t('BleEditorDialog_46')"
+                :hint="$t('BleEditorDialog_47')"
                 class="full-width"
               />
               <q-input
                 v-model="formData.offset"
                 outlined
                 clearable
-                label="Отступ от края бумаги в mm"
+                :label="$t('BleEditorDialog_54')"
                 class="full-width"
-                hint="Для колибровки отступа от края бумаги"
+                :hint="$t('BleEditorDialog_56')"
               />
             </q-expansion-item>
           </div>

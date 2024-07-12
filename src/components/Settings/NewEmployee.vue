@@ -95,6 +95,7 @@ import {
 } from 'src/graphql/types'
 import useSklads from 'src/modules/useSklads'
 import { ALL_PERMISSIONS_WITH_DESCRIPTION } from 'src/permissions'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'NewEmployee',
@@ -115,6 +116,7 @@ export default defineComponent({
       opened
     } = toRefs(props)
     const { sklad } = useSklads()
+    const { t: $t } = useI18n()
 
     const formData = reactive({
       id: null,
@@ -198,7 +200,7 @@ export default defineComponent({
     const listPermissions = computed(() => {
       return ALL_PERMISSIONS_WITH_DESCRIPTION.map(p => ({
         val: p.val,
-        label: p.description,
+        label: $t(p.description),
       }))
     })
 
