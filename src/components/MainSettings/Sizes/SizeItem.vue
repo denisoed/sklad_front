@@ -34,7 +34,7 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      default: $t('SizeItem_37')" 
+      default: $t('SizeItem_37')
     },
     list: {
       type: Array,

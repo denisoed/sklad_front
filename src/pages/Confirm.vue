@@ -43,7 +43,7 @@ export default defineComponent({
   setup() {
     const { query } = useRoute()
 
-    const title = $t('Confirm_46')"
+    const title = $t('Confirm_46')
     const email = ref(query.email)
 
     return {

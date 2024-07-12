@@ -68,7 +68,7 @@ export default defineComponent({
   props: {
     label: {
       type: String,
-      default: $t('InputNumber_71')"
+      default: $t('InputNumber_71')
     },
     hint: {
       type: String,

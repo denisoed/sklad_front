@@ -35,29 +35,29 @@ const useDate = () => {
 
   function pluralize(value, type) {
     if (type === 'min') {
-      if (value <= 1) return $t('useDate_38')"
-      if (value > 1 && value <= 4) return $t('useDate_39')"
-      return $t('useDate_40')"
+      if (value <= 1) return $t('useDate_38')
+      if (value > 1 && value <= 4) return $t('useDate_39')
+      return $t('useDate_40')
     }
     if (type === 'hour') {
-      if (value <= 1) return $t('useDate_43')"
-      if (value > 1 && value <= 4) return $t('useDate_44')"
-      return $t('useDate_45')"
+      if (value <= 1) return $t('useDate_43')
+      if (value > 1 && value <= 4) return $t('useDate_44')
+      return $t('useDate_45')
     }
     if (type === 'day') {
-      if (value <= 1) return $t('useDate_48')"
-      if (value > 1 && value <= 4) return $t('useDate_49')"
-      return $t('useDate_50')"
+      if (value <= 1) return $t('useDate_48')
+      if (value > 1 && value <= 4) return $t('useDate_49')
+      return $t('useDate_50')
     }
     if (type === 'week') {
-      if (value <= 1) return $t('useDate_53')"
-      if (value > 1 && value <= 4) return $t('useDate_54')"
-      return $t('useDate_55')"
+      if (value <= 1) return $t('useDate_53')
+      if (value > 1 && value <= 4) return $t('useDate_54')
+      return $t('useDate_55')
     }
     if (type === 'month') {
-      if (value <= 1) return $t('useDate_58')"
-      if (value > 1 && value <= 4) return $t('useDate_59')"
-      return $t('useDate_60')"
+      if (value <= 1) return $t('useDate_58')
+      if (value > 1 && value <= 4) return $t('useDate_59')
+      return $t('useDate_60')
     }
   }
 
@@ -71,7 +71,7 @@ const useDate = () => {
     const weeks = Math.floor(diffMilliseconds / (7 * 24 * 60 * 60 * 1000));
     const months = Math.floor(diffMilliseconds / (30 * 24 * 60 * 60 * 1000));
     if (minutes < 1) {
-      return $t('useDate_74')";
+      return $t('useDate_74');
     } else if (minutes < 60) {
       return `${minutes} ${pluralize(minutes, 'min')} назад`;
     } else if (hours < 24) {

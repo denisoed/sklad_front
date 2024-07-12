@@ -101,7 +101,7 @@ export default defineComponent({
     },
     title: {
       type: String,
-      default: $t('ProductControls_104')"
+      default: $t('ProductControls_104')
     },
   },
   emits: ['on-finish-update', 'on-finish-remove', 'on-finish-print', 'on-close'],

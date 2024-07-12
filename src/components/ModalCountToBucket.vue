@@ -12,7 +12,7 @@
           <p
             class="full-width text-left text-bold q-mb-none text-subtitle1"
           >
-            {{ title || $t('ModalCountToBucket_15')" }}
+            {{ title || $t('ModalCountToBucket_15') }}
           </p>
 
           <q-separator class="full-width q-my-sm" />
