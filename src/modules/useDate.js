@@ -1,7 +1,10 @@
 import moment from 'moment'
+import { useI18n } from 'vue-i18n'
 import { FILTER_FORMAT } from 'src/config'
 
 const useDate = () => {
+  const { t: $t } = useI18n()
+
   function getCurrentWeek() {
     const currentDate = moment();
     const weekStart = currentDate.clone().startOf('isoWeek');

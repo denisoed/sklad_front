@@ -56,6 +56,7 @@
 
 <script>
 import { LocalStorage } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import { defineComponent, ref, computed } from 'vue';
 import BasicDialog from 'src/components/Dialogs/BasicDialog.vue';
 import BulkPreview from 'src/components/Dialogs/Bulk/Preview.vue';
@@ -75,6 +76,7 @@ export default defineComponent({
   setup(_, { emit }) {
     const savedDevice = LocalStorage.getItem('sklad-ble-device')
     const { params } = useRoute()
+    const { t: $t } = useI18n()
     const bulkStore = useBulkStore()
     const { bluetoothWrite, bluetoothConnected } = useBluetooth()
     const { showSuccess, showError } = useHelpers()

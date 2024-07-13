@@ -44,7 +44,7 @@
               :props="props"
               :style="`background-color: ${props.row.actionColor}1A`"
             >
-              {{ HISTORY_ACTIONS[props.row.action] }}
+              {{ $t(HISTORY_ACTIONS[props.row.action]) }}
             </q-td>
             <q-td key="fullname" :props="props">
               {{ props.row.fullname }}
@@ -94,6 +94,7 @@ import {
   onBeforeMount,
   ref
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FilterHistory from 'src/components/FilterHistory.vue'
 import useSklads from 'src/modules/useSklads'
 import useHistory from 'src/modules/useHistory'
@@ -107,39 +108,6 @@ import {
   FILTER_FORMAT
 } from 'src/config'
 
-const columns = [
-  {
-    name: 'action',
-    label: $t('History_113'),
-    align: 'left',
-    field: 'action',
-  },
-  {
-    name: 'fullname',
-    label: $t('History_119'),
-    field: 'fullname',
-    align: 'left',
-  },
-  {
-    name: 'productId',
-    label: $t('History_125'),
-    field: 'productId',
-    align: 'left',
-  },
-  {
-    name: 'description',
-    label: $t('History_131'),
-    field: 'description',
-    align: 'left',
-  },
-  {
-    name: 'created_at',
-    label: $t('History_137'),
-    field: 'created_at',
-    align: 'left',
-  },
-]
-
 export default defineComponent({
   name: 'HistoryPage',
   components: {
@@ -151,6 +119,7 @@ export default defineComponent({
     const { push } = useRouter()
     const { params, query } = useRoute()
     const { formatTimeAgo } = useDate()
+    const { t: $t } = useI18n()
     const TODAY = Date.now()
     const {
       fetchHistory,
@@ -169,6 +138,39 @@ export default defineComponent({
     const pagination = {
       rowsPerPage: -1,
     }
+
+    const columns = [
+      {
+        name: 'action',
+        label: $t('History_113'),
+        align: 'left',
+        field: 'action',
+      },
+      {
+        name: 'fullname',
+        label: $t('History_119'),
+        field: 'fullname',
+        align: 'left',
+      },
+      {
+        name: 'productId',
+        label: $t('History_125'),
+        field: 'productId',
+        align: 'left',
+      },
+      {
+        name: 'description',
+        label: $t('History_131'),
+        field: 'description',
+        align: 'left',
+      },
+      {
+        name: 'created_at',
+        label: $t('History_137'),
+        field: 'created_at',
+        align: 'left',
+      },
+    ]
 
     const skladUsers = computed(() => sklad.value?.users || [])
     const title = computed(() => query?.product ? `История по товару ${query?.product}` : $t('History_174'))

@@ -94,6 +94,7 @@ import {
   ref,
   computed
 } from 'vue';
+import { useI18n } from 'vue-i18n'
 import useFeedback from 'src/modules/useFeedback'
 import useHelpers from 'src/modules/useHelpers'
 
@@ -136,6 +137,7 @@ export default defineComponent({
   setup() {
     const { createFeedback, errorFeedback } = useFeedback()
     const { showSuccess, showError } = useHelpers()
+    const { t: $t } = useI18n()
 
     const isPopupOpen = ref(false);
     const selectedRating = ref(null);

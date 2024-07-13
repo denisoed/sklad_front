@@ -179,6 +179,7 @@ import {
   ref,
   reactive
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
@@ -193,12 +194,6 @@ import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ProductControls from 'src/components/ProductControls.vue'
 import MiniTabs from 'src/components/Product/MiniTabs.vue'
-
-const ALL_TAB = {
-  id: 0,
-  name: $t('Products_199'),
-  color: '#fff'
-}
 
 import {
   CAN_SELL_PRODUCT,
@@ -223,6 +218,7 @@ export default defineComponent({
   },
   setup() {
     const bulkStore = useBulkStore();
+    const { t: $t } = useI18n()
     const { bulkProducts } = storeToRefs(bulkStore);
     const { params, query } = useRoute()
     const {
@@ -238,6 +234,12 @@ export default defineComponent({
       addSizesToBucket,
       addCountToBucket,
     } = useProduct()
+
+    const ALL_TAB = {
+      id: 0,
+      name: $t('Products_199'),
+      color: '#fff'
+    }
 
     const selectedSkladId = ref(
       params?.skladId ||

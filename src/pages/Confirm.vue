@@ -31,6 +31,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import BtnBack from 'src/components/BtnBack.vue'
@@ -42,6 +43,7 @@ export default defineComponent({
   },
   setup() {
     const { query } = useRoute()
+    const { t: $t } = useI18n()
 
     const title = $t('Confirm_46')
     const email = ref(query.email)

@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n'
 import { computed, defineComponent, ref, toRefs, watch } from 'vue'
 import ChartCard from 'src/components/Charts/ChartCard.vue'
 import LineChart from 'src/components/Charts/LineChart.vue'
@@ -31,21 +32,6 @@ import moment from 'moment'
 import { FILTER_FORMAT, DAY, WEEK, MONTH, YEAR } from 'src/config'
 import useStatistics from 'src/modules/useStatistics'
 import useDate from 'src/modules/useDate'
-
-const TABS = [
-  {
-    label: $t('Statistics_37'),
-    value: DAY
-  },
-  {
-    label: $t('Statistics_41'),
-    value: WEEK
-  },
-  {
-    label: $t('Statistics_45'),
-    value: MONTH
-  }
-]
 
 export default defineComponent({
   name: 'SkladsStatistics',
@@ -62,7 +48,7 @@ export default defineComponent({
   },
   setup(props) {
     const { ids } = toRefs(props)
-    const selected = ref(TABS[2])
+    const { t: $t } = useI18n()
     const {
       loadActivities,
       soldCount,
@@ -71,6 +57,23 @@ export default defineComponent({
       priceTotal
     } = useStatistics()
     const { getCurrentMonth, getCurrentWeek } = useDate()
+
+    const TABS = [
+      {
+        label: $t('Statistics_37'),
+        value: DAY
+      },
+      {
+        label: $t('Statistics_41'),
+        value: WEEK
+      },
+      {
+        label: $t('Statistics_45'),
+        value: MONTH
+      }
+    ]
+
+    const selected = ref(TABS[2])
 
     function load(params) {
       if (ids.value?.length) {

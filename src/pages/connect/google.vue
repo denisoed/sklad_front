@@ -37,6 +37,7 @@
 <script>
 import { defineComponent, ref, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
 import useHelpers from 'src/modules/useHelpers'
 
@@ -45,6 +46,7 @@ export default defineComponent({
   setup() {
     const { query } = useRoute()
     const { connect } = useJwtMethods()
+    const { t: $t } = useI18n()
     const {
       showSuccess,
       showError,

@@ -94,6 +94,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useProfile from 'src/modules/useProfile'
 import CrudModal from 'src/components/CrudModal.vue'
 import { ALL_PERMISSIONS } from 'src/permissions'
@@ -107,6 +108,7 @@ export default defineComponent({
     CrudModal,
   },
   setup() {
+    const { t: $t } = useI18n()
     const { profile, updateUser, fetchProfile } = useProfile()
     const step = ref(0)
     const sizesCreated = ref(false)

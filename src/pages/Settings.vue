@@ -144,6 +144,7 @@ import {
 import {
   UPDATE_SKLAD
 } from 'src/graphql/sklads'
+import { useI18n } from 'vue-i18n'
 import { useMutation } from '@vue/apollo-composable'
 import PageTitle from 'src/components/PageTitle.vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
@@ -169,6 +170,7 @@ export default defineComponent({
     SettingsGoal
   },
   setup() {
+    const { t: $t } = useI18n()
     const { query, params } = useRoute()
     const { push, replace } = useRouter()
     const tab = ref(query?.tab || 'main')

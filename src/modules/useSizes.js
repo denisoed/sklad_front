@@ -1,4 +1,5 @@
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 import { SIZES, DELETE_SIZES } from 'src/graphql/sizes'
 import { apolloClient } from 'src/boot/apollo'
@@ -15,6 +16,7 @@ const useSizes = () => {
   } = useMutation(DELETE_SIZES)
 
   const $q = useQuasar()
+  const { t: $t } = useI18n()
   const { showError, showSuccess } = useHelpers()
   const sizesStore = useSizesStore()
   const { profile } = useProfile()

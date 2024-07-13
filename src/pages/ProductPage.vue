@@ -341,6 +341,7 @@
 
 <script>
 import moment from 'moment'
+import { useI18n } from 'vue-i18n'
 import { useQuasar } from 'quasar'
 import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import useProduct from 'src/modules/useProduct'
@@ -430,6 +431,7 @@ export default defineComponent({
   setup() {
     const TODAY = Date.now()
     const $q = useQuasar()
+    const { t: $t } = useI18n()
     const { params, query } = useRoute()
     const { showSuccess, showError, difference } = useHelpers()
     const { profile } = useProfile()

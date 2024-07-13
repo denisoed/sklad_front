@@ -40,24 +40,10 @@ import {
   defineComponent,
   ref
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useDate from 'src/modules/useDate'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
 import { FILTER_FORMAT, DAY, WEEK, MONTH } from 'src/config'
-
-const TABS = [
-  {
-    label: $t('FilterDates_49'),
-    value: DAY
-  },
-  {
-    label: $t('FilterDates_53'),
-    value: WEEK
-  },
-  {
-    label: $t('FilterDates_57'),
-    value: MONTH
-  },
-]
 
 export default defineComponent({
   name: 'FilterDates',
@@ -84,7 +70,23 @@ export default defineComponent({
   },
   emits: ['on-change'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const { getBetweenDays, getCurrentWeek, getCurrentMonth } = useDate()
+
+    const TABS = [
+      {
+        label: $t('FilterDates_49'),
+        value: DAY
+      },
+      {
+        label: $t('FilterDates_53'),
+        value: WEEK
+      },
+      {
+        label: $t('FilterDates_57'),
+        value: MONTH
+      },
+    ]
 
     const calendarDate = ref(props.selectedToday ? moment().startOf(DAY).format(FILTER_FORMAT) : null)
 

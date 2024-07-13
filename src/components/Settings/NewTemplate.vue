@@ -76,6 +76,7 @@ import {
   watch,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'NewTemplate',
@@ -96,6 +97,7 @@ export default defineComponent({
   emits: ['close', 'on-create', 'on-delete'],
   setup(props, { emit }) {
     const { selected } = toRefs(props)
+    const { t: $t } = useI18n()
     const formData = reactive({
       id: null,
       type: null,

@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import {
   SKLAD,
   SKLADS,
@@ -22,6 +23,7 @@ const IGNORE_PAGE_TO_REPLACE = []
 const useSklads = () => {
   const $q = useQuasar()
   const route = useRoute()
+  const { t: $t } = useI18n()
   const { replace } = useRouter()
   const { updateUser, profile, fetchProfile } = useProfile()
   const { showError, showSuccess } = useHelpers()

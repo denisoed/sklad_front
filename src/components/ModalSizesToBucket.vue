@@ -160,6 +160,7 @@ import {
   toRefs,
   watch
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const DISCOUNT_TABS = [
   {
@@ -253,6 +254,7 @@ export default defineComponent({
       typeSizes,
       comment
     } = toRefs(props)
+    const { t: $t } = useI18n()
     const commentVal = ref(comment.value)
     const selectedSizes = ref([...selected.value])
     const mainMenu = ref(false)

@@ -118,38 +118,6 @@ import KG from 'src/assets/kyrgyzstan.png'
 import { I18N_LOCALE } from 'src/config'
 import { useI18n } from 'vue-i18n'
 
-const PRICES = [
-  {
-    label: '2,000',
-    value: 2000
-  },
-  {
-    label: '1,000',
-    value: 1000
-  },
-  {
-    label: '500',
-    value: 500
-  },
-  {
-    label: '200',
-    value: 200
-  },
-]
-
-const LANGS = [
-  {
-    label: $t('UserTab_142'),
-    value: 'ru-RU',
-    flag: RU
-  },
-  {
-    label: $t('UserTab_147'),
-    value: 'kg-KG',
-    flag: KG
-  },
-]
-
 export default defineComponent({
   name: 'UserTab',
   components: {
@@ -170,6 +138,39 @@ export default defineComponent({
     const userInfo = reactive({
       fullname: null
     })
+
+    const PRICES = [
+      {
+        label: '2,000',
+        value: 2000
+      },
+      {
+        label: '1,000',
+        value: 1000
+      },
+      {
+        label: '500',
+        value: 500
+      },
+      {
+        label: '200',
+        value: 200
+      },
+    ]
+
+    const LANGS = [
+      {
+        label: $t('UserTab_142'),
+        value: 'ru-RU',
+        flag: RU
+      },
+      {
+        label: $t('UserTab_147'),
+        value: 'kg-KG',
+        flag: KG
+      },
+    ]
+
 
     function switchEdit() {
       editable.value = !editable.value

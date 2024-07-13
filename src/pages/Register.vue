@@ -20,7 +20,7 @@
                 :label="$t('email')"
                 outlined
                 lazy-rules
-                :rules="[val => !!val || $t('requiredEmail'), isValidEmail]"
+                :rules="[val => !!val || $t('requiredEmail'), isValidEmail || $t('invalidEmail')]"
                 tabindex="1"
               >
                 <template v-slot:prepend>

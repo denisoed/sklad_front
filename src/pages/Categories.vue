@@ -117,6 +117,7 @@ import {
   ref,
   onBeforeMount
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import PageTitle from 'src/components/PageTitle.vue'
 import CrudModal from 'src/components/CrudModal.vue'
@@ -138,6 +139,7 @@ export default defineComponent({
   },
   setup() {
     const $q = useQuasar()
+    const { t: $t } = useI18n()
     const { params } = useRoute()
     const { showSuccess, showError } = useHelpers()
     const {

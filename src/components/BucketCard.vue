@@ -171,6 +171,7 @@ import {
 import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import { READ_ORIGINAL_PRICE } from 'src/permissions'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'BucketCard',
@@ -273,6 +274,7 @@ export default defineComponent({
       discount,
       percentageDiscount
     } = toRefs(props)
+    const { t: $t } = useI18n()
     const checked = ref(true)
 
     const payMethod = computed(() => {

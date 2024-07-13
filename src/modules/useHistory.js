@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   CREATE_HISTORY,
   LIST_HISTORIES
@@ -27,6 +28,7 @@ const useHistory = () => {
   const historiesStore = useHistoriesStore()
   const { params } = useRoute()
   const { profile } = useProfile()
+  const { t: $t } = useI18n()
   const {
     load,
     result: historyRes,

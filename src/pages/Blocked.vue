@@ -33,6 +33,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import { useRouter } from 'vue-router'
 import { HOME_ROUTE } from 'src/router/routes'
@@ -40,6 +41,7 @@ import { HOME_ROUTE } from 'src/router/routes'
 export default defineComponent({
   name: 'BlockedPage',
   setup() {
+    const { t: $t } = useI18n()
     const title = $t('Blocked_43')
     const btnLabel = $t('Blocked_44')
     const isLoading = ref(false)

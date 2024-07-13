@@ -46,6 +46,7 @@
 import {
   defineComponent,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 
 export default defineComponent({
@@ -58,7 +59,7 @@ export default defineComponent({
   },
   emits: ['close', 'print'],
   setup(props, { emit }) {
-
+    const { t: $t } = useI18n()
     const { showSuccess, showError } = useHelpers()
 
     function close() {

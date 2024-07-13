@@ -25,6 +25,7 @@
 
 <script>
 import { defineComponent, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import BasicDialog from 'src/components/Dialogs/BasicDialog.vue';
 import BulkPreview from 'src/components/Dialogs/Bulk/Preview.vue';
 import Step2 from 'src/components/Dialogs/BulkUpdateDialog/Step2.vue';
@@ -41,6 +42,7 @@ export default defineComponent({
   },
   emits: ['on-finish', 'on-error'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const bulkStore = useBulkStore()
     const { showSuccess, showError } = useHelpers()
     const {

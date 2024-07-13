@@ -61,6 +61,7 @@
 
 <script>
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import {
   defineComponent,
   ref,
@@ -82,6 +83,7 @@ export default defineComponent({
     NewTemplate,
   },
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const $q = useQuasar()
     const { params } = useRoute()
     const {

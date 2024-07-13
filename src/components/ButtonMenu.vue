@@ -37,7 +37,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { defineComponent, ref } from 'vue';
 import { Platform } from 'quasar';
 import { useRouter } from 'vue-router'
 
@@ -45,6 +46,7 @@ export default defineComponent({
   name: 'ButtonMenu',
 
   setup() {
+    const { t: $t } = useI18n()
     const { push } = useRouter()
 
     const showSubbuttons = ref(false);

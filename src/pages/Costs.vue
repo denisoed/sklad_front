@@ -140,6 +140,7 @@ import {
   defineComponent,
   ref,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import useCosts from 'src/modules/useCosts'
 import useMoney from 'src/modules/useMoney'
@@ -150,39 +151,6 @@ import PageTitle from 'src/components/PageTitle.vue'
 import { DISPLAY_FORMAT, HISTORY_CREATE } from 'src/config'
 import { CAN_ADD_COST } from 'src/permissions'
 
-const columns = [
-  {
-    name: 'fullname',
-    label: $t('Costs_156'),
-    field: 'fullname',
-    align: 'left',
-  },
-  {
-    name: 'description',
-    label: $t('Costs_162'),
-    field: 'description',
-    align: 'left',
-  },
-  {
-    name: 'sum',
-    label: $t('Costs_168'),
-    align: 'left',
-    field: 'sum',
-  },
-  {
-    name: 'created_at',
-    label: $t('Costs_174'),
-    field: 'created_at',
-    align: 'left',
-  },
-  {
-    name: 'actions',
-    label: '',
-    field: 'actions',
-    align: 'right',
-  },
-]
-
 export default defineComponent({
   name: 'CostsPage',
   components: {
@@ -190,6 +158,7 @@ export default defineComponent({
     PageTitle,
   },
   setup() {
+    const { t: $t } = useI18n()
     const { showSuccess, showError } = useHelpers()
     const { format } = useMoney()
     const {
@@ -213,6 +182,38 @@ export default defineComponent({
     const pagination = {
       rowsPerPage: -1,
     }
+    const columns = [
+      {
+        name: 'fullname',
+        label: $t('Costs_156'),
+        field: 'fullname',
+        align: 'left',
+      },
+      {
+        name: 'description',
+        label: $t('Costs_162'),
+        field: 'description',
+        align: 'left',
+      },
+      {
+        name: 'sum',
+        label: $t('Costs_168'),
+        align: 'left',
+        field: 'sum',
+      },
+      {
+        name: 'created_at',
+        label: $t('Costs_174'),
+        field: 'created_at',
+        align: 'left',
+      },
+      {
+        name: 'actions',
+        label: '',
+        field: 'actions',
+        align: 'right',
+      },
+    ]
 
     const { inputRef, numberValue } = useCurrencyInput({
       currency: 'USD',

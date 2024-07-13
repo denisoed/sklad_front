@@ -77,6 +77,7 @@ import {
   toRefs,
   watch
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import { useMutation } from '@vue/apollo-composable'
 
@@ -116,6 +117,7 @@ export default defineComponent({
       updateGql,
       extendCreateParams
     } = toRefs(props)
+    const { t: $t } = useI18n()
     const formData = reactive({
       name: null,
       list: null

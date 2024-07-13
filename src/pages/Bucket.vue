@@ -91,6 +91,7 @@
 <script>
 import moment from 'moment'
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import useSklads from 'src/modules/useSklads'
@@ -123,6 +124,7 @@ export default defineComponent({
   setup () {
     const TODAY = Date.now()
     const $q = useQuasar()
+    const { t: $t } = useI18n()
     const { showSuccess, showError } = useHelpers()
     const { sklads } = useSklads()
     const {

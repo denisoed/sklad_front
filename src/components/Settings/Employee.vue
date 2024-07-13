@@ -73,6 +73,7 @@ import {
   toRefs,
   ref
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useQuasar } from 'quasar'
 import useSklads from 'src/modules/useSklads'
 import NewEmployee from 'src/components/Settings/NewEmployee.vue'
@@ -96,6 +97,7 @@ export default defineComponent({
       removeUserFromSklad,
       updateUserPermissionInSklad
     } = useSklads()
+    const { t: $t } = useI18n()
 
     const seletedUser = ref(null)
     const openedNewEmployeeModal = ref(false)

@@ -101,11 +101,12 @@ export default defineComponent({
     },
     title: {
       type: String,
-      default: $t('ProductControls_104')
+      default: ''
     },
   },
   emits: ['on-finish-update', 'on-finish-remove', 'on-finish-print', 'on-close'],
   setup(_, { emit }) {
+  
     function onFinishUpdate() {
       emit('on-finish-update')
     }

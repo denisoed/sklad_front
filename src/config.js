@@ -1,9 +1,9 @@
 export const HISTORY_ACTIONS = {
-  create: $t('config_2'),
-  update: $t('config_3'),
-  delete: $t('config_4'),
-  sold: $t('config_5'),
-  return: $t('config_6'),
+  create: 'config.create',
+  update: 'config.update',
+  delete: 'config.delete',
+  sold: 'config.sold',
+  return: 'config.return',
 }
 export const HISTORY_ACTIONS_COLORS = {
   create: '#00FF00',

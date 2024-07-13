@@ -37,6 +37,7 @@ import {
   watch,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { StreamBarcodeReader } from 'vue-barcode-reader'
 import { useLazyQuery } from '@vue/apollo-composable'
@@ -62,6 +63,7 @@ export default defineComponent({
       load: getEditProduct,
       result: editProduct,
     } = useLazyQuery(GET_PRODUCT)
+    const { t: $t } = useI18n()
     const { showError } = useHelpers()
 
     const { opened } = toRefs(props)

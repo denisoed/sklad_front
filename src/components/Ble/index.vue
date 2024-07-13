@@ -101,6 +101,7 @@
 <script>
 import { LocalStorage } from 'quasar'
 import { defineComponent, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useBluetooth from 'src/modules/ble/useBluetooth'
 import useHelpers from 'src/modules/useHelpers'
 import BleEditorDialog from 'src/components/Ble/BleEditorDialog'
@@ -124,6 +125,7 @@ export default defineComponent({
       bluetoothDevice,
       bluetoothDesktopSelectedDevice
     } = useBluetooth()
+    const { t: $t } = useI18n()
     const { showSuccess } = useHelpers()
 
     const deviceForConnect = ref(null)

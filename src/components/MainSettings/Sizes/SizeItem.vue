@@ -34,7 +34,7 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      default: $t('SizeItem_37')
+      default: ''
     },
     list: {
       type: Array,
@@ -43,6 +43,7 @@ export default defineComponent({
   },
   emits: ['on-edit'],
   setup(_, { emit }) {
+  
     function onEdit() {
       emit('on-edit')
     }

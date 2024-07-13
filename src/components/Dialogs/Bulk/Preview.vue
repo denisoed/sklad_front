@@ -58,35 +58,9 @@
 
 <script>
 import { defineComponent, computed } from 'vue';
-import TableComp from 'src/components/TableComp.vue'
+import { useI18n } from 'vue-i18n'
+import TableComp from 'src/components/TableComp.vue';
 import { useBulkStore } from 'src/stores/bulk';
-
-const COLUMNS = [
-  {
-    name: 'image',
-    label: $t('Preview_67'),
-    field: 'image',
-    align: 'left',
-  },
-  {
-    name: 'name',
-    label: $t('Preview_73'),
-    field: 'name',
-    align: 'left',
-  },
-  {
-    name: 'color',
-    label: $t('Preview_79'),
-    field: 'color',
-    align: 'left',
-  },
-  {
-    name: 'actions',
-    label: '',
-    field: 'actions',
-    align: 'right',
-  },
-]
 
 export default defineComponent({
   name: 'BulkPreview',
@@ -101,7 +75,35 @@ export default defineComponent({
   },
   emits: ['on-next'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const bulkStore = useBulkStore();
+
+    const COLUMNS = [
+      {
+        name: 'image',
+        label: $t('Preview_67'),
+        field: 'image',
+        align: 'left',
+      },
+      {
+        name: 'name',
+        label: $t('Preview_73'),
+        field: 'name',
+        align: 'left',
+      },
+      {
+        name: 'color',
+        label: $t('Preview_79'),
+        field: 'color',
+        align: 'left',
+      },
+      {
+        name: 'actions',
+        label: '',
+        field: 'actions',
+        align: 'right',
+      },
+    ]
 
     const rows = computed(() => {
       return bulkStore.getBulkProducts.map(s => ({

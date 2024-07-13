@@ -21,7 +21,7 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      default: $t('index_24')
+      default: ''
     },
   },
   setup() {

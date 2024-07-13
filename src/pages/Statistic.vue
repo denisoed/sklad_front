@@ -170,6 +170,7 @@ import {
   ref
 } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import useDate from 'src/modules/useDate'
 import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
@@ -203,6 +204,7 @@ export default defineComponent({
   },
   setup() {
     const $q = useQuasar()
+    const { t: $t } = useI18n()
     const { params } = useRoute()
     const {
       result: statisticFinanceResult,

@@ -140,6 +140,7 @@
 
 <script>
 import { ref, reactive, onMounted, defineComponent, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PageTitle from 'src/components/PageTitle.vue';
 import PriceLabelControls from 'src/components/PriceLabels/PriceLabelControls.vue';
 import BasicDialog from 'src/components/Dialogs/BasicDialog.vue';
@@ -152,6 +153,8 @@ export default defineComponent({
     PriceLabelControls,
   },
   setup() {
+    const { t: $t } = useI18n()
+
     const locked = ref(true)
     const canvas = ref(null);
     const ctx = reactive({

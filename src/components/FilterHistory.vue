@@ -118,6 +118,7 @@ import {
   reactive,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   HISTORY_ACTIONS,
   HISTORY_CREATE,
@@ -146,6 +147,7 @@ export default defineComponent({
   emits: ['close', 'save', 'on-search'],
   setup(props, { emit }) {
     const { users } = toRefs(props)
+    const { t: $t } = useI18n()
     const formData = reactive({
       description: null,
       actions: null,
@@ -154,22 +156,22 @@ export default defineComponent({
 
     const actions = [
       {
-        label: HISTORY_ACTIONS[HISTORY_CREATE],
+        label: $t(HISTORY_ACTIONS[HISTORY_CREATE]),
         value: HISTORY_CREATE,
         color: HISTORY_ACTIONS_COLORS[HISTORY_CREATE],
       },
       {
-        label: HISTORY_ACTIONS[HISTORY_UPDATE],
+        label: $t(HISTORY_ACTIONS[HISTORY_UPDATE]),
         value: HISTORY_UPDATE,
         color: HISTORY_ACTIONS_COLORS[HISTORY_UPDATE],
       },
       {
-        label: HISTORY_ACTIONS[HISTORY_DELETE],
+        label: $t(HISTORY_ACTIONS[HISTORY_DELETE]),
         value: HISTORY_DELETE,
         color: HISTORY_ACTIONS_COLORS[HISTORY_DELETE],
       },
       {
-        label: HISTORY_ACTIONS[HISTORY_SOLD],
+        label: $t(HISTORY_ACTIONS[HISTORY_SOLD]),
         value: HISTORY_SOLD,
         color: HISTORY_ACTIONS_COLORS[HISTORY_SOLD],
       },

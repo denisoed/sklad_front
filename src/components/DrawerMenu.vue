@@ -71,28 +71,11 @@
 import {
   defineComponent,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UserInfo from 'src/components/UserInfo.vue'
 import FeedbackDialog from 'src/components/FeedbackDialog/index.vue'
 import useProfile from 'src/modules/useProfile'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
-
-const MENU_LIST = [
-  // {
-  //   icon: 'mdi-account-group-outline',
-  //   label: $t('DrawerMenu_82'),
-  //   separator: false,
-  //   disable: true,
-  //   to: '/contacts'
-  // },
-  // {
-  //   icon: 'mdi-book-open-page-variant',
-  //   iconColor: 'primary',
-  //   label: $t('DrawerMenu_90'),
-  //   separator: false,
-  //   disable: false,
-  //   to: '/posts'
-  // }
-]
 
 export default defineComponent({
   name: 'DrawerMenu',
@@ -102,12 +85,31 @@ export default defineComponent({
   },
   setup() {
     const { profile } = useProfile()
+    const { t: $t } = useI18n()
     const { logout, revokeToken } = useJwtMethods()
 
     function changeAccount() {
       revokeToken()
       logout()
     }
+
+    const MENU_LIST = [
+      // {
+      //   icon: 'mdi-account-group-outline',
+      //   label: $t('DrawerMenu_82'),
+      //   separator: false,
+      //   disable: true,
+      //   to: '/contacts'
+      // },
+      // {
+      //   icon: 'mdi-book-open-page-variant',
+      //   iconColor: 'primary',
+      //   label: $t('DrawerMenu_90'),
+      //   separator: false,
+      //   disable: false,
+      //   to: '/posts'
+      // }
+    ]
 
     const MENU_LIST_BOTTOM = [
       {

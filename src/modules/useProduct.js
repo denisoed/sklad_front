@@ -1,4 +1,5 @@
 import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import {
   DELETE_PRODUCT,
@@ -16,6 +17,7 @@ import { useProductsStore } from 'src/stores/products'
 const useProduct = () => {
   const { showError, showSuccess } = useHelpers()
   const { params } = useRoute()
+  const { t: $t } = useI18n()
   const productsStore = useProductsStore()
   const {
     createHistory,

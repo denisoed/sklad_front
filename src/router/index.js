@@ -42,7 +42,6 @@ export default route(function () {
       const skladId = to.params?.skladId;
       const userPermissions = profileStore.getProfile?.permissions?.find(p => p?.sklad?.id === skladId)?.list || [];
       if (pagePermissions.every(pp => !userPermissions?.includes(pp)) && to.path !== HOME_ROUTE) {
-        showError($t('index_45'))
         next({ path: HOME_ROUTE })
       } else {
         next()

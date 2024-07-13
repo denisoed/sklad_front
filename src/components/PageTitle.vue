@@ -64,7 +64,7 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      default: $t('PageTitle_67')
+      default: ''
     },
     hideBackBtn: {
       type: Boolean,

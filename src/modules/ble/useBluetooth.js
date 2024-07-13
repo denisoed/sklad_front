@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import useCordovaBle from 'src/modules/ble/useCordovaBle'
 import useDesktopBle from 'src/modules/ble/useDesktopBle'
 import useHelpers from 'src/modules/useHelpers'
+import { useI18n } from 'vue-i18n'
 
 const useBluetooth = () => {
   const {
@@ -25,6 +26,7 @@ const useBluetooth = () => {
   } = useCordovaBle()
   const { showError } = useHelpers()
   const bleStore = useBleStore()
+  const { t: $t } = useI18n()
   const { device } = storeToRefs(bleStore)
 
   const bluetoothDevices = ref([])

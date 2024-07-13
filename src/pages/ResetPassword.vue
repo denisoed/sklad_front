@@ -59,18 +59,18 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
 import { useRouter, useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ResetPasswordPage',
   setup() {
-    const { t: $t } = useI18n()
     const {
       resetPassword,
     } = useJwtMethods()
+    const { t: $t } = useI18n()
     const { push } = useRouter()
     const { showSuccess, showError } = useHelpers()
     const { query } = useRoute()
