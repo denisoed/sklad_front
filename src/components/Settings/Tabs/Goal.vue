@@ -6,7 +6,7 @@
       :label="$t('Goal_6')"
       :hint="$t('Goal_7')"
       clear
-      :rules="[val => val?.length || 'Обязательное поле']"
+      :rules="[val => val?.length || $t('requiredField')]"
       @update:model-value="onUpdate"
     />
   </div>

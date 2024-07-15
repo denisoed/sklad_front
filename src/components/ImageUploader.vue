@@ -26,7 +26,7 @@
     >
       <span>
         <q-icon name="mdi-image-plus" class="q-mr-sm" />
-        Загрузите фото
+        {{ $t('uploadPhoto') }}
       </span>
     </q-file>
     

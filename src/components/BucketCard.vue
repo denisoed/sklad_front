@@ -38,7 +38,7 @@
       </div>
       
       <div v-if="sklad" class="bucket-card_sklad full-width flex justify-between q-mr-sm">
-        <span>Склад:</span>
+        <span>{{ $t('stock') }}:</span>
         <p>{{ sklad?.name }}</p>
       </div>
 

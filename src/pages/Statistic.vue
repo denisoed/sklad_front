@@ -81,7 +81,7 @@
               {{ props.row.discount }}{{ props.row.discount ? props.row.percentageDiscount ? '%' : 'c' : null }}
             </q-td>
             <q-td class="text-right">
-              {{ props.row.countSizes ? `${props.row.countSizes} шт` : props.row.size }}
+              {{ props.row.countSizes ? `${props.row.countSizes} ${$t('units')}` : props.row.size }}
             </q-td>
             <q-td class="text-right">
               {{ props.row.created_at }}

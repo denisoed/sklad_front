@@ -23,7 +23,7 @@
                 v-vibrate
               >
                 <div v-if="h.isNew" class="notify-list_alert" />
-                <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>
+                <div class="notify-list_item-sklad text-grey q-mb-xs">{{ $t('stock') }}: <b>{{ h.sklad }}</b></div>
                 <div class="notify-list_item-sklad text-grey q-mb-xs">Товар: <b>#{{ h.productId }}</b></div>
                 <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
                 <div class="flex justify-between items-center">

@@ -34,7 +34,7 @@
             class="q-mb-sm text-subtitle2 text-underline"
             v-vibrate
           >
-            Перейти на склад
+            {{ $t('goToStock') }}
           </router-link>
         </div>
         <div>

@@ -391,7 +391,6 @@ export const USER = gql`
       }
       telegramId
       expiredAt
-      onboarded
       permissions {
         list
         sklad {

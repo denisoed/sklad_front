@@ -50,7 +50,7 @@
               :hint="$t('ProductPage_50')"
               tabindex="1"
               clearable
-              :rules="[() => product.sklad || 'Обязательное поле']"
+              :rules="[() => product.sklad || $t('requiredField')]"
             />
 
             <!-- Categories -->
@@ -74,8 +74,8 @@
               :image="product.image"
               class="q-mb-md"
               tabindex="3"
-              :hint="$t('ProductPage_77')"
-              :rules="[val => val?.length || 'Обязательное поле']"
+              :hint="$t('requiredField')"
+              :rules="[val => val?.length || $t('requiredField')]"
               @on-change="product.image = $event"
               @clear="product.image = null"
             />
@@ -86,8 +86,8 @@
                   v-model="product.name"
                   outlined
                   :label="$t('ProductPage_88')"
-                  :hint="$t('ProductPage_89')"
-                  :rules="[val => val?.length || 'Обязательное поле']"
+                  :hint="$t('requiredField')"
+                  :rules="[val => val?.length || $t('requiredField')]"
                   tabindex="4"
                   class="full-width"
                   data-scroller="name"
@@ -111,9 +111,9 @@
               data-scroller="origPrice"
               v-model="product.origPrice"
               :label="$t('ProductPage_113')"
-              :hint="$t('ProductPage_114')"
+              :hint="$t('requiredField')"
               clear
-              :rules="[val => val?.length || 'Обязательное поле']"
+              :rules="[val => val?.length || $t('requiredField')]"
               tabindex="5"
             />
           </div>

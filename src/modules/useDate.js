@@ -76,15 +76,15 @@ const useDate = () => {
     if (minutes < 1) {
       return $t('useDate_74');
     } else if (minutes < 60) {
-      return `${minutes} ${pluralize(minutes, 'min')} назад`;
+      return `${minutes} ${pluralize(minutes, 'min')} ${$t('back')}`;
     } else if (hours < 24) {
-      return `${hours} ${pluralize(hours, 'hour')} назад`;
+      return `${hours} ${pluralize(hours, 'hour')} ${$t('back')}`;
     } else if (days < 7) {
-      return `${days} ${pluralize(days, 'day')} назад`;
+      return `${days} ${pluralize(days, 'day')} ${$t('back')}`;
     } else if (weeks < 4) {
-      return `${weeks} ${pluralize(weeks, 'week')} назад`;
+      return `${weeks} ${pluralize(weeks, 'week')} ${$t('back')}`;
     } else {
-      return `${months} ${pluralize(months, 'month')} назад`;
+      return `${months} ${pluralize(months, 'month')} ${$t('back')}`;
     }
   }
 

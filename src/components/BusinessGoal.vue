@@ -1,15 +1,15 @@
 <template>
   <div class="businnes-goal full-width q-pt-md q-mb-xl">
     <div class="container">
-      <PageTitle :title="`Склад${skladName ? `: ${skladName}` : ''}`">
+      <PageTitle :title="`${$t('stock')}${skladName ? `: ${skladName}` : ''}`">
         <div>
           <q-card-section class="q-pt-none text-primary">
-            Это главная страница склада.
+            {{ $t('businessGoal.title') }}
           </q-card-section>
         </div>
       </PageTitle>
       <div class="flex column items-center text-white q-mt-md">
-        <div class="text-h6">Цель</div>
+        <div class="text-h6">{{ $t('goal') }}</div>
         <div class="text-h4 text-bold">{{ skladGoal }}</div>
         <div>заработать за год</div>
       </div>
@@ -23,8 +23,8 @@
         />
         <ChartCard
           class="businnes-goal_item"
-          :title="$t('BusinessGoal_26')"
-          :body="`${soldCount}шт`"
+          :title="$t('products')"
+          :body="`${soldCount}${$t('units')}`"
           :descr="$t('BusinessGoal_28')"
           :loading="loadingActivities"
         />
