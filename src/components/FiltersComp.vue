@@ -44,32 +44,86 @@
     <q-card style="width: 385px">
       <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl">
         <div class="flex items-center no-wrap column full-width q-gap-sm">
-          <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            Фильтр по цвету
-          </p>
-          <ColorPicker
-            ref="colorPickerRef"
-            :selected="selectedFilters.color"
-            @on-change="selectedFilters.color = $event"
-          />
+          <h6 class="full-width text-left text-bold q-ma-none text-subtitle1">
+            Фильтры
+          </h6>
+          <q-separator class="full-width q-my-xs" />
+          <div v-permissions="[READ_ORIGINAL_PRICE]" class="flex column items-start full-width q-gap-sm q-mb-sm">
+            <h6 class="q-ma-none text-subtitle2 text-left">По оптовой цене</h6>
+            <div class="flex items-center no-wrap full-width q-gap-md">
+              <q-input
+                v-model="selectedFilters.origPrice_gt"
+                outlined
+                placeholder="От"
+                dense
+                height="50px"
+                type="number"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                class="full-width"
+                debounce="500"
+              />
+              <q-input
+                v-model="selectedFilters.origPrice_lt"
+                outlined
+                placeholder="До"
+                dense
+                height="50px"
+                type="number"
+                debounce="500"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                class="full-width"
+              />
+            </div>
+          </div>
+          <div class="flex column items-start full-width q-gap-sm q-mb-sm">
+            <h6 class="q-ma-none text-subtitle2 text-left">По розничной цене</h6>
+            <div class="flex items-center no-wrap full-width q-gap-md">
+              <q-input
+                v-model="selectedFilters.newPrice_gt"
+                outlined
+                placeholder="От"
+                dense
+                height="50px"
+                type="number"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                class="full-width"
+                debounce="500"
+              />
+              <q-input
+                v-model="selectedFilters.newPrice_lt"
+                outlined
+                placeholder="До"
+                dense
+                height="50px"
+                type="number"
+                debounce="500"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                class="full-width"
+              />
+            </div>
+          </div>
+          <div class="flex column items-start full-width">
+            <h6 class="q-ma-none text-subtitle2 text-left">По цвету</h6>
+            <ColorPicker
+              ref="colorPickerRef"
+              :selected="selectedFilters.color"
+              @on-change="selectedFilters.color = $event"
+            />
+          </div>
         </div>
         <q-separator class="full-width q-my-md" />
         <div class="flex justify-between no-wrap q-gap-md full-width">
           <q-btn
-            style="height:40px;"
             color="deep-orange"
             label="Сбросить"
             push
             @click="clear"
             v-vibrate
-          />
-          <q-btn
-            class="button-size q-mr-auto"
-            color="grey"
-            icon="mdi-close"
-            push
-            @click="leftDrawerOpen = false"
-            v-vibrate
+            class="button-size"
           />
           <q-btn
             class="button-size"
@@ -94,6 +148,8 @@ import {
   reactive,
   watch,
 } from 'vue'
+import { READ_ORIGINAL_PRICE } from 'src/permissions';
+
 import ColorPicker from 'src/components/ColorPicker.vue'
 import BtnBack from 'src/components/BtnBack.vue'
 
@@ -116,6 +172,10 @@ export default defineComponent({
     const scrolledTop = ref(0)
     const selectedFilters = reactive({
       color: [],
+      origPrice_gt: null,
+      origPrice_lt: null,
+      newPrice_gt: null,
+      newPrice_lt: null,
       name_contains: null
     })
     const hasFilters = computed(() => Object.values(selectedFilters).some(f => f?.length));
@@ -136,14 +196,20 @@ export default defineComponent({
       }
     }
 
+    function filterInvalid(obj) {
+      return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v))
+    }
+
     function search() {
-      emit('on-search', hasFilters.value ? selectedFilters : {})
+      emit('on-search', hasFilters.value ? filterInvalid(selectedFilters) : {})
     }
 
     function clear() {
       colorPickerRef.value.clear()
       selectedFilters.color = []
       selectedFilters.name_contains = null
+      selectedFilters.origPrice_gt = 0
+      selectedFilters.origPrice_lt = 0
       toggleLeftDrawer()
     }
 
@@ -161,6 +227,7 @@ export default defineComponent({
       selectedFilters,
       colorPickerRef,
       hasFilters,
+      READ_ORIGINAL_PRICE
     }
   }
 })
