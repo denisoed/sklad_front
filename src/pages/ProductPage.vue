@@ -367,7 +367,6 @@ import {
   defineComponent,
   reactive,
   watch,
-  ref
 } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import Selector from 'src/components/UI/Selector.vue'
@@ -431,6 +430,7 @@ export default defineComponent({
     const TODAY = Date.now()
     const $q = useQuasar()
     const { params, query } = useRoute()
+    const { replace, push } = useRouter()
     const { showSuccess, showError, difference } = useHelpers()
     const { profile } = useProfile()
     const { sizes, fetchSizes } = useSizes()
@@ -448,8 +448,7 @@ export default defineComponent({
       errorCost
     } = useCosts()
     const { sklad, sklads, onCreateNew, fetchSklads } = useSklads()
-    const { push } = useRouter()
-
+  
     const {
       mutate: uploadImage,
       error: uploadImageError,
@@ -666,6 +665,7 @@ export default defineComponent({
               }
             })
             clearDraft()
+            replace(`/products?product=${response.data.createProduct.product.id}`)
           } else {
             await removeImage({ id: uploaded.data.upload.id })
             showError('Не удалось создать продукт. Проблемы на сервере.')

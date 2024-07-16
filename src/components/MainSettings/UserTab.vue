@@ -84,9 +84,8 @@
       </template>
       <template #body>
         <label class="flex items-center cursor-pointer">
-          <q-icon v-if="isDark" name="mdi-moon-waxing-crescent mdi-rotate-45" class="q-mr-md" />
-          <q-icon v-else name="mdi-white-balance-sunny" class="q-mr-md" />
-          <span>{{ isDark ? $t('mainSettings.userTab.theme.dark') : $t('mainSettings.userTab.theme.light') }}</span>
+          <q-icon name="mdi-moon-waxing-crescent mdi-rotate-45" class="q-mr-md" />
+          <span>{{ $t('mainSettings.userTab.theme.dark')}}</span>
           <q-toggle v-model="isDark" class="q-ml-auto" />
         </label>
       </template>
@@ -143,11 +142,11 @@ const LANGS = [
     value: 'ru-RU',
     flag: RU
   },
-  {
-    label: 'Кыргызча',
-    value: 'kg-KG',
-    flag: KG
-  },
+  // {
+  //   label: 'Кыргызча',
+  //   value: 'kg-KG',
+  //   flag: KG
+  // },
 ]
 
 export default defineComponent({

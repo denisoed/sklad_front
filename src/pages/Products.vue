@@ -145,27 +145,32 @@
 
     <!-- Dialog -->
     <q-dialog v-model="imagePreviewDialog" position="bottom">
-      <q-card class="full-width">
-        <q-img
-          :src="imagePreview"
-          spinner-size="md"
-          spinner-color="grey"
-        />
-        <q-btn
-          round
-          push
-          color="deep-orange"
-          size="sm"
-          v-close-popup
-          class="absolute-top-right q-mr-md q-mt-md"
-          v-vibrate
-        >
-          <q-icon
-            name="mdi-close"
-            color="white"
+      <q-swipe-to-close
+        v-model="imagePreviewDialog"
+        direction="down"
+      >
+        <q-card class="full-width">
+          <q-img
+            :src="imagePreview"
+            spinner-size="md"
+            spinner-color="grey"
           />
-        </q-btn>
-      </q-card>
+          <q-btn
+            round
+            push
+            color="deep-orange"
+            size="sm"
+            v-close-popup
+            class="absolute-top-right q-mr-md q-mt-md"
+            v-vibrate
+          >
+            <q-icon
+              name="mdi-close"
+              color="white"
+            />
+          </q-btn>
+        </q-card>
+      </q-swipe-to-close>
     </q-dialog>
   </q-page>
 </template>
@@ -175,9 +180,9 @@ import {
   computed,
   defineComponent,
   onBeforeMount,
-  nextTick,
   ref,
-  reactive
+  reactive,
+  onMounted
 } from 'vue'
 import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
@@ -305,21 +310,19 @@ export default defineComponent({
 
     // Scroll to card by id from url and highlight it
     function onScrollToCard() {
-      nextTick(() => {
-        const id = query.product;
-        const element = document.getElementById(id)
-        if (element) {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center',
-          })
-          element.classList.add('highlight')
-          setTimeout(() => {
-            element.classList.remove('highlight')
-          }, 10000)
-        }
-      })
+      const id = query.product;
+      const element = document.getElementById(id)
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        })
+        element.classList.add('highlight')
+        setTimeout(() => {
+          element.classList.remove('highlight')
+        }, 10000)
+      }
     }
 
     async function loadData() {
@@ -369,8 +372,13 @@ export default defineComponent({
     }
     
     onBeforeMount(() => {
-      // onScrollToCard()
       loadData();
+    })
+
+    onMounted(() => {
+      setTimeout(() => {
+        onScrollToCard()
+      }, 300);
     })
 
     return {
@@ -421,7 +429,7 @@ export default defineComponent({
 }
 
 .highlight {
-  box-shadow: rgba(25, 118, 210, 1) 0px 0px 3px 3px;
+  box-shadow: rgba(var(--q-primary-rgb), 1) 0px 0px 3px 3px;
   animation: fade-out 10s forwards;
 }
 
@@ -440,7 +448,7 @@ export default defineComponent({
 
 @keyframes fade-out {
   0% {
-    box-shadow: rgba(25, 118, 210, 0.6) 0px 0px 3px 3px;
+    box-shadow: rgba(var(--q-primary-rgb), 0.6) 0px 0px 3px 3px;
   }
   100% {
     box-shadow: var(--box-shadow);
