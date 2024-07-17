@@ -59,7 +59,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .markdown-body {
-  background-color: var(--main-bg);
+  background-color: transparent;
   color: var(--text-black);
 }
 

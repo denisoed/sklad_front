@@ -45,6 +45,7 @@ export const YEAR = 'year'
 export const SKLAD_DRAFT_KEY = 'sklad-draft-product'
 export const I18N_LOCALE = 'sklad_i18n_locale'
 export const IS_DARK_MODE = 'sklad_is_dark_mode'
+export const SKLAD_PWA_INSTALLED = 'sklad_pwa_installed'
 
 // LINKS
 export const CONNECT_GOOGLE = `${process.env.API_URL}/connect/google`
