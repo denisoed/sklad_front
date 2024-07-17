@@ -18,6 +18,11 @@ const useTheme = () => {
     ).setAttribute(
       'content', content
     );
+    const telegram = window?.Telegram?.WebApp;
+    if (telegram?.initData) {
+      telegram.setBackgroundColor(isDark.value ? MAIN_COLOR_DARK : MAIN_COLOR_LIGHT)
+      telegram.setHeaderColor(isDark.value ? MAIN_COLOR_DARK : MAIN_COLOR_LIGHT)
+    }
   }
 
   function toggleTheme() {
@@ -26,8 +31,8 @@ const useTheme = () => {
     LocalStorage.set(IS_DARK_MODE, isDark.value);
     const telegram = window?.Telegram?.WebApp;
     if (telegram?.initData) {
-      telegram.setBackgroundColor(isDark.value ? '#222831' : '#f7f7f7')
-      telegram.setHeaderColor(isDark.value ? '#222831' : '#f7f7f7')
+      telegram.setBackgroundColor(isDark.value ? MAIN_COLOR_DARK : MAIN_COLOR_LIGHT)
+      telegram.setHeaderColor(isDark.value ? MAIN_COLOR_DARK : MAIN_COLOR_LIGHT)
     }
   }
 
