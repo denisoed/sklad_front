@@ -17,9 +17,9 @@
           </div>
           <q-separator class="full-width q-my-md" />
           <div class="flex">
-            <h6 class="flex q-ma-none q-mb-sm">Как установить Sklad на рабочий стол (Android и iPhone)</h6>
+            <h6 class="flex q-ma-none q-mb-sm">Внимание!</h6>
             <p class="q-ma-none text-subtitle2">
-              Если вам неудобно использовать Sklad через Telegram, вы можете установить его на рабочий как полноценное приложение. Это позволит быстро и удобно получать доступ к складу без необходимости каждый раз открывать Telegram.
+              Если вам неудобно использовать Sklad через Telegram или браузер, вы можете установить его на рабочий как полноценное приложение. Это позволит быстро и удобно получать доступ к складу без необходимости каждый раз открывать Telegram.
             </p>
           </div>
           <q-separator class="full-width q-my-md" />
@@ -67,7 +67,6 @@ export default defineComponent({
     }
     
     function install() {
-      close()
       emit('on-install')
     }
 

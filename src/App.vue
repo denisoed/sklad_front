@@ -15,7 +15,7 @@
 
 <script>
 import { LocalStorage } from 'quasar'
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { SKLAD_PWA_INSTALLED } from 'src/config'
 
 import InstallPwaDialog from 'src/components/Dialogs/InstallPwaDialog.vue'
@@ -26,12 +26,13 @@ export default defineComponent({
     InstallPwaDialog,
   },
   setup() {
+    const telegram = window?.Telegram?.WebApp;
     const offline = ref(false);
     const instalPwaDialog = ref(false);
+    const deferredPrompt = ref();
 
-    function checkInstallPwa() {
-      const telegram = window?.Telegram?.WebApp;
-      if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED) && telegram?.initData) {
+    function openInstallPwaOnlyTelegram() {
+      if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED)) {
         instalPwaDialog.value = true;
       }
     }
@@ -42,7 +43,22 @@ export default defineComponent({
     }
 
     function onInstallPwa() {
-      window.open('https://sklad.work/#/post/1', '_blank');
+      if (!telegram?.initData) {
+        deferredPrompt.value.prompt();
+        deferredPrompt.value.userChoice
+          .then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              LocalStorage.set(SKLAD_PWA_INSTALLED, true);
+              instalPwaDialog.value = false;
+            }
+          });
+      } else {
+        window.open('https://sklad.work/', '_blank');
+      }
+    }
+
+    function beforeinstallprompt(e) {
+      deferredPrompt.value = e;
     }
 
     onMounted(() => {
@@ -54,14 +70,20 @@ export default defineComponent({
         offline.value = true;
       });
 
-      checkInstallPwa();
+      openInstallPwaOnlyTelegram();
+
+      window.addEventListener('beforeinstallprompt', beforeinstallprompt);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('beforeinstallprompt', beforeinstallprompt);
     });
 
     return {
       offline,
       instalPwaDialog,
       onCloseInstallPwaDialog,
-      onInstallPwa
+      onInstallPwa,
     }
   }
 })
