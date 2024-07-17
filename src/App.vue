@@ -6,17 +6,19 @@
     </div>
     <router-view />
     <InstallPwaDialog
-      :opened="instalPwaDialog"
+      :opened="instalTgPwaDialog"
       @on-close="onCloseInstallPwaDialog"
       @on-install="onInstallPwa"
     />
+    <pwa-install ref="pwaInstallerRef" />
   </div>
 </template>
 
 <script>
 import { LocalStorage } from 'quasar'
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { SKLAD_PWA_INSTALLED } from 'src/config'
+import '@khmyznikov/pwa-install'
 
 import InstallPwaDialog from 'src/components/Dialogs/InstallPwaDialog.vue'
 
@@ -28,37 +30,23 @@ export default defineComponent({
   setup() {
     const telegram = window?.Telegram?.WebApp;
     const offline = ref(false);
-    const instalPwaDialog = ref(false);
-    const deferredPrompt = ref();
+    const pwaInstallerRef = ref();
+    const instalTgPwaDialog = ref(false);
 
     function openInstallPwaOnlyTelegram() {
-      if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED)) {
-        instalPwaDialog.value = true;
+      if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED) && telegram?.initData) {
+        instalTgPwaDialog.value = true;
       }
     }
 
     function onCloseInstallPwaDialog() {
-      instalPwaDialog.value = false;
+      instalTgPwaDialog.value = false;
       LocalStorage.set(SKLAD_PWA_INSTALLED, true);
     }
 
     function onInstallPwa() {
-      if (!telegram?.initData) {
-        deferredPrompt.value.prompt();
-        deferredPrompt.value.userChoice
-          .then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-              LocalStorage.set(SKLAD_PWA_INSTALLED, true);
-              instalPwaDialog.value = false;
-            }
-          });
-      } else {
-        window.open('https://sklad.work/', '_blank');
-      }
-    }
-
-    function beforeinstallprompt(e) {
-      deferredPrompt.value = e;
+      window.open('https://sklad.work/', '_blank');
+      onCloseInstallPwaDialog();
     }
 
     onMounted(() => {
@@ -71,19 +59,14 @@ export default defineComponent({
       });
 
       openInstallPwaOnlyTelegram();
-
-      window.addEventListener('beforeinstallprompt', beforeinstallprompt);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener('beforeinstallprompt', beforeinstallprompt);
     });
 
     return {
       offline,
-      instalPwaDialog,
+      instalTgPwaDialog,
       onCloseInstallPwaDialog,
       onInstallPwa,
+      pwaInstallerRef,
     }
   }
 })
