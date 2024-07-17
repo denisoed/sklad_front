@@ -30,7 +30,8 @@ export default defineComponent({
     const instalPwaDialog = ref(false);
 
     function checkInstallPwa() {
-      if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED)) {
+      const telegram = window?.Telegram?.WebApp;
+      if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED) && telegram?.initData) {
         instalPwaDialog.value = true;
       }
     }
