@@ -41,8 +41,22 @@
         </q-item-section>
       </q-item>
     </FeedbackDialog>
-
+    
     <q-list class="q-mt-auto">
+      <q-item
+        exact
+        clickable
+        v-ripple
+        v-vibrate
+        to="/post/1"
+      >
+        <q-item-section avatar>
+          <q-img src="~assets/logo.svg" class="drawer-install-logo" />
+        </q-item-section>
+        <q-item-section>
+          <span>Установить</span>
+        </q-item-section>
+      </q-item>
       <template v-for="(item, index) in MENU_LIST_BOTTOM" :key="index">
         <q-item
           v-if="item.visible"
@@ -141,5 +155,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .q-item {
   color: var(--text-black);
+}
+
+.drawer-install-logo {
+  width: 24px;
 }
 </style>
