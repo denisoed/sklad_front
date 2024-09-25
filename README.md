@@ -1,4 +1,10 @@
-# Sklad front
+# Sklad
+
+Your smart merchandise management assistant! 📦💼
+
+![Preview](preview.png)
+
+[Demo](https://t.me/SkladManagerBot)
 
 ## Install the dependencies
 
