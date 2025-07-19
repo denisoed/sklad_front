@@ -66,7 +66,8 @@ module.exports = configure(function (ctx) {
 
       env: {
         API_URL: process.env.API_URL,
-        GRAPHQL_URI: process.env.GRAPHQL_URI
+        GRAPHQL_URI: process.env.GRAPHQL_URI,
+        DEV_TG_INIT_DATA_UNSAFE: process.env.DEV_TG_INIT_DATA_UNSAFE
       },
 
       // transpile: false,

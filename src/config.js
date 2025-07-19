@@ -47,6 +47,9 @@ export const I18N_LOCALE = 'sklad_i18n_locale'
 export const IS_DARK_MODE = 'sklad_is_dark_mode'
 export const SKLAD_PWA_INSTALLED = 'sklad_pwa_installed'
 
+// Telegram
+export const DEV_TG_INIT_DATA_UNSAFE = process.env.DEV_TG_INIT_DATA_UNSAFE
+
 // LINKS
 export const CONNECT_GOOGLE = `${process.env.API_URL}/connect/google`
 
