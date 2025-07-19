@@ -202,3 +202,35 @@ h6 {
     background: rgba(255, 255, 255, 0.05);
   }
 }
+
+// Input fields border radius
+.q-field__control,
+.q-input .q-field__control-container,
+.q-select .q-field__control-container,
+.q-textarea .q-field__control-container {
+  border-radius: var(--border-radius-sm);
+}
+
+// For outlined fields
+.q-field--outlined .q-field__control {
+  border-radius: var(--border-radius-sm);
+}
+
+// For filled fields
+.q-field--filled .q-field__control {
+  border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+}
+
+.q-field--filled .q-field__control:before {
+  border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+}
+
+// Utils
+
+.border-radius-sm {
+  border-radius: var(--border-radius-sm);
+}
+
+.border-radius-md {
+  border-radius: var(--border-radius-md);
+}

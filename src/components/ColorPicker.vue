@@ -117,6 +117,7 @@ export default defineComponent({
   background-color: var(--block-bg);
   box-shadow: var(--box-shadow);
   padding: 4px;
+  border-radius: var(--border-radius-sm);
   
   &-colors {
     height: 140px;

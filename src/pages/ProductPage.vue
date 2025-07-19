@@ -129,8 +129,8 @@
             />
           </div>
           <div
-            class="full-width"
-            style="border: 1px solid var(--border-color);border-radius: 4px"
+            class="full-width border-radius-sm"
+            style="border: 1px solid var(--border-color);"
           >
             <q-checkbox
               v-model="product.withDiscount"
@@ -186,8 +186,8 @@
           <!-- Sizes -->
           <div class="col-12">
             <div
-              class="full-width q-mt-md"
-              style="border: 1px solid var(--border-color);border-radius: 4px;"
+              class="full-width q-mt-md border-radius-sm"
+              style="border: 1px solid var(--border-color);"
             >
               <div class="flex q-gap-md items-center justify-between">
                 <q-checkbox
@@ -225,6 +225,7 @@
                     class="q-mt-sm"
                     to="/main-settings"
                     v-vibrate
+                    push
                   >
                     Настроить размеры
                   </q-btn>

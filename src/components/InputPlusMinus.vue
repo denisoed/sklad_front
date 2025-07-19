@@ -137,6 +137,7 @@ export default defineComponent({
 
     .q-btn {
       width: calc(33.33% - 4px);
+      border-radius: var(--border-radius-sm);
     }
 
     .q-field--dense .q-field__control, .q-field--dense .q-field__marginal {
