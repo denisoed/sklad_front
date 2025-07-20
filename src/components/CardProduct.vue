@@ -32,14 +32,14 @@
         <div class="card-product_info">
           <div v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: sklad?.id }" class="card-product_price">
             <span>Опт цена</span>
-            <p v-if="origPrice">{{ origPrice }}</p>
+            <p v-if="origPrice"><PriceFormatter :value="origPrice" /></p>
             <p v-else>n/a</p>
           </div>
           <div class="card-product_price">
             <span>Роз цена</span>
             <div v-if="newPrice" class="flex">
-              <p :class="{ 'with-discount': isDiscountToday && withDiscount }">{{ newPrice }}</p>
-              <p v-if="isDiscountToday && withDiscount">{{ discountPrice }}</p>
+              <p :class="{ 'with-discount': isDiscountToday && withDiscount }"><PriceFormatter :value="newPrice" /></p>
+              <p v-if="isDiscountToday && withDiscount"><PriceFormatter :value="discountPrice" /></p>
             </div>
             <p v-else>n/a</p>
           </div>
@@ -102,9 +102,13 @@ import {
 } from 'vue'
 import { FILTER_FORMAT } from 'src/config'
 import { READ_ORIGINAL_PRICE } from 'src/permissions'
+import PriceFormatter from 'src/components/PriceFormatter.vue'
 
 export default defineComponent({
   name: 'CardProduct',
+  components: {
+    PriceFormatter
+  },
   props: {
     id: {
       type: String,

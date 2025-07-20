@@ -72,13 +72,15 @@
               {{ props.row.name }}
             </q-td>
             <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right">
-              {{ props.row.origPrice }}
+              <PriceFormatter :value="props.row.origPrice" />
             </q-td>
             <q-td class="text-right">
-              {{ props.row.newPrice }}
+              <PriceFormatter :value="props.row.newPrice" />
             </q-td>
             <q-td class="text-right">
-              {{ props.row.discount }}{{ props.row.discount ? props.row.percentageDiscount ? '%' : 'c' : null }}
+              <template v-if="props.row.discount && props.row.percentageDiscount">{{ props.row.discount }}%</template>
+              <template v-else-if="props.row.discount"><PriceFormatter :value="props.row.discount" />c</template>
+              <template v-else>-</template>
             </q-td>
             <q-td class="text-right">
               {{ props.row.countSizes ? `${props.row.countSizes} шт` : props.row.size }}
@@ -177,6 +179,7 @@ import useHistory from 'src/modules/useHistory'
 import useHelpers from 'src/modules/useHelpers'
 import PageTitle from 'src/components/PageTitle.vue'
 import FilterDates from 'src/components/FilterDates.vue'
+import PriceFormatter from 'src/components/PriceFormatter.vue'
 import { useLazyQuery, useMutation } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
 import {
@@ -199,7 +202,8 @@ export default defineComponent({
   name: 'StatisticPage',
   components: {
     PageTitle,
-    FilterDates
+    FilterDates,
+    PriceFormatter
   },
   setup() {
     const $q = useQuasar()

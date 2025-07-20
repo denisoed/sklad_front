@@ -86,13 +86,13 @@
         <q-td key="price" :props="props">
           <div class="price-column">
             <div v-if="props.row.withDiscount" class="text-weight-bold text-red">
-              {{ props.row.discountPrice }}
+              <PriceFormatter :value="props.row.discountPrice" />
             </div>
             <div v-else class="text-weight-bold">
-              {{ props.row.newPrice || props.row.origPrice }}
+              <PriceFormatter :value="props.row.newPrice || props.row.origPrice" />
             </div>
             <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
-              {{ props.row.origPrice }}
+              <PriceFormatter :value="props.row.origPrice" />
             </div>
           </div>
         </q-td>
@@ -104,10 +104,10 @@
             <q-btn
               v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: props.row?.sklad?.id }"
               round
-              outline
+              push
               size="sm"
               icon="mdi-eye"
-              color="primary"
+              text-color="primary"
               :to="`/sklad/${props.row?.sklad?.id}/product/${props.row.id}`"
               v-vibrate
             />
@@ -120,11 +120,11 @@
                 @submit="$emit('addCountToBucket', props.row, $event)"
               >
                 <q-btn
+                  push
                   round
-                  outline
                   size="sm"
                   icon="mdi-basket-plus-outline"
-                  color="deep-orange"
+                  text-color="deep-orange"
                   v-vibrate
                 />
               </ModalCountToBucket>
@@ -137,10 +137,10 @@
               >
                 <q-btn
                   round
-                  outlines
+                  push
                   size="sm"
                   icon="mdi-basket-plus-outline"
-                  color="deep-orange"
+                  text-color="deep-orange"
                   v-vibrate
                 />
               </ModalSizesToBucket>
@@ -157,6 +157,7 @@ import { defineComponent, ref } from 'vue'
 import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
+import PriceFormatter from 'src/components/PriceFormatter.vue'
 import {
   CAN_SELL_PRODUCT,
   CAN_UPDATE_PRODUCT
@@ -167,7 +168,8 @@ export default defineComponent({
   components: {
     ModalSizesToBucket,
     ModalCountToBucket,
-    ColorDisplay
+    ColorDisplay,
+    PriceFormatter
   },
   props: {
     products: {
