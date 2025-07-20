@@ -4,7 +4,7 @@
       <PageTitle title="Отчеты по всем складам" />
       <FilterDates @on-change="load" />
       <div
-        class="costs_type flex items-center q-pa-md q-mb-md q-mt-md"
+        class="costs_type flex items-center q-pa-md q-mb-md q-mt-md border-radius-sm"
         style="background-color: rgb(255 0 255 / 8%);"
       >
         <div class="costs_type-label q-ma-none">Касса</div>
@@ -51,7 +51,7 @@
         :pagination="pagination"
         row-key="name"
         separator="cell"
-        class="statistic-table full-width q-mb-sm"
+        class="statistic-table full-width q-mb-sm border-radius-sm"
         hide-pagination
         no-data-label="Нет данных"
       >

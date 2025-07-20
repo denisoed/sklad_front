@@ -27,50 +27,20 @@
       />
 
       <template v-if="listProducts?.length">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between q-mb-sm">
           <div class="flex items-center q-gap-sm">
-            <p class="q-mb-sm text-subtitle2">Товары</p>
+            <p class="q-mb-none text-subtitle2">Товары</p>
             <q-badge color="primary" :label="listProducts.length" />
-            <q-chip 
-              v-if="hasActiveFilters"
-              dense
-              color="deep-orange"
-              text-color="white"
-              icon="mdi-filter"
-              clickable
-              @click="showFiltersInfo = !showFiltersInfo"
-            >
-              {{ activeFiltersCount }} фильтр{{ activeFiltersCount > 1 ? (activeFiltersCount > 4 ? 'ов' : 'а') : '' }}
-            </q-chip>
           </div>
           <router-link
             :to="`/sklad/${selectedSkladId}`"
-            class="q-mb-sm text-subtitle2 text-underline"
+            class="text-subtitle2 text-underline"
             v-vibrate
           >
             Перейти на склад
           </router-link>
         </div>
-        
-        <!-- Информация о примененных фильтрах -->
-        <div v-if="showFiltersInfo && hasActiveFilters" class="filters-info q-mb-md">
-          <q-card flat bordered class="q-pa-sm">
-            <div class="text-caption text-grey-7 q-mb-xs">Активные фильтры:</div>
-            <div class="flex flex-wrap q-gap-xs">
-              <q-chip
-                v-for="filter in activeFiltersInfo"
-                :key="filter.key"
-                dense
-                removable
-                color="grey-3"
-                text-color="dark"
-                @remove="removeFilter(filter.key)"
-              >
-                {{ filter.label }}
-              </q-chip>
-            </div>
-          </q-card>
-        </div>
+
         <div>
           <CardProduct
             v-for="(p, i) of listProducts"

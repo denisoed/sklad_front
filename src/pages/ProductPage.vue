@@ -197,7 +197,7 @@
                 />
               </div>
               <h6
-                class="q-ma-none q-px-sm  text-subtitle2"
+                class="q-ma-none q-px-sm  text-subtitle2 text-grey-5"
               >
                 Этот параметр позволяет использовать размеры для товара
               </h6>
