@@ -103,7 +103,8 @@ const useSklads = () => {
     userId,
     skladParams = {},
     categoriesParams = {},
-    productsParams = {}
+    productsParams = {},
+    sortProducts = null
   ) {
     try {
       isLoading.value = true;
@@ -115,7 +116,8 @@ const useSklads = () => {
             ...skladParams,
           },
           whereCategories: categoriesParams,
-          whereProducts: productsParams
+          whereProducts: productsParams,
+          sortProducts
         },
         fetchPolicy: 'network-only'
       })

@@ -28,7 +28,21 @@
 
       <template v-if="listProducts?.length">
         <div class="flex items-center justify-between">
-          <p class="q-mb-sm text-subtitle2">Товары</p>
+          <div class="flex items-center q-gap-sm">
+            <p class="q-mb-sm text-subtitle2">Товары</p>
+            <q-badge color="primary" :label="listProducts.length" />
+            <q-chip 
+              v-if="hasActiveFilters"
+              dense
+              color="deep-orange"
+              text-color="white"
+              icon="mdi-filter"
+              clickable
+              @click="showFiltersInfo = !showFiltersInfo"
+            >
+              {{ activeFiltersCount }} фильтр{{ activeFiltersCount > 1 ? (activeFiltersCount > 4 ? 'ов' : 'а') : '' }}
+            </q-chip>
+          </div>
           <router-link
             :to="`/sklad/${selectedSkladId}`"
             class="q-mb-sm text-subtitle2 text-underline"
@@ -36,6 +50,26 @@
           >
             Перейти на склад
           </router-link>
+        </div>
+        
+        <!-- Информация о примененных фильтрах -->
+        <div v-if="showFiltersInfo && hasActiveFilters" class="filters-info q-mb-md">
+          <q-card flat bordered class="q-pa-sm">
+            <div class="text-caption text-grey-7 q-mb-xs">Активные фильтры:</div>
+            <div class="flex flex-wrap q-gap-xs">
+              <q-chip
+                v-for="filter in activeFiltersInfo"
+                :key="filter.key"
+                dense
+                removable
+                color="grey-3"
+                text-color="dark"
+                @remove="removeFilter(filter.key)"
+              >
+                {{ filter.label }}
+              </q-chip>
+            </div>
+          </q-card>
         </div>
         <div>
           <CardProduct
@@ -188,7 +222,7 @@ import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
 import useBucket from 'src/modules/useBucket'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk';
 
@@ -230,6 +264,7 @@ export default defineComponent({
     const bulkStore = useBulkStore();
     const { bulkProducts } = storeToRefs(bulkStore);
     const { params, query } = useRoute()
+    const router = useRouter()
     const {
       sklad,
       sklads,
@@ -252,6 +287,118 @@ export default defineComponent({
     const imagePreview = ref(null)
     const selectedCategoryId = ref(params?.categoryId || ALL_TAB.id)
     const selectedFilters = reactive({})
+    const showFiltersInfo = ref(false)
+    
+    // Вычисляемые свойства для работы с фильтрами
+    const hasActiveFilters = computed(() => {
+      const { sort, ...filters } = selectedFilters.value || {}
+      return Object.keys(filters).some(key => {
+        const value = filters[key]
+        if (Array.isArray(value)) return value.length > 0
+        if (typeof value === 'boolean') return value
+        return value !== null && value !== undefined && value !== ''
+      })
+    })
+    
+    const activeFiltersCount = computed(() => {
+      const { sort, ...filters } = selectedFilters.value || {}
+      return Object.keys(filters).filter(key => {
+        const value = filters[key]
+        if (Array.isArray(value)) return value.length > 0
+        if (typeof value === 'boolean') return value
+        return value !== null && value !== undefined && value !== ''
+      }).length
+    })
+    
+    const activeFiltersInfo = computed(() => {
+      const { sort, ...filters } = selectedFilters.value || {}
+      const info = []
+      
+      const filterLabels = {
+        name_contains: 'Поиск по имени',
+        withDiscount: 'Со скидкой',
+        priceFrom: 'Цена от',
+        priceTo: 'Цена до',
+        color_in: 'Цвета',
+        sizes_contains: 'Размеры',
+        hasImage: 'С изображением',
+        noImage: 'Без изображения',
+        lowStock: 'Заканчивается',
+        inStock: 'В наличии'
+      }
+      
+      Object.keys(filters).forEach(key => {
+        const value = filters[key]
+        if (Array.isArray(value) && value.length > 0) {
+          info.push({
+            key,
+            label: `${filterLabels[key] || key}: ${value.join(', ')}`
+          })
+        } else if (typeof value === 'boolean' && value) {
+          info.push({
+            key,
+            label: filterLabels[key] || key
+          })
+        } else if (value !== null && value !== undefined && value !== '') {
+          info.push({
+            key,
+            label: `${filterLabels[key] || key}: ${value}`
+          })
+        }
+      })
+      
+      return info
+    })
+    
+    // Функция для удаления отдельного фильтра
+    function removeFilter(filterKey) {
+      if (selectedFilters.value[filterKey] !== undefined) {
+        if (Array.isArray(selectedFilters.value[filterKey])) {
+          selectedFilters.value[filterKey] = []
+        } else if (typeof selectedFilters.value[filterKey] === 'boolean') {
+          selectedFilters.value[filterKey] = false
+        } else {
+          selectedFilters.value[filterKey] = null
+        }
+        
+        // Применяем обновленные фильтры
+        onSearch(selectedFilters.value)
+      }
+    }
+    
+    // Инициализация фильтров из URL
+    function initFiltersFromUrl() {
+      try {
+        if (query.filters) {
+          const urlFilters = JSON.parse(decodeURIComponent(query.filters))
+          Object.assign(selectedFilters, urlFilters)
+        }
+      } catch (error) {
+        console.warn('Не удалось загрузить фильтры из URL:', error)
+      }
+    }
+    
+    // Сохранение фильтров в URL
+    function saveFiltersToUrl(filters) {
+      const hasFilters = Object.keys(filters).some(key => {
+        const value = filters[key]
+        if (Array.isArray(value)) return value.length > 0
+        if (typeof value === 'boolean') return value
+        return value !== null && value !== undefined && value !== ''
+      })
+      
+      if (hasFilters) {
+        router.replace({
+          query: {
+            ...query,
+            filters: encodeURIComponent(JSON.stringify(filters))
+          }
+        })
+      } else {
+        const { filters: _, ...newQuery } = query
+        router.replace({ query: newQuery })
+      }
+    }
 
     const categories = computed(
       () => {
@@ -326,13 +473,16 @@ export default defineComponent({
     }
 
     async function loadData() {
+      // Извлекаем sort из selectedFilters для правильной передачи параметров
+      const { sort, ...otherFilters } = selectedFilters.value || {};
+      
       const resp = await fetchSkladProducts(
         profile.value.id,
         {
-          products: selectedFilters.value
+          products: otherFilters
         },
         {
-          products: selectedFilters.value
+          products: otherFilters
         },
         {
           _or: [
@@ -341,18 +491,42 @@ export default defineComponent({
               ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
             },
           ],
-          ...selectedFilters.value
-        }
+          ...otherFilters
+        },
+        sort || null // Передаем сортировку как отдельный параметр
       )
       return resp;
     }
 
     async function onSearch(filters = {}) {
-      selectedFilters.value = filters;
-      selectedCategoryId.value = ALL_TAB.id;
-      selectedSkladId.value = ALL_TAB.id;
+      // Извлекаем сортировку из фильтров
+      const { sort, ...otherFilters } = filters;
+      
+      selectedFilters.value = {
+        ...otherFilters,
+        sort // Сохраняем сортировку отдельно
+      };
+      
+      // Сохраняем фильтры в URL
+      saveFiltersToUrl(filters);
+      
+      // Если есть фильтры поиска, сбрасываем выбор категории и склада
+      const hasSearchFilters = Object.keys(otherFilters).some(key => 
+        key !== 'sort' && otherFilters[key] !== null && otherFilters[key] !== undefined && 
+        (Array.isArray(otherFilters[key]) ? otherFilters[key].length > 0 : otherFilters[key] !== '')
+      );
+      
+      if (hasSearchFilters) {
+        selectedCategoryId.value = ALL_TAB.id;
+        selectedSkladId.value = ALL_TAB.id;
+      }
+      
       const filtered = await loadData();
-      selectedSkladId.value = filtered?.[0]?.id;
+      
+      // Если есть результаты и нет выбранного склада, выбираем первый
+      if (filtered?.length && selectedSkladId.value === ALL_TAB.id) {
+        selectedSkladId.value = filtered[0]?.id;
+      }
     }
 
     function onChangeSklad(id) {
@@ -372,6 +546,7 @@ export default defineComponent({
     }
     
     onBeforeMount(() => {
+      initFiltersFromUrl();
       loadData();
     })
 
@@ -404,7 +579,12 @@ export default defineComponent({
       listProducts,
       imagePreviewDialog,
       imagePreview,
-      onOpenImagePreview
+      onOpenImagePreview,
+      hasActiveFilters,
+      activeFiltersCount,
+      activeFiltersInfo,
+      showFiltersInfo,
+      removeFilter
     }
   }
 })

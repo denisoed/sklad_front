@@ -3,32 +3,27 @@
     <div class="color-picker-colors">
       <div class="color-picker-box">
         <div
-          class="color-picker-color-group"
-          v-for="(group, $idx) in COLORS"
-          :key="$idx"
+          v-ripple
+          :class="[
+            'color-picker-color-it',
+            { 'color-picker-color--white': c === '#FFFFFF' }
+          ]"
+          v-for="c in COLORS"
+          :key="c"
+          :style="{ background: c }"
+          @click="handlerClick(c)"
+          v-vibrate
         >
-          <div
-            v-ripple
-            :class="[
-              'color-picker-color-it',
-              { 'color-picker-color--white': c === '#FFFFFF' }
-            ]"
-            v-for="c in group"
-            :key="c"
-            :style="{ background: c }"
-            @click="handlerClick(c)"
-            v-vibrate
-          >
-            <div class="color-picker-pick" v-show="pick === c">
-              <svg style="width:auto;height:40px;" viewBox="0 0 24 24">
-                <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
-              </svg>
-            </div>
+          <div class="color-picker-pick" v-show="pick === c">
+            <svg style="width:auto;height:40px;" viewBox="0 0 24 24">
+              <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+            </svg>
           </div>
         </div>
       </div>
     </div>
     <div
+      v-if="pick"
       :class="[
         'color-picker--selected',
         { 'color-picker--selected-white': pick === '#FFFFFF' }
@@ -44,33 +39,16 @@ import {
   defineComponent,
   toRefs
 } from 'vue'
-import material from 'material-colors'
 import tinycolor from 'tinycolor2'
 
-const COLOR_MAP = [
-  'pink', 'purple', 'deepPurple',
-  'indigo', 'blue', 'lightBlue', 'cyan',
-  'teal', 'green', 'lightGreen', 'lime',
-  'yellow', 'amber', 'orange', 'red', 'brown', 'blueGrey',
-  'black'
+// Simple color palette without gradients
+const COLORS = [
+  '#FFFFFF', '#000000', '#FF0000', '#00FF00',
+  '#FF00FF', '#00FFFF', '#FFA500', '#800080',
+  '#FFC0CB', '#808080', '#008000', '#0000FF',
+  '#800000', '#008080', '#C0C0C0', '#FF6347',
+  '#FF1493', '#FFD700', '#DC143C', '#4B0082'
 ]
-const COLOR_LEVEL = ['900', '700', '500', '300', '100']
-const COLORS = (() => {
-  const colors = []
-  COLOR_MAP.forEach((type) => {
-    let typeColor = []
-    if (type.toLowerCase() === 'black' || type.toLowerCase() === 'white') {
-      typeColor = typeColor.concat(['#000000', '#FFFFFF'])
-    } else {
-      COLOR_LEVEL.forEach((level) => {
-        const color = material[type][level]
-        typeColor.push(color.toUpperCase())
-      })
-    }
-    colors.push(typeColor)
-  })
-  return colors
-})()
 
 export default defineComponent({
   name: 'ColorPicker',
@@ -120,9 +98,6 @@ export default defineComponent({
   border-radius: var(--border-radius-sm);
   
   &-colors {
-    height: 140px;
-    overflow-y: scroll;
-
     &::-webkit-scrollbar {
       display: none;
     }
@@ -135,6 +110,7 @@ export default defineComponent({
     justify-content: center;
     margin-top: 4px;
     color: #fff;
+    border-radius: var(--border-radius-sm);
     
     span {
       color: white;
@@ -151,29 +127,18 @@ export default defineComponent({
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column-reverse;
-    overflow: hidden;
-    gap: 4px;
-  }
-  
-  &-color-group {
-    display: flex;
     gap: 4px;
   }
   
   &-color-it {
     position: relative;
     box-sizing: border-box;
-    width: 100%;
+    width: calc(20% - 3.2px);
     height: 40px;
     cursor: pointer;
     background: #880e4f;
     overflow: hidden;
-    -ms-border-radius: 2px 2px 0 0;
-    -moz-border-radius: 2px 2px 0 0;
-    -o-border-radius: 2px 2px 0 0;
-    -webkit-border-radius: 2px 2px 0 0;
-    border-radius: 2px 2px 0 0;
+    border-radius: var(--border-radius-sm);
   }
 
   &-color--white {
