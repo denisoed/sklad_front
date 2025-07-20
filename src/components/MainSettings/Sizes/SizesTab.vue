@@ -22,9 +22,11 @@
             <SizeItem
               v-for="(size, i) of sizes"
               :key="i"
+              :id="size.id"
               :name="size.name"
               :list="size.list"
               @on-edit="onEdit(size)"
+              @on-update="onFinish"
             />
           </div>
           <h6 v-else class="full-width text-subtitle1 text-center q-mb-md q-mt-lg">
