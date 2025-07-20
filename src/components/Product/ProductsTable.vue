@@ -10,7 +10,7 @@
     class="statistic-table full-width q-mb-sm border-radius-sm"
   >
     <template v-slot:body="props">
-      <q-tr 
+      <q-tr
         :props="props"
         :id="props.row.id"
         :class="{ 'table-row-highlight': highlightRowId === props.row.id }"
@@ -198,7 +198,7 @@ export default defineComponent({
       },
       {
         name: 'image',
-        label: '',
+        label: 'Картинка',
         field: 'image',
         align: 'center',
         style: 'width: 60px'
