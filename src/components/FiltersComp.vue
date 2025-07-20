@@ -54,6 +54,39 @@
         </div>
         <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
           
+          <!-- Фильтр по размерам (перемещен в начало) -->
+          <div v-if="availableSizes.length" class="full-width">
+            <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
+              Размеры
+            </p>
+            <div v-if="loadingAvailableSizes" class="text-center q-py-md">
+              <q-spinner size="20px" />
+              <span class="q-ml-sm">Загрузка размеров...</span>
+            </div>
+            <div v-else-if="availableSizes.length" class="sizes-grid">
+              <q-btn
+                v-for="size in availableSizes"
+                :key="size"
+                :class="[
+                  'size-btn'
+                ]"
+                :outline="!selectedFilters.sizes.includes(size)"
+                color="primary"
+                :text-color="selectedFilters.sizes.includes(size) ? 'black' : 'white'"
+                size="md"
+                dense
+                @click="toggleSize(size)"
+                v-vibrate
+              >
+                {{ size }}
+              </q-btn>
+            </div>
+            <div v-else class="text-grey-6 text-center q-py-md">
+              Размеры не найдены
+            </div>
+            <q-separator class="full-width q-my-md" />
+          </div>
+
           <!-- Сортировка -->
           <div class="full-width q-mb-md">
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
@@ -113,35 +146,6 @@
               :selected="selectedFilters.color"
               @on-change="selectedFilters.color = $event"
             />
-          </div>
-          
-          <q-separator class="full-width q-mb-md" />
-          
-          <!-- Фильтр по размерам -->
-          <div class="full-width q-mb-md">
-            <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Размеры
-            </p>
-            <q-input
-              v-model="sizesInput"
-              outlined
-              dense
-              label="Введите размеры через запятую"
-              placeholder="36, 37, 38 или S, M, L"
-              @update:model-value="updateSizesFilter"
-            />
-            <div v-if="selectedFilters.sizes?.length" class="q-mt-sm">
-              <q-chip
-                v-for="size in selectedFilters.sizes"
-                :key="size"
-                removable
-                color="primary"
-                text-color="white"
-                @remove="removeSize(size)"
-              >
-                {{ size }}
-              </q-chip>
-            </div>
           </div>
           
           <q-separator class="full-width q-mb-md" />
@@ -217,10 +221,12 @@ import {
   defineComponent,
   ref,
   reactive,
+  onMounted,
 } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import BtnBack from 'src/components/BtnBack.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
+import useSizes from 'src/modules/useSizes'
 
 export default defineComponent({
   name: 'FiltersComp',
@@ -240,7 +246,11 @@ export default defineComponent({
     const leftDrawerOpen = ref(false)
     const colorPickerRef = ref(null)
     const scrolledTop = ref(0)
-    const sizesInput = ref('')
+    const availableSizes = ref([])
+    const loadingAvailableSizes = ref(false)
+    
+    // Используем модуль useSizes
+    const { sizes, fetchSizes } = useSizes()
     
     const selectedFilters = reactive({
       color: null,
@@ -275,26 +285,60 @@ export default defineComponent({
       })
     })
 
-    function updateSizesFilter() {
-      if (!sizesInput.value) {
-        selectedFilters.sizes = []
-        return
+    // Получение всех доступных размеров
+    async function fetchAvailableSizes() {
+      try {
+        loadingAvailableSizes.value = true
+        
+        // Загружаем размеры через правильный модуль
+        await fetchSizes()
+        
+        const sizesSet = new Set()
+        
+        // Извлекаем размеры из загруженных данных
+        sizes.value?.forEach(sizeGroup => {
+          sizeGroup.list?.forEach(sizeItem => {
+            if (sizeItem.size) {
+              sizesSet.add(sizeItem.size)
+            }
+          })
+        })
+        
+        // Сортируем размеры (числовые в начале, затем буквенные)
+        availableSizes.value = Array.from(sizesSet).sort((a, b) => {
+          const aIsNumber = !isNaN(a)
+          const bIsNumber = !isNaN(b)
+          
+          if (aIsNumber && bIsNumber) {
+            return Number(a) - Number(b)
+          } else if (aIsNumber && !bIsNumber) {
+            return -1
+          } else if (!aIsNumber && bIsNumber) {
+            return 1
+          } else {
+            return a.localeCompare(b)
+          }
+        })
+        
+      } catch (error) {
+        console.error('Ошибка загрузки размеров:', error)
+        availableSizes.value = []
+      } finally {
+        loadingAvailableSizes.value = false
       }
-      
-      // Разбираем введенные размеры
-      const sizes = sizesInput.value
-        .split(',')
-        .map(size => size.trim())
-        .filter(size => size.length > 0)
-        .filter((size, index, array) => array.indexOf(size) === index) // убираем дубликаты
-      
-      selectedFilters.sizes = sizes
+    }
+
+    function toggleSize(size) {
+      const index = selectedFilters.sizes.indexOf(size)
+      if (index === -1) {
+        selectedFilters.sizes.push(size)
+      } else {
+        selectedFilters.sizes.splice(index, 1)
+      }
     }
     
     function removeSize(sizeToRemove) {
       selectedFilters.sizes = selectedFilters.sizes.filter(size => size !== sizeToRemove)
-      // Обновляем поле ввода
-      sizesInput.value = selectedFilters.sizes.join(', ')
     }
 
     function toggleLeftDrawer() {
@@ -376,28 +420,31 @@ export default defineComponent({
           selectedFilters[key] = null
         }
       })
-      sizesInput.value = ''
       search()
       toggleLeftDrawer()
     }
 
-    
+    // Загружаем размеры при монтировании компонента
+    onMounted(() => {
+      fetchAvailableSizes()
+    })
 
-      return {
-        toggleLeftDrawer,
-        clear,
-        search,
-        leftDrawerOpen,
-        scrolledTop,
-        selectedFilters,
-        colorPickerRef,
-        hasFilters,
-        sortOptions,
-        sizesInput,
-        updateSizesFilter,
-        removeSize,
-        applyFilters
-      }
+    return {
+      toggleLeftDrawer,
+      clear,
+      search,
+      leftDrawerOpen,
+      scrolledTop,
+      selectedFilters,
+      colorPickerRef,
+      hasFilters,
+      sortOptions,
+      removeSize,
+      applyFilters,
+      availableSizes,
+      loadingAvailableSizes,
+      toggleSize
+    }
   }
 })
 </script>
@@ -459,5 +506,19 @@ export default defineComponent({
     transform: translateX(-50%);
     z-index: 2;
   }
+}
+
+.sizes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.size-btn {
+  min-height: 35px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 </style>
