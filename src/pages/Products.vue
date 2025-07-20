@@ -32,87 +32,56 @@
             <p class="q-mb-none text-subtitle2">Товары</p>
             <q-badge color="primary" :label="listProducts.length" />
           </div>
-          <router-link
-            :to="`/sklad/${selectedSkladId}`"
-            class="text-subtitle2 text-underline"
-            v-vibrate
-          >
-            Перейти на склад
-          </router-link>
+          
+          <div class="flex items-center q-gap-sm">
+            <!-- View Mode Toggle -->
+            <q-btn
+              :icon="viewMode === 'grid' ? 'mdi-view-list' : 'mdi-view-grid'"
+              @click="toggleViewMode"
+              v-vibrate
+              color="primary"
+              push
+              outline
+              class="border-radius-sm q-px-sm"
+              size="sm"
+            />
+            
+            <q-btn
+              :to="`/sklad/${selectedSkladId}`"
+              class="text-subtitle2 q-px-sm border-radius-sm"
+              v-vibrate
+              push
+              size="sm"
+              color="primary"
+              outline
+            >
+              <q-icon
+                name="mdi-open-in-new"
+                size="xs"
+              />
+            </q-btn>
+          </div>
         </div>
 
-        <div>
-          <CardProduct
-            v-for="(p, i) of listProducts"
-            :key="i"
-            :id="p.id"
-            :name="p.name"
-            :orig-price="p.origPrice"
-            :new-price="p.newPrice"
-            :discount-price="p.discountPrice"
-            :discount-days="p.discountDays"
-            :with-discount="p.withDiscount"
-            :color="p.color"
-            :sizes="p.sizes"
-            :image="p.image?.url"
-            :count-sizes="p.countSizes"
-            :sklad="p?.sklad"
-            :use-number-of-sizes="p.useNumberOfSizes"
-            @open-image-preview="onOpenImagePreview(p.image?.url)"
-            class="q-mb-md"
-          >
-            <div class="flex column full-height">
-              <q-btn
-                v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: p?.sklad?.id }"
-                round
-                push
-                size="md"
-                class="q-mb-md"
-                :to="`/sklad/${p?.sklad?.id}/product/${p.id}`"
-                v-vibrate
-              >
-                <q-icon
-                  name="mdi-eye"
-                  color="primary"
-                />
-              </q-btn>
-              <div v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: p?.sklad?.id }">
-                <ModalCountToBucket
-                  v-if="p.useNumberOfSizes"
-                  :max="p.countSizes"
-                  @submit="onAddCountToBucket(p, $event)"
-                >
-                  <q-btn
-                    round
-                    push
-                    icon="mdi-basket-plus-outline"
-                    text-color="deep-orange"
-                    v-vibrate
-                  />
-                </ModalCountToBucket>
-                <ModalSizesToBucket
-                  v-else
-                  :sizes="p.sizes"
-                  :type-sizes="p?.typeSize?.list || []"
-                  @submit="onAddSizesToBucket(p, $event)"
-                >
-                  <q-btn
-                    round
-                    push
-                    icon="mdi-basket-plus-outline"
-                    text-color="deep-orange"
-                    v-vibrate
-                  />
-                </ModalSizesToBucket>
-              </div>
-              <q-checkbox
-                v-model="bulkProducts"
-                :val="p"
-                class="q-mt-auto"
-              />
-            </div>
-          </CardProduct>
-        </div>
+        <!-- Grid View -->
+        <ProductsGrid
+          v-if="viewMode === 'grid'"
+          :products="listProducts"
+          v-model:bulk-products="bulkProducts"
+          @open-image-preview="onOpenImagePreview"
+          @add-count-to-bucket="onAddCountToBucket"
+          @add-sizes-to-bucket="onAddSizesToBucket"
+        />
+        
+        <!-- Table View -->
+        <ProductsTable
+          v-else
+          :products="listProducts"
+          v-model:bulk-products="bulkProducts"
+          @open-image-preview="onOpenImagePreview"
+          @add-count-to-bucket="onAddCountToBucket"
+          @add-sizes-to-bucket="onAddSizesToBucket"
+        />
       </template>
       <h6
         v-else
@@ -186,7 +155,8 @@ import {
   onBeforeMount,
   ref,
   reactive,
-  onMounted
+  onMounted,
+  watch
 } from 'vue'
 import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
@@ -196,12 +166,11 @@ import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk';
 
-import CardProduct from 'src/components/CardProduct.vue'
 import FiltersComp from 'src/components/FiltersComp.vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ProductControls from 'src/components/ProductControls.vue'
 import MiniTabs from 'src/components/Product/MiniTabs.vue'
+import ProductsGrid from 'src/components/Product/ProductsGrid.vue'
+import ProductsTable from 'src/components/Product/ProductsTable.vue'
 
 const ALL_TAB = {
   id: 0,
@@ -217,12 +186,11 @@ import {
 export default defineComponent({
   name: 'ProductsPage',
   components: {
-    CardProduct,
     FiltersComp,
-    ModalSizesToBucket,
-    ModalCountToBucket,
     ProductControls,
-    MiniTabs
+    MiniTabs,
+    ProductsGrid,
+    ProductsTable
   },
   props: {
     searchAutofocus: {
@@ -258,6 +226,9 @@ export default defineComponent({
     const selectedCategoryId = ref(params?.categoryId || ALL_TAB.id)
     const selectedFilters = reactive({})
     const showFiltersInfo = ref(false)
+    
+    // View mode toggle (grid/table)
+    const viewMode = ref(localStorage.getItem('products-view-mode') || 'grid')
     
     // Вычисляемые свойства для работы с фильтрами
     const hasActiveFilters = computed(() => {
@@ -514,6 +485,10 @@ export default defineComponent({
       imagePreview.value = url
       imagePreviewDialog.value = true
     }
+
+    function toggleViewMode() {
+      viewMode.value = viewMode.value === 'grid' ? 'table' : 'grid'
+    }
     
     onBeforeMount(() => {
       initFiltersFromUrl();
@@ -524,6 +499,11 @@ export default defineComponent({
       setTimeout(() => {
         onScrollToCard()
       }, 300);
+    })
+
+    // Watch viewMode to save to localStorage
+    watch(viewMode, (newValue) => {
+      localStorage.setItem('products-view-mode', newValue)
     })
 
     return {
@@ -554,7 +534,9 @@ export default defineComponent({
       activeFiltersCount,
       activeFiltersInfo,
       showFiltersInfo,
-      removeFilter
+      removeFilter,
+      viewMode,
+      toggleViewMode
     }
   }
 })
