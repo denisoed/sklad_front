@@ -1,49 +1,56 @@
 <template>
-  <div class="sizes-tab">
-    <div class="full-width q-pa-xs"
-      style="border: 1px solid var(--border-color);border-radius: var(--border-radius)">
-      <div class="q-pa-sm q-pt-none">
-        <div
-          class="flex q-gap-md items-center justify-between q-pb-sm"
-          style="border-bottom: 1px solid var(--border-color)"
-        >
-          <h6 class="q-ma-none text-grey text-subtitle1">Настроить размеры</h6>
-          <q-btn color="primary" round @click="openedCrudSizesModal = true" v-vibrate>
-            <q-icon name="mdi-plus" />
-          </q-btn>
-        </div>
-
-        <div class="q-mt-md">
-          <div
-            v-if="sizes?.length"
-            style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
-            class="flex column overflow-hidden"
-          >
-            <SizeItem
-              v-for="(size, i) of sizes"
-              :key="i"
-              :id="size.id"
-              :name="size.name"
-              :list="size.list"
-              @on-edit="onEdit(size)"
-              @on-update="onFinish"
-            />
+  <div class="sizes-tab flex column q-gap-md">
+    <Dropdown title="Настроить размеры">
+      <template #icon>
+        <q-icon name="mdi-cog" size="sm" class="q-mr-sm" />
+      </template>
+      <template #body>
+        <div class="flex column">
+          <div class="flex items-center justify-between q-mb-md">
+            <span class="text-subtitle2">Конфигурации размеров</span>
+            <q-btn 
+              color="primary" 
+              round 
+              size="sm"
+              @click="openedCrudSizesModal = true" 
+              v-vibrate
+            >
+              <q-icon name="mdi-plus" />
+            </q-btn>
           </div>
-          <h6 v-else class="full-width text-subtitle1 text-center q-mb-md q-mt-lg">
-            <span v-if="loading">
-              <q-icon size="sm" name="mdi-loading" class="mdi-spin q-mr-sm " />
+          
+          <div v-if="sizes?.length" class="q-gap-sm flex column">
+            <div
+              style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
+              class="flex column overflow-hidden"
+            >
+              <SizeItem
+                v-for="(size, i) of sizes"
+                :key="i"
+                :id="size.id"
+                :name="size.name"
+                :list="size.list"
+                @on-edit="onEdit(size)"
+                @on-update="onFinish"
+              />
+            </div>
+          </div>
+          
+          <div v-else class="flex column items-center q-py-md">
+            <span v-if="loading" class="text-grey-6">
+              <q-icon size="sm" name="mdi-loading" class="mdi-spin q-mr-sm" />
               Загрузка...
             </span>
-            <div v-else class="flex column">
-              <span >
-                Список пуст
-              </span>
-              <p class="q-mb-none text-grey-5 text-caption">Создавайте и управляйте списком размеров под разные товары</p>
+            <div v-else class="flex column items-center text-center">
+              <span class="text-subtitle2">Список пуст</span>
+              <p class="q-mb-none text-grey-5 text-caption q-mt-xs">
+                Создавайте и управляйте списком размеров под разные товары
+              </p>
             </div>
-          </h6>
+          </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </Dropdown>
 
     <CrudSizesModal
       :item="selectedSizes"
@@ -68,6 +75,7 @@ import {
 } from 'vue'
 import CrudSizesModal from 'src/components/MainSettings/Sizes/CrudSizesModal.vue'
 import SizeItem from 'src/components/MainSettings/Sizes/SizeItem.vue'
+import Dropdown from 'src/components/Dropdown/index.vue'
 import useSizes from 'src/modules/useSizes'
 import useProfile from 'src/modules/useProfile'
 import { CREATE_SIZES, UPDATE_SIZES } from 'src/graphql/sizes'
@@ -77,12 +85,13 @@ export default defineComponent({
   components: {
     SizeItem,
     CrudSizesModal,
+    Dropdown,
   },
   setup() {
     const selectedSizes = ref(null)
     const openedCrudSizesModal = ref(false)
 
-    const { sizes, fetchSizes, removeSizes } = useSizes()
+    const { sizes, fetchSizes, removeSizes, loading } = useSizes()
     const { profile } = useProfile()
 
     function onClose() {
@@ -109,6 +118,7 @@ export default defineComponent({
       sizes,
       profile,
       removeSizes,
+      loading,
       onFinish,
       onEdit,
       onClose,
@@ -118,3 +128,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.sizes-tab {
+  // Consistent styling with UserTab
+}
+</style>
