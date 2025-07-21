@@ -86,13 +86,13 @@
         <q-td key="price" :props="props">
           <div class="price-column">
             <div v-if="props.row.withDiscount" class="text-weight-bold text-red">
+              <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
+                <PriceFormatter :value="props.row.newPrice" />
+              </div>
               <PriceFormatter :value="props.row.discountPrice" />
             </div>
             <div v-else class="text-weight-bold">
-              <PriceFormatter :value="props.row.newPrice || props.row.origPrice" />
-            </div>
-            <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
-              <PriceFormatter :value="props.row.origPrice" />
+              <PriceFormatter :value="props.row.newPrice" />
             </div>
           </div>
         </q-td>
@@ -214,7 +214,7 @@ export default defineComponent({
       },
       {
         name: 'sizes',
-        label: 'Размеры/Количество',
+        label: 'Размеры',
         field: 'sizes',
         align: 'left'
       },

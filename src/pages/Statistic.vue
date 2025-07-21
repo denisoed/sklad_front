@@ -93,7 +93,8 @@
                 <q-btn
                   icon="mdi-eye"
                   round
-                  color="primary"
+                  push
+                  text-color="primary"
                   size="sm"
                   class="q-mr-md"
                   title="Перейти в товар"
