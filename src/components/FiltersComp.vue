@@ -9,14 +9,14 @@
       v-model="selectedFilters.name_contains"
       outlined
       debounce="800"
-      label="Поиск по имени товара"
+      label="Поиск"
       class="full-width block-bg"
       dense
       :autofocus="autofocus"
       clearable
       @update:model-value="search"
     >
-      <template #append>
+      <template v-if="!selectedFilters.name_contains"  #append>
         <q-btn
           flat
           round
