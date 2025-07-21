@@ -42,11 +42,12 @@
 <script setup>
 import { ref, watch, onBeforeUnmount } from 'vue'
 import useSpeechRecognition from '../modules/useSpeechRecognition'
+import useColors from '../modules/useColors'
 
 const props = defineProps({
   modelValue: Boolean
 })
-const emit = defineEmits(['cancel', 'update:modelValue', 'result'])
+const emit = defineEmits(['cancel', 'update:modelValue', 'result', 'colorResult'])
 
 const canvasRef = ref(null)
 const recognizedText = ref('')
@@ -60,13 +61,26 @@ let animationId = null
 let stream = null
 
 const { isRecording, isApiAvailable, toggleRecord, onFinish, transcript } = useSpeechRecognition()
+const { findColorsInText } = useColors()
 
 onFinish((finalText) => {
   if (isRetrying.value) {
     return
   }
   recognizedText.value = finalText
+  
+  // Find colors in the recognized text
+  const foundColors = findColorsInText(finalText)
+
+  console.log(foundColors)
+  
+  // Emit both the full text and any found colors
   emit('result', finalText)
+  
+  if (foundColors.length > 0) {
+    emit('colorResult', foundColors)
+  }
+  
   emit('update:modelValue', false)
 })
 

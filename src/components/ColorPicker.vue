@@ -6,15 +6,15 @@
           v-ripple
           :class="[
             'color-picker-color-it',
-            { 'color-picker-color--white': c === '#FFFFFF' }
+            { 'color-picker-color--white': c.color === '#FFFFFF' }
           ]"
           v-for="c in COLORS"
           :key="c"
-          :style="{ background: c }"
+          :style="{ background: c.color }"
           @click="handlerClick(c)"
           v-vibrate
         >
-          <div class="color-picker-pick" v-show="pick === c">
+          <div class="color-picker-pick" v-show="pick.color === c.color">
             <svg style="width:auto;height:40px;" viewBox="0 0 24 24">
               <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
             </svg>
@@ -26,10 +26,12 @@
       v-if="pick"
       :class="[
         'color-picker--selected',
-        { 'color-picker--selected-white': pick === '#FFFFFF' }
+        { 'color-picker--selected-white': pick.color === '#FFFFFF' }
       ]"
-      :style="{ background: pick }"
-    />
+      :style="{ background: pick.color }"
+    >
+      <span class="color-picker--selected-name">{{ pick.name }}</span>
+    </div>
   </div>
 </template>
 
@@ -39,16 +41,7 @@ import {
   defineComponent,
   toRefs
 } from 'vue'
-import tinycolor from 'tinycolor2'
-
-// Simple color palette without gradients
-const COLORS = [
-  '#FFFFFF', '#000000', '#FF0000', '#00FF00',
-  '#FF00FF', '#00FFFF', '#FFA500', '#800080',
-  '#FFC0CB', '#808080', '#008000', '#0000FF',
-  '#800000', '#008080', '#C0C0C0', '#FF6347',
-  '#FF1493', '#FFD700', '#DC143C', '#4B0082'
-]
+import { COLORS } from '../modules/useColors'
 
 export default defineComponent({
   name: 'ColorPicker',
@@ -63,24 +56,18 @@ export default defineComponent({
     const { selected } = toRefs(props)
     const pick = ref(selected.value)
 
-    function equal(color) {
-      return color?.toLowerCase() === pick.value?.toLowerCase()
-    }
-
     function clear() {
       pick.value = null;
-      emit('on-change', pick.value)
+      emit('on-change', null)
     }
 
     function handlerClick(c) {
-      const hex = tinycolor(c)
-      pick.value = hex.getOriginalInput()
-      emit('on-change', pick.value)
+      pick.value = c
+      emit('on-change', c.color)
     }
 
     return {
       handlerClick,
-      equal,
       pick,
       COLORS,
       clear
@@ -114,12 +101,17 @@ export default defineComponent({
     
     span {
       color: white;
-      mix-blend-mode: difference;
     }
 
     &-white {
       border: 1px solid #DDD;
       color: #000;
+    }
+
+    &-name {
+      background-color: black;
+      padding: 0 6px;
+      border-radius: var(--border-radius-sm);
     }
   }
 
