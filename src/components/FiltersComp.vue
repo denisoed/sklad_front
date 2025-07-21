@@ -16,8 +16,15 @@
       clearable
       @update:model-value="search"
     >
-      <template v-if="!selectedFilters.name_contains" #append>
-        <q-icon name="search" />
+      <template #append>
+        <q-btn
+          flat
+          round
+          dense
+          icon="mic"
+          @click="showVoiceOverlay = true"
+          aria-label="Голосовой поиск"
+        />
       </template>
     </q-input>
     
@@ -45,6 +52,13 @@
       @apply="applyFilters"
       @clear="clear"
     />
+
+    <VoiceOverlay 
+      :model-value="showVoiceOverlay" 
+      @cancel="showVoiceOverlay = false"
+      @result="handleVoiceResult"
+      @update:model-value="showVoiceOverlay = $event"
+    />
   </div>
 </template>
 
@@ -57,12 +71,14 @@ import {
 } from 'vue'
 import BtnBack from 'src/components/BtnBack.vue'
 import FilterDialog from 'src/components/Dialogs/FilterDialog.vue'
+import VoiceOverlay from './VoiceOverlay.vue'
 
 export default defineComponent({
   name: 'FiltersComp',
   components: {
     BtnBack,
-    FilterDialog
+    FilterDialog,
+    VoiceOverlay
   },
   props: {
     autofocus: {
@@ -73,6 +89,7 @@ export default defineComponent({
   emits: ['on-search'],
   setup(props, { emit }) {
     const leftDrawerOpen = ref(false)
+    const showVoiceOverlay = ref(false)
 
     const selectedFilters = reactive({
       color: null,
@@ -154,6 +171,13 @@ export default defineComponent({
       search()
     }
 
+    function handleVoiceResult(text) {
+      if (text && text.trim()) {
+        selectedFilters.name_contains = text.trim()
+        search()
+      }
+    }
+
     return {
       clear,
       search,
@@ -161,6 +185,8 @@ export default defineComponent({
       selectedFilters,
       hasFilters,
       applyFilters,
+      showVoiceOverlay,
+      handleVoiceResult,
     }
   }
 })
@@ -201,5 +227,58 @@ export default defineComponent({
       opacity: 0;
     }
   }
+}
+.voice-overlay {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+.voice-indicator {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pulse {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(33,150,243,0.2);
+  animation: pulse-voice 1.2s infinite;
+}
+@keyframes pulse-voice {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.voice-placeholder {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 24px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>
