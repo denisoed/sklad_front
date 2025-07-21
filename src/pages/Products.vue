@@ -36,7 +36,7 @@
           <div class="flex items-center q-gap-sm">
             <!-- View Mode Toggle -->
             <q-btn
-              :icon="viewMode === 'grid' ? 'mdi-view-list' : 'mdi-view-grid'"
+              :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
               @click="toggleViewMode"
               v-vibrate
               text-color="primary"
@@ -64,7 +64,7 @@
 
         <!-- Grid View -->
         <ProductsGrid
-          v-if="viewMode === 'grid'"
+          v-if="viewMode === VIEW_GRID"
           :products="listProducts"
           v-model:bulk-products="bulkProducts"
           @open-image-preview="onOpenImagePreview"
@@ -177,6 +177,9 @@ const ALL_TAB = {
   color: '#fff'
 }
 
+const VIEW_TABLE = 'table'
+const VIEW_GRID = 'grid'
+
 import {
   CAN_SELL_PRODUCT,
   CAN_UPDATE_PRODUCT
@@ -210,7 +213,7 @@ export default defineComponent({
       isLoading: loadingProducts
     } = useSklads()
     const { profile } = useProfile()
-    const { loadBucketProducts, refetchBucketProducts, forceRefreshBucket } = useBucket()
+    const { loadBucketProducts, forceRefreshBucket } = useBucket()
     const {
       addSizesToBucket,
       addCountToBucket,
@@ -227,7 +230,7 @@ export default defineComponent({
     const showFiltersInfo = ref(false)
     
     // View mode toggle (grid/table)
-    const viewMode = ref(localStorage.getItem('products-view-mode') || 'grid')
+    const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
     
     // Вычисляемые свойства для работы с фильтрами
     const hasActiveFilters = computed(() => {
@@ -488,7 +491,7 @@ export default defineComponent({
     }
 
     function toggleViewMode() {
-      viewMode.value = viewMode.value === 'grid' ? 'table' : 'grid'
+      viewMode.value = viewMode.value === VIEW_GRID ? VIEW_TABLE : VIEW_GRID
     }
     
     onBeforeMount(() => {
@@ -537,7 +540,9 @@ export default defineComponent({
       showFiltersInfo,
       removeFilter,
       viewMode,
-      toggleViewMode
+      toggleViewMode,
+      VIEW_GRID,
+      VIEW_TABLE
     }
   }
 })
