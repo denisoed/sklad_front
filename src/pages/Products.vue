@@ -39,21 +39,20 @@
               :icon="viewMode === 'grid' ? 'mdi-view-list' : 'mdi-view-grid'"
               @click="toggleViewMode"
               v-vibrate
-              color="primary"
+              text-color="primary"
               push
-              outline
-              class="border-radius-sm q-px-sm"
+              round
               size="sm"
             />
             
             <q-btn
               :to="`/sklad/${selectedSkladId}`"
-              class="text-subtitle2 q-px-sm border-radius-sm"
+              class="text-subtitle2"
               v-vibrate
               push
+              text-color="primary"
+              round
               size="sm"
-              color="primary"
-              outline
             >
               <q-icon
                 name="mdi-open-in-new"
