@@ -305,7 +305,7 @@ export default defineComponent({
     function removeFromBucket(payload) {
       $q.dialog({
         title: 'Удалить этот товар из корзины?',
-        message: 'При удалении товара из корзины, его размеры вернутся обратно на склад.',
+        message: 'При удалении товара из корзины, он будет возвращен на склад.',
         cancel: true,
         persistent: true,
         ok: {

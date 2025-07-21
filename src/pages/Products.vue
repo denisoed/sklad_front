@@ -211,7 +211,7 @@ export default defineComponent({
       isLoading: loadingProducts
     } = useSklads()
     const { profile } = useProfile()
-    const { loadBucketProducts } = useBucket()
+    const { loadBucketProducts, refetchBucketProducts, forceRefreshBucket } = useBucket()
     const {
       addSizesToBucket,
       addCountToBucket,
@@ -367,17 +367,19 @@ export default defineComponent({
         },
         { fetchPolicy: 'network-only' }
       );
+      // Force refresh of bucket data in all components with immediate store update
+      forceRefreshBucket();
     }
 
     async function onAddSizesToBucket(product, payload) {
       await addSizesToBucket(product, payload)
-      fetchSaleProducts()
+      await forceRefreshBucket()
       loadData()
     }
 
     async function onAddCountToBucket(product, payload) {
       await addCountToBucket(product, payload)
-      fetchSaleProducts()
+      await forceRefreshBucket()
       loadData()
     }
 
@@ -393,7 +395,7 @@ export default defineComponent({
     async function onFinishRemove() {
       onCloseBulk()
       await loadData()
-      await fetchSaleProducts()
+      await forceRefreshBucket()
     }
 
     // Scroll to card by id from url and highlight it

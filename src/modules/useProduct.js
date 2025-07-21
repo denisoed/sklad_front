@@ -12,11 +12,13 @@ import { useRoute } from 'vue-router'
 import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import { useProductsStore } from 'src/stores/products'
+import { useBucketStore } from 'src/stores/bucket'
 
 const useProduct = () => {
   const { showError, showSuccess } = useHelpers()
   const { params } = useRoute()
   const productsStore = useProductsStore()
+  const bucketStore = useBucketStore()
   const {
     createHistory,
   } = useHistory()
@@ -70,6 +72,8 @@ const useProduct = () => {
       })
       if (!saleProductError.value) {
         showSuccess('Товар добавлен в корзину!')
+        // Update bucket count in store immediately
+        bucketStore.setBucketProductsCount(bucketStore.getBucketProductsCount + 1)
       }
     } else {
       showError('Не удалось добавить в корзину. Попробуйте позже.')
@@ -103,6 +107,8 @@ const useProduct = () => {
       })
       if (!saleProductError.value) {
         showSuccess('Товар добавлен в корзину!')
+        // Update bucket count in store immediately
+        bucketStore.setBucketProductsCount(bucketStore.getBucketProductsCount + 1)
       }
     } else {
       showError('Не удалось добавить в корзину. Попробуйте позже.')
