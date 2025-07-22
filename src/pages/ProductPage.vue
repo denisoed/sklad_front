@@ -239,7 +239,7 @@
             <ColorPicker
               :selected="product.color"
               tabindex="7"
-              @on-change="product.color = $event"
+              @on-change="setColorName"
             />
           </div>
         </div>
@@ -405,6 +405,7 @@ const DEFAULT_DATA = {
   discountDays: null,
   withDiscount: false,
   color: '#000000',
+  colorName: null,
   sizes: [],
   countSizes: 0,
   useNumberOfSizes: true,
@@ -492,6 +493,11 @@ export default defineComponent({
     async function uploadImg(file) {
       const response = await uploadImage({ file });
       return response;
+    }
+
+    function setColorName(color) {
+      product.color = color.color
+      product.colorName = color.name
     }
 
     function resetAll() {
@@ -645,6 +651,7 @@ export default defineComponent({
               withDiscount: product.withDiscount,
               image: uploaded.data.upload.id,
               color: product.color,
+              colorName: product.colorName,
               sizes: product.sizes,
               countSizes: product.countSizes,
               useNumberOfSizes: product.useNumberOfSizes,
@@ -702,6 +709,7 @@ export default defineComponent({
               withDiscount: product.withDiscount,
               name: product.name,
               color: product.color,
+              colorName: product.colorName,
               ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
             }
           })
@@ -905,7 +913,8 @@ export default defineComponent({
       READ_HISTORY,
       CREATE_SKLAD,
       onCreateNew,
-      refetchSklads
+      refetchSklads,
+      setColorName
     }
   }
 })

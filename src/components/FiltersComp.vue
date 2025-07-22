@@ -94,6 +94,7 @@ export default defineComponent({
 
     const selectedFilters = reactive({
       color: null,
+      colorName: null,
       name_contains: null,
       withDiscount: false,
       priceFrom: null,

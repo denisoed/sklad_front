@@ -70,7 +70,7 @@ export default defineComponent({
     function handlerClick(c) {
       pick.color = c.color
       pick.name = c.name
-      emit('on-change', c.color)
+      emit('on-change', pick)
     }
 
     return {

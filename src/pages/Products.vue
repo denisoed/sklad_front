@@ -164,7 +164,6 @@ import useBucket from 'src/modules/useBucket'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk';
-import useColors from 'src/modules/useColors'
 
 import FiltersComp from 'src/components/FiltersComp.vue'
 import ProductControls from 'src/components/ProductControls.vue'
@@ -213,7 +212,6 @@ export default defineComponent({
       fetchSkladProducts,
       isLoading: loadingProducts
     } = useSklads()
-    const { replaceTextToHex } = useColors()
     const { profile } = useProfile()
     const { forceRefreshBucket } = useBucket()
     const {
@@ -422,7 +420,7 @@ export default defineComponent({
           ...otherFilters
         },
         sort || null,
-        otherFilters.name_contains ? replaceTextToHex(otherFilters.name_contains) : null
+        otherFilters.name_contains || null
       )
       return resp;
     }

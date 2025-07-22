@@ -102,7 +102,7 @@
             <ColorPicker
               ref="colorPickerRef"
               :selected="localFilters.color"
-              @on-change="localFilters.color = $event"
+              @on-change="setColorName"
             />
           </div>
           
@@ -254,6 +254,11 @@ export default defineComponent({
       }
     }
 
+    function setColorName(color) {
+      localFilters.color = color.color
+      localFilters.colorName = color.name
+    }
+
     function apply() {
       emit('apply', localFilters)
       emit('update:modelValue', false)
@@ -275,7 +280,8 @@ export default defineComponent({
       sortOptions,
       toggleSize,
       apply,
-      clear
+      clear,
+      setColorName
     }
   }
 })
