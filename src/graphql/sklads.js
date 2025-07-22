@@ -58,6 +58,53 @@ export const SKLAD_PRODUCTS = gql`
   }
 `
 
+export const SKLAD_PRODUCTS_SEARCH = gql`
+  query SkladProductsSearch($q: String) {
+    search(q: $q) {
+      id
+      name
+      color
+      categories {
+        id
+        name
+      }
+      products {
+        id
+        name
+        origPrice
+        newPrice
+        image {
+          id
+          url
+        }
+        typeSize {
+          list {
+            size
+          }
+        }
+        sizes {
+          id
+          size
+        }
+        sklad {
+          id
+          name
+          sizes
+        }
+        discountPrice
+        discountDays
+        withDiscount
+        color
+        countSizes
+        useNumberOfSizes
+        category {
+          id
+        }
+      }
+    }
+  }
+`
+
 export const SKLAD = gql`
   query Sklad($id: ID!) {
     sklad(id: $id) {

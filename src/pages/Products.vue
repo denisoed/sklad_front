@@ -164,6 +164,7 @@ import useBucket from 'src/modules/useBucket'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk';
+import useColors from 'src/modules/useColors'
 
 import FiltersComp from 'src/components/FiltersComp.vue'
 import ProductControls from 'src/components/ProductControls.vue'
@@ -212,8 +213,9 @@ export default defineComponent({
       fetchSkladProducts,
       isLoading: loadingProducts
     } = useSklads()
+    const { replaceTextToHex } = useColors()
     const { profile } = useProfile()
-    const { loadBucketProducts, forceRefreshBucket } = useBucket()
+    const { forceRefreshBucket } = useBucket()
     const {
       addSizesToBucket,
       addCountToBucket,
@@ -292,8 +294,7 @@ export default defineComponent({
       
       return info
     })
-    
-    // Функция для удаления отдельного фильтра
+
     function removeFilter(filterKey) {
       if (selectedFilters.value[filterKey] !== undefined) {
         if (Array.isArray(selectedFilters.value[filterKey])) {
@@ -304,12 +305,10 @@ export default defineComponent({
           selectedFilters.value[filterKey] = null
         }
         
-        // Применяем обновленные фильтры
         onSearch(selectedFilters.value)
       }
     }
-    
-    // Инициализация фильтров из URL
+  
     function initFiltersFromUrl() {
       try {
         if (query.filters) {
@@ -320,8 +319,7 @@ export default defineComponent({
         console.warn('Не удалось загрузить фильтры из URL:', error)
       }
     }
-    
-    // Сохранение фильтров в URL
+
     function saveFiltersToUrl(filters) {
       const hasFilters = Object.keys(filters).some(key => {
         const value = filters[key]
@@ -358,20 +356,6 @@ export default defineComponent({
         return skl?.products || []
       }
     );
-
-    function fetchSaleProducts() {
-      loadBucketProducts(
-        null,
-        {
-          where: {
-            sklad: sklads.value?.map(s => s.id)
-          }
-        },
-        { fetchPolicy: 'network-only' }
-      );
-      // Force refresh of bucket data in all components with immediate store update
-      forceRefreshBucket();
-    }
 
     async function onAddSizesToBucket(product, payload) {
       await addSizesToBucket(product, payload)
@@ -418,7 +402,6 @@ export default defineComponent({
     }
 
     async function loadData() {
-      // Извлекаем sort из selectedFilters для правильной передачи параметров
       const { sort, ...otherFilters } = selectedFilters.value || {};
       
       const resp = await fetchSkladProducts(
@@ -438,24 +421,22 @@ export default defineComponent({
           ],
           ...otherFilters
         },
-        sort || null // Передаем сортировку как отдельный параметр
+        sort || null,
+        otherFilters.name_contains ? replaceTextToHex(otherFilters.name_contains) : null
       )
       return resp;
     }
 
     async function onSearch(filters = {}) {
-      // Извлекаем сортировку из фильтров
       const { sort, ...otherFilters } = filters;
       
       selectedFilters.value = {
         ...otherFilters,
-        sort // Сохраняем сортировку отдельно
+        sort
       };
       
-      // Сохраняем фильтры в URL
       saveFiltersToUrl(filters);
       
-      // Если есть фильтры поиска, сбрасываем выбор категории и склада
       const hasSearchFilters = Object.keys(otherFilters).some(key => 
         key !== 'sort' && otherFilters[key] !== null && otherFilters[key] !== undefined && 
         (Array.isArray(otherFilters[key]) ? otherFilters[key].length > 0 : otherFilters[key] !== '')
@@ -467,8 +448,7 @@ export default defineComponent({
       }
       
       const filtered = await loadData();
-      
-      // Если есть результаты и нет выбранного склада, выбираем первый
+
       if (filtered?.length && selectedSkladId.value === ALL_TAB.id) {
         selectedSkladId.value = filtered[0]?.id;
       }
@@ -505,7 +485,6 @@ export default defineComponent({
       }, 300);
     })
 
-    // Watch viewMode to save to localStorage
     watch(viewMode, (newValue) => {
       localStorage.setItem('products-view-mode', newValue)
     })
