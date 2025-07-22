@@ -9,7 +9,7 @@
       v-model="selectedFilters.name_contains"
       outlined
       debounce="800"
-      label="Поиск"
+      label="Умный поиск"
       class="full-width block-bg"
       dense
       :autofocus="autofocus"
