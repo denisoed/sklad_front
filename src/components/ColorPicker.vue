@@ -37,11 +37,11 @@
 
 <script>
 import {
-  ref,
+  reactive,
   defineComponent,
   toRefs
 } from 'vue'
-import { COLORS } from '../modules/useColors'
+import useColors, { COLORS } from '../modules/useColors'
 
 export default defineComponent({
   name: 'ColorPicker',
@@ -53,16 +53,23 @@ export default defineComponent({
   },
   emits: ['on-change'],
   setup(props, { emit }) {
+    const { findColorByHex } = useColors()
+
     const { selected } = toRefs(props)
-    const pick = ref(selected.value)
+    const pick = reactive({
+      color: selected.value,
+      name: findColorByHex(selected.value)?.name || ''
+    })
 
     function clear() {
-      pick.value = null;
+      pick.color = null;
+      pick.name = ''
       emit('on-change', null)
     }
 
     function handlerClick(c) {
-      pick.value = c
+      pick.color = c.color
+      pick.name = c.name
       emit('on-change', c.color)
     }
 

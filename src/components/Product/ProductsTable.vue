@@ -16,7 +16,7 @@
         :class="{ 'table-row-highlight': highlightRowId === props.row.id }"
       >
         <!-- Checkbox -->
-        <q-td key="select" :props="props">
+        <q-td key="select" :props="props" @click.stop>
           <q-checkbox
             :model-value="bulkProducts"
             @update:model-value="$emit('update:bulkProducts', $event)"
@@ -25,7 +25,7 @@
         </q-td>
         
         <!-- Image -->
-        <q-td key="image" :props="props">
+        <q-td key="image" :props="props" @click.stop>
           <q-avatar 
             v-if="props.row.image?.url" 
             size="40px" 
@@ -46,7 +46,7 @@
         </q-td>
         
         <!-- Name -->
-        <q-td key="name" :props="props">
+        <q-td key="name" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="text-weight-medium">{{ props.row.name }}</div>
           <div v-if="props.row.color" class="flex items-center q-gutter-xs q-mt-xs">
             <span class="text-caption text-grey-6">Цвет:</span>
@@ -55,7 +55,7 @@
         </q-td>
 
         <!-- Sizes/Count -->
-        <q-td key="sizes" :props="props">
+        <q-td key="sizes" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div v-if="props.row.useNumberOfSizes">
             {{ props.row.countSizes }}
           </div>
@@ -83,7 +83,7 @@
         </q-td>
 
         <!-- Price -->
-        <q-td key="price" :props="props">
+        <q-td key="price" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="price-column">
             <div v-if="props.row.withDiscount" class="text-weight-bold text-red">
               <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
@@ -98,7 +98,7 @@
         </q-td>
 
         <!-- Actions -->
-        <q-td key="actions" :props="props">
+        <q-td key="actions" :props="props" @click.stop>
           <div class="flex flex-row no-wrap q-gutter-md justify-center">
             <!-- View Product -->
             <q-btn
@@ -154,6 +154,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
@@ -188,7 +189,14 @@ export default defineComponent({
     'update:bulkProducts'
   ],
   setup() {
+    const router = useRouter()
     const highlightRowId = ref(null)
+    
+    const goToProduct = (product) => {
+      if (product?.sklad?.id && product?.id) {
+        router.push(`/sklad/${product.sklad.id}/product/${product.id}`)
+      }
+    }
     
     const columns = [
       {
@@ -237,6 +245,7 @@ export default defineComponent({
     return {
       columns,
       highlightRowId,
+      goToProduct,
       CAN_SELL_PRODUCT,
       CAN_UPDATE_PRODUCT
     }

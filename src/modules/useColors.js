@@ -93,7 +93,7 @@ const COLOR_MAPPINGS = {
   'белы': WHITE.color,
 }
 
-const useColorMatcher = () => {
+const useColors = () => {
   // Function to get all available colors
   const getAvailableColors = () => {
     return Object.values(COLOR_MAPPINGS).filter((value, index, self) => self.indexOf(value) === index)
@@ -126,11 +126,16 @@ const useColorMatcher = () => {
     return processedWords.join(' ')
   }
 
+  const findColorByHex = (hex) => {
+    return COLORS.find(color => color.color === hex)
+  }
+
   return {
     getAvailableColors,
     COLOR_MAPPINGS,
-    replaceTextToHex
+    replaceTextToHex,
+    findColorByHex
   }
 }
 
-export default useColorMatcher 
+export default useColors 
