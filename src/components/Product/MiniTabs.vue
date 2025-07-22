@@ -48,8 +48,19 @@ export default defineComponent({
       emit('on-change', id);
     }
 
+    function setFallbackTab(list) {
+      if (!list.find(l => l.id === sId.value)) {
+        sId.value = list[0].id
+        changeTab(sId.value)
+      }
+    }
+
     watch(selectedId, (id) => {
       sId.value = id;
+    })
+
+    watch(() => props.list, (list) => {
+      setFallbackTab(list)
     })
 
     return {

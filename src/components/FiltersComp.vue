@@ -18,10 +18,11 @@
     >
       <template v-if="!selectedFilters.name_contains"  #append>
         <q-btn
-          flat
           round
           dense
+          color="primary"
           icon="mic"
+          size="sm"
           @click="showVoiceOverlay = true"
           aria-label="Голосовой поиск"
         />
