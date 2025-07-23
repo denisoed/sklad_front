@@ -7,15 +7,13 @@
         @on-search="onSearch"
       />
 
-      <template v-if="skladProducts?.length">
-        <p class="q-mb-sm text-subtitle2">Склады</p>
-        <MiniTabs
-          :list="skladProducts"
-          :selected-id="selectedSkladId"
-          class="q-mb-md"
-          @on-change="onChangeSklad"
-        />
-      </template>
+      <p class="q-mb-sm text-subtitle2">Склады</p>
+      <MiniTabs
+        :list="skladsTabs"
+        :selected-id="selectedSkladId"
+        class="q-mb-md"
+        @on-change="onChangeSklad"
+      />
 
       <!-- Categories -->
       <p class="q-mb-sm text-subtitle2">Категории</p>
@@ -25,12 +23,12 @@
         class="mini-tabs-categories q-pb-md"
         @on-change="onChangeCategory"
       />
-
-      <template v-if="listProducts?.length">
+        
+      <template v-if="products?.length">
         <div class="flex items-center justify-between q-mb-sm">
           <div class="flex items-center q-gap-sm">
             <p class="q-mb-none text-subtitle2">Товары</p>
-            <q-badge color="primary" :label="listProducts.length" />
+            <q-badge color="primary" :label="products.length" />
           </div>
           
           <div class="flex items-center q-gap-sm">
@@ -65,7 +63,7 @@
         <!-- Grid View -->
         <ProductsGrid
           v-if="viewMode === VIEW_GRID"
-          :products="listProducts"
+          :products="products"
           v-model:bulk-products="bulkProducts"
           @open-image-preview="onOpenImagePreview"
           @add-count-to-bucket="onAddCountToBucket"
@@ -75,7 +73,7 @@
         <!-- Table View -->
         <ProductsTable
           v-else
-          :products="listProducts"
+          :products="products"
           v-model:bulk-products="bulkProducts"
           @open-image-preview="onOpenImagePreview"
           @add-count-to-bucket="onAddCountToBucket"
@@ -157,9 +155,9 @@ import {
   onMounted,
   watch
 } from 'vue'
-import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
+import useCategories from 'src/modules/useCategories'
 import useBucket from 'src/modules/useBucket'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -209,19 +207,22 @@ export default defineComponent({
       sklad,
       sklads,
       skladProducts,
-      fetchSkladProducts,
       isLoading: loadingProducts
     } = useSklads()
-    const { profile } = useProfile()
     const { forceRefreshBucket } = useBucket()
     const {
+      categoriesResult,
+      loadCategories,
+    } = useCategories()
+    const {
       addSizesToBucket,
+      searchProducts,
       addCountToBucket,
+      products
     } = useProduct()
 
     const selectedSkladId = ref(
-      params?.skladId ||
-        profile.value?.permissions?.map(p => p?.sklad?.id)[0]
+      params?.skladId || ALL_TAB.id
     )
     const imagePreviewDialog = ref(false)
     const imagePreview = ref(null)
@@ -339,19 +340,20 @@ export default defineComponent({
       }
     }
 
+    const skladsTabs = computed(() => {
+      return [ALL_TAB, ...sklads.value]
+    })
+
     const categories = computed(
       () => {
-        const categSklad = skladProducts.value.find(sp => sp.id === selectedSkladId.value)
+        const categories = categoriesResult.value?.categories || []
+        const skladCategories =
+          categories.filter(c => c.sklad.id === selectedSkladId.value)
+        
         return [
           ALL_TAB,
-          ...(categSklad?.categories?.length > 1 ? categSklad?.categories : [])
+          ...(selectedSkladId.value === ALL_TAB.id ? categories : skladCategories)
         ]
-      }
-    );
-    const listProducts = computed(
-      () => {
-        const skl = skladProducts.value.find(sp => sp.id === selectedSkladId.value)
-        return skl?.products || []
       }
     );
 
@@ -401,27 +403,13 @@ export default defineComponent({
 
     async function loadData() {
       const { sort, ...otherFilters } = selectedFilters.value || {};
-      
-      const resp = await fetchSkladProducts(
-        profile.value.id,
-        {
-          products: otherFilters
-        },
-        {
-          products: otherFilters
-        },
-        {
-          _or: [
-            {
-              ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
-              ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
-            },
-          ],
-          ...otherFilters
-        },
-        sort || null,
-        otherFilters.name_contains || null
-      )
+      const resp = await searchProducts({
+        q: otherFilters.name_contains || null,
+        where: {
+          ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
+          ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
+        }
+      })
       return resp;
     }
 
@@ -445,14 +433,11 @@ export default defineComponent({
         selectedSkladId.value = ALL_TAB.id;
       }
       
-      const filtered = await loadData();
-
-      if (filtered?.length && selectedSkladId.value === ALL_TAB.id) {
-        selectedSkladId.value = filtered[0]?.id;
-      }
+      loadData();
     }
-
+    
     function onChangeSklad(id) {
+      console.log('aaaaaa', id);
       selectedSkladId.value = id;
       selectedCategoryId.value = ALL_TAB.id;
       loadData();
@@ -475,6 +460,11 @@ export default defineComponent({
     onBeforeMount(() => {
       initFiltersFromUrl();
       loadData();
+      loadCategories(
+        null,
+        { where: { sklad: sklads.value.map(s => s.id) }},
+        { fetchPolicy: 'network-only' }
+      )
     })
 
     onMounted(() => {
@@ -507,7 +497,7 @@ export default defineComponent({
       onChangeCategory,
       selectedCategoryId,
       skladProducts,
-      listProducts,
+      products,
       imagePreviewDialog,
       imagePreview,
       onOpenImagePreview,
@@ -519,7 +509,8 @@ export default defineComponent({
       viewMode,
       toggleViewMode,
       VIEW_GRID,
-      VIEW_TABLE
+      VIEW_TABLE,
+      skladsTabs
     }
   }
 })

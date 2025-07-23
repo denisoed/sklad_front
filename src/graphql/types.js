@@ -130,6 +130,44 @@ export const GET_PRODUCTS = gql`
   }
 `
 
+export const SEARCH_PRODUCTS = gql`
+  query SearchProducts($q: String, $where: JSON) {
+    search(q: $q, where: $where) {
+      id
+      name
+      origPrice
+      newPrice
+      image {
+        id
+        url
+      }
+      typeSize {
+        list {
+          size
+        }
+      }
+      sizes {
+        id
+        size
+      }
+      sklad {
+        id
+        name
+        sizes
+      }
+      discountPrice
+      discountDays
+      withDiscount
+      color
+      countSizes
+      useNumberOfSizes
+      category {
+        id
+      }
+    }
+  }
+`
+
 export const PRODUCTS_WITH_MIN_SIZES = gql`
   query ProductsWithMinSizes($where: JSON, $sort: String) {
     productsWithMinSizes(where: $where, sort: $sort) {

@@ -5,8 +5,10 @@ import {
   DELETE_FILE,
   UPDATE_PRODUCT,
   ADD_PRODUCT_SIZES_TO_SALE,
-  PRODUCTS_WITH_MIN_SIZES
+  PRODUCTS_WITH_MIN_SIZES,
+  SEARCH_PRODUCTS
 } from 'src/graphql/types'
+import { apolloClient } from 'src/boot/apollo'
 import { HISTORY_DELETE } from 'src/config'
 import { useRoute } from 'vue-router'
 import useHelpers from 'src/modules/useHelpers'
@@ -161,6 +163,29 @@ const useProduct = () => {
     })  
   }
 
+  async function searchProducts({ q = null, where = {} }) {
+    try {
+      isLoading.value = true;
+      const { data } = await apolloClient.query({
+        query: SEARCH_PRODUCTS,
+        variables: {
+          ...(q ? { q } : {}),
+          where
+        },
+        fetchPolicy: 'network-only'
+      })
+      productsStore.setProducts(data?.search)
+      return data?.search;
+    } catch (error) {
+      console.log(error);
+      showError('Неизвестная ошибка. Перегрузите приложение!')
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  const products = computed(() => productsStore.getProducts)
+
   const isLoading = computed(
     () => updateProductLoading ||
     saleProductLoading ||
@@ -184,7 +209,9 @@ const useProduct = () => {
     updateProductLoading,
     isLoading,
     loadProductsWithMinSizes,
-    refetchProductsWithMinSizes
+    refetchProductsWithMinSizes,
+    searchProducts,
+    products
   }
 }
 
