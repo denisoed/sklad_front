@@ -36,21 +36,19 @@ const useStatistics = () => {
   })
 
   const origPriceTotal = computed(() => {
-    const total = listActivities.value.reduce((prev, next) => {
+    return listActivities.value.reduce((prev, next) => {
       const countUnits = next.countSizes || next.size?.split(', ')?.length || 1;
       const sum = prev + (next.origPrice * countUnits)
       return sum
     }, 0);
-    return format(total, 'c')
   })
 
   const newPriceTotal = computed(() => {
-    const total = listActivities.value.reduce((prev, next) => {
+    return listActivities.value.reduce((prev, next) => {
       const countUnits = next.countSizes || next.size?.split(', ')?.length || 1;
       const sum = prev + (next.newPrice * countUnits)
       return sum
     }, 0);
-    return format(total, 'c')
   })
 
   const discountTotal = computed(() => {

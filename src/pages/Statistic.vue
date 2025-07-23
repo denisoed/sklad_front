@@ -49,8 +49,8 @@
         :list-activities="listActivities"
         :loading-activities="loadingActivities"
         :sold-count="soldCount"
-        :orig-price-total="origPriceTotal"
-        :new-price-total="newPriceTotal"
+        :orig-price-total="format(origPriceTotal, 'c')"
+        :new-price-total="format(newPriceTotal, 'c')"
         :discount-total="discountTotal"
         @return-product="returnProduct"
       />
@@ -63,7 +63,7 @@
             class="statistic-card q-pa-md"
             :style="`background-color: ${c.bg};`"
           >
-            <div class="statistic-card_title">{{ c.label }}</div>
+            <div class="statistic-card_title" v-html="c.label" />
             <div class="statistic-card_value">
               <span v-if="!statisticFinanceLoading">{{ c.value }}</span>
               <q-spinner
@@ -172,12 +172,17 @@ export default defineComponent({
       const data = statisticFinanceResult.value?.statisticFinance
       return [
         {
+          label: 'Маржинальный <br> доход',
+          value: format(newPriceTotal.value - origPriceTotal.value, 'с'),
+          bg: 'rgb(0 255 255 / 8%)'
+        },
+        {
           label: 'Ожидаемый доход от имеющихся товаров',
           value: format(data?.incomeFromAvailableProducts, 'с'),
           bg: 'rgb(0 255 0 / 8%)'
         },
         {
-          label: 'Сумма имеющихся товаров по опт цене',
+          label: 'Сумма товаров по оптовой цене',
           value: format(data?.sumAvailableProductsWholesalePrice, 'с'),
           bg: 'rgb(255 255 0 / 8%)'
         },
@@ -318,7 +323,8 @@ export default defineComponent({
       returnProduct,
       params,
       showNetPriceTooltip,
-      soldCount
+      soldCount,
+      format
     }
   }
 })
@@ -329,7 +335,7 @@ export default defineComponent({
   &-cards {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: stretch;
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -347,6 +353,9 @@ export default defineComponent({
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     &_title {
       font-size: 16px;
@@ -360,8 +369,6 @@ export default defineComponent({
       margin-top: 5px;
     }
   }
-
-
 }
 
 .costs_type {
