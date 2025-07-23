@@ -26,13 +26,12 @@ const useStatistics = () => {
   })
 
   const priceTotal = computed(() => {
-    const total = listActivities.value.reduce((prev, next) => {
+    return listActivities.value.reduce((prev, next) => {
       const discount = next.percentageDiscount ? ((next.newPrice / 100) * next.discount) : next.discount
       const countUnits = next.countSizes || next.size?.split(', ')?.length || 1
       const sum = (prev + (next.newPrice * countUnits)) - discount
       return sum
     }, 0);
-    return format(total, 'c')
   })
 
   const origPriceTotal = computed(() => {

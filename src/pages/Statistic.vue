@@ -9,7 +9,7 @@
       >
         <div class="costs_type-label q-ma-none">Касса</div>
         <div class="costs_type-value q-ml-auto">
-          <span v-if="priceTotal === 0 || priceTotal">{{ priceTotal }}</span>
+          <span v-if="priceTotal === 0 || priceTotal">{{ format(priceTotal, 'c') }}</span>
           <q-spinner
             v-else
             size="1em"
@@ -173,7 +173,7 @@ export default defineComponent({
       return [
         {
           label: 'Маржинальный <br> доход',
-          value: format(newPriceTotal.value - origPriceTotal.value, 'с'),
+          value: format(priceTotal.value - origPriceTotal.value, 'с'),
           bg: 'rgb(0 255 255 / 8%)'
         },
         {
