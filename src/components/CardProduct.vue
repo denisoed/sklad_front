@@ -64,23 +64,7 @@
         </div>
         <div v-else class="card-product_sizes">
           <span>Размеры:</span>
-          <div
-            v-if="formattedSizes && formattedSizes.length"
-          >
-            <p
-              v-for="(s, i) of formattedSizes"
-              :key="i"
-            >
-              <q-badge
-                v-if="s.count > 1"
-                color="red"
-                floating
-              >
-                {{ s.count }}
-              </q-badge>
-              <span>{{ s.size }}</span>
-            </p>
-          </div>
+          <SizeCount v-if="sizes && sizes.length" :sizes="sizes" />
           <p v-else class="text-deep-orange">Не указаны</p>
         </div>
       </router-link>
@@ -97,17 +81,18 @@ import moment from 'moment'
 import {
   computed,
   defineComponent,
-  toRefs,
-  ref
+  toRefs
 } from 'vue'
 import { FILTER_FORMAT } from 'src/config'
 import { READ_ORIGINAL_PRICE } from 'src/permissions'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
+import SizeCount from 'src/components/SizeCount.vue'
 
 export default defineComponent({
   name: 'CardProduct',
   components: {
-    PriceFormatter
+    PriceFormatter,
+    SizeCount
   },
   props: {
     id: {
@@ -165,23 +150,13 @@ export default defineComponent({
   },
   setup(props) {
     const TODAY = Date.now()
-    const { sizes, discountDays } = toRefs(props)
-
-    const formattedSizes = computed(() => {
-      return Object.values(sizes.value.reduce((acc, obj) => {
-        const size = obj.size;
-        acc[size] = acc[size] || { size, count: 0 };
-        acc[size].count++;
-        return acc;
-      }, {}));
-    })
+    const { discountDays } = toRefs(props)
 
     const isDiscountToday = computed(() => {
       return discountDays.value?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
     })
 
     return {
-      formattedSizes,
       isDiscountToday,
       READ_ORIGINAL_PRICE
     }
@@ -319,39 +294,11 @@ export default defineComponent({
   &_sizes {
     display: flex;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 12px;
 
     > span {
       margin-right: 5px;
       color: var(--text-description);
-    }
-
-    > p {
-      color: var(--text-description);
-    }
-
-    > div {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      border-radius: 3px;
-      margin-top: -6px;
-      margin-left: -6px;
-
-      p {
-        border: 1px solid var(--q-primary);
-        position: relative;
-        padding: 0 3px;
-        color: var(--q-primary-text);
-        font-size: 16px;
-        margin-top: 6px;
-        margin-left: 6px;
-
-        .q-badge {
-          top: -10px;
-          right: -6px;
-        }
-      }
     }
   }
 }

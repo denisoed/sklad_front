@@ -57,29 +57,9 @@
         <!-- Sizes/Count -->
         <q-td key="sizes" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div v-if="props.row.useNumberOfSizes">
-            {{ props.row.countSizes }}
+            {{ props.row.countSizes }} шт
           </div>
-          <div v-else class="sizes-list">
-            <q-chip
-              v-for="size in props.row.sizes?.slice(0, 3)"
-              :key="size.id"
-              size="sm"
-              dense
-              color="grey-3"
-              text-color="grey-8"
-            >
-              {{ size.name }}: {{ size.count }}
-            </q-chip>
-            <q-chip
-              v-if="props.row.sizes?.length > 3"
-              size="sm"
-              dense
-              color="grey-3"
-              text-color="grey-8"
-            >
-              +{{ props.row.sizes.length - 3 }}
-            </q-chip>
-          </div>
+          <SizeCount v-else :sizes="props.row.sizes" />
         </q-td>
 
         <!-- Price -->
@@ -159,6 +139,7 @@ import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
+import SizeCount from 'src/components/SizeCount.vue'
 import {
   CAN_SELL_PRODUCT,
   CAN_UPDATE_PRODUCT
@@ -170,7 +151,8 @@ export default defineComponent({
     ModalSizesToBucket,
     ModalCountToBucket,
     ColorDisplay,
-    PriceFormatter
+    PriceFormatter,
+    SizeCount
   },
   props: {
     products: {
@@ -222,7 +204,7 @@ export default defineComponent({
       },
       {
         name: 'sizes',
-        label: 'Размеры',
+        label: 'Размеры/Кол-во',
         field: 'sizes',
         align: 'left'
       },
@@ -278,13 +260,6 @@ export default defineComponent({
 
 .price-column {
   min-width: 80px;
-}
-
-.sizes-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  max-width: 200px;
 }
 
 .table-row-highlight {

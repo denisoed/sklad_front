@@ -45,101 +45,15 @@
           />
         </div>
       </div>
-      <q-table
-        :rows="listActivities"
-        :loading="loadingActivities"
-        :pagination="pagination"
-        row-key="name"
-        separator="cell"
-        class="statistic-table full-width q-mb-sm border-radius-sm"
-        hide-pagination
-        no-data-label="Нет данных"
-      >
-        <template #header="props">
-          <q-tr :props="props">
-            <q-th>Название</q-th>
-            <q-th v-permissions="[READ_ORIGINAL_PRICE]">Опт Цена</q-th>
-            <q-th>Роз Цена</q-th>
-            <q-th>Скидка</q-th>
-            <q-th>Размеры</q-th>
-            <q-th>Дата продажи</q-th>
-            <q-th v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right">Возврат товара</q-th>
-          </q-tr>
-        </template>
-        <template #body="props">
-          <q-tr :props="props">
-            <q-td class="text-left">
-              {{ props.row.name }}
-            </q-td>
-            <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right">
-              <PriceFormatter :value="props.row.origPrice" />
-            </q-td>
-            <q-td class="text-right">
-              <PriceFormatter :value="props.row.newPrice" />
-            </q-td>
-            <q-td class="text-right">
-              <template v-if="props.row.discount && props.row.percentageDiscount">{{ props.row.discount }}%</template>
-              <template v-else-if="props.row.discount"><PriceFormatter :value="props.row.discount" />c</template>
-              <template v-else>-</template>
-            </q-td>
-            <q-td class="text-right">
-              {{ props.row.countSizes ? `${props.row.countSizes} шт` : props.row.size }}
-            </q-td>
-            <q-td class="text-right">
-              {{ props.row.created_at }}
-            </q-td>
-            <q-td v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right">
-              <template v-if="props.row?.product?.sklad?.id && props.row?.product?.id">
-                <q-btn
-                  icon="mdi-eye"
-                  round
-                  push
-                  text-color="primary"
-                  size="sm"
-                  class="q-mr-md"
-                  title="Перейти в товар"
-                  :to="`/sklad/${props.row?.product?.sklad?.id}/product/${props.row?.product?.id}`"
-                  v-vibrate
-                />
-                <q-btn
-                  icon="mdi-keyboard-return"
-                  round
-                  color="deep-orange"
-                  size="sm"
-                  title="Возврат товара на склад"
-                  @click="returnProduct(props.row)"
-                  v-vibrate
-                />
-              </template>
-              <template v-else>
-                <span class="text-grey">Удалён со склада</span>
-              </template>
-            </q-td>
-          </q-tr>
-        </template>
-        <template #bottom>
-          <div class="text-subtitle2">Продано единиц: <b>{{ soldCount }}</b></div>
-        </template>
-        <template #bottom-row>
-          <q-tr>
-            <q-td class="text-left text-bold">
-              Итог
-            </q-td>
-            <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right text-bold">
-              {{ origPriceTotal }}
-            </q-td>
-            <q-td class="text-right text-bold">
-              {{ newPriceTotal }}
-            </q-td>
-            <q-td class="text-right text-bold">
-              {{ discountTotal }}
-            </q-td>
-            <q-td class="text-right text-bold" />
-            <q-td class="text-right text-bold" />
-            <q-td v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right text-bold" />
-          </q-tr>
-        </template>
-      </q-table>
+      <StatisticTable
+        :list-activities="listActivities"
+        :loading-activities="loadingActivities"
+        :sold-count="soldCount"
+        :orig-price-total="origPriceTotal"
+        :new-price-total="newPriceTotal"
+        :discount-total="discountTotal"
+        @return-product="returnProduct"
+      />
       <div v-permissions="[READ_STATISTIC_FINANCE]">
         <h6 class="text-h6 q-my-md">Финансы</h6>
         <div class="statistic-cards q-gap-md">
@@ -180,7 +94,7 @@ import useHistory from 'src/modules/useHistory'
 import useHelpers from 'src/modules/useHelpers'
 import PageTitle from 'src/components/PageTitle.vue'
 import FilterDates from 'src/components/FilterDates.vue'
-import PriceFormatter from 'src/components/PriceFormatter.vue'
+import StatisticTable from 'src/components/StatisticTable.vue'
 import { useLazyQuery, useMutation } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
 import {
@@ -204,7 +118,7 @@ export default defineComponent({
   components: {
     PageTitle,
     FilterDates,
-    PriceFormatter
+    StatisticTable
   },
   setup() {
     const $q = useQuasar()
@@ -253,23 +167,20 @@ export default defineComponent({
     const { sklads } = useSklads()
     const isDateModal = ref(false)
     const showNetPriceTooltip = ref(false)
-    const pagination = {
-      rowsPerPage: -1,
-    }
 
     const statisticFinance = computed(() => {
       const data = statisticFinanceResult.value?.statisticFinance
       return [
         {
+          label: 'Ожидаемый доход от имеющихся товаров',
+          value: format(data?.incomeFromAvailableProducts, 'с'),
+          bg: 'rgb(0 255 0 / 8%)'
+        },
+        {
           label: 'Сумма имеющихся товаров по опт цене',
           value: format(data?.sumAvailableProductsWholesalePrice, 'с'),
           bg: 'rgb(255 255 0 / 8%)'
         },
-        {
-          label: 'Потенциальный доход от имеющихся товаров',
-          value: format(data?.incomeFromAvailableProducts, 'с'),
-          bg: 'rgb(0 255 0 / 8%)'
-        }
       ]
     })
 
@@ -395,7 +306,6 @@ export default defineComponent({
       statisticFinanceLoading,
       costsSum,
       loadingListCostsSum,
-      pagination,
       netProfit,
       discountTotal,
       priceTotal,
@@ -421,12 +331,22 @@ export default defineComponent({
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   &-card {
-    width: 100%;
+    width: 200px;
+    min-width: 200px;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
+    scroll-snap-align: start;
 
     &_title {
       font-size: 16px;
@@ -441,12 +361,7 @@ export default defineComponent({
     }
   }
 
-  &-table {
-    .q-table__top,
-    thead tr:first-child th {
-      font-weight: bold;
-    }
-  }
+
 }
 
 .costs_type {

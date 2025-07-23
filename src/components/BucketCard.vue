@@ -452,7 +452,7 @@ export default defineComponent({
       display: flex;
       align-items: center;
       padding: 0 4px;
-      border-radius: 3px;
+      border-radius: var(--border-radius-sm);
       border: 1px solid var(--q-primary);
 
       p {
