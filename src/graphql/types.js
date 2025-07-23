@@ -131,8 +131,8 @@ export const GET_PRODUCTS = gql`
 `
 
 export const SEARCH_PRODUCTS = gql`
-  query SearchProducts($q: String, $where: JSON) {
-    search(q: $q, where: $where) {
+  query SearchProducts($q: String, $where: JSON, $sizes: [String]) {
+    search(q: $q, where: $where, sizes: $sizes) {
       id
       name
       origPrice

@@ -163,14 +163,15 @@ const useProduct = () => {
     })  
   }
 
-  async function searchProducts({ q = null, where = {} }) {
+  async function searchProducts({ q = null, where = {}, sizes = null }) {
     try {
       isLoading.value = true;
       const { data } = await apolloClient.query({
         query: SEARCH_PRODUCTS,
         variables: {
           ...(q ? { q } : {}),
-          where
+          where,
+          sizes
         },
         fetchPolicy: 'network-only'
       })

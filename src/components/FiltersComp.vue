@@ -99,11 +99,6 @@ export default defineComponent({
       withDiscount: false,
       priceFrom: null,
       priceTo: null,
-      hasImage: false,
-      noImage: false,
-      lowStock: false,
-      inStock: false,
-      sortBy: null,
       sizes: []
     })
 
@@ -134,13 +129,7 @@ export default defineComponent({
         filters.newPrice_lte = selectedFilters.priceTo
       }
       if (selectedFilters.withDiscount) {
-        filters.withDiscount = true
-      }
-      if (selectedFilters.hasImage) {
-        filters.image_null = false
-      }
-      if (selectedFilters.noImage) {
-        filters.image_null = true
+        filters.withDiscount = selectedFilters.withDiscount
       }
       if (selectedFilters.lowStock) {
         filters.countSizes_lte = 5
@@ -148,11 +137,7 @@ export default defineComponent({
       if (selectedFilters.inStock) {
         filters.countSizes_gt = 0
       }
-      let sortParam = null
-      if (selectedFilters.sortBy) {
-        sortParam = selectedFilters.sortBy
-      }
-      emit('on-search', hasFilters.value ? { ...filters, sort: sortParam } : { sort: sortParam })
+      emit('on-search', hasFilters.value ? { ...filters } : {})
     }
 
     function applyFilters(newFilters) {

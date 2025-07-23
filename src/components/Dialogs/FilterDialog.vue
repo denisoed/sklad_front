@@ -97,23 +97,8 @@
             </p>
             <div class="flex column q-gap-sm">
               <q-checkbox
-                v-model="localFilters.hasImage"
-                label="Только с изображением"
-                dense
-              />
-              <q-checkbox
-                v-model="localFilters.noImage"
-                label="Без изображения"
-                dense
-              />
-              <q-checkbox
-                v-model="localFilters.lowStock"
-                label="Заканчивается (≤ 5 шт.)"
-                dense
-              />
-              <q-checkbox
-                v-model="localFilters.inStock"
-                label="В наличии"
+                v-model="localFilters.withDiscount"
+                label="Со скидкой"
                 dense
               />
             </div>

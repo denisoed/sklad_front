@@ -46,10 +46,11 @@ const formattedSizes = computed(() => {
 }
 
 .size-count {
+  min-width: 25px;
   border: 1px solid var(--q-primary);
   position: relative;
   border-radius: var(--border-radius-sm);
-  padding: 3px 4px 1px;
+  padding: 3px 4px;
   color: var(--q-primary-text);
   font-size: 16px;
   display: flex;

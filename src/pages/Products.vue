@@ -403,12 +403,18 @@ export default defineComponent({
 
     async function loadData() {
       const { sort, ...otherFilters } = selectedFilters.value || {};
+      const sizes = otherFilters.sizes
+      const filters = { ...otherFilters }
+      delete filters.sizes
+      console.log(filters, sizes)
       const resp = await searchProducts({
-        q: otherFilters.name_contains || null,
+        q: filters.name_contains || null,
         where: {
           ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
           ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
-        }
+          ...filters
+        },
+        sizes: sizes?.length ? sizes : null
       })
       return resp;
     }
@@ -437,7 +443,6 @@ export default defineComponent({
     }
     
     function onChangeSklad(id) {
-      console.log('aaaaaa', id);
       selectedSkladId.value = id;
       selectedCategoryId.value = ALL_TAB.id;
       loadData();
