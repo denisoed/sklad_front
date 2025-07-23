@@ -49,9 +49,16 @@ const formattedSizes = computed(() => {
   border: 1px solid var(--q-primary);
   position: relative;
   border-radius: var(--border-radius-sm);
-  padding: 0 4px;
+  padding: 3px 4px 1px;
   color: var(--q-primary-text);
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  span {
+    line-height: normal;
+  }
 
   .q-badge {
     top: -12px;

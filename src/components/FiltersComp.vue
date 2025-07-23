@@ -122,10 +122,10 @@ export default defineComponent({
         filters.name_contains = selectedFilters.name_contains
       }
       if (selectedFilters.color?.length) {
-        filters.color_in = selectedFilters.color
+        filters.color = selectedFilters.color
       }
       if (selectedFilters.sizes?.length) {
-        filters.sizes_contains = selectedFilters.sizes
+        filters.sizes = selectedFilters.sizes
       }
       if (selectedFilters.priceFrom !== null) {
         filters.newPrice_gte = selectedFilters.priceFrom

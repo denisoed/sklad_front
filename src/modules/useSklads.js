@@ -117,11 +117,9 @@ const useSklads = () => {
         } : {
           whereSklads: {
             users: userId,
-            ...skladParams,
           },
-          whereCategories: categoriesParams,
+          whereCategories: {},
           whereProducts: productsParams,
-          sortProducts
         },
         fetchPolicy: 'network-only'
       })

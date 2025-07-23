@@ -137,12 +137,26 @@ const useProduct = () => {
     }
   }
 
+  function generateProductMeta(product) {
+    return `
+      ${`Склад=${product.sklad?.label}`},
+      ${`Категория=${product.category?.label}`},
+      ${`Название=${product.name}`},
+      ${`Цвет=${product.colorName}`},
+      ${product.sizes.length ? `Размеры=${product.sizes.map(s => s.size).join(', ')},` : ''}
+      ${product.useNumberOfSizes ? `Количество=${product.countSizes},` : ''}
+      ${product.withDiscount ? `Скидка=${product.discountPrice},` : ''}
+      ${`Оптовая цена=${product.origPrice}`},
+      ${`Розничная цена=${product.newPrice}`},
+    `.trim()
+  }
+
   async function updateProductById(id, data) {
     await updateProduct({
       id,
       data: {
         sklad: params?.skladId,
-        ...data
+        ...data,
       }
     })  
   }
@@ -164,7 +178,10 @@ const useProduct = () => {
     addSizesToBucket,
     addCountToBucket,
     removeProduct,
+    generateProductMeta,
     updateProductById,
+    updateProductError,
+    updateProductLoading,
     isLoading,
     loadProductsWithMinSizes,
     refetchProductsWithMinSizes

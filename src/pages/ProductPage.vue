@@ -328,8 +328,8 @@
               push
               color="primary"
               class="q-ml-auto"
-              :disable="(isDirty || createProductLoading || updatedProductLoading)"
-              :loading="uploadImageLoading || createProductLoading || updatedProductLoading"
+              :disable="(isDirty || createProductLoading || updateProductLoading)"
+              :loading="uploadImageLoading || createProductLoading || updateProductLoading"
               tabindex="8"
               v-vibrate
             />
@@ -359,7 +359,6 @@ import {
   CREATE_PRODUCT,
   DELETE_FILE,
   GET_PRODUCT,
-  UPDATE_PRODUCT,
 } from 'src/graphql/types'
 import { CATEGORIES, CREATE_CATEGORY } from 'src/graphql/category'
 import { CREATE_SKLAD } from 'src/graphql/sklads'
@@ -439,7 +438,11 @@ export default defineComponent({
     const {
       addSizesToBucket,
       addCountToBucket,
-      removeProduct
+      removeProduct,
+      updateProductById,
+      updateProductError,
+      updateProductLoading,
+      generateProductMeta,
     } = useProduct()
     const {
       createHistory,
@@ -460,11 +463,6 @@ export default defineComponent({
       mutate: removeImage,
       loading: removeImageLoading,
     } = useMutation(DELETE_FILE)
-    const {
-      mutate: updateProduct,
-      error: updateProductError,
-      loading: updatedProductLoading,
-    } = useMutation(UPDATE_PRODUCT)
     const {
       mutate: createProduct,
       error: createProductError,
@@ -639,25 +637,25 @@ export default defineComponent({
       const uploaded = await uploadImg(product.image)
       if (!uploadImageError.value) {
         try {
-          const response = await createProduct({
-            data: {
-              name: product.name,
-              sklad: product.sklad?.value,
-              category: product.category?.value,
-              origPrice: Number(product.origPrice),
-              newPrice: Number(product.newPrice),
-              discountPrice: Number(product.discountPrice),
-              discountDays: product.discountDays,
-              withDiscount: product.withDiscount,
-              image: uploaded.data.upload.id,
-              color: product.color,
-              colorName: product.colorName,
-              sizes: product.sizes,
-              countSizes: product.countSizes,
-              useNumberOfSizes: product.useNumberOfSizes,
-              ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
-            }
-          })
+          const data = {
+            name: product.name,
+            sklad: product.sklad?.value,
+            category: product.category?.value,
+            origPrice: Number(product.origPrice),
+            newPrice: Number(product.newPrice),
+            discountPrice: Number(product.discountPrice),
+            discountDays: product.discountDays,
+            withDiscount: product.withDiscount,
+            image: uploaded.data.upload.id,
+            color: product.color,
+            colorName: product.colorName,
+            sizes: product.sizes,
+            countSizes: product.countSizes,
+            useNumberOfSizes: product.useNumberOfSizes,
+            meta: generateProductMeta(product),
+            ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+          }
+          const response = await createProduct({ data })
           if (!createProductError.value) {
             showSuccess('Товар успешно создан!')
             createHistory({
@@ -693,26 +691,25 @@ export default defineComponent({
       }
       if (!uploadImageError.value) {
         try {
-          await updateProduct({
-            id: params?.productId,
-            data: {
-              sklad: product.sklad?.value,
-              category: product.category?.value,
-              origPrice: Number(product.origPrice),
-              image: uploaded ? uploaded.data.upload.id : product.imageId,
-              newPrice: Number(product.newPrice),
-              discountPrice: Number(product.discountPrice),
-              sizes: product.sizes.map(s => ({ size: s.size })),
-              countSizes: product.countSizes,
-              useNumberOfSizes: product.useNumberOfSizes,
-              discountDays: product.discountDays,
-              withDiscount: product.withDiscount,
-              name: product.name,
-              color: product.color,
-              colorName: product.colorName,
-              ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
-            }
-          })
+          const data = {
+            sklad: product.sklad?.value,
+            category: product.category?.value,
+            origPrice: Number(product.origPrice),
+            image: uploaded ? uploaded.data.upload.id : product.imageId,
+            newPrice: Number(product.newPrice),
+            discountPrice: Number(product.discountPrice),
+            sizes: product.sizes.map(s => ({ size: s.size })),
+            countSizes: product.countSizes,
+            useNumberOfSizes: product.useNumberOfSizes,
+            discountDays: product.discountDays,
+            withDiscount: product.withDiscount,
+            name: product.name,
+            color: product.color,
+            colorName: product.colorName,
+            meta: generateProductMeta(product),
+            ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+          }
+          await updateProductById(params?.productId, data)
           if (!updateProductError.value) {
             if (typeof product.image !== 'string' && product.imageId) {
               removeImage({ id: product.imageId })
@@ -896,7 +893,7 @@ export default defineComponent({
       createProductLoading,
       uploadImageLoading,
       removeImageLoading,
-      updatedProductLoading,
+      updateProductLoading,
       loadingProduct,
       categoriesOptions,
       CREATE_CATEGORY,

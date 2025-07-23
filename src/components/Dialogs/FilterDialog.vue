@@ -44,26 +44,6 @@
             </div>
             <q-separator class="full-width q-my-md" />
           </div>
-
-          <!-- Сортировка -->
-          <div class="full-width q-mb-md">
-            <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Сортировка
-            </p>
-            <q-select
-              v-model="localFilters.sortBy"
-              :options="sortOptions"
-              option-value="value"
-              option-label="label"
-              emit-value
-              map-options
-              outlined
-              dense
-              label="Выберите сортировку"
-            />
-          </div>
-          
-          <q-separator class="full-width q-mb-md" />
           
           <!-- Ценовой диапазон -->
           <div class="full-width q-mb-md">
@@ -79,6 +59,7 @@
                 label="От"
                 suffix="сом"
                 style="flex: 1"
+                clearable
               />
               <q-input
                 v-model.number="localFilters.priceTo"
@@ -88,6 +69,7 @@
                 label="До"
                 suffix="сом"
                 style="flex: 1"
+                clearable
               />
             </div>
           </div>
@@ -207,16 +189,6 @@ export default defineComponent({
       Object.assign(localFilters, newFilters)
     }, { deep: true })
 
-    const sortOptions = [
-      { label: 'По умолчанию', value: null },
-      { label: 'По названию (А-Я)', value: 'name:asc' },
-      { label: 'По названию (Я-А)', value: 'name:desc' },
-      { label: 'По цене (возрастание)', value: 'newPrice:asc' },
-      { label: 'По цене (убывание)', value: 'newPrice:desc' },
-      { label: 'По количеству (возрастание)', value: 'countSizes:asc' },
-      { label: 'По количеству (убывание)', value: 'countSizes:desc' }
-    ]
-
     async function fetchAvailableSizes() {
       try {
         loadingAvailableSizes.value = true
@@ -255,8 +227,8 @@ export default defineComponent({
     }
 
     function setColorName(color) {
-      localFilters.color = color.color
-      localFilters.colorName = color.name
+      localFilters.color = color?.color
+      localFilters.colorName = color?.name
     }
 
     function apply() {
@@ -277,7 +249,6 @@ export default defineComponent({
       colorPickerRef,
       availableSizes,
       loadingAvailableSizes,
-      sortOptions,
       toggleSize,
       apply,
       clear,
