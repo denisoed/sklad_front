@@ -2,6 +2,27 @@
   <q-page>
     <div class="container">
       <PageTitle title="Отчеты по всем складам" />
+      <div v-permissions="[READ_STATISTIC_FINANCE]" class="q-mb-lg">
+        <h6 class="text-h6 q-mb-md q-mt-none">Сводка</h6>
+        <div class="statistic-cards q-gap-md">
+          <div
+            v-for="(c, i) of statisticFinance"
+            :key="i"
+            class="statistic-card q-pa-md"
+            :style="`background-color: ${c.bg};`"
+          >
+            <div class="statistic-card_title" v-html="c.label" />
+            <div class="statistic-card_value">
+              <q-spinner
+                v-if="statisticFinanceLoading || loadingStatisticActivities"
+                size="1em"
+              />
+              <span v-else>{{ c.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h6 class="text-h6 q-mb-md q-mt-none">Отчеты</h6>
       <FilterDates @on-change="load" />
       <div
         class="costs_type flex items-center q-pa-md q-mb-md q-mt-md border-radius-sm"
@@ -9,7 +30,7 @@
       >
         <div class="costs_type-label q-ma-none">Касса</div>
         <div class="costs_type-value q-ml-auto">
-          <span v-if="priceTotal === 0 || priceTotal">{{ format(priceTotal, 'c') }}</span>
+          <span v-if="priceTotal === 0 || priceTotal">{{ formatPrice(priceTotal) }}</span>
           <q-spinner
             v-else
             size="1em"
@@ -49,31 +70,11 @@
         :list-activities="listActivities"
         :loading-activities="loadingActivities"
         :sold-count="soldCount"
-        :orig-price-total="format(origPriceTotal, 'c')"
-        :new-price-total="format(newPriceTotal, 'c')"
+        :orig-price-total="formatPrice(origPriceTotal)"
+        :new-price-total="formatPrice(newPriceTotal)"
         :discount-total="discountTotal"
         @return-product="returnProduct"
       />
-      <div v-permissions="[READ_STATISTIC_FINANCE]">
-        <h6 class="text-h6 q-my-md">Финансы</h6>
-        <div class="statistic-cards q-gap-md">
-          <div
-            v-for="(c, i) of statisticFinance"
-            :key="i"
-            class="statistic-card q-pa-md"
-            :style="`background-color: ${c.bg};`"
-          >
-            <div class="statistic-card_title" v-html="c.label" />
-            <div class="statistic-card_value">
-              <span v-if="!statisticFinanceLoading">{{ c.value }}</span>
-              <q-spinner
-                v-if="statisticFinanceLoading"
-                size="1em"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </q-page>
 </template>
@@ -159,11 +160,14 @@ export default defineComponent({
       soldCount,
       origPriceTotal,
       newPriceTotal,
-      discountTotal
+      discountTotal,
+      totalRevenue,
+      fetchStatisticActivities,
+      loadingStatisticActivities
     } = useStatistics()
     const { getCurrentMonth } = useDate()
 
-    const { format } = useMoney()
+    const { formatPrice } = useMoney()
     const { sklads } = useSklads()
     const isDateModal = ref(false)
     const showNetPriceTooltip = ref(false)
@@ -173,24 +177,24 @@ export default defineComponent({
       return [
         {
           label: 'Маржинальный <br> доход',
-          value: format(priceTotal.value - origPriceTotal.value, 'с'),
+          value: formatPrice(totalRevenue.value),
           bg: 'rgb(0 255 255 / 8%)'
         },
         {
           label: 'Ожидаемый доход от имеющихся товаров',
-          value: format(data?.incomeFromAvailableProducts, 'с'),
+          value: formatPrice(data?.incomeFromAvailableProducts),
           bg: 'rgb(0 255 0 / 8%)'
         },
         {
           label: 'Сумма товаров по оптовой цене',
-          value: format(data?.sumAvailableProductsWholesalePrice, 'с'),
+          value: formatPrice(data?.sumAvailableProductsWholesalePrice),
           bg: 'rgb(255 255 0 / 8%)'
         },
       ]
     })
 
     const costsSum = computed(() => {
-      const sum = format(resultListCostsSum.value?.listCostsSum?.sum, 'с')
+      const sum = formatPrice(resultListCostsSum.value?.listCostsSum?.sum)
       return sum
     })
 
@@ -203,8 +207,8 @@ export default defineComponent({
         return result <= 0 ? 0 : result
       }, 0);
       const cost = resultListCostsSum.value?.listCostsSum?.sum;
-      if (!cost) return format(total, 'c')
-      return format(total - cost, 'c')
+      if (!cost) return formatPrice(total)
+      return formatPrice(total - cost)
     })
 
     const hasSkladId = computed(() => !!params?.skladId);
@@ -282,6 +286,7 @@ export default defineComponent({
         },
         { fetchPolicy: 'network-only' }
       )
+      fetchStatisticActivities(where)
       loadStatisticFinance(
         null,
         {
@@ -324,7 +329,8 @@ export default defineComponent({
       params,
       showNetPriceTooltip,
       soldCount,
-      format
+      formatPrice,
+      loadingStatisticActivities
     }
   }
 })

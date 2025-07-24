@@ -191,7 +191,7 @@ export default defineComponent({
   },
   setup() {
     const { showSuccess, showError } = useHelpers()
-    const { format } = useMoney()
+    const { formatPrice } = useMoney()
     const {
       createCost,
       errorCost,
@@ -275,7 +275,7 @@ export default defineComponent({
         id: c.id,
         fullname: c?.users_permissions_user?.fullname || 'n/a',
         description: c.description,
-        sum: format(c.sum, 'с'),
+        sum: formatPrice(c.sum),
         created_at: moment(c.created_at).local().format(DISPLAY_FORMAT),
       }));
     })
@@ -283,7 +283,7 @@ export default defineComponent({
     const costsSum = computed(() => {
       const costs = costsResult.value?.listCosts || []
       const sum = costs.reduce((prev, next) => prev + next.sum, 0)
-      return format(sum, 'с')
+      return formatPrice(sum)
     })
 
     return {

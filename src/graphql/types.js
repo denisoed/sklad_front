@@ -241,6 +241,14 @@ export const STATISTIC_FINANCE = gql`
   }
 `
 
+export const STATISTIC_ACTIVITIES = gql`
+  query StatisticActivities($where: JSON!) {
+    statisticActivities(where: $where) {
+      totalRevenue
+    }
+  }
+`
+
 export const ACTIVITIES = gql`
   query($where: JSON) {
     activities(where: $where) {

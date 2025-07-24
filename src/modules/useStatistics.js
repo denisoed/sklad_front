@@ -5,10 +5,11 @@ import { DISPLAY_FORMAT } from 'src/config'
 import { useLazyQuery } from '@vue/apollo-composable'
 import {
   LIST_ACTIVITIES,
+  STATISTIC_ACTIVITIES,
 } from 'src/graphql/types'
 
 const useStatistics = () => {
-  const { format } = useMoney()
+  const { formatPrice } = useMoney()
 
   const {
     load,
@@ -17,12 +18,23 @@ const useStatistics = () => {
     refetch: refetchActivities
   } = useLazyQuery(LIST_ACTIVITIES)
 
+  const {
+    load: loadStatisticActivities,
+    result: statisticActivitiesResult,
+    loading: loadingStatisticActivities,
+    refetch: refetchStatisticActivities
+  } = useLazyQuery(STATISTIC_ACTIVITIES)
+
   const listActivities = computed(() => {
     const activities = activitiesResult.value?.listActivities || []
     return activities.map(a => ({
       ...a,
       created_at: moment(a.created_at).local().format(DISPLAY_FORMAT)
     }));
+  })
+
+  const totalRevenue = computed(() => {
+    return statisticActivitiesResult.value?.statisticActivities?.totalRevenue || 0
   })
 
   const priceTotal = computed(() => {
@@ -56,7 +68,7 @@ const useStatistics = () => {
       const sum = prev + discount
       return sum
     }, 0);
-    return format(total, 'c')
+    return formatPrice(total)
   })
 
   const soldCount = computed(() => {
@@ -78,6 +90,14 @@ const useStatistics = () => {
     )
   }
 
+  function fetchStatisticActivities(where) {
+    loadStatisticActivities(
+      null,
+      { where },
+      { fetchPolicy: 'network-only' }
+    )
+  }
+
   return {
     priceTotal,
     loadActivities,
@@ -88,6 +108,10 @@ const useStatistics = () => {
     origPriceTotal,
     newPriceTotal,
     discountTotal,
+    fetchStatisticActivities,
+    refetchStatisticActivities,
+    loadingStatisticActivities,
+    totalRevenue,
   }
 }
 

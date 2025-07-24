@@ -56,10 +56,10 @@ export default defineComponent({
     } = useSklads()
     const { params } = useRoute()
     const { loadActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
-    const { format } = useMoney()
+    const { formatPrice } = useMoney()
 
     const skladName = computed(() => sklad.value?.name)
-    const skladGoal = computed(() => format(sklad.value?.goal))
+    const skladGoal = computed(() => formatPrice(sklad.value?.goal))
 
     onBeforeMount(() => {
       const where = {

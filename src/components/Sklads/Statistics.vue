@@ -6,7 +6,7 @@
       <ChartCard
         class="full-width"
         title="Заработано"
-        :body="priceTotal"
+        :body="formatPrice(priceTotal)"
         :descr="`за ${selected.label}`"
         :loading="loadingActivities"
       />
@@ -31,6 +31,7 @@ import moment from 'moment'
 import { FILTER_FORMAT, DAY, WEEK, MONTH, YEAR } from 'src/config'
 import useStatistics from 'src/modules/useStatistics'
 import useDate from 'src/modules/useDate'
+import useMoney from 'src/modules/useMoney'
 
 const TABS = [
   {
@@ -70,6 +71,7 @@ export default defineComponent({
       listActivities,
       priceTotal
     } = useStatistics()
+    const { formatPrice } = useMoney()
     const { getCurrentMonth, getCurrentWeek } = useDate()
 
     function load(params) {
@@ -136,6 +138,7 @@ export default defineComponent({
       lineChartCategories,
       lineChartSeries,
       listActivities,
+      formatPrice,
     }
   }
 })
