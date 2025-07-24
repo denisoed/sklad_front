@@ -70,7 +70,6 @@
           class="q-ml-auto"
           @click="close"
           color="grey"
-          @click="onView"
         >
           <q-icon
             name="mdi-close"

@@ -27,7 +27,7 @@
               <p class="full-width text-left q-mb-sm">Выберите цвет для визуального отличия</p>
               <ColorPicker
                 :selected="formData.color"
-                @on-change="formData.color = $event"
+                @on-change="onColorChange"
               />
             </div>
             <q-separator class="full-width" />
@@ -140,6 +140,10 @@ export default defineComponent({
       updatedLoading.value
     )
 
+    function onColorChange(data) {
+      formData.color = data.color
+    }
+
     function close() {
       emit('close')
       formData.color = null
@@ -210,6 +214,7 @@ export default defineComponent({
       remove,
       formData,
       isLoading,
+      onColorChange
     }
   }
 })
