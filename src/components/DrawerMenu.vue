@@ -5,6 +5,7 @@
       :telegram-id="profile?.telegramId"
       :email="profile?.email"
       class="q-mr-auto q-mb-lg q-px-xs"
+      @click="copyTgId"
     />
     <q-list>
       <template v-for="(item, index) in MENU_LIST" :key="index">
@@ -47,6 +48,7 @@
         clickable
         v-ripple
         to="/post/1"
+        class="hidden"
       >
         <q-item-section avatar>
           <q-img src="~assets/logo.svg" class="drawer-install-logo" />
@@ -82,10 +84,12 @@
 import {
   defineComponent,
 } from 'vue'
+import { copyToClipboard } from 'quasar';
 import UserInfo from 'src/components/UserInfo.vue'
 import FeedbackDialog from 'src/components/FeedbackDialog/index.vue'
 import useProfile from 'src/modules/useProfile'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
+import useHelpers from 'src/modules/useHelpers'
 
 const MENU_LIST = [
   // {
@@ -95,14 +99,14 @@ const MENU_LIST = [
   //   disable: true,
   //   to: '/contacts'
   // },
-  {
-    icon: 'mdi-book-open-page-variant',
-    iconColor: 'primary',
-    label: 'Блог',
-    separator: false,
-    disable: false,
-    to: '/posts'
-  }
+  // {
+  //   icon: 'mdi-book-open-page-variant',
+  //   iconColor: 'primary',
+  //   label: 'Блог',
+  //   separator: false,
+  //   disable: false,
+  //   to: '/posts'
+  // }
 ]
 
 export default defineComponent({
@@ -114,6 +118,7 @@ export default defineComponent({
   setup() {
     const { profile } = useProfile()
     const { logout, revokeToken } = useJwtMethods()
+    const { showSuccess } = useHelpers()
 
     function changeAccount() {
       revokeToken()
@@ -140,10 +145,17 @@ export default defineComponent({
       }
     ]
 
+    function copyTgId() {
+      if (!profile.value.email && !profile.value.telegramId) return
+      copyToClipboard(profile.value.email || profile.value.telegramId)
+      showSuccess(profile.value.email ? 'Почта скопирована' : 'Telegram ID скопирован')
+    }
+
     return {
       profile,
       MENU_LIST,
       MENU_LIST_BOTTOM,
+      copyTgId
     }
   }
 })
