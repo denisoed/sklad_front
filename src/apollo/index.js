@@ -45,9 +45,9 @@ const errorLink = onError(
               try {
                 forward$ = fromPromise(
                   refreshToken()
-                    .then(({ aToken }) => {
+                    .then(() => {
                       resolvePendingRequests(); 
-                      return aToken;
+                      return;
                     })
                     .catch(() => {
                       pendingRequests = [];
