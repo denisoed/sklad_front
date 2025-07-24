@@ -403,7 +403,6 @@ export default defineComponent({
       const sizes = otherFilters.sizes
       const filters = { ...otherFilters }
       delete filters.sizes
-      console.log(filters, sizes)
       const resp = await searchProducts({
         q: filters.name_contains || null,
         where: {

@@ -45,6 +45,13 @@
       </div>
     </div>
 
+    <!-- Bucket Card -->
+    <BucketCardHome
+      v-if="bucketProductsCount"
+      :bucket-products-count="bucketProductsCount"
+      class="q-mt-sm"
+    />
+
     <SkladsStatistics :ids="skladsIDs" />
 
     <CrudModal
@@ -64,7 +71,8 @@
 import {
   defineComponent,
   computed,
-  ref
+  ref,
+  watch
 } from 'vue'
 import CrudModal from 'src/components/CrudModal.vue'
 import { useRouter } from 'vue-router'
@@ -74,7 +82,9 @@ import {
 } from 'src/graphql/sklads'
 import useSklads from 'src/modules/useSklads'
 import useProfile from 'src/modules/useProfile'
+import useBucket from 'src/modules/useBucket'
 import SkladsStatistics from 'src/components/Sklads/Statistics.vue'
+import BucketCardHome from 'src/components/BucketCardHome.vue'
 import Draggable from 'vuedraggable'
 
 export default defineComponent({
@@ -82,6 +92,7 @@ export default defineComponent({
   components: {
     CrudModal,
     SkladsStatistics,
+    BucketCardHome,
     Draggable,
   },
   setup() {
@@ -89,6 +100,7 @@ export default defineComponent({
 
     const { profile, subscrHasExpired } = useProfile()
     const { fetchSklads, sklads, onCreateNew } = useSklads()
+    const { bucketProductsCount, bucketProducts, loadBucketProducts } = useBucket()
     const openedNewSkladModal = ref(false)
 
     const skladsIDs = computed(
@@ -108,6 +120,21 @@ export default defineComponent({
       fetchSklads(profile.value.id)
     }
 
+    // Load bucket data when sklads change
+    watch(sklads, (val) => {
+      if (val?.length) {
+        loadBucketProducts(
+          null,
+          {
+            where: {
+              sklad: val.map(s => s.id)
+            }
+          },
+          { fetchPolicy: 'network-only' }
+        )
+      }
+    }, { immediate: true })
+
     return {
       sklads,
       profile,
@@ -121,6 +148,8 @@ export default defineComponent({
       skladsIDs,
       refresh,
       push,
+      bucketProductsCount,
+      bucketProducts,
     }
   }
 })

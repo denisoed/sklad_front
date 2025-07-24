@@ -14,7 +14,7 @@
               class="full-width"
               debounce="500"
               hint="Сотрудник, к которому будут присвоины полномочия"
-              placeholder="Введите телеграм ID или почту"
+              placeholder="Введите телеграм ID"
               enterkeyhint="done"
               dense
               :model-value="formData.telegramId || formData.email"
