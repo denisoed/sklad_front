@@ -6,12 +6,13 @@ import {
 
 const useJwtTokens = () => {
   function isAuthenticated() {
-    return getAccessToken() !== null
+    const token = getAccessToken()
+    return token && token.length > 0
   }
 
   function getAuthenticationBearer() {
     const token = getAccessToken()
-    return token ? `${TOKEN_TYPE} ${token}` : ''
+    return token && token.length > 0 ? `${TOKEN_TYPE} ${token}` : ''
   }
 
   function setAccessToken(accessToken) {
