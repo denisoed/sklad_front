@@ -6,8 +6,15 @@
       :id="b.id"
       :product-id="b.product?.id"
       :name="b.product?.name"
-      :orig-price="b.product?.origPrice"
-      :new-price="getNewPrice(b.product)"
+      :sum-price="getNewPrice(
+        b.product,
+        b.payCash,
+        b.payCard,
+        b.cashSum,
+        b.cardSum,
+        b.percentageDiscount,
+        b.discount
+      )"
       :color="b.product?.color"
       :image="b.product?.image?.url"
       :sizes="b.sizes"
@@ -34,8 +41,7 @@
 <script>
 import { defineComponent } from 'vue'
 import BucketCard from 'src/components/BucketCard.vue'
-import moment from 'moment'
-import { FILTER_FORMAT } from 'src/config'
+import { getNewPrice } from './helpers'
 
 export default defineComponent({
   name: 'BucketGrid',
@@ -58,16 +64,6 @@ export default defineComponent({
     'on-checked'
   ],
   setup(props, { emit }) {
-    const TODAY = Date.now()
-
-    function getNewPrice(product) {
-      const isDiscountToday = product?.discountDays?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
-      if (isDiscountToday && product?.withDiscount) {
-        return product?.discountPrice
-      }
-      return product?.newPrice
-    }
-
     function update(item, payload) {
       emit('update', item, payload)
     }

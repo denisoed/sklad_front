@@ -47,6 +47,7 @@
         
         <!-- Name -->
         <q-td key="name" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
+          <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
           <div class="text-weight-medium">{{ props.row.name }}</div>
           <div v-if="props.row.color" class="flex items-center q-gutter-xs q-mt-xs">
             <span class="text-caption text-grey-6">Цвет:</span>

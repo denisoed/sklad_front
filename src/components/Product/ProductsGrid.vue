@@ -31,7 +31,6 @@
         >
           <q-icon
             name="mdi-eye"
-            color="primary"
           />
         </q-btn>
         <div v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: p?.sklad?.id }">

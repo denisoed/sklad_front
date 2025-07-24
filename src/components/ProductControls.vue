@@ -21,7 +21,6 @@
           >
             <q-icon
               name="mdi-trash-can-outline"
-              color="deep-orange"
             />
           </q-btn>
         </BulkRemoveDialog>
@@ -40,7 +39,6 @@
           >
             <q-icon
               name="mdi-pencil"
-              color="primary"
             />
           </q-btn>
         </BulkUpdateDialog>

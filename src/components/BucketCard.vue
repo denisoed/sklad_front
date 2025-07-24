@@ -198,11 +198,7 @@ export default defineComponent({
       type: String,
       default: null
     },
-    origPrice: {
-      type: [String, Number],
-      default: null
-    },
-    newPrice: {
+    sumPrice: {
       type: [String, Number],
       default: null
     },
@@ -267,10 +263,7 @@ export default defineComponent({
       payCard,
       payCash,
       cardSum,
-      cashSum,
-      newPrice,
-      discount,
-      percentageDiscount
+      cashSum
     } = toRefs(props)
     const checked = ref(true)
 
@@ -280,18 +273,6 @@ export default defineComponent({
       if (payCash.value) return 'Наличными'
       if (payCard.value) return 'Картой'
       return null
-    })
-
-    const sumPrice = computed(() => {
-      let sum = 0;
-      if (payCash.value && payCard.value) {
-        sum = ((cashSum.value || 0) + (cardSum.value || 0))
-      } else {
-        sum = newPrice.value
-      }
-      return percentageDiscount.value ?
-        sum - ((sum / 100) * discount.value) :
-          sum - discount.value;
     })
 
     function updateSizes(payload) {
@@ -329,8 +310,7 @@ export default defineComponent({
       updateSizes,
       removeFromBucket,
       READ_ORIGINAL_PRICE,
-      payMethod,
-      sumPrice
+      payMethod
     }
   }
 })

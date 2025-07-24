@@ -47,8 +47,8 @@
         
         <!-- Name -->
         <q-td key="name" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
-          <div class="text-weight-medium">{{ props.row.product?.name }}</div>
           <div class="text-caption text-grey-6">#{{ props.row.product?.id }}</div>
+          <div class="text-weight-medium">{{ props.row.product?.name }}</div>
           <div v-if="props.row.product?.color" class="flex items-center q-gutter-xs q-mt-xs">
             <span class="text-caption text-grey-6">Цвет:</span>
             <ColorDisplay :color="props.row.product?.color" size="16px" />
@@ -67,7 +67,17 @@
         <q-td key="price" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="price-column">
             <div class="text-weight-bold">
-              <PriceFormatter :value="getNewPrice(props.row.product)" />
+              <PriceFormatter
+                :value="getNewPrice(
+                  props.row.product,
+                  props.row.payCash,
+                  props.row.payCard,
+                  props.row.cashSum,
+                  props.row.cardSum,
+                  props.row.percentageDiscount,
+                  props.row.discount
+                )"
+              />
             </div>
             <div v-if="props.row.discount" class="text-caption text-red">
               Скидка: 
@@ -193,8 +203,7 @@ import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
-import moment from 'moment'
-import { FILTER_FORMAT } from 'src/config'
+import { getNewPrice } from './helpers'
 
 export default defineComponent({
   name: 'BucketTable',
@@ -225,7 +234,6 @@ export default defineComponent({
     const router = useRouter()
     const $q = useQuasar()
     const highlightRowId = ref(null)
-    const TODAY = Date.now()
     
     const goToProduct = (bucketProduct) => {
       if (bucketProduct?.product?.id) {
@@ -235,14 +243,6 @@ export default defineComponent({
 
     function onUpdate(row, event) {
       emit('update', row, event)
-    }
-
-    function getNewPrice(product) {
-      const isDiscountToday = product?.discountDays?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
-      if (isDiscountToday && product?.withDiscount) {
-        return product?.discountPrice
-      }
-      return product?.newPrice
     }
 
     function removeFromBucket(bucketProduct) {
