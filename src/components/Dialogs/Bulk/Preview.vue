@@ -27,7 +27,6 @@
               color="deep-orange"
               size="sm"
               @click="remove(props.row.id)"
-              v-vibrate
             />
           </q-td>
         </q-tr>
@@ -41,7 +40,6 @@
         color="grey"
         icon="mdi-close"
         push
-        v-vibrate
       />
       <q-btn
         style="width:100%;height:40px;"
@@ -50,7 +48,6 @@
         push
         :disable="!rows?.length"
         @click="next"
-        v-vibrate
       />
     </div>
   </div>

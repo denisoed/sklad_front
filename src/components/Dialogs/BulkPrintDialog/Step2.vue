@@ -27,7 +27,6 @@
         icon="mdi-arrow-left"
         push
         @click="prev"
-        v-vibrate
       />
       <q-btn
         style="width:100%;height:40px;"
@@ -36,7 +35,6 @@
         push
         :disable="isDisabled"
         @click="submit"
-        v-vibrate
       />
     </div>
   </div>

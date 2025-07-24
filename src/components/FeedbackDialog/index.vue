@@ -1,7 +1,7 @@
 <template>
   <div class="feedback">
     <!-- Button -->
-    <div @click="open" v-vibrate>
+    <div @click="open">
       <slot />
     </div>
 
@@ -33,7 +33,6 @@
                       flat
                       round
                       @click="select(b.rating)"
-                      v-vibrate
                     >
                       <q-img
                         :src="b.src"
@@ -65,7 +64,6 @@
                     color="grey"
                     push
                     @click="select(null)"
-                    v-vibrate
                   >
                     Назад
                   </q-btn>
@@ -74,7 +72,6 @@
                     push
                     :loading="sending"
                     @click="send"
-                    v-vibrate
                   >
                     Отправить
                   </q-btn>

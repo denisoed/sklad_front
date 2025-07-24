@@ -1,6 +1,6 @@
 <template>
   <div class="basic-dialog">
-    <div @click="onOpen" v-vibrate>
+    <div @click="onOpen">
       <slot />
     </div>
     <!-- Preview dialog -->
@@ -15,7 +15,6 @@
             color="deep-orange"
             size="sm"
             v-close-popup
-            v-vibrate
           >
             <q-icon
               name="mdi-close"
