@@ -34,13 +34,13 @@
               />
             </div>
           </div>
-          
-          <div v-else class="flex column items-center q-py-md">
+          <div v-else class="flex column items-center">
+            <q-separator class="q-mb-md full-width" />
             <span v-if="loading" class="text-grey-6">
               <q-icon size="sm" name="mdi-loading" class="mdi-spin q-mr-sm" />
               Загрузка...
             </span>
-            <div v-else class="flex column items-center text-center">
+            <div v-else class="flex column items-start text-left">
               <span class="text-subtitle2">Список пуст</span>
               <p class="q-mb-none text-grey-5 text-caption q-mt-xs">
                 Создавайте и управляйте списком размеров под разные товары
