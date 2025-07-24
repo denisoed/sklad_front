@@ -10,33 +10,44 @@
       </PageTitle>
 
       <div v-if="bucketProducts && bucketProducts.length">
-        <BucketCard
-          v-for="(b, i) of bucketProducts"
-          :key="i"
-          :id="b.id"
-          :product-id="b.product?.id"
-          :name="b.product?.name"
-          :orig-price="b.product?.origPrice"
-          :new-price="getNewPrice(b.product)"
-          :color="b.product?.color"
-          :image="b.product?.image?.url"
-          :sizes="b.sizes"
-          :type-sizes="b?.product?.typeSize?.list"
-          :discount="b.discount"
-          :percentage-discount="b.percentageDiscount"
-          :pay-cash="b.payCash"
-          :pay-card="b.payCard"
-          :card-sum="b.cardSum"
-          :cash-sum="b.cashSum"
-          :comment="b.comment"
-          :loading="b.product?.id === selectedProduct?.id"
-          :count-sizes="b.countSizes"
-          :sklad="b.sklad"
-          :use-number-of-sizes="b.product?.useNumberOfSizes"
-          class="q-mb-md"
-          @update="update(b, $event)"
-          @remove="remove(b.product, $event)"
+        <div class="flex items-center justify-between q-mb-sm">
+          <div class="flex items-center q-gap-sm">
+            <p class="q-mb-none text-subtitle2">Заказы</p>
+            <q-badge color="primary" :label="bucketProducts.length" />
+          </div>
+          
+          <div class="flex items-center q-gap-sm">
+            <!-- View Mode Toggle -->
+            <q-btn
+              :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
+              @click="toggleViewMode"
+              text-color="primary"
+              push
+              round
+              size="sm"
+            />
+          </div>
+        </div>
+
+        <!-- Grid View -->
+        <BucketGrid
+          v-if="viewMode === VIEW_GRID"
+          :bucket-products="bucketProducts"
+          :selected-product="selectedProduct"
+          @update="update"
+          @remove="remove"
           @on-checked="onChecked"
+        />
+        
+        <!-- Table View -->
+        <BucketTable
+          v-else
+          :bucket-products="bucketProducts"
+          :checked-sale-products="checkedSaleProducts"
+          @open-image-preview="onOpenImagePreview"
+          @update="update"
+          @remove="remove"
+          @update:checked-sale-products="onUpdateCheckedSaleProducts"
         />
       </div>
       <h6
@@ -83,6 +94,35 @@
         />
       </div>
     </div>
+
+    <!-- Dialog -->
+    <q-dialog v-model="imagePreviewDialog" position="bottom">
+      <q-swipe-to-close
+        v-model="imagePreviewDialog"
+        direction="down"
+      >
+        <q-card class="full-width">
+          <q-img
+            :src="imagePreview"
+            spinner-size="md"
+            spinner-color="grey"
+          />
+          <q-btn
+            round
+            push
+            color="deep-orange"
+            size="sm"
+            v-close-popup
+            class="absolute-top-right q-mr-md q-mt-md"
+          >
+            <q-icon
+              name="mdi-close"
+              color="white"
+            />
+          </q-btn>
+        </q-card>
+      </q-swipe-to-close>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -102,7 +142,8 @@ import {
   FILTER_FORMAT,
   HISTORY_SOLD
 } from 'src/config'
-import BucketCard from 'src/components/BucketCard.vue'
+import BucketGrid from 'src/components/Bucket/BucketGrid.vue'
+import BucketTable from 'src/components/Bucket/BucketTable.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { useMutation } from "@vue/apollo-composable";
 import {
@@ -112,10 +153,14 @@ import {
   DELETE_SALE_PRODUCT
 } from 'src/graphql/types'
 
+const VIEW_TABLE = 'table'
+const VIEW_GRID = 'grid'
+
 export default defineComponent({
   name: 'BucketPage',
   components: {
-    BucketCard,
+    BucketGrid,
+    BucketTable,
     PageTitle,
   },
   setup () {
@@ -151,6 +196,11 @@ export default defineComponent({
     const isLoading = ref(false)
     const selectedProduct = ref(null)
     const checkedSaleProducts = ref([])
+    const imagePreviewDialog = ref(false)
+    const imagePreview = ref(null)
+    
+    // View mode toggle (grid/table)
+    const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_TABLE)
 
     function removeItemOnce(arr, value) {
       const index = arr.map(s => s.size).indexOf(value.size)
@@ -180,7 +230,7 @@ export default defineComponent({
       })
       if (!updateProductError.value) {
         await updateSaleProduct({
-          id: payload.id,
+          id: item.id,
           data: {
             discount: payload.discount,
             percentageDiscount: payload.percentageDiscount,
@@ -230,6 +280,19 @@ export default defineComponent({
       } else {
         checkedSaleProducts.value = checkedSaleProducts.value.filter(cp => cp.id !== product.id)
       }
+    }
+
+    function onUpdateCheckedSaleProducts(products) {
+      checkedSaleProducts.value = products
+    }
+
+    function onOpenImagePreview(url) {
+      imagePreview.value = url
+      imagePreviewDialog.value = true
+    }
+
+    function toggleViewMode() {
+      viewMode.value = viewMode.value === VIEW_GRID ? VIEW_TABLE : VIEW_GRID
     }
 
     function getNewPrice(product) {
@@ -316,6 +379,10 @@ export default defineComponent({
       }
     }, { immediate: true })
 
+    watch(viewMode, (newValue) => {
+      localStorage.setItem('bucket-view-mode', newValue)
+    })
+
     watch(sklads, (val) => {
       if (val?.length) {
         loadBucketProducts(
@@ -338,10 +405,19 @@ export default defineComponent({
       selectedProduct,
       toSell,
       onChecked,
+      onUpdateCheckedSaleProducts,
+      onOpenImagePreview,
+      toggleViewMode,
       isLoading,
       bucketProductsLoading,
       remove,
-      getNewPrice
+      getNewPrice,
+      viewMode,
+      checkedSaleProducts,
+      VIEW_GRID,
+      VIEW_TABLE,
+      imagePreviewDialog,
+      imagePreview
     }
   }
 })
