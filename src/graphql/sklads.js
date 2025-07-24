@@ -11,53 +11,6 @@ export const SKLADS = gql`
   }
 `
 
-export const SKLAD_PRODUCTS = gql`
-  query SkladProducts($whereSklads: JSON, $whereCategories: JSON, $whereProducts: JSON) {
-    sklads(where: $whereSklads) {
-      id
-      name
-      color
-      categories(where: $whereCategories) {
-        id
-        name
-      }
-      products(where: $whereProducts) {
-        id
-        name
-        origPrice
-        newPrice
-        image {
-          id
-          url
-        }
-        typeSize {
-          list {
-            size
-          }
-        }
-        sizes {
-          id
-          size
-        }
-        sklad {
-          id
-          name
-          sizes
-        }
-        discountPrice
-        discountDays
-        withDiscount
-        color
-        countSizes
-        useNumberOfSizes
-        category {
-          id
-        }
-      }
-    }
-  }
-`
-
 export const SKLAD = gql`
   query Sklad($id: ID!) {
     sklad(id: $id) {

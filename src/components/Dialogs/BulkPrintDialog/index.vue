@@ -64,6 +64,7 @@ import useBluetooth from 'src/modules/ble/useBluetooth'
 import useHelpers from 'src/modules/useHelpers'
 import { useBulkStore } from 'src/stores/bulk'
 import { useRoute } from 'vue-router'
+import { formatPrice } from 'src/modules/usePriceFormatter'
 
 export default defineComponent({
   name: 'BulkPrintDialog',
@@ -117,7 +118,7 @@ export default defineComponent({
         align: 2
       })
       addTextField({
-        data: `Цена: ${product.newPrice}`,
+        data: `Цена: ${formatPrice(product.newPrice)}`,
         positionY: 270,
         align: 2,
       });

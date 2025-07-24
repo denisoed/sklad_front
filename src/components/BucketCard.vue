@@ -6,7 +6,7 @@
       v-if="discount"
       class="bucket-card_discount"
     >
-      Скидка: {{ discount }}{{ percentageDiscount ? '%' : 'c' }}
+      Скидка: <template v-if="percentageDiscount">{{ discount }}%</template><template v-else><PriceFormatter :value="discount" />c</template>
     </div>
     <router-link
       class="bucket-card_content"
@@ -81,7 +81,7 @@
       <div class="full-width flex justify-between items-center bucket-card_price ">
         <span class="q-mr-xs">Итог:</span>
         <div class="flex row no-wrap">
-          <p>{{ sumPrice }}</p>
+          <p><PriceFormatter :value="sumPrice" /></p>
         </div>
       </div>
 
@@ -171,12 +171,15 @@ import {
 import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import { READ_ORIGINAL_PRICE } from 'src/permissions'
+import PriceFormatter from 'src/components/PriceFormatter.vue'
+import { formatPrice } from 'src/modules/usePriceFormatter'
 
 export default defineComponent({
   name: 'BucketCard',
   components: {
     ModalSizesToBucket,
     ModalCountToBucket,
+    PriceFormatter
   },
   props: {
     id: {
@@ -277,7 +280,7 @@ export default defineComponent({
 
     const payMethod = computed(() => {
       if (payCash.value && payCard.value)
-        return `Нал: ${cashSum.value || 0} + Карт: ${cardSum.value || 0}`
+        return `Нал: ${formatPrice(cashSum.value || 0)} + Карт: ${formatPrice(cardSum.value || 0)}`
       if (payCash.value) return 'Наличными'
       if (payCard.value) return 'Картой'
       return null
@@ -302,7 +305,7 @@ export default defineComponent({
     function removeFromBucket(payload) {
       $q.dialog({
         title: 'Удалить этот товар из корзины?',
-        message: 'При удалении товара из корзины, его размеры вернутся обратно на склад.',
+        message: 'При удалении товара из корзины, он будет возвращен на склад.',
         cancel: true,
         persistent: true,
         ok: {
@@ -449,7 +452,7 @@ export default defineComponent({
       display: flex;
       align-items: center;
       padding: 0 4px;
-      border-radius: 3px;
+      border-radius: var(--border-radius-sm);
       border: 1px solid var(--q-primary);
 
       p {

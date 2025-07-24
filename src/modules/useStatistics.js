@@ -5,10 +5,11 @@ import { DISPLAY_FORMAT } from 'src/config'
 import { useLazyQuery } from '@vue/apollo-composable'
 import {
   LIST_ACTIVITIES,
+  STATISTIC_ACTIVITIES,
 } from 'src/graphql/types'
 
 const useStatistics = () => {
-  const { format } = useMoney()
+  const { formatPrice } = useMoney()
 
   const {
     load,
@@ -16,6 +17,13 @@ const useStatistics = () => {
     loading: loadingActivities,
     refetch: refetchActivities
   } = useLazyQuery(LIST_ACTIVITIES)
+
+  const {
+    load: loadStatisticActivities,
+    result: statisticActivitiesResult,
+    loading: loadingStatisticActivities,
+    refetch: refetchStatisticActivities
+  } = useLazyQuery(STATISTIC_ACTIVITIES)
 
   const listActivities = computed(() => {
     const activities = activitiesResult.value?.listActivities || []
@@ -25,32 +33,33 @@ const useStatistics = () => {
     }));
   })
 
+  const totalRevenue = computed(() => {
+    return statisticActivitiesResult.value?.statisticActivities?.totalRevenue || 0
+  })
+
   const priceTotal = computed(() => {
-    const total = listActivities.value.reduce((prev, next) => {
+    return listActivities.value.reduce((prev, next) => {
       const discount = next.percentageDiscount ? ((next.newPrice / 100) * next.discount) : next.discount
       const countUnits = next.countSizes || next.size?.split(', ')?.length || 1
       const sum = (prev + (next.newPrice * countUnits)) - discount
       return sum
     }, 0);
-    return format(total, 'c')
   })
 
   const origPriceTotal = computed(() => {
-    const total = listActivities.value.reduce((prev, next) => {
+    return listActivities.value.reduce((prev, next) => {
       const countUnits = next.countSizes || next.size?.split(', ')?.length || 1;
       const sum = prev + (next.origPrice * countUnits)
       return sum
     }, 0);
-    return format(total, 'c')
   })
 
   const newPriceTotal = computed(() => {
-    const total = listActivities.value.reduce((prev, next) => {
+    return listActivities.value.reduce((prev, next) => {
       const countUnits = next.countSizes || next.size?.split(', ')?.length || 1;
       const sum = prev + (next.newPrice * countUnits)
       return sum
     }, 0);
-    return format(total, 'c')
   })
 
   const discountTotal = computed(() => {
@@ -59,7 +68,7 @@ const useStatistics = () => {
       const sum = prev + discount
       return sum
     }, 0);
-    return format(total, 'c')
+    return formatPrice(total)
   })
 
   const soldCount = computed(() => {
@@ -81,6 +90,14 @@ const useStatistics = () => {
     )
   }
 
+  function fetchStatisticActivities(where) {
+    loadStatisticActivities(
+      null,
+      { where },
+      { fetchPolicy: 'network-only' }
+    )
+  }
+
   return {
     priceTotal,
     loadActivities,
@@ -91,6 +108,10 @@ const useStatistics = () => {
     origPriceTotal,
     newPriceTotal,
     discountTotal,
+    fetchStatisticActivities,
+    refetchStatisticActivities,
+    loadingStatisticActivities,
+    totalRevenue,
   }
 }
 

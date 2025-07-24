@@ -9,6 +9,9 @@ export const CATEGORIES = gql`
       products {
         id
       }
+      sklad {
+        id
+      }
     }
   }
 `

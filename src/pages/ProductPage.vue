@@ -129,8 +129,8 @@
             />
           </div>
           <div
-            class="full-width"
-            style="border: 1px solid var(--border-color);border-radius: 4px"
+            class="full-width border-radius-sm"
+            style="border: 1px solid var(--border-color);"
           >
             <q-checkbox
               v-model="product.withDiscount"
@@ -186,8 +186,8 @@
           <!-- Sizes -->
           <div class="col-12">
             <div
-              class="full-width q-mt-md"
-              style="border: 1px solid var(--border-color);border-radius: 4px;"
+              class="full-width q-mt-md border-radius-sm"
+              style="border: 1px solid var(--border-color);"
             >
               <div class="flex q-gap-md items-center justify-between">
                 <q-checkbox
@@ -197,7 +197,7 @@
                 />
               </div>
               <h6
-                class="q-ma-none q-px-sm  text-subtitle2"
+                class="q-ma-none q-px-sm  text-subtitle2 text-grey-5"
               >
                 Этот параметр позволяет использовать размеры для товара
               </h6>
@@ -225,6 +225,7 @@
                     class="q-mt-sm"
                     to="/main-settings"
                     v-vibrate
+                    push
                   >
                     Настроить размеры
                   </q-btn>
@@ -238,7 +239,7 @@
             <ColorPicker
               :selected="product.color"
               tabindex="7"
-              @on-change="product.color = $event"
+              @on-change="setColorName"
             />
           </div>
         </div>
@@ -327,8 +328,8 @@
               push
               color="primary"
               class="q-ml-auto"
-              :disable="(isDirty || createProductLoading || updatedProductLoading)"
-              :loading="uploadImageLoading || createProductLoading || updatedProductLoading"
+              :disable="(isDirty || createProductLoading || updateProductLoading)"
+              :loading="uploadImageLoading || createProductLoading || updateProductLoading"
               tabindex="8"
               v-vibrate
             />
@@ -358,7 +359,6 @@ import {
   CREATE_PRODUCT,
   DELETE_FILE,
   GET_PRODUCT,
-  UPDATE_PRODUCT,
 } from 'src/graphql/types'
 import { CATEGORIES, CREATE_CATEGORY } from 'src/graphql/category'
 import { CREATE_SKLAD } from 'src/graphql/sklads'
@@ -404,6 +404,7 @@ const DEFAULT_DATA = {
   discountDays: null,
   withDiscount: false,
   color: '#000000',
+  colorName: null,
   sizes: [],
   countSizes: 0,
   useNumberOfSizes: true,
@@ -437,7 +438,11 @@ export default defineComponent({
     const {
       addSizesToBucket,
       addCountToBucket,
-      removeProduct
+      removeProduct,
+      updateProductById,
+      updateProductError,
+      updateProductLoading,
+      generateProductMeta,
     } = useProduct()
     const {
       createHistory,
@@ -458,11 +463,6 @@ export default defineComponent({
       mutate: removeImage,
       loading: removeImageLoading,
     } = useMutation(DELETE_FILE)
-    const {
-      mutate: updateProduct,
-      error: updateProductError,
-      loading: updatedProductLoading,
-    } = useMutation(UPDATE_PRODUCT)
     const {
       mutate: createProduct,
       error: createProductError,
@@ -491,6 +491,11 @@ export default defineComponent({
     async function uploadImg(file) {
       const response = await uploadImage({ file });
       return response;
+    }
+
+    function setColorName(color) {
+      product.color = color.color
+      product.colorName = color.name
     }
 
     function resetAll() {
@@ -632,24 +637,25 @@ export default defineComponent({
       const uploaded = await uploadImg(product.image)
       if (!uploadImageError.value) {
         try {
-          const response = await createProduct({
-            data: {
-              name: product.name,
-              sklad: product.sklad?.value,
-              category: product.category?.value,
-              origPrice: Number(product.origPrice),
-              newPrice: Number(product.newPrice),
-              discountPrice: Number(product.discountPrice),
-              discountDays: product.discountDays,
-              withDiscount: product.withDiscount,
-              image: uploaded.data.upload.id,
-              color: product.color,
-              sizes: product.sizes,
-              countSizes: product.countSizes,
-              useNumberOfSizes: product.useNumberOfSizes,
-              ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
-            }
-          })
+          const data = {
+            name: product.name,
+            sklad: product.sklad?.value,
+            category: product.category?.value,
+            origPrice: Number(product.origPrice),
+            newPrice: Number(product.newPrice),
+            discountPrice: Number(product.discountPrice),
+            discountDays: product.discountDays,
+            withDiscount: product.withDiscount,
+            image: uploaded.data.upload.id,
+            color: product.color,
+            colorName: product.colorName,
+            sizes: product.sizes,
+            countSizes: product.countSizes,
+            useNumberOfSizes: product.useNumberOfSizes,
+            meta: generateProductMeta(product),
+            ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+          }
+          const response = await createProduct({ data })
           if (!createProductError.value) {
             showSuccess('Товар успешно создан!')
             createHistory({
@@ -685,25 +691,25 @@ export default defineComponent({
       }
       if (!uploadImageError.value) {
         try {
-          await updateProduct({
-            id: params?.productId,
-            data: {
-              sklad: product.sklad?.value,
-              category: product.category?.value,
-              origPrice: Number(product.origPrice),
-              image: uploaded ? uploaded.data.upload.id : product.imageId,
-              newPrice: Number(product.newPrice),
-              discountPrice: Number(product.discountPrice),
-              sizes: product.sizes.map(s => ({ size: s.size })),
-              countSizes: product.countSizes,
-              useNumberOfSizes: product.useNumberOfSizes,
-              discountDays: product.discountDays,
-              withDiscount: product.withDiscount,
-              name: product.name,
-              color: product.color,
-              ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
-            }
-          })
+          const data = {
+            sklad: product.sklad?.value,
+            category: product.category?.value,
+            origPrice: Number(product.origPrice),
+            image: uploaded ? uploaded.data.upload.id : product.imageId,
+            newPrice: Number(product.newPrice),
+            discountPrice: Number(product.discountPrice),
+            sizes: product.sizes.map(s => ({ size: s.size })),
+            countSizes: product.countSizes,
+            useNumberOfSizes: product.useNumberOfSizes,
+            discountDays: product.discountDays,
+            withDiscount: product.withDiscount,
+            name: product.name,
+            color: product.color,
+            colorName: product.colorName,
+            meta: generateProductMeta(product),
+            ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+          }
+          await updateProductById(params?.productId, data)
           if (!updateProductError.value) {
             if (typeof product.image !== 'string' && product.imageId) {
               removeImage({ id: product.imageId })
@@ -887,7 +893,7 @@ export default defineComponent({
       createProductLoading,
       uploadImageLoading,
       removeImageLoading,
-      updatedProductLoading,
+      updateProductLoading,
       loadingProduct,
       categoriesOptions,
       CREATE_CATEGORY,
@@ -904,7 +910,8 @@ export default defineComponent({
       READ_HISTORY,
       CREATE_SKLAD,
       onCreateNew,
-      refetchSklads
+      refetchSklads,
+      setColorName
     }
   }
 })

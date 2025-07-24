@@ -5,18 +5,22 @@ import {
   DELETE_FILE,
   UPDATE_PRODUCT,
   ADD_PRODUCT_SIZES_TO_SALE,
-  PRODUCTS_WITH_MIN_SIZES
+  PRODUCTS_WITH_MIN_SIZES,
+  SEARCH_PRODUCTS
 } from 'src/graphql/types'
+import { apolloClient } from 'src/boot/apollo'
 import { HISTORY_DELETE } from 'src/config'
 import { useRoute } from 'vue-router'
 import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import { useProductsStore } from 'src/stores/products'
+import { useBucketStore } from 'src/stores/bucket'
 
 const useProduct = () => {
   const { showError, showSuccess } = useHelpers()
   const { params } = useRoute()
   const productsStore = useProductsStore()
+  const bucketStore = useBucketStore()
   const {
     createHistory,
   } = useHistory()
@@ -70,6 +74,8 @@ const useProduct = () => {
       })
       if (!saleProductError.value) {
         showSuccess('Товар добавлен в корзину!')
+        // Update bucket count in store immediately
+        bucketStore.setBucketProductsCount(bucketStore.getBucketProductsCount + 1)
       }
     } else {
       showError('Не удалось добавить в корзину. Попробуйте позже.')
@@ -103,6 +109,8 @@ const useProduct = () => {
       })
       if (!saleProductError.value) {
         showSuccess('Товар добавлен в корзину!')
+        // Update bucket count in store immediately
+        bucketStore.setBucketProductsCount(bucketStore.getBucketProductsCount + 1)
       }
     } else {
       showError('Не удалось добавить в корзину. Попробуйте позже.')
@@ -131,15 +139,53 @@ const useProduct = () => {
     }
   }
 
+  function generateProductMeta(product) {
+    return `
+      ${`Склад=${product.sklad?.label}`},
+      ${`Категория=${product.category?.label}`},
+      ${`Название=${product.name}`},
+      ${`Цвет=${product.colorName}`},
+      ${product.sizes.length ? `Размеры=${product.sizes.map(s => s.size).join(', ')},` : ''}
+      ${product.useNumberOfSizes ? `Количество=${product.countSizes},` : ''}
+      ${product.withDiscount ? `Скидка=${product.discountPrice},` : ''}
+      ${`Оптовая цена=${product.origPrice}`},
+      ${`Розничная цена=${product.newPrice}`},
+    `.trim()
+  }
+
   async function updateProductById(id, data) {
     await updateProduct({
       id,
       data: {
         sklad: params?.skladId,
-        ...data
+        ...data,
       }
     })  
   }
+
+  async function searchProducts({ q = null, where = {}, sizes = null }) {
+    try {
+      isLoading.value = true;
+      const { data } = await apolloClient.query({
+        query: SEARCH_PRODUCTS,
+        variables: {
+          ...(q ? { q } : {}),
+          where,
+          sizes
+        },
+        fetchPolicy: 'network-only'
+      })
+      productsStore.setProducts(data?.search)
+      return data?.search;
+    } catch (error) {
+      console.log(error);
+      showError('Неизвестная ошибка. Перегрузите приложение!')
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  const products = computed(() => productsStore.getProducts)
 
   const isLoading = computed(
     () => updateProductLoading ||
@@ -158,10 +204,15 @@ const useProduct = () => {
     addSizesToBucket,
     addCountToBucket,
     removeProduct,
+    generateProductMeta,
     updateProductById,
+    updateProductError,
+    updateProductLoading,
     isLoading,
     loadProductsWithMinSizes,
-    refetchProductsWithMinSizes
+    refetchProductsWithMinSizes,
+    searchProducts,
+    products
   }
 }
 

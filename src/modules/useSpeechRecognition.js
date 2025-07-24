@@ -5,36 +5,36 @@ const useSpeechRecognition = () => {
   const isRecording = ref(false)
   const isApiAvailable = Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
   const recognition = isApiAvailable ? new webkitSpeechRecognition() : {}
+  let finishCallback = null
 
-  const proxyHandler = {
-    callback: null,
-    apply: function (target, thisArg, argumentsList) {
-      const result = target(argumentsList);
-      this.callback?.(transcript.value);
-      return result;
-    },
-  };
-
-  function onFinish(cd) {
-    proxyHandler.callback = cd;
+  function onFinish(callback) {
+    finishCallback = callback
   }
 
   function toggleRecord() {
     try {
-      recognition.start()
-    } catch {
-      recognition.stop()
+      if (isRecording.value) {
+        recognition.stop()
+      } else {
+        recognition.start()
+      }
+    } catch (error) {
+      console.error('Ошибка переключения записи:', error)
     }
   }
 
   function onStart() {
     isRecording.value = true
+    transcript.value = '' // Сбрасываем текст при начале записи
   }
 
   function onEnd() {
     isRecording.value = false
+    // Вызываем callback с финальным текстом
+    if (finishCallback && transcript.value.trim()) {
+      finishCallback(transcript.value)
+    }
   }
-  const proxyOnEnd = new Proxy(onEnd, proxyHandler);
 
   function onResult({ results }) {
     const arr = Array.from(results)
@@ -43,12 +43,15 @@ const useSpeechRecognition = () => {
     transcript.value = arr.join('')
   }
 
-  recognition.lang = 'ru-RU'
-  recognition.interimResults = true
-  recognition.continuous = true
-  recognition.onstart = onStart
-  recognition.onend = proxyOnEnd
-  recognition.onresult = onResult
+  // Настройка распознавания речи
+  if (isApiAvailable) {
+    recognition.lang = 'ru-RU'
+    recognition.interimResults = true
+    recognition.continuous = false // Изменяем на false для автоматического завершения
+    recognition.onstart = onStart
+    recognition.onend = onEnd
+    recognition.onresult = onResult
+  }
 
   return {
     isRecording,

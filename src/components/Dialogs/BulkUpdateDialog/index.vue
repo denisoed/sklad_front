@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs } from 'vue';
+import { defineComponent, ref } from 'vue';
 import BasicDialog from 'src/components/Dialogs/BasicDialog.vue';
 import BulkPreview from 'src/components/Dialogs/Bulk/Preview.vue';
 import Step2 from 'src/components/Dialogs/BulkUpdateDialog/Step2.vue';

@@ -31,37 +31,54 @@
 </template>
 
 <script>
-import { defineComponent, computed, watch, onMounted, ref } from 'vue'
+import { defineComponent, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import useBucket from 'src/modules/useBucket'
 import useSklads from 'src/modules/useSklads'
+import { useBucketStore } from 'src/stores/bucket'
 
 export default defineComponent({
   name: 'TheFooter',
   setup() {
     const { params } = useRoute()
     const { sklads } = useSklads()
-    const { bucketProductsCount, loadBucketProducts } = useBucket()
+    const { loadBucketProducts } = useBucket()
+    const bucketStore = useBucketStore()
 
-    const hasInBucket = computed(() => bucketProductsCount.value)
+    // Use store directly for reactive updates
+    const hasInBucket = computed(() => bucketStore.getBucketProductsCount > 0)
+    
     const indexLink = computed(() => '/')
     const bucketLink = computed(() => '/bucket')
     const productsLink = computed(() => '/products')
     const statisticLink = computed(() => params?.skladId ? `/sklad/${params?.skladId}/statistic` : '/statistic')
 
-    watch(sklads, (val) => {
-      loadBucketProducts(
-        null,
-        {
-          where: {
-            sklad: val?.map(s => s.id)
-          }
-        },
-        { fetchPolicy: 'network-only' }
-      );
-    });
+    function loadBucketData() {
+      if (sklads.value?.length) {
+        loadBucketProducts(
+          null,
+          {
+            where: {
+              sklad: sklads.value.map(s => s.id)
+            }
+          },
+          { fetchPolicy: 'network-only' }
+        );
+      }
+    }
 
-    
+    watch(sklads, (val) => {
+      if (val?.length) {
+        loadBucketData();
+      }
+    }, { immediate: true });
+
+    // Force load bucket data on mount if sklads are already available
+    onMounted(() => {
+      if (sklads.value?.length && bucketStore.getBucketProductsCount === 0) {
+        loadBucketData();
+      }
+    });
 
     return {
       statisticLink,

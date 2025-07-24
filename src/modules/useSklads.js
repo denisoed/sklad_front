@@ -5,8 +5,7 @@ import {
   SKLADS,
   UPDATE_SKLAD,
   REMOVE_SKLAD,
-  BULK_UPDATE_SKLADS,
-  SKLAD_PRODUCTS
+  BULK_UPDATE_SKLADS
 } from 'src/graphql/sklads'
 import { apolloClient } from 'src/boot/apollo'
 import { useMutation } from '@vue/apollo-composable'
@@ -92,35 +91,6 @@ const useSklads = () => {
         fetchPolicy: 'network-only'
       })
       skladStore.setSklads(data?.sklads)
-    } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  async function fetchSkladProducts(
-    userId,
-    skladParams = {},
-    categoriesParams = {},
-    productsParams = {}
-  ) {
-    try {
-      isLoading.value = true;
-      const { data } = await apolloClient.query({
-        query: SKLAD_PRODUCTS,
-        variables: {
-          whereSklads: {
-            users: userId,
-            ...skladParams,
-          },
-          whereCategories: categoriesParams,
-          whereProducts: productsParams
-        },
-        fetchPolicy: 'network-only'
-      })
-      skladStore.setSkladProducts(data?.sklads)
-      return data?.sklads;
     } catch (error) {
       showError('Неизвестная ошибка. Перегрузите приложение!')
     } finally {
@@ -290,7 +260,6 @@ const useSklads = () => {
     skladProducts,
     fetchSklad,
     fetchSklads,
-    fetchSkladProducts,
     bulkUpdateSklads,
     removeSkladLoading,
     removeSklad,

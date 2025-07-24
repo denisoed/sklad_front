@@ -67,6 +67,32 @@
               />
             </div>
           </div>
+          
+          <!-- Size configurations link -->
+          <div
+            class="full-width q-pa-xs q-mt-md"
+            style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
+          >
+            <div class="q-pa-sm">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h6 class="q-ma-none text-subtitle1">Конфигурации размеров</h6>
+                  <p class="q-ma-none text-grey-6 text-caption q-mt-xs">
+                    Создавайте и управляйте списками размеров для разных типов товаров
+                  </p>
+                </div>
+                <q-btn
+                  color="primary"
+                  outline
+                  label="Настроить размеры"
+                  icon="mdi-cog"
+                  @click="goToSizesSettings"
+                  v-vibrate
+                  class="full-width border-radius-sm q-mt-sm"
+                />
+              </div>
+            </div>
+          </div>
         </q-tab-panel>
         <q-tab-panel name="accesses" class="q-px-sm">
           <Employee
@@ -156,7 +182,8 @@ import useProfile from 'src/modules/useProfile'
 import useHelpers from 'src/modules/useHelpers'
 import { useRoute, useRouter } from 'vue-router'
 import {
-  HOME_ROUTE
+  HOME_ROUTE,
+  MAIN_SETTINGS_ROUTE
 } from 'src/router/routes'
 
 export default defineComponent({
@@ -236,6 +263,10 @@ export default defineComponent({
       removeSklad(sklad.value?.id, goToHomePage)
     }
 
+    function goToSizesSettings() {
+      push(`${MAIN_SETTINGS_ROUTE}?tab=sizes`)
+    }
+
     watch(sklad, (newValue) => {
       if (newValue) {
         formData.name = newValue?.name
@@ -259,7 +290,8 @@ export default defineComponent({
       updateForm,
       isLoading,
       tab,
-      onRemoveSklad
+      onRemoveSklad,
+      goToSizesSettings
     }
   }
 })

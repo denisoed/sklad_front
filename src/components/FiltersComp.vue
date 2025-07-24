@@ -3,21 +3,32 @@
     <BtnBack
       class="q-mr-md"
     />
+    
+    <!-- Основное поле поиска -->
     <q-input
       v-model="selectedFilters.name_contains"
       outlined
       debounce="800"
-      label="Поиск по имени товара"
+      label="Умный поиск"
       class="full-width block-bg"
       dense
       :autofocus="autofocus"
       clearable
       @update:model-value="search"
     >
-      <template v-if="!selectedFilters.name_contains" #append>
-        <q-icon name="search" />
+      <template v-if="!selectedFilters.name_contains"  #append>
+        <q-btn
+          round
+          dense
+          color="primary"
+          icon="mic"
+          size="sm"
+          @click="showVoiceOverlay = true"
+          aria-label="Голосовой поиск"
+        />
       </template>
     </q-input>
+    
     <q-btn
       class="q-ml-md"
       push
@@ -26,63 +37,29 @@
       size="md"
       color="white"
       text-color="black"
-      @click="toggleLeftDrawer"
+      @click="leftDrawerOpen = true"
       v-vibrate
     >
       <q-icon
-        name="mdi-tune"
+        name="mdi-filter-variant"
       />
       <div v-if="hasFilters" class="alert_dot" />
     </q-btn>
 
-    <!-- Menu -->
-    <q-dialog
+    <!-- Расширенные фильтры -->
+    <FilterDialog
       v-model="leftDrawerOpen"
-      position="bottom"
-      class="q-pa-md"
-    >
-    <q-card style="width: 385px">
-      <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl">
-        <div class="flex items-center no-wrap column full-width q-gap-sm">
-          <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            Фильтр по цвету
-          </p>
-          <ColorPicker
-            ref="colorPickerRef"
-            :selected="selectedFilters.color"
-            @on-change="selectedFilters.color = $event"
-          />
-        </div>
-        <q-separator class="full-width q-my-md" />
-        <div class="flex justify-between no-wrap q-gap-md full-width">
-          <q-btn
-            style="height:40px;"
-            color="deep-orange"
-            label="Сбросить"
-            push
-            @click="clear"
-            v-vibrate
-          />
-          <q-btn
-            class="button-size q-mr-auto"
-            color="grey"
-            icon="mdi-close"
-            push
-            @click="leftDrawerOpen = false"
-            v-vibrate
-          />
-          <q-btn
-            class="button-size"
-            color="primary"
-            icon="mdi-check"
-            push
-            @click="leftDrawerOpen = false"
-            v-vibrate
-          />
-        </div>
-      </q-card-section>
-    </q-card>
-    </q-dialog>
+      :filters="selectedFilters"
+      @apply="applyFilters"
+      @clear="clear"
+    />
+
+    <VoiceOverlay 
+      :model-value="showVoiceOverlay" 
+      @cancel="showVoiceOverlay = false"
+      @result="handleVoiceResult"
+      @update:model-value="showVoiceOverlay = $event"
+    />
   </div>
 </template>
 
@@ -92,16 +69,17 @@ import {
   defineComponent,
   ref,
   reactive,
-  watch,
 } from 'vue'
-import ColorPicker from 'src/components/ColorPicker.vue'
 import BtnBack from 'src/components/BtnBack.vue'
+import FilterDialog from 'src/components/Dialogs/FilterDialog.vue'
+import VoiceOverlay from './VoiceOverlay.vue'
 
 export default defineComponent({
   name: 'FiltersComp',
   components: {
-    ColorPicker,
-    BtnBack
+    BtnBack,
+    FilterDialog,
+    VoiceOverlay
   },
   props: {
     autofocus: {
@@ -112,55 +90,90 @@ export default defineComponent({
   emits: ['on-search'],
   setup(props, { emit }) {
     const leftDrawerOpen = ref(false)
-    const colorPickerRef = ref(null)
-    const scrolledTop = ref(0)
+    const showVoiceOverlay = ref(false)
+
     const selectedFilters = reactive({
-      color: [],
-      name_contains: null
+      color: null,
+      colorName: null,
+      name_contains: null,
+      withDiscount: false,
+      priceFrom: null,
+      priceTo: null,
+      sizes: []
     })
-    const hasFilters = computed(() => Object.values(selectedFilters).some(f => f?.length));
 
-    function toggleLeftDrawer() {
-      leftDrawerOpen.value = !leftDrawerOpen.value
-      if (window.innerWidth < 1024) {
-        const sTop = window.scrollY
-        scrolledTop.value = 50 - (sTop >= 50 ? 50 : sTop - 10)
-      }
-    }
-
-    function setSize(size) {
-      if (selectedFilters.sizes.some(s => s === size)) {
-        selectedFilters.sizes = selectedFilters.sizes.filter(s => s !== size)
-      } else {
-        selectedFilters.sizes.push(size)
-      }
-    }
+    const hasFilters = computed(() => {
+      return Object.keys(selectedFilters).some(key => {
+        const value = selectedFilters[key]
+        if (Array.isArray(value)) return value.length > 0
+        if (typeof value === 'boolean') return value
+        return value !== null && value !== undefined && value !== ''
+      })
+    })
 
     function search() {
-      emit('on-search', hasFilters.value ? selectedFilters : {})
+      const filters = {}
+      if (selectedFilters.name_contains) {
+        filters.name_contains = selectedFilters.name_contains
+      }
+      if (selectedFilters.color?.length) {
+        filters.color = selectedFilters.color
+      }
+      if (selectedFilters.sizes?.length) {
+        filters.sizes = selectedFilters.sizes
+      }
+      if (selectedFilters.priceFrom !== null) {
+        filters.newPrice_gte = selectedFilters.priceFrom
+      }
+      if (selectedFilters.priceTo !== null) {
+        filters.newPrice_lte = selectedFilters.priceTo
+      }
+      if (selectedFilters.withDiscount) {
+        filters.withDiscount = selectedFilters.withDiscount
+      }
+      if (selectedFilters.lowStock) {
+        filters.countSizes_lte = 5
+      }
+      if (selectedFilters.inStock) {
+        filters.countSizes_gt = 0
+      }
+      emit('on-search', hasFilters.value ? { ...filters } : {})
+    }
+
+    function applyFilters(newFilters) {
+      Object.assign(selectedFilters, newFilters)
+      search()
     }
 
     function clear() {
-      colorPickerRef.value.clear()
-      selectedFilters.color = []
-      selectedFilters.name_contains = null
-      toggleLeftDrawer()
+      Object.keys(selectedFilters).forEach(key => {
+        if (Array.isArray(selectedFilters[key])) {
+          selectedFilters[key] = []
+        } else if (typeof selectedFilters[key] === 'boolean') {
+          selectedFilters[key] = false
+        } else {
+          selectedFilters[key] = null
+        }
+      })
+      search()
     }
 
-    watch(selectedFilters, () => {
-      search()
-    })
+    function handleVoiceResult(text) {
+      if (text && text.trim()) {
+        selectedFilters.name_contains = text.trim()
+        search()
+      }
+    }
 
     return {
-      toggleLeftDrawer,
-      setSize,
       clear,
       search,
       leftDrawerOpen,
-      scrolledTop,
       selectedFilters,
-      colorPickerRef,
       hasFilters,
+      applyFilters,
+      showVoiceOverlay,
+      handleVoiceResult,
     }
   }
 })
@@ -201,5 +214,58 @@ export default defineComponent({
       opacity: 0;
     }
   }
+}
+.voice-overlay {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+.voice-indicator {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pulse {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(33,150,243,0.2);
+  animation: pulse-voice 1.2s infinite;
+}
+@keyframes pulse-voice {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.voice-placeholder {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 24px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>

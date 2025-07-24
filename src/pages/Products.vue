@@ -7,15 +7,13 @@
         @on-search="onSearch"
       />
 
-      <template v-if="skladProducts?.length">
-        <p class="q-mb-sm text-subtitle2">Склады</p>
-        <MiniTabs
-          :list="skladProducts"
-          :selected-id="selectedSkladId"
-          class="q-mb-md"
-          @on-change="onChangeSklad"
-        />
-      </template>
+      <p class="q-mb-sm text-subtitle2">Склады</p>
+      <MiniTabs
+        :list="skladsTabs"
+        :selected-id="selectedSkladId"
+        class="q-mb-md"
+        @on-change="onChangeSklad"
+      />
 
       <!-- Categories -->
       <p class="q-mb-sm text-subtitle2">Категории</p>
@@ -25,90 +23,62 @@
         class="mini-tabs-categories q-pb-md"
         @on-change="onChangeCategory"
       />
-
-      <template v-if="listProducts?.length">
-        <div class="flex items-center justify-between">
-          <p class="q-mb-sm text-subtitle2">Товары</p>
-          <router-link
-            :to="`/sklad/${selectedSkladId}`"
-            class="q-mb-sm text-subtitle2 text-underline"
-            v-vibrate
-          >
-            Перейти на склад
-          </router-link>
-        </div>
-        <div>
-          <CardProduct
-            v-for="(p, i) of listProducts"
-            :key="i"
-            :id="p.id"
-            :name="p.name"
-            :orig-price="p.origPrice"
-            :new-price="p.newPrice"
-            :discount-price="p.discountPrice"
-            :discount-days="p.discountDays"
-            :with-discount="p.withDiscount"
-            :color="p.color"
-            :sizes="p.sizes"
-            :image="p.image?.url"
-            :count-sizes="p.countSizes"
-            :sklad="p?.sklad"
-            :use-number-of-sizes="p.useNumberOfSizes"
-            @open-image-preview="onOpenImagePreview(p.image?.url)"
-            class="q-mb-md"
-          >
-            <div class="flex column full-height">
-              <q-btn
-                v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: p?.sklad?.id }"
-                round
-                push
-                size="md"
-                class="q-mb-md"
-                :to="`/sklad/${p?.sklad?.id}/product/${p.id}`"
-                v-vibrate
-              >
-                <q-icon
-                  name="mdi-eye"
-                  color="primary"
-                />
-              </q-btn>
-              <div v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: p?.sklad?.id }">
-                <ModalCountToBucket
-                  v-if="p.useNumberOfSizes"
-                  :max="p.countSizes"
-                  @submit="onAddCountToBucket(p, $event)"
-                >
-                  <q-btn
-                    round
-                    push
-                    icon="mdi-basket-plus-outline"
-                    text-color="deep-orange"
-                    v-vibrate
-                  />
-                </ModalCountToBucket>
-                <ModalSizesToBucket
-                  v-else
-                  :sizes="p.sizes"
-                  :type-sizes="p?.typeSize?.list || []"
-                  @submit="onAddSizesToBucket(p, $event)"
-                >
-                  <q-btn
-                    round
-                    push
-                    icon="mdi-basket-plus-outline"
-                    text-color="deep-orange"
-                    v-vibrate
-                  />
-                </ModalSizesToBucket>
-              </div>
-              <q-checkbox
-                v-model="bulkProducts"
-                :val="p"
-                class="q-mt-auto"
+        
+      <template v-if="products?.length">
+        <div class="flex items-center justify-between q-mb-sm">
+          <div class="flex items-center q-gap-sm">
+            <p class="q-mb-none text-subtitle2">Товары</p>
+            <q-badge color="primary" :label="products.length" />
+          </div>
+          
+          <div class="flex items-center q-gap-sm">
+            <!-- View Mode Toggle -->
+            <q-btn
+              :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
+              @click="toggleViewMode"
+              v-vibrate
+              text-color="primary"
+              push
+              round
+              size="sm"
+            />
+            
+            <q-btn
+              :to="`/sklad/${selectedSkladId}`"
+              class="text-subtitle2"
+              v-vibrate
+              push
+              text-color="primary"
+              round
+              size="sm"
+            >
+              <q-icon
+                name="mdi-open-in-new"
+                size="xs"
               />
-            </div>
-          </CardProduct>
+            </q-btn>
+          </div>
         </div>
+
+        <!-- Grid View -->
+        <ProductsGrid
+          v-if="viewMode === VIEW_GRID"
+          :products="products"
+          v-model:bulk-products="bulkProducts"
+          @open-image-preview="onOpenImagePreview"
+          @add-count-to-bucket="onAddCountToBucket"
+          @add-sizes-to-bucket="onAddSizesToBucket"
+        />
+        
+        <!-- Table View -->
+        <ProductsTable
+          v-else
+          :products="products"
+          v-model:bulk-products="bulkProducts"
+          @open-image-preview="onOpenImagePreview"
+          @add-count-to-bucket="onAddCountToBucket"
+          @add-sizes-to-bucket="onAddSizesToBucket"
+        />
       </template>
       <h6
         v-else
@@ -182,28 +152,31 @@ import {
   onBeforeMount,
   ref,
   reactive,
-  onMounted
+  onMounted,
+  watch
 } from 'vue'
-import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
+import useCategories from 'src/modules/useCategories'
 import useBucket from 'src/modules/useBucket'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk';
 
-import CardProduct from 'src/components/CardProduct.vue'
 import FiltersComp from 'src/components/FiltersComp.vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ProductControls from 'src/components/ProductControls.vue'
 import MiniTabs from 'src/components/Product/MiniTabs.vue'
+import ProductsGrid from 'src/components/Product/ProductsGrid.vue'
+import ProductsTable from 'src/components/Product/ProductsTable.vue'
 
 const ALL_TAB = {
   id: 0,
   name: 'Все',
   color: '#fff'
 }
+
+const VIEW_TABLE = 'table'
+const VIEW_GRID = 'grid'
 
 import {
   CAN_SELL_PRODUCT,
@@ -213,12 +186,11 @@ import {
 export default defineComponent({
   name: 'ProductsPage',
   components: {
-    CardProduct,
     FiltersComp,
-    ModalSizesToBucket,
-    ModalCountToBucket,
     ProductControls,
-    MiniTabs
+    MiniTabs,
+    ProductsGrid,
+    ProductsTable
   },
   props: {
     searchAutofocus: {
@@ -230,66 +202,170 @@ export default defineComponent({
     const bulkStore = useBulkStore();
     const { bulkProducts } = storeToRefs(bulkStore);
     const { params, query } = useRoute()
+    const router = useRouter()
     const {
       sklad,
       sklads,
       skladProducts,
-      fetchSkladProducts,
       isLoading: loadingProducts
     } = useSklads()
-    const { profile } = useProfile()
-    const { loadBucketProducts } = useBucket()
+    const { forceRefreshBucket } = useBucket()
+    const {
+      categoriesResult,
+      loadCategories,
+    } = useCategories()
     const {
       addSizesToBucket,
+      searchProducts,
       addCountToBucket,
+      products
     } = useProduct()
 
     const selectedSkladId = ref(
-      params?.skladId ||
-        profile.value?.permissions?.map(p => p?.sklad?.id)[0]
+      params?.skladId || ALL_TAB.id
     )
     const imagePreviewDialog = ref(false)
     const imagePreview = ref(null)
     const selectedCategoryId = ref(params?.categoryId || ALL_TAB.id)
     const selectedFilters = reactive({})
+    const showFiltersInfo = ref(false)
+    
+    // View mode toggle (grid/table)
+    const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
+    
+    // Вычисляемые свойства для работы с фильтрами
+    const hasActiveFilters = computed(() => {
+      const { sort, ...filters } = selectedFilters.value || {}
+      return Object.keys(filters).some(key => {
+        const value = filters[key]
+        if (Array.isArray(value)) return value.length > 0
+        if (typeof value === 'boolean') return value
+        return value !== null && value !== undefined && value !== ''
+      })
+    })
+    
+    const activeFiltersCount = computed(() => {
+      const { sort, ...filters } = selectedFilters.value || {}
+      return Object.keys(filters).filter(key => {
+        const value = filters[key]
+        if (Array.isArray(value)) return value.length > 0
+        if (typeof value === 'boolean') return value
+        return value !== null && value !== undefined && value !== ''
+      }).length
+    })
+    
+    const activeFiltersInfo = computed(() => {
+      const { sort, ...filters } = selectedFilters.value || {}
+      const info = []
+      
+      const filterLabels = {
+        name_contains: 'Поиск по имени',
+        withDiscount: 'Со скидкой',
+        priceFrom: 'Цена от',
+        priceTo: 'Цена до',
+        color_in: 'Цвета',
+        sizes_contains: 'Размеры',
+        hasImage: 'С изображением',
+        noImage: 'Без изображения',
+        lowStock: 'Заканчивается',
+        inStock: 'В наличии'
+      }
+      
+      Object.keys(filters).forEach(key => {
+        const value = filters[key]
+        if (Array.isArray(value) && value.length > 0) {
+          info.push({
+            key,
+            label: `${filterLabels[key] || key}: ${value.join(', ')}`
+          })
+        } else if (typeof value === 'boolean' && value) {
+          info.push({
+            key,
+            label: filterLabels[key] || key
+          })
+        } else if (value !== null && value !== undefined && value !== '') {
+          info.push({
+            key,
+            label: `${filterLabels[key] || key}: ${value}`
+          })
+        }
+      })
+      
+      return info
+    })
+
+    function removeFilter(filterKey) {
+      if (selectedFilters.value[filterKey] !== undefined) {
+        if (Array.isArray(selectedFilters.value[filterKey])) {
+          selectedFilters.value[filterKey] = []
+        } else if (typeof selectedFilters.value[filterKey] === 'boolean') {
+          selectedFilters.value[filterKey] = false
+        } else {
+          selectedFilters.value[filterKey] = null
+        }
+        
+        onSearch(selectedFilters.value)
+      }
+    }
+  
+    function initFiltersFromUrl() {
+      try {
+        if (query.filters) {
+          const urlFilters = JSON.parse(decodeURIComponent(query.filters))
+          Object.assign(selectedFilters, urlFilters)
+        }
+      } catch (error) {
+        console.warn('Не удалось загрузить фильтры из URL:', error)
+      }
+    }
+
+    function saveFiltersToUrl(filters) {
+      const hasFilters = Object.keys(filters).some(key => {
+        const value = filters[key]
+        if (Array.isArray(value)) return value.length > 0
+        if (typeof value === 'boolean') return value
+        return value !== null && value !== undefined && value !== ''
+      })
+      
+      if (hasFilters) {
+        router.replace({
+          query: {
+            ...query,
+            filters: encodeURIComponent(JSON.stringify(filters))
+          }
+        })
+      } else {
+        const { filters: _, ...newQuery } = query
+        router.replace({ query: newQuery })
+      }
+    }
+
+    const skladsTabs = computed(() => {
+      return [ALL_TAB, ...sklads.value]
+    })
 
     const categories = computed(
       () => {
-        const categSklad = skladProducts.value.find(sp => sp.id === selectedSkladId.value)
+        const categories = categoriesResult.value?.categories || []
+        const skladCategories =
+          categories.filter(c => c.sklad.id === selectedSkladId.value)
+        
         return [
           ALL_TAB,
-          ...(categSklad?.categories?.length > 1 ? categSklad?.categories : [])
+          ...(selectedSkladId.value === ALL_TAB.id ? categories : skladCategories)
         ]
       }
     );
-    const listProducts = computed(
-      () => {
-        const skl = skladProducts.value.find(sp => sp.id === selectedSkladId.value)
-        return skl?.products || []
-      }
-    );
-
-    function fetchSaleProducts() {
-      loadBucketProducts(
-        null,
-        {
-          where: {
-            sklad: sklads.value?.map(s => s.id)
-          }
-        },
-        { fetchPolicy: 'network-only' }
-      );
-    }
 
     async function onAddSizesToBucket(product, payload) {
       await addSizesToBucket(product, payload)
-      fetchSaleProducts()
+      await forceRefreshBucket()
       loadData()
     }
 
     async function onAddCountToBucket(product, payload) {
       await addCountToBucket(product, payload)
-      fetchSaleProducts()
+      await forceRefreshBucket()
       loadData()
     }
 
@@ -305,7 +381,7 @@ export default defineComponent({
     async function onFinishRemove() {
       onCloseBulk()
       await loadData()
-      await fetchSaleProducts()
+      await forceRefreshBucket()
     }
 
     // Scroll to card by id from url and highlight it
@@ -326,35 +402,46 @@ export default defineComponent({
     }
 
     async function loadData() {
-      const resp = await fetchSkladProducts(
-        profile.value.id,
-        {
-          products: selectedFilters.value
+      const { sort, ...otherFilters } = selectedFilters.value || {};
+      const sizes = otherFilters.sizes
+      const filters = { ...otherFilters }
+      delete filters.sizes
+      console.log(filters, sizes)
+      const resp = await searchProducts({
+        q: filters.name_contains || null,
+        where: {
+          ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
+          ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
+          ...filters
         },
-        {
-          products: selectedFilters.value
-        },
-        {
-          _or: [
-            {
-              ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
-              ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
-            },
-          ],
-          ...selectedFilters.value
-        }
-      )
+        sizes: sizes?.length ? sizes : null
+      })
       return resp;
     }
 
     async function onSearch(filters = {}) {
-      selectedFilters.value = filters;
-      selectedCategoryId.value = ALL_TAB.id;
-      selectedSkladId.value = ALL_TAB.id;
-      const filtered = await loadData();
-      selectedSkladId.value = filtered?.[0]?.id;
+      const { sort, ...otherFilters } = filters;
+      
+      selectedFilters.value = {
+        ...otherFilters,
+        sort
+      };
+      
+      saveFiltersToUrl(filters);
+      
+      const hasSearchFilters = Object.keys(otherFilters).some(key => 
+        key !== 'sort' && otherFilters[key] !== null && otherFilters[key] !== undefined && 
+        (Array.isArray(otherFilters[key]) ? otherFilters[key].length > 0 : otherFilters[key] !== '')
+      );
+      
+      if (hasSearchFilters) {
+        selectedCategoryId.value = ALL_TAB.id;
+        selectedSkladId.value = ALL_TAB.id;
+      }
+      
+      loadData();
     }
-
+    
     function onChangeSklad(id) {
       selectedSkladId.value = id;
       selectedCategoryId.value = ALL_TAB.id;
@@ -370,15 +457,29 @@ export default defineComponent({
       imagePreview.value = url
       imagePreviewDialog.value = true
     }
+
+    function toggleViewMode() {
+      viewMode.value = viewMode.value === VIEW_GRID ? VIEW_TABLE : VIEW_GRID
+    }
     
     onBeforeMount(() => {
+      initFiltersFromUrl();
       loadData();
+      loadCategories(
+        null,
+        { where: { sklad: sklads.value.map(s => s.id) }},
+        { fetchPolicy: 'network-only' }
+      )
     })
 
     onMounted(() => {
       setTimeout(() => {
         onScrollToCard()
       }, 300);
+    })
+
+    watch(viewMode, (newValue) => {
+      localStorage.setItem('products-view-mode', newValue)
     })
 
     return {
@@ -401,10 +502,20 @@ export default defineComponent({
       onChangeCategory,
       selectedCategoryId,
       skladProducts,
-      listProducts,
+      products,
       imagePreviewDialog,
       imagePreview,
-      onOpenImagePreview
+      onOpenImagePreview,
+      hasActiveFilters,
+      activeFiltersCount,
+      activeFiltersInfo,
+      showFiltersInfo,
+      removeFilter,
+      viewMode,
+      toggleViewMode,
+      VIEW_GRID,
+      VIEW_TABLE,
+      skladsTabs
     }
   }
 })

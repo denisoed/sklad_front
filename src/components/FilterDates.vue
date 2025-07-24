@@ -11,7 +11,8 @@
     <q-btn
       icon="event"
       round
-      color="primary"
+      :text-color="calendarDate ? 'white' : 'primary'"
+      :color="calendarDate ? 'primary' : ''"
       class="q-ml-auto"
       v-vibrate
     >

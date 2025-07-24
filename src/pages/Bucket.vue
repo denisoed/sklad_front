@@ -127,7 +127,7 @@ export default defineComponent({
     const { sklads } = useSklads()
     const {
       loadBucketProducts,
-      refetchBucketProducts,
+      forceRefreshBucket,
       bucketProductsLoading,
       bucketProducts
     } = useBucket()
@@ -196,7 +196,7 @@ export default defineComponent({
             comment: payload.comment,
           }
         })
-        refetchBucketProducts()
+        await forceRefreshBucket()
         showSuccess('Корзина успешно обновлена!')
       } else {
         showError('Не удалось обновить продукт. Попробуйте позже.')
@@ -218,7 +218,7 @@ export default defineComponent({
         id: payload.id,
       })
       if (!deleteSaleProductError.value) {
-        refetchBucketProducts()
+        await forceRefreshBucket()
         showSuccess('Товар успешно удален!')
       } else {
         showError('Не удалось удалить продукт. Попробуйте позже.')
@@ -288,7 +288,7 @@ export default defineComponent({
             })
           }
           if (!updateProductError.value) {
-            refetchBucketProducts()
+            await forceRefreshBucket()
             showSuccess('Товары успешно проданы!')
           } else {
             showError('Произошла ошибка. Попробуйте позже.')
@@ -307,7 +307,7 @@ export default defineComponent({
             id: p.id,
           })
         }
-        refetchBucketProducts()
+        await forceRefreshBucket()
       }
     }
 

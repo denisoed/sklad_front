@@ -3,7 +3,7 @@ const useMoney = () => {
     currency: 'USD',
   })
   
-  function format(money, currency) {
+  function formatPrice(money, currency) {
     if (!money) return 0
     return `${formatter.format(money)}${currency || ''}`.replace(',', ' ')
   }
@@ -16,7 +16,7 @@ const useMoney = () => {
   }
 
   return {
-    format,
+    formatPrice,
     unformat
   }
 }

@@ -3,74 +3,45 @@
     <div class="color-picker-colors">
       <div class="color-picker-box">
         <div
-          class="color-picker-color-group"
-          v-for="(group, $idx) in COLORS"
-          :key="$idx"
+          v-ripple
+          :class="[
+            'color-picker-color-it',
+            { 'color-picker-color--white': c.color === '#FFFFFF' }
+          ]"
+          v-for="c in COLORS"
+          :key="c"
+          :style="{ background: c.color }"
+          @click="handlerClick(c)"
+          v-vibrate
         >
-          <div
-            v-ripple
-            :class="[
-              'color-picker-color-it',
-              { 'color-picker-color--white': c === '#FFFFFF' }
-            ]"
-            v-for="c in group"
-            :key="c"
-            :style="{ background: c }"
-            @click="handlerClick(c)"
-            v-vibrate
-          >
-            <div class="color-picker-pick" v-show="pick === c">
-              <svg style="width:auto;height:40px;" viewBox="0 0 24 24">
-                <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
-              </svg>
-            </div>
+          <div class="color-picker-pick" v-show="pick.color === c.color">
+            <svg style="width:auto;height:40px;" viewBox="0 0 24 24">
+              <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+            </svg>
           </div>
         </div>
       </div>
     </div>
     <div
+      v-if="pick"
       :class="[
         'color-picker--selected',
-        { 'color-picker--selected-white': pick === '#FFFFFF' }
+        { 'color-picker--selected-white': pick.color === '#FFFFFF' }
       ]"
-      :style="{ background: pick }"
-    />
+      :style="{ background: pick.color }"
+    >
+      <span class="color-picker--selected-name">{{ pick.name }}</span>
+    </div>
   </div>
 </template>
 
 <script>
 import {
-  ref,
+  reactive,
   defineComponent,
   toRefs
 } from 'vue'
-import material from 'material-colors'
-import tinycolor from 'tinycolor2'
-
-const COLOR_MAP = [
-  'pink', 'purple', 'deepPurple',
-  'indigo', 'blue', 'lightBlue', 'cyan',
-  'teal', 'green', 'lightGreen', 'lime',
-  'yellow', 'amber', 'orange', 'red', 'brown', 'blueGrey',
-  'black'
-]
-const COLOR_LEVEL = ['900', '700', '500', '300', '100']
-const COLORS = (() => {
-  const colors = []
-  COLOR_MAP.forEach((type) => {
-    let typeColor = []
-    if (type.toLowerCase() === 'black' || type.toLowerCase() === 'white') {
-      typeColor = typeColor.concat(['#000000', '#FFFFFF'])
-    } else {
-      COLOR_LEVEL.forEach((level) => {
-        const color = material[type][level]
-        typeColor.push(color.toUpperCase())
-      })
-    }
-    colors.push(typeColor)
-  })
-  return colors
-})()
+import useColors, { COLORS } from '../modules/useColors'
 
 export default defineComponent({
   name: 'ColorPicker',
@@ -82,27 +53,28 @@ export default defineComponent({
   },
   emits: ['on-change'],
   setup(props, { emit }) {
-    const { selected } = toRefs(props)
-    const pick = ref(selected.value)
+    const { findColorByHex } = useColors()
 
-    function equal(color) {
-      return color?.toLowerCase() === pick.value?.toLowerCase()
-    }
+    const { selected } = toRefs(props)
+    const pick = reactive({
+      color: selected.value,
+      name: findColorByHex(selected.value)?.name || ''
+    })
 
     function clear() {
-      pick.value = null;
-      emit('on-change', pick.value)
+      pick.color = null;
+      pick.name = ''
+      emit('on-change', null)
     }
 
     function handlerClick(c) {
-      const hex = tinycolor(c)
-      pick.value = hex.getOriginalInput()
-      emit('on-change', pick.value)
+      pick.color = c.color
+      pick.name = c.name
+      emit('on-change', pick)
     }
 
     return {
       handlerClick,
-      equal,
       pick,
       COLORS,
       clear
@@ -117,11 +89,9 @@ export default defineComponent({
   background-color: var(--block-bg);
   box-shadow: var(--box-shadow);
   padding: 4px;
+  border-radius: var(--border-radius-sm);
   
   &-colors {
-    height: 140px;
-    overflow-y: scroll;
-
     &::-webkit-scrollbar {
       display: none;
     }
@@ -134,15 +104,21 @@ export default defineComponent({
     justify-content: center;
     margin-top: 4px;
     color: #fff;
+    border-radius: var(--border-radius-sm);
     
     span {
       color: white;
-      mix-blend-mode: difference;
     }
 
     &-white {
       border: 1px solid #DDD;
       color: #000;
+    }
+
+    &-name {
+      background-color: black;
+      padding: 0 6px;
+      border-radius: var(--border-radius-sm);
     }
   }
 
@@ -150,29 +126,18 @@ export default defineComponent({
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column-reverse;
-    overflow: hidden;
-    gap: 4px;
-  }
-  
-  &-color-group {
-    display: flex;
     gap: 4px;
   }
   
   &-color-it {
     position: relative;
     box-sizing: border-box;
-    width: 100%;
+    width: calc(20% - 3.2px);
     height: 40px;
     cursor: pointer;
     background: #880e4f;
     overflow: hidden;
-    -ms-border-radius: 2px 2px 0 0;
-    -moz-border-radius: 2px 2px 0 0;
-    -o-border-radius: 2px 2px 0 0;
-    -webkit-border-radius: 2px 2px 0 0;
-    border-radius: 2px 2px 0 0;
+    border-radius: var(--border-radius-sm);
   }
 
   &-color--white {

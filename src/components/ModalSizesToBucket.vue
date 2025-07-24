@@ -70,20 +70,20 @@
                   :key="i"
                   style="width:30%;height:50px;"
                   :color="!all && !s.has ? 'grey' : 'primary'"
-                  :label="s.size"
                   :outline="!selectedSizes.some(sz => sz.size === s.size)"
                   push
-                  class="full-width btn-sizes-btn"
+                  class="full-width btn-sizes-btn border-radius-sm"
                   :disable="!all && !s.has"
                   @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
                   v-vibrate
                 >
+                  <span>{{ s.size }} <sup>{{ s.count > 1 ? `(${s.count} шт)` : '' }}</sup></span>
                   <q-badge
                     v-if="s.countSelected"
                     color="red"
                     floating
                   >
-                    {{ s.countSelected }}
+                    Выбрано: {{ s.countSelected }}
                   </q-badge>
                 </q-btn>
               </div>
