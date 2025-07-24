@@ -19,10 +19,15 @@ function insertInlineStyles() {
 export default boot(async () => {
   const telegram = window?.Telegram?.WebApp;
   if (DEV_TG_INIT_DATA_UNSAFE || telegram?.initData) {
-    insertInlineStyles()
-    telegram.expand()
-    const { telegramAuth } = useJwtMethods()
-    await telegramAuth(DEV_TG_INIT_DATA_UNSAFE || JSON.stringify(telegram.initDataUnsafe), 'tg')
-    telegram.ready()
+    try {
+      insertInlineStyles()
+      telegram.expand()
+      const { telegramAuth } = useJwtMethods()
+      await telegramAuth(DEV_TG_INIT_DATA_UNSAFE || JSON.stringify(telegram.initDataUnsafe), 'tg')
+      telegram.ready()
+    } catch (error) {
+      console.error('Telegram auth error:', error)
+      throw error
+    }
   }
 })

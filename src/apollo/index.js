@@ -26,7 +26,9 @@ const resolvePendingRequests = () => {
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
-    if (!getAccessToken() || !getRefreshToken()) {
+    const aToken = getAccessToken()
+    const rToken = getRefreshToken()
+    if (!aToken || !rToken || aToken.length === 0 || rToken.length === 0) {
       logout()
       return
     }
@@ -35,26 +37,33 @@ const errorLink = onError(
         switch (err.message) {
           case 'User Not Found':
             logout()
+            return
           case 'Invalid token.':
             let forward$;
             if (!isRefreshing) {
               isRefreshing = true;
-              forward$ = fromPromise(
-                refreshToken()
-                  .then(({ accessToken }) => {
-                    resolvePendingRequests(); 
-                    return accessToken;
-                  })
-                  .catch(() => {
-                    pendingRequests = [];
-                    clear()
-                    logout()
-                    return;
-                  })
-                  .finally(() => {
-                    isRefreshing = false;
-                  })
-              ).filter(value => Boolean(value));
+              try {
+                forward$ = fromPromise(
+                  refreshToken()
+                    .then(() => {
+                      resolvePendingRequests(); 
+                      return;
+                    })
+                    .catch(() => {
+                      pendingRequests = [];
+                      clear()
+                      logout()
+                      return;
+                    })
+                    .finally(() => {
+                      isRefreshing = false;
+                      window.location.reload();
+                    })
+                  ).filter(value => Boolean(value));
+                
+              } catch (error) {
+                console.log('finally', error);
+              }
             } else {
               forward$ = fromPromise(
                 new Promise(resolve => {

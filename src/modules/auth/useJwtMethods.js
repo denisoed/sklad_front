@@ -96,12 +96,14 @@ const useJwtMethods = () => {
   async function revokeToken() {
     try {
       const token = getRefreshToken()
-      if (token || token.length) {
+      if (token && token.length > 0) {
         await apolloClient.mutate({
           mutation: REVOKE_TOKEN,
           variables: { token }
         })
       }  
+    } catch (error) {
+      console.error('Error revoking token:', error)
     } finally {
       clear()
     }
@@ -110,7 +112,17 @@ const useJwtMethods = () => {
   async function logout() {
     const isAuthPage = window.location.hash.includes(START_ROUTE)
     if (!isAuthPage) {
-      window.location.hash = START_ROUTE
+      // Use router.push if available, otherwise fallback to hash
+      try {
+        const router = window.$router || window.router
+        if (router && router.push) {
+          router.push(START_ROUTE)
+        } else {
+          window.location.hash = START_ROUTE
+        }
+      } catch {
+        window.location.hash = START_ROUTE
+      }
     }
   }
 
