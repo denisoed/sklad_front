@@ -44,7 +44,6 @@
               color="primary"
               @click="addStartSizes"
               :disable="!sizes && !sizesCreated"
-              v-vibrate
             >
               <q-icon name="mdi-plus" />
             </q-btn>

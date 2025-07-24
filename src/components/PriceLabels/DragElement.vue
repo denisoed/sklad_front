@@ -11,7 +11,6 @@
     v-click-out="onClickOutside"
     class="drag-element"
     :class="{ 'drag-element--selected': selected }"
-    v-vibrate
   >
     <slot />
   </div>

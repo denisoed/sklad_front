@@ -87,7 +87,6 @@
                   label="Настроить размеры"
                   icon="mdi-cog"
                   @click="goToSizesSettings"
-                  v-vibrate
                   class="full-width border-radius-sm q-mt-sm"
                 />
               </div>
@@ -120,7 +119,6 @@
           push
           color="secondary"
           class="q-mr-auto"
-          v-vibrate
         >
           <q-menu>
             <q-list>
@@ -128,11 +126,9 @@
                 clickable
                 v-close-popup
                 py="10px"
-                v-vibrate
               >
                 <q-item-section
                   @click="onRemoveSklad"
-                  v-vibrate
                 >
                   <div class="flex items-center">
                     <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
@@ -152,7 +148,6 @@
           :loading="isLoading"
           :disable="isLoading"
           @click="updateForm"
-          v-vibrate
         />
       </div>
     </div>

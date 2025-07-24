@@ -89,7 +89,6 @@
               icon="mdi-eye"
               text-color="primary"
               :to="`/sklad/${props.row?.sklad?.id}/product/${props.row.id}`"
-              v-vibrate
             />
             
             <!-- Add to Basket -->
@@ -105,7 +104,6 @@
                   size="sm"
                   icon="mdi-basket-plus-outline"
                   text-color="deep-orange"
-                  v-vibrate
                 />
               </ModalCountToBucket>
               
@@ -121,7 +119,6 @@
                   size="sm"
                   icon="mdi-basket-plus-outline"
                   text-color="deep-orange"
-                  v-vibrate
                 />
               </ModalSizesToBucket>
             </div>

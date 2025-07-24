@@ -9,7 +9,6 @@
         width: `${100 / tabs.length}%`,
       }"
       @click="onClick(i, t.value)"
-      v-vibrate
     >
       {{ t.label }}
       <q-icon v-if="t.icon" :name="t.icon" />

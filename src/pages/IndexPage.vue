@@ -16,7 +16,6 @@
               @click="push(`/sklad/${element.id}`)"
               class="sklads_card block-bg"
               v-ripple
-              v-vibrate
             >
               <div class="sklads_card-drag" />
               <div
@@ -39,7 +38,6 @@
           @click="openedNewSkladModal = true"
           class="sklads_add flex column items-center justify-center cursor-pointer text-grey"
           :style="[!sklads?.length && 'width: 100%']"
-          v-vibrate
         >
           <q-icon name="mdi-plus" size="sm" />
           <span>Создать склад</span>

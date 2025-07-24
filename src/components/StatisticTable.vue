@@ -57,7 +57,6 @@
               class="q-mr-md"
               title="Перейти в товар"
               :to="`/sklad/${props.row?.product?.sklad?.id}/product/${props.row?.product?.id}`"
-              v-vibrate
             />
             <q-btn
               icon="mdi-keyboard-return"
@@ -66,7 +65,6 @@
               size="sm"
               title="Возврат товара на склад"
               @click="$emit('return-product', props.row)"
-              v-vibrate
             />
           </template>
           <template v-else>

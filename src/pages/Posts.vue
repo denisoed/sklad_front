@@ -8,7 +8,6 @@
           color="grey"
           push
           to="/"
-          v-vibrate
         >
           <q-icon name="mdi-arrow-left" />
         </q-btn>
@@ -19,7 +18,6 @@
           v-for="(post, i) in postsResult"
           :key="i"
           :to="post.link"
-          v-vibrate
         >
           <q-card
             class="my-card"

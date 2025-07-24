@@ -24,7 +24,7 @@
               <p>Не удалось получить ключ авторизации.</p>
               <div class="full-width flex items-center q-mt-sm">
                 Попробуйте еще раз
-                <q-btn v-vibrate push color="primary" icon="mdi-repeat" class="q-ml-auto" to="/auth" />
+                <q-btn push color="primary" icon="mdi-repeat" class="q-ml-auto" to="/auth" />
               </div>
             </div>
           </q-card-section>

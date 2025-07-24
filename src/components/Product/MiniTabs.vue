@@ -9,7 +9,6 @@
       :class="{ 'mini-tabs_card--active': sId === s.id }"
       v-ripple
       @click="changeTab(s.id)"
-      v-vibrate
     />
   </div>
 </template>

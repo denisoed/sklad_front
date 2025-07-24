@@ -8,8 +8,7 @@
           color="grey"
           push
           to="/posts"
-          v-vibrate
-          >
+        >
           <q-icon name="mdi-arrow-left" />
         </q-btn>
         <div class="updated-at">Обновлено: {{ postResult?.updated_at }}</div>

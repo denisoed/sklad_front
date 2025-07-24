@@ -35,7 +35,6 @@
               :label="$t('forgot.btn')"
               tabindex="2"
               :loading="isLoading"
-              v-vibrate
             ></q-btn>
           </q-card-actions>
         </q-card>

@@ -37,7 +37,6 @@
             :props="props"
             @click="push(`/product/${props.row.productId}`)"
             class="cursor-pointer"
-            v-vibrate
           >
             <q-td
               key="action"
@@ -80,7 +79,6 @@
         color="primary"
         class="q-mb-xl"
         @click="openedFilterHistory = true"
-        v-vibrate
       />
     </div>
   </q-page>

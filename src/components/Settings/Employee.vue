@@ -8,7 +8,6 @@
         color="primary"
         class="q-ml-auto"
         @click="openedNewEmployeeModal = true"
-        v-vibrate
       />
     </div>
     <q-table
@@ -41,7 +40,6 @@
               color="primary"
               class="q-mr-md"
               @click="update(props.row)"
-              v-vibrate
             />
             <q-btn
               icon="mdi-trash-can-outline"
@@ -49,7 +47,6 @@
               size="sm"
               @click="remove(props.row)"
               color="deep-orange"
-              v-vibrate
             />
           </q-td>
         </q-tr>
