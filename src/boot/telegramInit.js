@@ -22,6 +22,7 @@ export default boot(async () => {
     try {
       insertInlineStyles()
       telegram.expand()
+      telegram.disableVerticalSwipes()
       const { telegramAuth } = useJwtMethods()
       await telegramAuth(DEV_TG_INIT_DATA_UNSAFE || JSON.stringify(telegram.initDataUnsafe), 'tg')
       telegram.ready()

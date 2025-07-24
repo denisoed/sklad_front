@@ -1,17 +1,22 @@
 <template>
-  <q-header class="header q-gap-sm">
-    <div class="flex items-center cursor-pointer">
-      <q-btn icon="menu" push round @click="toggleMenu" />
-      <UserInfo
-        :fullname="profile?.fullname"
-        :telegram-id="profile?.telegramId"
-        :email="profile?.email"
-        class="q-mx-auto"
-        @click="goToProfile"
-      />
-      <NotifyList :history="histories" />
-    </div>
-  </q-header>
+  <q-pull-to-refresh
+    @refresh="refresh"
+    bg-color="dark"
+  >
+    <q-header class="header q-gap-sm">
+      <div class="flex items-center cursor-pointer">
+        <q-btn icon="menu" push round @click="toggleMenu" />
+        <UserInfo
+          :fullname="profile?.fullname"
+          :telegram-id="profile?.telegramId"
+          :email="profile?.email"
+          class="q-mx-auto"
+          @click="goToProfile"
+        />
+        <NotifyList :history="histories" />
+      </div>
+    </q-header>
+  </q-pull-to-refresh>
 </template>
 
 <script>
@@ -56,6 +61,10 @@ export default defineComponent({
       push({ path: MAIN_SETTINGS_ROUTE })
     }
 
+    function refresh() {
+      window.location.reload()
+    }
+
     return {
       Logo,
       sklad,
@@ -63,7 +72,8 @@ export default defineComponent({
       HOME_ROUTE,
       profile,
       toggleMenu,
-      goToProfile
+      goToProfile,
+      refresh
     }
   }
 })

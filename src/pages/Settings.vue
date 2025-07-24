@@ -35,7 +35,7 @@
             <div class="col-12 q-mt-md flex flex-center">
               <ColorPicker
                 :selected="formData.color"
-                @on-change="formData.color = $event"
+                @on-change="onChangeColor"
               />
             </div>
           </div>
@@ -262,6 +262,10 @@ export default defineComponent({
       push(`${MAIN_SETTINGS_ROUTE}?tab=sizes`)
     }
 
+    function onChangeColor(data) {
+      formData.color = data.color
+    }
+
     watch(sklad, (newValue) => {
       if (newValue) {
         formData.name = newValue?.name
@@ -286,7 +290,8 @@ export default defineComponent({
       isLoading,
       tab,
       onRemoveSklad,
-      goToSizesSettings
+      goToSizesSettings,
+      onChangeColor
     }
   }
 })

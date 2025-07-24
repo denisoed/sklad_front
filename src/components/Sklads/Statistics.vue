@@ -13,7 +13,7 @@
       <ChartCard
         class="full-width"
         title="Продано"
-        :body="`${soldCount}шт`"
+        :body="`${soldCount} шт`"
         :descr="`за ${selected.label}`"
         :loading="loadingActivities"
       />

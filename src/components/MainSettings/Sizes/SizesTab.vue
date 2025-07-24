@@ -1,6 +1,6 @@
 <template>
   <div class="sizes-tab flex column q-gap-md">
-    <Dropdown title="Настроить размеры">
+    <Dropdown title="Настроить размеры" opened>
       <template #icon>
         <q-icon name="mdi-cog" size="sm" class="q-mr-sm" />
       </template>

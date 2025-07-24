@@ -223,7 +223,7 @@
                   <q-btn
                     color="primary"
                     class="q-mt-sm"
-                    to="/main-settings"
+                    to="/main-settings?tab=sizes"
                     push
                   >
                     Настроить размеры

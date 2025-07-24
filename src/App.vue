@@ -66,7 +66,8 @@ export default defineComponent({
 
       document.addEventListener('click', vibrate);
 
-      openInstallPwaOnlyTelegram();
+      // TODO: temporary disable
+      // openInstallPwaOnlyTelegram();
     });
 
     onUnmounted(() => {
