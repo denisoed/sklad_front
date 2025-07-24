@@ -16,13 +16,11 @@
           spinner-color="grey"
           class="cursor-pointer"
           @click="$emit('open-image-preview')"
-          v-vibrate
         />
       </div>
       <router-link
         class="card-product_content"
         :to="`/product/${id}`"
-        v-vibrate
       >
         <div class="card-product_title">
           <span class="text-primary">#{{ id }}</span>

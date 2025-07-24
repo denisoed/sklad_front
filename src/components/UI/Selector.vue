@@ -23,7 +23,6 @@
           class="full-width"
           icon="mdi-plus"
           @click="openedModal = true"
-          v-vibrate
         >
           Создать {{ titlePostfix }}
         </q-btn>
@@ -35,7 +34,6 @@
           class="full-width"
           icon="mdi-plus"
           @click="openedModal = true"
-          v-vibrate
         >
           Создать {{ titlePostfix }}
         </q-btn>

@@ -109,7 +109,6 @@
                     size="sm"
                     color="deep-orange"
                     @click="removeElement"
-                    v-vibrate
                   />
                 </div>
               </q-td>
@@ -123,7 +122,6 @@
           color="deep-orange"
           outline
           class="q-mr-auto"
-          v-vibrate
         />
         <q-btn
           label="Сохранить"
@@ -131,7 +129,6 @@
           color="primary"
           class="q-ml-auto"
           tabindex="8"
-          v-vibrate
         />
       </div>
     </div>

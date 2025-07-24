@@ -13,7 +13,6 @@
       spinner-size="md"
       spinner-color="grey"
       class="cursor-pointer absolute-top-left full-width full-height"
-      v-vibrate
     />
 
     <q-file
@@ -40,7 +39,6 @@
         color="white"
         size="sm"
         @click="zoomImage"
-        v-vibrate
       >
         <q-icon
           name="mdi-eye"
@@ -54,7 +52,6 @@
         color="deep-orange"
         size="sm"
         @click="clear"
-        v-vibrate
       >
         <q-icon
           name="mdi-image-remove"
@@ -82,7 +79,6 @@
             size="sm"
             @click="dialog = false"
             class="absolute-top-right q-mr-md q-mt-md"
-            v-vibrate
           >
             <q-icon
               name="mdi-close"

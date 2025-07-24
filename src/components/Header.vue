@@ -1,14 +1,13 @@
 <template>
   <q-header class="header q-gap-sm">
     <div class="flex items-center cursor-pointer">
-      <q-btn icon="menu" push round @click="toggleMenu" v-vibrate />
+      <q-btn icon="menu" push round @click="toggleMenu" />
       <UserInfo
         :fullname="profile?.fullname"
         :telegram-id="profile?.telegramId"
         :email="profile?.email"
         class="q-mx-auto"
         @click="goToProfile"
-        v-vibrate
       />
       <NotifyList :history="histories" />
     </div>

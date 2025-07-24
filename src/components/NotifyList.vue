@@ -1,6 +1,6 @@
 <template>
   <div class="notify-list relative">
-    <q-btn @click="dialog = true" round push class="notify-list_btn text-grey" v-vibrate>
+    <q-btn @click="dialog = true" round push class="notify-list_btn text-grey">
       <q-icon name="mdi-bell-outline" />
       <div v-if="hasNewHistory" class="notify-list_alert" />
     </q-btn>
@@ -9,7 +9,7 @@
         <q-card class="notify-list_wrap" style="width: 300px;">
           <q-card-section class="flex items-center q-pb-none">
             <div class="text-subtitle1">Уведомления</div>
-            <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup v-vibrate />
+            <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup />
           </q-card-section>
           <q-card-section v-if="historyRows?.length" class="notify-list_items">
             <div class="flex column q-gap-md">
@@ -20,7 +20,6 @@
                 :style="`border-color: ${h.actionColor}2A`"
                 :class="{ 'notify-list_item--old': !h.isNew }"
                 :to="`/product/${h.productId}`"
-                v-vibrate
               >
                 <div v-if="h.isNew" class="notify-list_alert" />
                 <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>

@@ -15,7 +15,7 @@
                 </template>
                 <template v-slot:append>
                   <q-icon :name="visibilityPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                    @click="visibilityPassword = !visibilityPassword" class="cursor-pointer" v-vibrate>
+                    @click="visibilityPassword = !visibilityPassword" class="cursor-pointer">
                   </q-icon>
                 </template>
               </q-input>
@@ -27,7 +27,7 @@
                 </template>
                 <template v-slot:append>
                   <q-icon :name="visibilityPasswordConfirm ? 'mdi-eye-off' : 'mdi-eye'"
-                    @click="visibilityPasswordConfirm = !visibilityPasswordConfirm" class="cursor-pointer" v-vibrate>
+                    @click="visibilityPasswordConfirm = !visibilityPasswordConfirm" class="cursor-pointer">
                   </q-icon>
                 </template>
               </q-input>
@@ -43,11 +43,10 @@
               tabindex="3"
               :loading="isLoading"
               :disable="!password || !passwordConfirm"
-              v-vibrate
             />
           </q-card-actions>
           <q-card-section class="text-center q-pa-sm q-pb-md">
-            <router-link to="/register" class="text-grey-5" v-vibrate>
+            <router-link to="/register" class="text-grey-5">
               {{ $t('regNew') }}
             </router-link>
           </q-card-section>

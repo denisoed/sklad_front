@@ -224,7 +224,6 @@
                     color="primary"
                     class="q-mt-sm"
                     to="/main-settings"
-                    v-vibrate
                     push
                   >
                     Настроить размеры
@@ -253,7 +252,6 @@
               push
               color="secondary"
               class="q-mr-sm"
-              v-vibrate
             >
               <q-menu>
                 <q-list>
@@ -263,7 +261,6 @@
                     :to="historyLink"
                     clickable
                     v-close-popup
-                    v-vibrate
                   >
                     <q-item-section>
                       <div class="flex no-wrap items-center">
@@ -280,7 +277,6 @@
                   >
                     <q-item-section
                       @click="cancel('remove')"
-                      v-vibrate
                     >
                       <div class="flex items-center">
                         <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
@@ -302,7 +298,6 @@
                   push
                   color="deep-orange"
                   mr="auto"
-                  v-vibrate
                 />
               </ModalCountToBucket>
               <ModalSizesToBucket
@@ -317,7 +312,6 @@
                   push
                   color="deep-orange"
                   mr="auto"
-                  v-vibrate
                 />
               </ModalSizesToBucket>
             </div>
@@ -331,7 +325,6 @@
               :disable="(isDirty || createProductLoading || updateProductLoading)"
               :loading="uploadImageLoading || createProductLoading || updateProductLoading"
               tabindex="8"
-              v-vibrate
             />
           </div>
         </div>

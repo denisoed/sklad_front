@@ -11,7 +11,6 @@
         @click="minus"
         :disable="count < 1"
         style="height:50px;"
-        v-vibrate
       >
         <q-icon
           name="mdi-minus"
@@ -38,7 +37,6 @@
         @click="plus"
         :disable="count >= max"
         style="height:50px;"
-        v-vibrate
       >
         <q-icon
           name="mdi-plus"

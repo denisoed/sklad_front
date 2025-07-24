@@ -15,7 +15,6 @@
           @mousedown="onMouseDown(s)"
           @touchstart="onMouseDown(s)"
           :outline="!s.selected"
-          v-vibrate
         >
           <q-badge
             v-if="s.count > 1"

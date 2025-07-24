@@ -16,7 +16,7 @@
 
 <script>
 import { LocalStorage } from 'quasar'
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { SKLAD_PWA_INSTALLED } from 'src/config'
 import '@khmyznikov/pwa-install'
 
@@ -49,6 +49,12 @@ export default defineComponent({
       onCloseInstallPwaDialog();
     }
 
+    function vibrate() {
+      if (telegram) {
+        telegram.HapticFeedback.selectionChanged();
+      }
+    }
+
     onMounted(() => {
       window.addEventListener('online', () => {
         offline.value = false;
@@ -58,7 +64,13 @@ export default defineComponent({
         offline.value = true;
       });
 
+      document.addEventListener('click', vibrate);
+
       openInstallPwaOnlyTelegram();
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener('click', vibrate);
     });
 
     return {

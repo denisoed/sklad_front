@@ -36,7 +36,6 @@
             <q-btn
               :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
               @click="toggleViewMode"
-              v-vibrate
               text-color="primary"
               push
               round
@@ -46,7 +45,6 @@
             <q-btn
               :to="`/sklad/${selectedSkladId}`"
               class="text-subtitle2"
-              v-vibrate
               push
               text-color="primary"
               round
@@ -132,7 +130,6 @@
             size="sm"
             v-close-popup
             class="absolute-top-right q-mr-md q-mt-md"
-            v-vibrate
           >
             <q-icon
               name="mdi-close"

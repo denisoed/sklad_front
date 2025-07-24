@@ -33,7 +33,6 @@
           @mousedown="onMouseDown(category)"
           @touchstart="onMouseDown(category)"
           v-ripple
-          v-vibrate
         >
           <div
             class="categories_card-color"
@@ -88,7 +87,6 @@
           :loading="deleteCategoryLoading"
           @click="openedNewCategoryModal = true"
           style="z-index: 2;"
-          v-vibrate
         >
           Добавить категорию
         </q-btn>
