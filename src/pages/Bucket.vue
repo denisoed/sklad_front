@@ -73,7 +73,6 @@
           @click="toSell"
           :loading="isLoading"
           :disable="bucketProducts && !bucketProducts.length"
-          v-vibrate
         />
         <q-btn
           v-else
@@ -81,7 +80,6 @@
           push
           color="primary"
           to="/products"
-          v-vibrate
         />
       </div>
     </div>

@@ -55,7 +55,6 @@
         class="costs_type flex items-center q-pa-md q-mb-md hidden"
         style="background-color: rgb(0 255 0 / 8%);"
         @click="showNetPriceTooltip = true"
-        v-vibrate
       >
         <div class="costs_type-label q-ma-none">Примерный доход</div>
         <div class="costs_type-value q-ml-auto">

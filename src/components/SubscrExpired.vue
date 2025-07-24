@@ -1,7 +1,7 @@
 <template>
   <div class="subscr-expired flex items-center justify-between q-pa-md">
     <span class="text-bold text-white">Подписка истекла</span>
-    <q-btn push color="deep-orange" v-vibrate>Продлить</q-btn>
+    <q-btn push color="deep-orange">Продлить</q-btn>
   </div>
 </template>
 

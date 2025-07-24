@@ -1,7 +1,7 @@
 <template>
   <div class="feedback">
     <!-- Button -->
-    <div @click="open" v-vibrate>
+    <div @click="open">
       <slot />
     </div>
 

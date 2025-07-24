@@ -23,14 +23,12 @@
               push
               class="q-mr-md"
               @click="print"
-              v-vibrate
             />
             <q-btn
               color="grey"
               icon="mdi-close"
               push
               @click="close"
-              v-vibrate
             />
           </div>
         </q-card-section>

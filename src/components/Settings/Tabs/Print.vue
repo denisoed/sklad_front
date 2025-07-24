@@ -26,7 +26,6 @@
         @mousedown="onMouseDown(template)"
         @touchstart="onMouseDown(template)"
         v-ripple
-        v-vibrate
       >
         <div
           class="templates_card-color"
@@ -43,7 +42,7 @@
       </router-link>
     </div>
     <div class="flex column items-center q-mt-lg">
-      <q-btn color="primary" push outline @click="openedNewTemplateModal = true" v-vibrate>
+      <q-btn color="primary" push outline @click="openedNewTemplateModal = true">
         Создать шаблон
       </q-btn>
     </div>

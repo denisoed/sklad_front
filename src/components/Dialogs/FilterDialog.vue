@@ -36,7 +36,6 @@
                 :label="size"
                 dense
                 @click="toggleSize(size)"
-                v-vibrate
               />
             </div>
             <div v-else class="text-grey-6 text-center q-py-md">
@@ -114,7 +113,6 @@
               icon="mdi-refresh"
               push
               @click="clear"
-              v-vibrate
             />
             <q-btn
               class="button-size q-mr-auto"
@@ -122,7 +120,6 @@
               icon="mdi-close"
               push
               @click="$emit('update:modelValue', false)"
-              v-vibrate
             />
             <q-btn
               class="button-size"
@@ -130,7 +127,6 @@
               icon="mdi-magnify"
               push
               @click="apply"
-              v-vibrate
             />
           </div>
         </q-card-section>

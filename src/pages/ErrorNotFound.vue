@@ -10,14 +10,12 @@
       </div>
 
       <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
+        color="primary"
+        @click="onBack"
         unelevated
         to="/"
         label="Вернуться на главную"
         no-caps
-        v-vibrate
       />
     </div>
   </div>

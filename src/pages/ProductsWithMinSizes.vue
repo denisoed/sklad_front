@@ -35,8 +35,7 @@
             push
             size="md"
             class="q-mb-md"
-            :to="`/sklad/${sklad?.id}/product/${p.id}`"
-            v-vibrate
+            :to="`/sklad/${sklad?.id}/product/${p.id}`"            
           >
             <q-icon
               name="mdi-eye"

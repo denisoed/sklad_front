@@ -17,24 +17,23 @@
           @touchmove="touchElement"
           @touchend="stopDragging"
           @click="clickCanvas"
-          v-vibrate
         >
           Your browser does not support the canvas element.
         </canvas>
       </div>
       <div class="flex items-center full-width no-wrap q-mt-md">
         <PriceLabelControls :locked="locked" @move="moveElement" />
-        <q-btn round push size="md" class="q-ml-auto" @click="lockHandler" v-vibrate>
+        <q-btn round push size="md" class="q-ml-auto" @click="lockHandler">
           <q-icon :name="locked ? 'mdi-lock-outline' : 'mdi-lock-open-variant-outline'" color="deep-orange" />
         </q-btn>
       </div>
       <div class="price-label_elements flex column full-width bg-white q-mt-md q-pa-md">
         <div class="flex items-center q-gap-md justify-between q-mb-sm">
           <span class="text-subtitle2">Слои</span>
-          <q-btn push color="primary" round icon="mdi-plus" v-vibrate>
+          <q-btn push color="primary" round icon="mdi-plus">
             <q-menu anchor="bottom right" self="top right">
               <q-list style="min-width: 100px">
-                <q-item clickable v-close-popup @click="addText" v-vibrate>
+                <q-item clickable v-close-popup @click="addText">
                   <q-item-section>Добавить текст</q-item-section>
                 </q-item>
               </q-list>
@@ -68,7 +67,6 @@
                       size="sm"
                       color="primary"
                       class="q-mr-md"
-                      v-vibrate
                     />
                     <template #content>
                       <div class="flex column items-center">
@@ -93,10 +91,10 @@
                         <input type="number" v-model="ctx.selectedElement.fontSize" />
   
                         <div class="flex items-center q-gap-md">
-                          <q-btn push color="white" round @click="resizeElement('decrease')" v-vibrate>
+                          <q-btn push color="white" round @click="resizeElement('decrease')">
                             <q-icon name="mdi-minus" color="primary" />
                           </q-btn>
-                          <q-btn push color="white" round @click="resizeElement('increase')" v-vibrate>
+                          <q-btn push color="white" round @click="resizeElement('increase')">
                             <q-icon name="mdi-plus" color="primary" />
                           </q-btn>
                         </div>
@@ -109,7 +107,6 @@
                     size="sm"
                     color="deep-orange"
                     @click="removeElement"
-                    v-vibrate
                   />
                 </div>
               </q-td>
@@ -123,7 +120,6 @@
           color="deep-orange"
           outline
           class="q-mr-auto"
-          v-vibrate
         />
         <q-btn
           label="Сохранить"
@@ -131,7 +127,6 @@
           color="primary"
           class="q-ml-auto"
           tabindex="8"
-          v-vibrate
         />
       </div>
     </div>

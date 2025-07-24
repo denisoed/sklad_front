@@ -44,7 +44,6 @@
                     :name="visibilityPassword ? 'mdi-eye-off' : 'mdi-eye'"
                     @click="visibilityPassword = !visibilityPassword"
                     class="cursor-pointer"
-                    v-vibrate
                   >
                   </q-icon>
                 </template>
@@ -66,7 +65,6 @@
                     :name="visibilityPasswordConfirm ? 'mdi-eye-off' : 'mdi-eye'"
                     @click="visibilityPasswordConfirm = !visibilityPasswordConfirm"
                     class="cursor-pointer"
-                    v-vibrate
                   >
                   </q-icon>
                 </template>
@@ -84,7 +82,6 @@
               tabindex="3"
               :loading="isLoading"
               :disable="!password || !passwordConfirm"
-              v-vibrate
             ></q-btn>
           </q-card-actions>
         </q-card>

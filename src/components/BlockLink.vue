@@ -5,7 +5,6 @@
     class="flex q-gap-sm no-wrap justify-between flex-center block-link block-bg q-pa-md"
     :style="[accentColor && `border-bottom: 5px solid ${accentColor}`]"
     v-ripple
-    v-vibrate
   >
     <div class="flex column items-start">
       <span class="text-left">

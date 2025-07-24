@@ -12,7 +12,7 @@
             <!-- Login Providers -->
             <div class="flex column">
               <div class="page-login_providers-list d-flex justify-content-center mt-3">
-                <q-btn push :href="CONNECT_GOOGLE" class="full-width" v-vibrate>
+                <q-btn push :href="CONNECT_GOOGLE" class="full-width">
                   <div class="flex items-center justify-center q-gap-sm">
                     <q-icon name="mdi-google" class="text-primary" size="xs" />
                     <p class="text-grey-5 q-ma-none">{{ $t('auth.google') }}</p>
@@ -65,7 +65,6 @@
                   <q-icon
                     :name="visibilityPassword ? 'mdi-eye-off' : 'mdi-eye'"
                     @click="visibilityPassword = !visibilityPassword"
-                    v-vibrate
                     class="cursor-pointer"
                   >
                   </q-icon>
@@ -77,7 +76,6 @@
             <router-link
               :to="email ? `/forgot-password?email=${email}` : '/forgot-password'"
               class="text-grey-5 flex items-center"
-              v-vibrate
             >
               <q-icon
                 name="mdi-lock-reset"
@@ -96,7 +94,6 @@
               :label="$t('auth.btn')"
               tabindex="3"
               :loading="isLoading"
-              v-vibrate
             ></q-btn>
           </q-card-actions>
           <q-card-section
@@ -105,7 +102,6 @@
             <router-link
               to="/register"
               class="text-grey-5 flex flex-center q-gap-sm"
-              v-vibrate
             >
               {{ $t('regNew') }}
               <q-icon name="mdi-account-plus" size="sm" />

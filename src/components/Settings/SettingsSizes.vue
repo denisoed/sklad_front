@@ -11,7 +11,6 @@
       v-touch-hold.mouse="onHold"
       @mousedown="onMouseDown(s)"
       @touchstart="onMouseDown(s)"
-      v-vibrate
     />
     <p class="full-width btn-sizes-list_desc text-center q-mb-none">Чтобы удалить размер, удерживайте его несколько секунд.</p>
   </div>

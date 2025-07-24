@@ -15,7 +15,6 @@
           @mousedown="onMouseDown(s)"
           @touchstart="onMouseDown(s)"
           :outline="!s.selected"
-          v-vibrate
         >
           <q-badge
             v-if="s.count > 1"
@@ -50,7 +49,6 @@
               push
               class="button-size"
               @click="dialog = false"
-              v-vibrate
             />
             <q-btn
               class="button-size"
@@ -58,7 +56,6 @@
               icon="mdi-check"
               push
               @click="setSizes"
-              v-vibrate
             />
           </div>
         </q-card-section>

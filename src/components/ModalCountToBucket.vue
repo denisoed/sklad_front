@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div @click="dialog = true" v-vibrate>
+    <div @click="dialog = true">
       <slot />
     </div>
     <q-dialog
@@ -71,7 +71,6 @@
                 icon="mdi-close"
                 push
                 @click="close"
-                v-vibrate
               />
               <q-btn
                 class="button-size"
@@ -80,7 +79,6 @@
                 push
                 @click="submit"
                 :disable="!selectedCount"
-                v-vibrate
               />
             </div>
           </div>

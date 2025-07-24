@@ -30,7 +30,6 @@
               label="Не устанавливать"
               push
               @click="close"
-              v-vibrate
             />
             <q-btn
               class="button-size"
@@ -38,7 +37,6 @@
               push
               label="Установить"
               @click="install"
-              v-vibrate
             />
           </div>
         </div>

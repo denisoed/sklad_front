@@ -15,7 +15,6 @@
           :key="`tab_${i}`"
           :name="t.name"
           :label="$t(t.label)"
-          v-vibrate
         />
       </q-tabs>
 

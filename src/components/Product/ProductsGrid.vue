@@ -21,13 +21,13 @@
     >
       <div class="flex column full-height">
         <q-btn
-          v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: p?.sklad?.id }"
+          color="primary"
+          @click="onEdit"
           round
           push
           size="md"
           class="q-mb-md"
           :to="`/sklad/${p?.sklad?.id}/product/${p.id}`"
-          v-vibrate
         >
           <q-icon
             name="mdi-eye"
@@ -45,7 +45,6 @@
               push
               icon="mdi-basket-plus-outline"
               text-color="deep-orange"
-              v-vibrate
             />
           </ModalCountToBucket>
           <ModalSizesToBucket
@@ -59,7 +58,6 @@
               push
               icon="mdi-basket-plus-outline"
               text-color="deep-orange"
-              v-vibrate
             />
           </ModalSizesToBucket>
         </div>

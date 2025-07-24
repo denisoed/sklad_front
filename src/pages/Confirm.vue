@@ -18,7 +18,6 @@
             <router-link
               to="/auth"
               class="text-grey-5"
-              v-vibrate
             >
               Вернуться на стр авторизации
             </router-link>

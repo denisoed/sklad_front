@@ -1,10 +1,10 @@
 <template>
   <nav class="menu block-bg flex items-center">
-    <router-link class="router-link" :to="indexLink" exact v-vibrate>
+    <router-link class="router-link" :to="indexLink" exact>
       <q-icon name="mdi-home-outline" />
       <span>{{ $t('footer.home') }}</span>
     </router-link>
-    <router-link class="router-link" :to="productsLink" v-vibrate>
+    <router-link class="router-link" :to="productsLink">
       <q-icon name="mdi-cart-outline" />
       <span>{{ $t('footer.products') }}</span>
     </router-link>
@@ -15,13 +15,12 @@
       round
       dense
       to="/create-product"
-      v-vibrate
     />
-    <router-link class="router-link" :to="statisticLink" v-vibrate>
+    <router-link class="router-link" :to="statisticLink">
       <q-icon name="mdi-chart-box-outline" />
       <span>{{ $t('footer.statistic') }}</span>
     </router-link>
-    <router-link class="router-link" :to="bucketLink" v-vibrate>
+    <router-link class="router-link" :to="bucketLink">
       <q-icon name="mdi-basket-outline">
         <div v-if="hasInBucket" class="has-in-backet" />
       </q-icon>

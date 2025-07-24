@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown block-bg">
-    <div @click="toggle" class="dropdown_header flex items-center q-pa-md cursor-pointer" v-vibrate>
+    <div @click="toggle" class="dropdown_header flex items-center q-pa-md cursor-pointer">
       <slot name="icon" />
       <span v-html="title" class="text-bold" />
       <div class="dropdown_header-arrow q-ml-auto">

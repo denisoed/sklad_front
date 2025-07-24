@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div @click="mainMenu = true" v-vibrate>
+    <div @click="mainMenu = true">
       <slot />
     </div>
     <q-dialog
@@ -75,7 +75,6 @@
                   class="full-width btn-sizes-btn border-radius-sm"
                   :disable="!all && !s.has"
                   @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
-                  v-vibrate
                 >
                   <span>{{ s.size }} <sup>{{ s.count > 1 ? `(${s.count} шт)` : '' }}</sup></span>
                   <q-badge
@@ -95,7 +94,6 @@
                   icon="mdi-close"
                   push
                   @click="close"
-                  v-vibrate
                 />
                 <q-btn
                   class="button-size"
@@ -103,7 +101,6 @@
                   icon="mdi-check"
                   push
                   @click="submit"
-                  v-vibrate
                 />
               </div>
             </div>
@@ -128,7 +125,6 @@
                   icon="mdi-arrow-left"
                   push
                   @click="isStepTwo = false"
-                  v-vibrate
                 />
                 <q-btn
                   class="button-size"
@@ -136,7 +132,6 @@
                   icon="mdi-check"
                   push
                   @click="setSizeWithCounts"
-                  v-vibrate
                 />
               </div>
             </div>

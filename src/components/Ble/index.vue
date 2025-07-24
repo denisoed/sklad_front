@@ -24,12 +24,11 @@
             class="text-primary"
             round
             dense
-            v-vibrate
           >
             <q-menu anchor="bottom right" self="top right">
               <q-list style="min-width: 100px">
                 <q-item clickable v-close-popup>
-                  <q-item-section @click="openedBleEditorDialog = true" v-vibrate>
+                  <q-item-section @click="openedBleEditorDialog = true">
                     Редактировать
                   </q-item-section>
                 </q-item>
@@ -37,7 +36,6 @@
                   <q-item-section
                     class="text-deep-orange"
                     @click="disconnectDevice(device.id)"
-                    v-vibrate
                   >
                     Удалить
                   </q-item-section>
@@ -55,7 +53,6 @@
             :disable="bluetoothAutoConnecting"
             round
             dense
-            v-vibrate
           />
         </li>
       </ul>
@@ -72,7 +69,6 @@
         color="primary"
         push
         @click="bluetoothStopScan"
-        v-vibrate
       >
         <q-spinner />
       </q-btn>
@@ -85,7 +81,6 @@
         :loading="bluetoothScanning"
         @click="bluetoothScan"
         icon="mdi-bluetooth"
-        v-vibrate
       />
     </div>
 

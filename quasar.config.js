@@ -34,7 +34,6 @@ module.exports = configure(function (ctx) {
       'profile',
       'i18n',
       'drag',
-      'vibrate',
       'clickOutside',
       'gradient',
       'perfectScrollbar',

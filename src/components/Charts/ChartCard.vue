@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/statistic" class="chart-card q-pa-md block-bg" v-vibrate>
+  <router-link to="/statistic" class="chart-card q-pa-md block-bg">
     <div class="text-subtitle2 text-grey">{{ title }}</div>
     <div class="flex items-center text-h5 text-bold">
       <q-spinner v-if="loading" size="20px" color="primary" class="chart-card_loader" />

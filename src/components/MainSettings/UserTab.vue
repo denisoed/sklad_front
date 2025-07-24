@@ -12,9 +12,8 @@
           :telegram-id="profile?.telegramId"
           :email="profile?.email"
           @click="copyTgId"
-          v-vibrate
         />
-        <q-btn @click="switchEdit" v-vibrate round push class="q-ml-auto bg-white" size="sm">
+        <q-btn @click="switchEdit" round push class="q-ml-auto bg-white" size="sm">
           <q-icon name="mdi-pencil" color="primary" />
         </q-btn>
       </div>
@@ -35,7 +34,6 @@
             style="height: 40px"
             @click="saveUserInfo"
             :disable="userInfo.fullname === profile?.fullname"
-            v-vibrate
           >
             <q-icon name="mdi-check" />
           </q-btn>
@@ -57,7 +55,7 @@
           </div>
           <div class="flex items-center justify-between q-gap-md">
             <q-toggle v-model="refillWallet" label="Автопополнение" dense />
-            <q-btn color="primary" push v-vibrate>Пополнить</q-btn>
+            <q-btn color="primary" push>Пополнить</q-btn>
           </div>
         </div>
       </template>

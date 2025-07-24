@@ -85,8 +85,8 @@ h6 {
 
 .q-dialog__backdrop,
 .q-drawer__backdrop {
-  backdrop-filter: blur(2px);
-  background: var(--dialog-bg) !important;
+  backdrop-filter: blur(10px);
+  background: transparent !important;
 }
 
 .q-drawer {

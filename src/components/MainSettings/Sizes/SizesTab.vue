@@ -13,7 +13,6 @@
               round 
               size="sm"
               @click="openedCrudSizesModal = true" 
-              v-vibrate
             >
               <q-icon name="mdi-plus" />
             </q-btn>

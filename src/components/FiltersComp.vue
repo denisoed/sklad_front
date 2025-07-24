@@ -38,7 +38,6 @@
       color="white"
       text-color="black"
       @click="leftDrawerOpen = true"
-      v-vibrate
     >
       <q-icon
         name="mdi-filter-variant"

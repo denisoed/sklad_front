@@ -10,14 +10,12 @@
               push
               label="Позже"
               @click="close"
-              v-vibrate
             />
             <q-btn
               push
               color="primary"
               label="Настройки"
               to="/main-settings"
-              v-vibrate
             />
           </div>
         </div>
@@ -28,14 +26,12 @@
               push
               label="Позже"
               @click="close"
-              v-vibrate
             />
             <q-btn
               push
               color="primary"
               label="Настройки"
               to="/main-settings"
-              v-vibrate
             />
           </div>
         </div>

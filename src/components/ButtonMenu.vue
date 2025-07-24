@@ -12,7 +12,6 @@
         color="primary"
         class="q-mb-md"
         @click="onQRClick"
-        v-vibrate
       />
       <q-btn
         icon="mdi-view-list"
@@ -21,7 +20,6 @@
         size="md"
         color="primary"
         @click="onListClick"
-        v-vibrate
       />
     </div>
     <q-btn
@@ -31,7 +29,6 @@
       size="lg"
       color="primary"
       @click="toggleSubbuttons"
-      v-vibrate
     />
   </div>
 </template>
