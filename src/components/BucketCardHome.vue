@@ -84,8 +84,6 @@ export default defineComponent({
       justify-content: center;
       width: 50px;
       height: 50px;
-      background-color: rgba(var(--q-primary), 0.1);
-      border-radius: 50%;
       color: var(--q-primary);
     }
     

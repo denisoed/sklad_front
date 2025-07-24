@@ -23,9 +23,13 @@ export default defineComponent({
       type: String,
       default: 'Заголовок'
     },
+    opened: {
+      type: Boolean,
+      default: false
+    }
   },
-  setup() {
-    const isOpen = ref(false)
+  setup(props) {
+    const isOpen = ref(props.opened)
 
     function close() {
       isOpen.value = false

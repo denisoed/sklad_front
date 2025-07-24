@@ -24,7 +24,7 @@
         <ChartCard
           class="businnes-goal_item"
           title="Товары"
-          :body="`${soldCount}шт`"
+          :body="`${soldCount} шт`"
           descr="продано за год"
           :loading="loadingActivities"
         />
