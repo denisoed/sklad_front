@@ -23,12 +23,12 @@
             <p>Этот товар будет оплачен картой</p>
           </div>
         </div>
-        <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === PAY_BOTH }">
+        <div v-if="false" class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === PAY_BOTH }">
           <label v-ripple class="relative-position flex items-center justify-between">
             <div class="pay-methods_title">Смешанная оплата</div>
             <q-radio v-model="selected" :val="PAY_BOTH" dense />
           </label>
-          <div v-if="selected === PAY_BOTH" class="pay-methods_body flex column">
+          <div v-if="selected === PAY_BOTH" class="pay-methods_body flex column q-mt-sm">
             <div class="flex column">
               <p>Наличными</p>
               <InputPrice
@@ -39,7 +39,7 @@
                 dense
                 tabindex="2"
                 :rules="[
-                  () => formData.cashSum <= (sum - formData.cardSum) || `Значение не может быть больше ${sum - formData.cardSum}`
+                  () => formData.cashSum <= sum || `Значение не может быть больше ${sum - formData.cardSum}`
                 ]"
                 icon="mdi-cash-multiple"
               />
@@ -47,17 +47,12 @@
             <div class="flex column">
               <p>Картой</p>
               <InputPrice
-                :model-value="formData.cardSum"
-                @update:model-value="onChangeCardSum"
-                clear
+                :model-value="cardSumTotal"
                 class="q-mt-xs q-pb-none"
                 dense
                 tabindex="3"
-                :rules="[
-                  () => formData.cardSum <= (sum - formData.cashSum) || `Значение не может быть больше ${sum - formData.cashSum}`
-                ]"
                 icon="mdi-card"
-                :disable="!formData.cashSum || formData.cashSum >= sum"
+                disable
               />
             </div>
           </div>
@@ -72,6 +67,7 @@ import {
   ref,
   reactive,
   watch,
+  computed,
 } from 'vue'
 import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
@@ -111,17 +107,18 @@ const selected = ref(
     PAY_BOTH : props.payCard ? PAY_CARD : PAY_CASH
 );
 
+const cardSumTotal = computed(() => props.sum - formData.cashSum)
+
 const formData = reactive({
   cashSum: props.cashSum,
-  cardSum: props.cardSum,
 });
 
-const debouncedWatch = debounce((val) => {
+const debouncedWatch = debounce(() => {
   const result = {
     payCash: selected.value === PAY_BOTH || selected.value === PAY_CASH,
     payCard: selected.value === PAY_BOTH || selected.value === PAY_CARD,
     cashSum: formData.cashSum,
-    cardSum: formData.cardSum,
+    cardSum: cardSumTotal.value,
   }
   emit('on-change', result)
 }, 300);
@@ -132,10 +129,6 @@ watch([selected, formData], debouncedWatch, {
 
 function onChangeCashSum(val) {
   formData.cashSum = val
-}
-
-function onChangeCardSum(val) {
-  formData.cardSum = val
 }
 </script>
 
@@ -167,7 +160,6 @@ function onChangeCardSum(val) {
     &:last-child {
       .pay-methods_body {
         border: none;
-        margin: 0;
         padding-bottom: 0;
       }
     }
