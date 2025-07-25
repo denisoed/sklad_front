@@ -70,7 +70,9 @@
             <InputPlusMinus
               v-model="selectedCount"
               :max="max"
+              :min="1"
               label="Кол-во товара для продажи"
+              :tooltip-plus-text="`Минимальное количество: ${min}`"
               class="q-my-auto"
             />
             <q-separator class="full-width q-my-md" />
@@ -88,7 +90,7 @@
                 icon="mdi-check"
                 push
                 @click="submit"
-                :disable="!selectedCount || !price"
+                :disable="!selectedCount || !price || totalSum <= 0"
               />
             </div>
           </div>
@@ -137,7 +139,7 @@ const props = defineProps({
   },
   selected: {
     type: Number,
-    default: 0
+    default: 1
   },
   max: {
     type: Number,

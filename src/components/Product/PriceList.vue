@@ -1,5 +1,5 @@
 <template>
-  <Dropdown title="Цены на товар" outline>
+  <Dropdown title="Цены на товар" outline opened>
     <template #icon>
       <q-icon name="mdi-cash" size="sm" class="q-mr-sm" />
     </template>
