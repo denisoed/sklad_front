@@ -4,6 +4,7 @@
     :model-value="formattedValue"
     outlined
     :class="{ 'is-clearable': clear && formattedValue }"
+    :max="max"
     v-bind="$attrs"
   >
     <template #prepend>
@@ -43,7 +44,7 @@ export default defineComponent({
     modelValue: {
       type: Number,
       default: null
-    }
+    },
   },
   emits: ['update:model-value'],
   setup(props) {

@@ -7,7 +7,7 @@
       <div class="pay-methods flex column q-gap-md">
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === DEFAULT_PRICE }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">Розничная цена: {{ defaultPrice }}</div>
+            <div class="pay-methods_title">Цена: {{ defaultPrice }}</div>
             <q-radio v-model="selected" :val="DEFAULT_PRICE" dense />
           </label>
           <div v-if="selected === DEFAULT_PRICE" class="pay-methods_body">

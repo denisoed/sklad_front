@@ -30,6 +30,7 @@
               :card-sum="cardSum"
               :pay-card="payCard"
               :pay-cash="payCash"
+              :sum="totalSum"
             />
           </div>
 
@@ -61,7 +62,7 @@
 
             <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
               <p class="q-mb-none">Итоговая сумма:</p>
-              <span class="text-bold">{{ totalSum }}</span>
+              <span class="text-bold">{{ formatPrice(totalSum) }}</span>
             </div>
           </div>
     
@@ -200,7 +201,7 @@ const totalSum = computed(() => {
   } else {
     sum = (price.value * selectedCount.value) - localDiscountPrice.value
   }
-  return formatPrice(Math.max(sum, 0))
+  return Math.max(sum, 0)
 })
 
 const defaultPrice = computed(() => props.withDiscount ? props.discountPrice : props.newPrice)

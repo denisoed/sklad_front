@@ -28,28 +28,37 @@
             <div class="pay-methods_title">Смешанная оплата</div>
             <q-radio v-model="selected" :val="PAY_BOTH" dense />
           </label>
-          <div v-if="selected === PAY_BOTH" class="pay-methods_body flex column q-gap-sm">
+          <div v-if="selected === PAY_BOTH" class="pay-methods_body flex column">
             <div class="flex column">
               <p>Наличными</p>
               <InputPrice
-                v-model="formData.cashSum"
+                :model-value="formData.cashSum"
+                @update:model-value="onChangeCashSum"
                 clear
-                class="q-mt-xs"
+                class="q-mt-xs q-pb-md"
                 dense
                 tabindex="2"
+                :rules="[
+                  () => formData.cashSum <= (sum - formData.cardSum) || `Значение не может быть больше ${sum - formData.cardSum}`
+                ]"
                 icon="mdi-cash-multiple"
-                />
-              </div>
-              <div class="flex column">
-                <p>Картой</p>
-                <InputPrice
-                  v-model="formData.cardSum"
-                  clear
-                  class="q-mt-xs"
-                  dense
-                  tabindex="3"
-                  icon="mdi-card"
-                />
+              />
+            </div>
+            <div class="flex column">
+              <p>Картой</p>
+              <InputPrice
+                :model-value="formData.cardSum"
+                @update:model-value="onChangeCardSum"
+                clear
+                class="q-mt-xs q-pb-none"
+                dense
+                tabindex="3"
+                :rules="[
+                  () => formData.cardSum <= (sum - formData.cashSum) || `Значение не может быть больше ${sum - formData.cashSum}`
+                ]"
+                icon="mdi-card"
+                :disable="!formData.cashSum || formData.cashSum >= sum"
+              />
             </div>
           </div>
         </div>
@@ -58,9 +67,8 @@
   </Dropdown>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   reactive,
   watch,
@@ -73,64 +81,62 @@ const PAY_CASH = 'PAY_CASH';
 const PAY_CARD = 'PAY_CARD';
 const PAY_BOTH = 'PAY_BOTH';
 
-export default defineComponent({
-  name: 'PayMethods',
-  props: {
-    cashSum: {
-      type: Number,
-      default: null,
-    },
-    cardSum: {
-      type: Number,
-      default: null,
-    },
-    payCash: {
-      type: Boolean,
-      default: false
-    },
-    payCard: {
-      type: Boolean,
-      default: false
-    },
+const props = defineProps({
+  cashSum: {
+    type: Number,
+    default: null,
   },
-  components: {
-    InputPrice,
-    Dropdown
+  cardSum: {
+    type: Number,
+    default: null,
   },
-  emits: ['on-change'],
-  setup(props, { emit }) {
-    const selected = ref(
-      props.payCard && props.payCash ?
-        PAY_BOTH : props.payCard ? PAY_CARD : PAY_CASH
-    );
-    const formData = reactive({
-      cashSum: props.cashSum,
-      cardSum: props.cardSum,
-    });
-    
-    const debouncedWatch = debounce((val) => {
-      const result = {
-        payCash: selected.value === PAY_BOTH || selected.value === PAY_CASH,
-        payCard: selected.value === PAY_BOTH || selected.value === PAY_CARD,
-        cashSum: formData.cashSum,
-        cardSum: formData.cardSum,
-      }
-      emit('on-change', result)
-    }, 800);
-
-    watch([selected, formData], debouncedWatch, {
-      immediate: true
-    })
-
-    return {
-      selected,
-      formData,
-      PAY_CASH,
-      PAY_CARD,
-      PAY_BOTH,
-    }
-  }
+  payCash: {
+    type: Boolean,
+    default: false
+  },
+  payCard: {
+    type: Boolean,
+    default: false
+  },
+  sum: {
+    type: Number,
+    default: null,
+  },
 })
+
+const emit = defineEmits(['on-change'])
+
+const selected = ref(
+  props.payCard && props.payCash ?
+    PAY_BOTH : props.payCard ? PAY_CARD : PAY_CASH
+);
+
+const formData = reactive({
+  cashSum: props.cashSum,
+  cardSum: props.cardSum,
+});
+
+const debouncedWatch = debounce((val) => {
+  const result = {
+    payCash: selected.value === PAY_BOTH || selected.value === PAY_CASH,
+    payCard: selected.value === PAY_BOTH || selected.value === PAY_CARD,
+    cashSum: formData.cashSum,
+    cardSum: formData.cardSum,
+  }
+  emit('on-change', result)
+}, 300);
+
+watch([selected, formData], debouncedWatch, {
+  immediate: true
+})
+
+function onChangeCashSum(val) {
+  formData.cashSum = val
+}
+
+function onChangeCardSum(val) {
+  formData.cardSum = val
+}
 </script>
 
 <style lang="scss" scoped>
@@ -162,6 +168,7 @@ export default defineComponent({
       .pay-methods_body {
         border: none;
         margin: 0;
+        padding-bottom: 0;
       }
     }
   }
