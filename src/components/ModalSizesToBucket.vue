@@ -39,8 +39,6 @@
                   v-model="_discount"
                   label="Скидка"
                   clear
-                  :color="_discount && 'white'"
-                  :bg-color="_discount && 'primary'"
                   dense
                   class="full-width"
                   :icon="_percentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
@@ -52,7 +50,7 @@
                   @on-change="_percentageDiscount = $event"
                 />
               </div>
-              <p class="q-mb-sm">Способ оплаты</p>
+              <p class="q-mb-sm">Оплата</p>
               <PayMethods
                 class="q-mb-md"
                 @on-change="onChangePayMethods"

@@ -1,7 +1,7 @@
 <template>
-  <Dropdown title="Способы оплаты" outline>
+  <Dropdown title="Цены на товар" outline>
     <template #icon>
-      <q-icon name="mdi-format-list-checks" size="sm" class="q-mr-sm" />
+      <q-icon name="mdi-cash" size="sm" class="q-mr-sm" />
     </template>
     <template #body>
       <div class="pay-methods flex column q-gap-md">

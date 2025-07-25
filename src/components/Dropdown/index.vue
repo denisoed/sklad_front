@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown block-bg">
+  <div class="dropdown block-bg" :class="{ 'dropdown--outline': outline }">
     <div @click="toggle" class="dropdown_header flex items-center q-pa-md cursor-pointer">
       <slot name="icon" />
       <span v-html="title" class="text-bold" />
@@ -24,6 +24,10 @@ export default defineComponent({
       default: 'Заголовок'
     },
     opened: {
+      type: Boolean,
+      default: false
+    },
+    outline: {
       type: Boolean,
       default: false
     }
@@ -52,5 +56,10 @@ export default defineComponent({
 .dropdown {
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
+
+  &--outline {
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+  }
 }
 </style>

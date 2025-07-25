@@ -17,24 +17,32 @@
 
           <q-separator class="full-width q-my-sm" />
 
-          <div class="full-width full-height flex column q-my-sm">
+          <div class="full-width flex column q-gap-sm q-mb-sm">
+            <p class="q-mb-none">Оплата</p>
+            <PriceList />
+            <PayMethods
+              @on-change="onChangePayMethods"
+              :cash-sum="cashSum"
+              :card-sum="cardSum"
+              :pay-card="payCard"
+              :pay-cash="payCash"
+            />
+          </div>
+
+          <div class="full-width flex column q-my-sm q-gap-sm">
             <q-input
               v-model="commentVal"
               outlined
               class="full-width"
               dense
               label="Комментарий"
+              clearable
             />
-          </div>
-
-          <div class="full-width flex column q-my-sm">
-            <div class="flex no-wrap items-center q-gap-sm q-mb-md">
+            <div class="flex no-wrap items-center q-gap-sm">
               <InputPrice
                 v-model="_discount"
-                label="Скидка"
+                label="Доп. скидка"
                 clear
-                :color="_discount && 'white'"
-                :bg-color="_discount && 'primary'"
                 class="full-width"
                 dense
                 :icon="_percentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
@@ -46,14 +54,6 @@
                 @on-change="_percentageDiscount = $event"
               />
             </div>
-            <p class="q-mb-sm">Способ оплаты</p>
-            <PayMethods
-              @on-change="onChangePayMethods"
-              :cash-sum="cashSum"
-              :card-sum="cardSum"
-              :pay-card="payCard"
-              :pay-cash="payCash"
-            />
           </div>
     
           <div class="full-width full-height flex column q-mt-md">
@@ -92,6 +92,7 @@
 import InputPlusMinus from 'src/components/InputPlusMinus'
 import InputPrice from 'src/components/InputPrice'
 import PayMethods from 'src/components/Product/PayMethods.vue'
+import PriceList from 'src/components/Product/PriceList.vue'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
 import {
   defineComponent,
@@ -118,6 +119,7 @@ export default defineComponent({
     InputPlusMinus,
     InputPrice,
     PayMethods,
+    PriceList,
     SwitchTabs
   },
   props: {

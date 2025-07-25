@@ -287,7 +287,7 @@ export default defineComponent({
       },
       {
         name: 'name',
-        label: 'Название',
+        label: 'Информация',
         field: 'name',
         align: 'left',
         sortable: true
