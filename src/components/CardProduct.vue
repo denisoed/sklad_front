@@ -240,10 +240,6 @@ export default defineComponent({
     width: 100%;
     display: flex;
     justify-content: space-between;
-
-    span {
-      color: var(--text-description);
-    }
   }
 
   &_title {

@@ -200,7 +200,7 @@ export default defineComponent({
     const imagePreview = ref(null)
     
     // View mode toggle (grid/table)
-    const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_TABLE)
+    const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_GRID)
 
     function removeItemOnce(arr, value) {
       const index = arr.map(s => s.size).indexOf(value.size)

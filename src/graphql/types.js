@@ -164,6 +164,11 @@ export const SEARCH_PRODUCTS = gql`
       category {
         id
       }
+      prices {
+        name
+        price
+        id
+      }
     }
   }
 `

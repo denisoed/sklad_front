@@ -228,7 +228,7 @@ export default defineComponent({
     const showFiltersInfo = ref(false)
     
     // View mode toggle (grid/table)
-    const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
+    const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
     
     // Вычисляемые свойства для работы с фильтрами
     const hasActiveFilters = computed(() => {
