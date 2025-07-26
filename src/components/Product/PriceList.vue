@@ -131,7 +131,7 @@ export default defineComponent({
   
   &_body {
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    padding-bottom: 16px;
 
     p {
       margin: 0;

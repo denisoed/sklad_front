@@ -85,7 +85,7 @@ export default defineComponent({
     }
 
     function minus() {
-      if (count.value > min) {
+      if (count.value > min.value) {
         count.value -= 1
         emit('update:model-value', count.value)
       }

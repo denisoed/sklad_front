@@ -7,7 +7,7 @@
     separator="cell"
     :pagination="{ rowsPerPage: 0 }"
     hide-pagination
-    class="statistic-table full-width q-mb-sm border-radius-sm"
+    class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
   >
     <template v-slot:body="props">
       <q-tr
@@ -68,15 +68,7 @@
           <div class="price-column">
             <div class="text-weight-bold">
               <PriceFormatter
-                :value="getNewPrice(
-                  props.row.product,
-                  props.row.payCash,
-                  props.row.payCard,
-                  props.row.cashSum,
-                  props.row.cardSum,
-                  props.row.percentageDiscount,
-                  props.row.discount
-                )"
+                :value="props.row.cashSum"
               />
             </div>
             <div v-if="props.row.discount" class="text-caption text-red">
@@ -203,7 +195,6 @@ import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
-import { getNewPrice } from './helpers'
 
 export default defineComponent({
   name: 'BucketTable',
@@ -332,7 +323,6 @@ export default defineComponent({
       columns,
       highlightRowId,
       goToProduct,
-      getNewPrice,
       removeFromBucket,
       onUpdate
     }
@@ -356,10 +346,6 @@ export default defineComponent({
   :deep(.q-table) {
     border-radius: 8px;
     overflow: hidden;
-  }
-  
-  :deep(.q-table tbody tr:hover) {
-    background-color: rgba(var(--q-primary-rgb), 0.1);
   }
 }
 

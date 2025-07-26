@@ -7,7 +7,7 @@
     separator="cell"
     :pagination="{ rowsPerPage: 0 }"
     hide-pagination
-    class="statistic-table full-width q-mb-sm border-radius-sm"
+    class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
   >
     <template v-slot:body="props">
       <q-tr
@@ -97,6 +97,10 @@
               <ModalCountToBucket
                 v-if="props.row.useNumberOfSizes"
                 :max="props.row.countSizes"
+                :prices="props.row.prices"
+                :withDiscount="props.row.withDiscount"
+                :discount-price="props.row.discountPrice"
+                :new-price="props.row.newPrice"
                 @submit="$emit('addCountToBucket', props.row, $event)"
               >
                 <q-btn
@@ -249,10 +253,6 @@ export default defineComponent({
   :deep(.q-table) {
     border-radius: 8px;
     overflow: hidden;
-  }
-  
-  :deep(.q-table tbody tr:hover) {
-    background-color: rgba(var(--q-primary-rgb), 0.1);
   }
 }
 

@@ -45,7 +45,7 @@
             />
             <div class="flex no-wrap items-center q-gap-sm">
               <InputPrice
-                v-model="localDiscountPrice"
+                v-model="discountPrice"
                 label="Доп. скидка"
                 clear
                 class="full-width"
@@ -192,16 +192,16 @@ const dialog = ref(false)
 const commentVal = ref(comment.value)
 const selectedCount = ref(selected.value)
 const percentageDiscount = ref(false)
-const localDiscountPrice = ref(null)
+const discountPrice = ref(null)
 const payMethods = reactive({})
 const price = ref(props.newPrice)
 
 const totalSum = computed(() => {
   let sum = 0
   if (percentageDiscount.value) {
-    sum = (price.value - ((price.value / 100) * localDiscountPrice.value)) * selectedCount.value
+    sum = (price.value - ((price.value / 100) * discountPrice.value)) * selectedCount.value
   } else {
-    sum = (price.value * selectedCount.value) - localDiscountPrice.value
+    sum = (price.value * selectedCount.value) - discountPrice.value
   }
   return Math.max(sum, 0)
 })
@@ -215,10 +215,11 @@ function close() {
 function submit() {
   emit('submit', {
     countSizes: selectedCount.value,
-    withDiscount: percentageDiscount.value,
-    discount: localDiscountPrice.value,
+    percentageDiscount: percentageDiscount.value,
+    discount: discountPrice.value,
     comment: commentVal.value,
-    ...payMethods
+    ...payMethods,
+    cashSum: totalSum.value,
   })
   close()
 }

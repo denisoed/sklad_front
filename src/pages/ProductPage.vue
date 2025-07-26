@@ -291,6 +291,10 @@
               <ModalCountToBucket
                 v-if="product?.useNumberOfSizes"
                 :max="product?.countSizes"
+                :prices="product?.prices"
+                :withDiscount="product?.withDiscount"
+                :discount-price="product?.discountPrice"
+                :new-price="product?.newPrice"
                 @submit="onAddCountToBucket(product, $event)"
               >
                 <q-btn

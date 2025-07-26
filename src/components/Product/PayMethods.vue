@@ -118,7 +118,7 @@ const debouncedWatch = debounce(() => {
     payCash: selected.value === PAY_BOTH || selected.value === PAY_CASH,
     payCard: selected.value === PAY_BOTH || selected.value === PAY_CARD,
     cashSum: formData.cashSum,
-    cardSum: cardSumTotal.value,
+    cardSum: null, // TODO: add card sum
   }
   emit('on-change', result)
 }, 300);
@@ -142,7 +142,7 @@ function onChangeCashSum(val) {
   
   &_body {
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    padding-bottom: 16px;
 
     p {
       margin: 0;

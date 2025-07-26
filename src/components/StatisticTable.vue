@@ -5,7 +5,7 @@
     :pagination="pagination"
     row-key="name"
     separator="cell"
-    class="statistic-table full-width q-mb-sm border-radius-sm"
+    class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
     hide-pagination
     no-data-label="Нет данных"
   >
