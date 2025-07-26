@@ -128,13 +128,14 @@
               v-if="props.row.product?.useNumberOfSizes"
               :selected="props.row.countSizes"
               :max="props.row.countSizes"
-              :discount="props.row.discount"
+              :discount-price="props.row.discount"
               :percentage-discount="props.row.percentageDiscount"
               :cash-sum="props.row.cashSum"
               :card-sum="props.row.cardSum"
               :pay-cash="props.row.payCash"
               :pay-card="props.row.payCard"
               :comment="props.row.comment"
+              :new-price="props.row.product?.newPrice"
               @submit="onUpdate(props.row, $event)"
             >
               <q-btn

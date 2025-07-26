@@ -104,12 +104,13 @@
         v-if="useNumberOfSizes"
         :selected="countSizes"
         :max="countSizes"
-        :discount="discount"
+        :discount-price="discount"
         :percentage-discount="percentageDiscount"
         :cash-sum="cashSum"
         :card-sum="cardSum"
         :pay-cash="payCash"
         :pay-card="payCard"
+        :new-price="newPrice"
         :comment="comment"
         @submit="updateSizes"
       >
@@ -247,6 +248,10 @@ export default defineComponent({
       default: true
     },
     countSizes: {
+      type: Number,
+      default: null
+    },
+    newPrice: {
       type: Number,
       default: null
     },

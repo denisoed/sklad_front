@@ -17,6 +17,7 @@
       :pay-card="b.payCard"
       :card-sum="b.cardSum"
       :cash-sum="b.cashSum"
+      :new-price="b.product?.newPrice"
       :comment="b.comment"
       :loading="b.product?.id === selectedProduct?.id"
       :count-sizes="b.countSizes"

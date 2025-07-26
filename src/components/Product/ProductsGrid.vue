@@ -38,7 +38,7 @@
             v-if="p.useNumberOfSizes"
             :max="p.countSizes"
             :prices="p.prices"
-            :withDiscount="p.withDiscount"
+            :with-discount="p.withDiscount"
             :discount-price="p.discountPrice"
             :new-price="p.newPrice"
             @submit="$emit('addCountToBucket', p, $event)"

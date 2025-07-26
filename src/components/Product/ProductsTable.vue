@@ -98,7 +98,7 @@
                 v-if="props.row.useNumberOfSizes"
                 :max="props.row.countSizes"
                 :prices="props.row.prices"
-                :withDiscount="props.row.withDiscount"
+                :with-discount="props.row.withDiscount"
                 :discount-price="props.row.discountPrice"
                 :new-price="props.row.newPrice"
                 @submit="$emit('addCountToBucket', props.row, $event)"
