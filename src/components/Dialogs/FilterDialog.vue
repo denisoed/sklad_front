@@ -83,6 +83,8 @@
             <ColorPicker
               ref="colorPickerRef"
               :selected="localFilters.color"
+              :selected-colors="localFilters.colors || []"
+              :multiselect="true"
               @on-change="setColorName"
             />
           </div>
@@ -164,10 +166,17 @@ export default defineComponent({
     const loadingAvailableSizes = ref(false)
     const { sizes, fetchSizes } = useSizes()
 
-    const localFilters = reactive({ ...props.filters })
+    const localFilters = reactive({ 
+      ...props.filters,
+      colors: props.filters.colors || []
+    })
 
     watch(() => props.filters, (newFilters) => {
       Object.assign(localFilters, newFilters)
+      // Убеждаемся, что массив цветов инициализирован
+      if (!localFilters.colors) {
+        localFilters.colors = []
+      }
     }, { deep: true })
 
     async function fetchAvailableSizes() {
@@ -207,9 +216,18 @@ export default defineComponent({
       }
     }
 
-    function setColorName(color) {
-      localFilters.color = color?.color
-      localFilters.colorName = color?.name
+    function setColorName(colors) {
+      if (Array.isArray(colors)) {
+        // Мультивыбор - массив цветов
+        localFilters.colors = colors
+        localFilters.color = colors.length > 0 ? colors[0].color : null
+        localFilters.colorName = colors.length > 0 ? colors[0].name : null
+      } else {
+        // Одиночный выбор (для обратной совместимости)
+        localFilters.color = colors?.color
+        localFilters.colorName = colors?.name
+        localFilters.colors = colors ? [colors] : []
+      }
     }
 
     function apply() {
@@ -219,6 +237,14 @@ export default defineComponent({
 
     function clear() {
       colorPickerRef.value?.clear()
+      // Очищаем локальные фильтры
+      localFilters.sizes = []
+      localFilters.priceFrom = null
+      localFilters.priceTo = null
+      localFilters.color = null
+      localFilters.colorName = null
+      localFilters.colors = []
+      localFilters.withDiscount = false
       emit('clear')
       emit('update:modelValue', false)
     }

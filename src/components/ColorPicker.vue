@@ -6,14 +6,15 @@
           v-ripple
           :class="[
             'color-picker-color-it',
-            { 'color-picker-color--white': c.color === '#FFFFFF' }
+            { 'color-picker-color--white': c.color === '#FFFFFF' },
+            { 'color-picker-color--selected': isColorSelected(c) }
           ]"
           v-for="c in COLORS"
           :key="c"
           :style="{ background: c.color }"
           @click="handlerClick(c)"
         >
-          <div class="color-picker-pick" v-show="pick.color === c.color">
+          <div class="color-picker-pick" v-show="isColorSelected(c)">
             <svg style="width:auto;height:40px;" viewBox="0 0 24 24">
               <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
             </svg>
@@ -21,8 +22,34 @@
         </div>
       </div>
     </div>
+    
+    <!-- Отображение выбранных цветов -->
+    <div v-if="multiselect && selectedColors.length > 0" class="color-picker--selected-colors">
+      <div
+        v-for="color in selectedColors"
+        :key="color.color"
+        :class="[
+          'color-picker--selected',
+          { 'color-picker--selected-white': color.color === '#FFFFFF' }
+        ]"
+        :style="{ background: color.color }"
+      >
+        <span class="color-picker--selected-name">{{ color.name }}</span>
+        <q-btn
+          flat
+          round
+          dense
+          size="xs"
+          icon="close"
+          class="color-picker--remove-btn"
+          @click="removeColor(color)"
+        />
+      </div>
+    </div>
+    
+    <!-- Отображение одного выбранного цвета (для обратной совместимости) -->
     <div
-      v-if="pick"
+      v-else-if="!multiselect && pick"
       :class="[
         'color-picker--selected',
         { 'color-picker--selected-white': pick.color === '#FFFFFF' }
@@ -38,7 +65,8 @@
 import {
   reactive,
   defineComponent,
-  toRefs
+  toRefs,
+  computed
 } from 'vue'
 import useColors, { COLORS } from '../modules/useColors'
 
@@ -48,35 +76,85 @@ export default defineComponent({
     selected: {
       type: String,
       default: '#FFFFFF'
+    },
+    selectedColors: {
+      type: Array,
+      default: () => []
+    },
+    multiselect: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['on-change'],
   setup(props, { emit }) {
     const { findColorByHex } = useColors()
 
-    const { selected } = toRefs(props)
+    const { selected, selectedColors, multiselect } = toRefs(props)
+    
+    // Для обратной совместимости - одиночный выбор
     const pick = reactive({
       color: selected.value,
       name: findColorByHex(selected.value)?.name || ''
     })
 
+    // Для мультивыбора - массив выбранных цветов
+    const selectedColorsArray = reactive([...selectedColors.value])
+
+    // Проверяем, выбран ли цвет (для мультивыбора)
+    const isColorSelected = (color) => {
+      if (multiselect.value) {
+        return selectedColorsArray.some(selectedColor => selectedColor.color === color.color)
+      }
+      return pick.color === color.color
+    }
+
     function clear() {
-      pick.color = null;
-      pick.name = ''
-      emit('on-change', null)
+      if (multiselect.value) {
+        selectedColorsArray.length = 0
+        emit('on-change', [])
+      } else {
+        pick.color = null
+        pick.name = ''
+        emit('on-change', null)
+      }
+    }
+
+    function removeColor(colorToRemove) {
+      const index = selectedColorsArray.findIndex(color => color.color === colorToRemove.color)
+      if (index !== -1) {
+        selectedColorsArray.splice(index, 1)
+        emit('on-change', [...selectedColorsArray])
+      }
     }
 
     function handlerClick(c) {
-      pick.color = c.color
-      pick.name = c.name
-      emit('on-change', pick)
+      if (multiselect.value) {
+        const existingIndex = selectedColorsArray.findIndex(color => color.color === c.color)
+        if (existingIndex !== -1) {
+          // Удаляем цвет если уже выбран
+          selectedColorsArray.splice(existingIndex, 1)
+        } else {
+          // Добавляем новый цвет
+          selectedColorsArray.push(c)
+        }
+        emit('on-change', [...selectedColorsArray])
+      } else {
+        // Одиночный выбор (обратная совместимость)
+        pick.color = c.color
+        pick.name = c.name
+        emit('on-change', pick)
+      }
     }
 
     return {
       handlerClick,
       pick,
+      selectedColorsArray,
       COLORS,
-      clear
+      clear,
+      removeColor,
+      isColorSelected
     }
   }
 })
@@ -96,6 +174,13 @@ export default defineComponent({
     }
   }
 
+  &--selected-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
   &--selected {
     height: 25px;
     display: flex;
@@ -104,6 +189,7 @@ export default defineComponent({
     margin-top: 4px;
     color: #fff;
     border-radius: var(--border-radius-sm);
+    position: relative;
     
     span {
       color: white;
@@ -118,6 +204,25 @@ export default defineComponent({
       background-color: black;
       padding: 0 6px;
       border-radius: var(--border-radius-sm);
+      margin-right: 4px;
+    }
+  }
+
+  &--remove-btn {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.5);
     }
   }
 
@@ -137,6 +242,12 @@ export default defineComponent({
     background: #880e4f;
     overflow: hidden;
     border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+
+    &--selected {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 2px var(--q-primary);
+    }
   }
 
   &-color--white {

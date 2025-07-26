@@ -85,7 +85,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['on-search'])
+const emit = defineEmits(['on-search', 'clear'])
 
 const leftDrawerOpen = ref(false)
 const showVoiceOverlay = ref(false)
@@ -93,6 +93,7 @@ const showVoiceOverlay = ref(false)
 const selectedFilters = reactive({
   color: null,
   colorName: null,
+  colors: [],
   name_contains: null,
   withDiscount: false,
   priceFrom: null,
@@ -114,7 +115,11 @@ function search() {
   if (selectedFilters.name_contains) {
     filters.name_contains = selectedFilters.name_contains
   }
-  if (selectedFilters.color?.length) {
+  if (selectedFilters.colors?.length) {
+    // Если выбран мультивыбор цветов, отправляем массив цветов в ключ "color"
+    filters.color = selectedFilters.colors.map(c => c.color)
+  } else if (selectedFilters.color) {
+    // Для обратной совместимости - одиночный цвет
     filters.color = selectedFilters.color
   }
   if (selectedFilters.sizes?.length) {
@@ -153,6 +158,7 @@ function clear() {
       selectedFilters[key] = null
     }
   })
+  emit('clear')
   search()
 }
 

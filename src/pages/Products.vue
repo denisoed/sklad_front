@@ -2,9 +2,10 @@
   <q-page>
     <div class="products container">
       <FiltersComp
-        :loading="isLoadingProducts"
+        :loading="searchLoading"
         :autofocus="searchAutofocus"
         @on-search="onSearch"
+        @clear="onClear"
       />
 
       <p class="q-mb-sm text-subtitle2">Склады</p>
@@ -83,7 +84,7 @@
         class="full-width flex column items-center text-center text-grey-5"
       >
         <span
-          v-if="isLoadingProducts"
+          v-if="searchLoading"
         >
           <q-icon
             size="sm"
@@ -215,7 +216,7 @@ export default defineComponent({
       searchProducts,
       addCountToBucket,
       products,
-      isLoading: isLoadingProducts
+      searchLoading
     } = useProduct()
 
     const selectedSkladId = ref(
@@ -398,6 +399,11 @@ export default defineComponent({
       }
     }
 
+    function onClear() {
+      selectedSkladId.value = ALL_TAB.id
+      selectedCategoryId.value = ALL_TAB.id
+    }
+
     async function loadData() {
       const { sort, ...otherFilters } = selectedFilters.value || {};
       const sizes = otherFilters.sizes
@@ -479,8 +485,9 @@ export default defineComponent({
     })
 
     return {
-      isLoadingProducts,
+      searchLoading,
       onSearch,
+      onClear,
       sklad,
       sklads,
       params,

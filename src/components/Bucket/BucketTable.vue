@@ -123,31 +123,16 @@
               :to="`/product/${props.row.product?.id}`"
             />
             
-            <!-- Edit -->
-            <ModalCountToBucket
-              v-if="props.row.product?.useNumberOfSizes"
-              :selected="props.row.countSizes"
-              :max="props.row.countSizes"
-              :discount-price="props.row.discount"
-              :percentage-discount="props.row.percentageDiscount"
-              :cash-sum="props.row.cashSum"
-              :card-sum="props.row.cardSum"
-              :pay-cash="props.row.payCash"
-              :pay-card="props.row.payCard"
-              :comment="props.row.comment"
-              :new-price="props.row.product?.newPrice"
-              @submit="onUpdate(props.row, $event)"
-            >
-              <q-btn
-                push
-                round
-                size="sm"
-                icon="mdi-pencil"
-                text-color="primary"
-              />
-            </ModalCountToBucket>
+            <q-btn
+              push
+              round
+              size="sm"
+              icon="mdi-pencil"
+              text-color="primary"
+              @click="$emit('openModalCountToBucket', props.row)"
+            />
             
-            <ModalSizesToBucket
+            <!-- <ModalSizesToBucket
               v-else
               :sizes="props.row.sizes"
               :selected="props.row.sizes"
@@ -169,7 +154,7 @@
                 icon="mdi-pencil"
                 text-color="primary"
               />
-            </ModalSizesToBucket>
+            </ModalSizesToBucket> -->
 
             <!-- Remove -->
             <q-btn
@@ -187,148 +172,124 @@
   </q-table>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
 
-export default defineComponent({
-  name: 'BucketTable',
-  components: {
-    ModalSizesToBucket,
-    ModalCountToBucket,
-    ColorDisplay,
-    PriceFormatter,
-    SizeCount
+const props = defineProps({
+  bucketProducts: {
+    type: Array,
+    default: () => []
   },
-  props: {
-    bucketProducts: {
-      type: Array,
-      default: () => []
-    },
-    checkedSaleProducts: {
-      type: Array,
-      default: () => []
-    }
-  },
-  emits: [
-    'openImagePreview',
-    'update',
-    'remove',
-    'update:checkedSaleProducts'
-  ],
-  setup(props, { emit }) {
-    const router = useRouter()
-    const $q = useQuasar()
-    const highlightRowId = ref(null)
-    
-    const goToProduct = (bucketProduct) => {
-      if (bucketProduct?.product?.id) {
-        router.push(`/product/${bucketProduct.product.id}`)
-      }
-    }
-
-    function onUpdate(row, event) {
-      emit('update', row, event)
-    }
-
-    function removeFromBucket(bucketProduct) {
-      $q.dialog({
-        title: 'Удалить этот товар из корзины?',
-        message: 'При удалении товара из корзины, он будет возвращен на склад.',
-        cancel: true,
-        persistent: true,
-        ok: {
-          color: 'deep-orange',
-          label: 'Удалить',
-          push: true
-        },
-        cancel: {
-          color: 'white',
-          textColor: 'black', 
-          label: 'Отмена',
-          push: true
-        }
-      }).onOk(() => {
-        emit('remove', bucketProduct.product, { 
-          id: bucketProduct.id, 
-          ...(bucketProduct.product?.useNumberOfSizes ? { countSizes: bucketProduct.countSizes } : { sizes: bucketProduct.sizes })
-        })
-      })
-    }
-    
-    const columns = [
-      {
-        name: 'select',
-        label: '',
-        field: 'select',
-        align: 'center',
-        style: 'width: 50px'
-      },
-      {
-        name: 'image',
-        label: 'Фото',
-        field: 'image',
-        align: 'center',
-        style: 'width: 60px'
-      },
-      {
-        name: 'name',
-        label: 'Информация',
-        field: 'name',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'sizes',
-        label: 'Размеры/Кол-во',
-        field: 'sizes',
-        align: 'left'
-      },
-      {
-        name: 'price',
-        label: 'Цена',
-        field: 'price',
-        align: 'left',
-        style: 'width: 120px'
-      },
-      {
-        name: 'payment',
-        label: 'Оплата',
-        field: 'payment',
-        align: 'left',
-        style: 'width: 100px'
-      },
-      {
-        name: 'comment',
-        label: 'Комментарий',
-        field: 'comment',
-        align: 'left',
-        style: 'width: 120px'
-      },
-      {
-        name: 'actions',
-        label: 'Действия',
-        field: 'actions',
-        align: 'center',
-        style: 'width: 150px'
-      }
-    ]
-
-    return {
-      columns,
-      highlightRowId,
-      goToProduct,
-      removeFromBucket,
-      onUpdate
-    }
+  checkedSaleProducts: {
+    type: Array,
+    default: () => []
   }
 })
+
+const emit = defineEmits([
+  'openImagePreview',
+  'remove',
+  'update:checkedSaleProducts',
+  'openModalCountToBucket'
+])
+
+const router = useRouter()
+const $q = useQuasar()
+const highlightRowId = ref(null)
+
+const goToProduct = (bucketProduct) => {
+  if (bucketProduct?.product?.id) {
+    router.push(`/product/${bucketProduct.product.id}`)
+  }
+}
+
+function removeFromBucket(bucketProduct) {
+  $q.dialog({
+    title: 'Удалить этот товар из корзины?',
+    message: 'При удалении товара из корзины, он будет возвращен на склад.',
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'deep-orange',
+      label: 'Удалить',
+      push: true
+    },
+    cancel: {
+      color: 'white',
+      textColor: 'black', 
+      label: 'Отмена',
+      push: true
+    }
+  }).onOk(() => {
+    emit('remove', bucketProduct.product, { 
+      id: bucketProduct.id, 
+      ...(bucketProduct.product?.useNumberOfSizes ? { countSizes: bucketProduct.countSizes } : { sizes: bucketProduct.sizes })
+    })
+  })
+}
+
+const columns = [
+  {
+    name: 'select',
+    label: '',
+    field: 'select',
+    align: 'center',
+    style: 'width: 50px'
+  },
+  {
+    name: 'image',
+    label: 'Фото',
+    field: 'image',
+    align: 'center',
+    style: 'width: 60px'
+  },
+  {
+    name: 'name',
+    label: 'Информация',
+    field: 'name',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'sizes',
+    label: 'Размеры/Кол-во',
+    field: 'sizes',
+    align: 'left'
+  },
+  {
+    name: 'price',
+    label: 'Цена',
+    field: 'price',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'payment',
+    label: 'Оплата',
+    field: 'payment',
+    align: 'left',
+    style: 'width: 100px'
+  },
+  {
+    name: 'comment',
+    label: 'Комментарий',
+    field: 'comment',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'actions',
+    label: 'Действия',
+    field: 'actions',
+    align: 'center',
+    style: 'width: 150px'
+  }
+]
 </script>
 
 <style lang="scss" scoped>

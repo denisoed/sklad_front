@@ -1,111 +1,107 @@
 <template>
-  <div>
-    <div @click="dialog = true">
-      <slot />
-    </div>
-    <q-dialog
-      v-model="dialog"
-      position="bottom"
+  <q-dialog
+    :model-value="modelValue"
+    position="bottom"
+    @update:model-value="$emit('update:modelValue', $event)"
+  >
+    <SwipeToClose
+      direction="down"
+      @on-close="close"
     >
-      <SwipeToClose
-        direction="down"
-        @on-close="close"
-      >
-        <q-card>
-          <div class="dialog-close" id="dialog-close">
-            <div class="dialog-close-line" />
+      <q-card>
+        <div class="dialog-close" id="dialog-close">
+          <div class="dialog-close-line" />
+        </div>
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
+          <p
+            class="full-width text-left text-bold q-mb-none text-subtitle1"
+          >
+            {{ title || 'Добавить товар в корзину' }}
+          </p>
+
+          <q-separator class="full-width q-my-sm" />
+
+          <div class="full-width flex column q-gap-sm q-mb-sm">
+            <p class="q-mb-none">Оплата</p>
+            <PriceList
+              :prices="prices"
+              :default-price="defaultPrice"
+              @on-change="onChangePrice"
+            />
+            <PayMethods
+              @on-change="onChangePayMethods"
+              :cash-sum="cashSum"
+              :card-sum="cardSum"
+              :pay-card="payCard"
+              :pay-cash="payCash"
+              :sum="totalSum"
+            />
           </div>
-          <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
-            <p
-              class="full-width text-left text-bold q-mb-none text-subtitle1"
-            >
-              {{ title || 'Добавить товар в корзину' }}
-            </p>
 
-            <q-separator class="full-width q-my-sm" />
-
-            <div class="full-width flex column q-gap-sm q-mb-sm">
-              <p class="q-mb-none">Оплата</p>
-              <PriceList
-                :prices="prices"
-                :default-price="defaultPrice"
-                @on-change="onChangePrice"
-              />
-              <PayMethods
-                @on-change="onChangePayMethods"
-                :cash-sum="cashSum"
-                :card-sum="cardSum"
-                :pay-card="payCard"
-                :pay-cash="payCash"
-                :sum="totalSum"
-              />
-            </div>
-
-            <div class="full-width flex column q-mt-sm q-gap-sm">
-              <q-input
-                v-model="commentVal"
-                outlined
+          <div class="full-width flex column q-mt-sm q-gap-sm">
+            <q-input
+              v-model="commentVal"
+              outlined
+              class="full-width"
+              dense
+              label="Комментарий"
+              clearable
+            />
+            <div class="flex no-wrap items-center q-gap-sm">
+              <InputPrice
+                v-model="localDiscountPrice"
+                label="Доп. скидка"
+                clear
                 class="full-width"
                 dense
-                label="Комментарий"
-                clearable
+                :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
               />
-              <div class="flex no-wrap items-center q-gap-sm">
-                <InputPrice
-                  v-model="localDiscountPrice"
-                  label="Доп. скидка"
-                  clear
-                  class="full-width"
-                  dense
-                  :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
-                />
-                <SwitchTabs
-                  :tabs="DISCOUNT_TABS"
-                  :selected-tab="localPercentageDiscount"
-                  class="discount-tabs"
-                  @on-change="localPercentageDiscount = $event"
-                />
-              </div>
+              <SwitchTabs
+                :tabs="DISCOUNT_TABS"
+                :selected-tab="localPercentageDiscount"
+                class="discount-tabs"
+                @on-change="localPercentageDiscount = $event"
+              />
+            </div>
 
-              <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
-                <p class="q-mb-none">Итоговая сумма:</p>
-                <span class="text-bold">{{ formatPrice(totalSum) }}</span>
-              </div>
+            <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
+              <p class="q-mb-none">Итоговая сумма:</p>
+              <span class="text-bold">{{ formatPrice(totalSum) }}</span>
             </div>
-      
-            <div class="full-width full-height flex column q-mt-md">
-              <InputPlusMinus
-                v-model="selectedCount"
-                :max="max"
-                :min="1"
-                label="Кол-во товара для продажи"
-                :tooltip-plus-text="`Минимальное количество: ${min}`"
-                class="q-my-auto"
+          </div>
+    
+          <div class="full-width full-height flex column q-mt-md">
+            <InputPlusMinus
+              v-model="selectedCount"
+              :max="max"
+              :min="1"
+              label="Кол-во товара для продажи"
+              :tooltip-plus-text="`Минимальное количество: ${min}`"
+              class="q-my-auto"
+            />
+            <q-separator class="full-width q-my-md" />
+            <div class="flex justify-between full-width no-wrap q-gap-md">
+              <q-btn
+                class="button-size"
+                color="grey"
+                icon="mdi-close"
+                push
+                @click="close"
               />
-              <q-separator class="full-width q-my-md" />
-              <div class="flex justify-between full-width no-wrap q-gap-md">
-                <q-btn
-                  class="button-size"
-                  color="grey"
-                  icon="mdi-close"
-                  push
-                  @click="close"
-                />
-                <q-btn
-                  class="button-size"
-                  color="primary"
-                  icon="mdi-check"
-                  push
-                  @click="submit"
-                  :disable="!selectedCount || !price || totalSum <= 0"
-                />
-              </div>
+              <q-btn
+                class="button-size"
+                color="primary"
+                icon="mdi-check"
+                push
+                @click="submit"
+                :disable="!selectedCount || !price || totalSum <= 0"
+              />
             </div>
-          </q-card-section>
-        </q-card>
-      </SwipeToClose>
-    </q-dialog>
-  </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </SwipeToClose>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -138,6 +134,10 @@ const DISCOUNT_TABS = [
 const emit = defineEmits(['submit'])
 
 const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  },
   title: {
     type: String,
     default: null
@@ -201,7 +201,6 @@ const {
   formatPrice
 } = useMoney()
 
-const dialog = ref(false)
 const commentVal = ref(comment.value)
 const selectedCount = ref(selected.value)
 const localPercentageDiscount = ref(props.percentageDiscount)
@@ -222,7 +221,7 @@ const totalSum = computed(() => {
 const defaultPrice = computed(() => props.withDiscount ? props.discountPrice : props.newPrice)
 
 function close() {
-  dialog.value = false
+  emit('update:modelValue', false)
 }
 
 function submit() {
@@ -245,7 +244,7 @@ function onChangePayMethods(obj) {
   Object.assign(payMethods, obj);
 }
 
-watch(dialog, (val) => {
+watch(props.modelValue, (val) => {
   if (val) {
     selectedCount.value = selected.value
   }

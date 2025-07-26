@@ -19,7 +19,7 @@ export const HEADER_ROUTES = [
 
 export const MAIN_ROUTES = [
   { path: MAIN_SETTINGS_ROUTE, component: () => import('pages/MainSettings.vue') },
-  { path: BUCKET_ROUTE, component: () => import('pages/Bucket.vue') },
+  { path: BUCKET_ROUTE, component: () => import('pages/BucketPage.vue') },
   { path: PRODUCTS_ROUTE, component: () => import('pages/Products.vue') },
   { path: STATISTIC_ROUTE, component: () => import('pages/Statistic.vue') },
   { path: '/product/:productId', component: () => import('pages/ProductPage.vue') },
@@ -34,7 +34,7 @@ export const SKLAD_ROUTES = [
   { path: '/sklad/:skladId/categories', component: () => import('pages/Categories.vue') },
   { path: '/sklad/:skladId/categories/:categoryId', component: () => import('pages/Products.vue') },
   { path: '/sklad/:skladId/product/:productId', component: () => import('pages/ProductPage.vue') },
-  { path: '/sklad/:skladId/bucket', component: () => import('pages/Bucket.vue') },
+  { path: '/sklad/:skladId/bucket', component: () => import('pages/BucketPage.vue') },
   {
     path: '/sklad/:skladId/create-product',
     component: () => import('pages/ProductPage.vue'),
