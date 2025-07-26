@@ -36,18 +36,18 @@
 
               <div class="flex no-wrap items-center q-gap-sm q-mb-md">
                 <InputPrice
-                  v-model="_discount"
+                  v-model="localDiscountPrice"
                   label="Скидка"
                   clear
                   dense
                   class="full-width"
-                  :icon="_percentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
+                  :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
                 />
                 <SwitchTabs
                   :tabs="DISCOUNT_TABS"
                   class="discount-tabs"
-                  :selected-tab="_percentageDiscount"
-                  @on-change="_percentageDiscount = $event"
+                  :selected-tab="localPercentageDiscount"
+                  @on-change="localPercentageDiscount = $event"
                 />
               </div>
               <p class="q-mb-sm">Оплата</p>
@@ -253,8 +253,8 @@ export default defineComponent({
     const selectedCounts = ref(null)
     const isStepTwo = ref(false)
     const listSizes = ref([])
-    const _discount = ref(discount.value)
-    const _percentageDiscount = ref(percentageDiscount.value)
+    const localDiscountPrice = ref(discount.value)
+    const localPercentageDiscount = ref(percentageDiscount.value)
     const payMethods = reactive({})
 
     const { showError } = useHelpers()
@@ -319,8 +319,8 @@ export default defineComponent({
       isStepTwo.value = false
       selectedCounts.value = null
       selectedSize.value = null
-      _discount.value = null
-      _percentageDiscount.value = false
+      localDiscountPrice.value = null
+      localPercentageDiscount.value = false
       if (!useForSale.value) selectedSizes.value = []
     }
 
@@ -339,14 +339,14 @@ export default defineComponent({
     }
 
     function submit() {
-      if (_percentageDiscount.value && Number(_discount.value) > 100) {
+      if (localPercentageDiscount.value && Number(localDiscountPrice.value) > 100) {
         return showError('Скидка не должна быть больше 100%')
       }
       if (useForSale.value) {
         emit('submit', {
           sizes: selectedSizes.value,
-          discount: +_discount.value,
-          percentageDiscount: _percentageDiscount.value,
+          discount: +localDiscountPrice.value,
+          percentageDiscount: localPercentageDiscount.value,
           comment: commentVal.value,
           ...payMethods
         })
@@ -365,8 +365,8 @@ export default defineComponent({
         }
         emit('submit', {
           sizes: sizesIds,
-          discount: +_discount.value,
-          percentageDiscount: _percentageDiscount.value,
+          discount: +localDiscountPrice.value,
+          percentageDiscount: localPercentageDiscount.value,
           comment: commentVal.value,
           ...payMethods
         })
@@ -393,8 +393,8 @@ export default defineComponent({
 
     watch(mainMenu, (val) => {
       if (val) {
-        _discount.value = discount.value
-        _percentageDiscount.value = percentageDiscount.value
+        localDiscountPrice.value = discount.value
+        localPercentageDiscount.value = percentageDiscount.value
         createListSizes(typeSizes.value.map(ts => ts.size) || [])
       }
     })
@@ -411,8 +411,8 @@ export default defineComponent({
       onChangeCount,
       setSizeWithCounts,
       listSizes,
-      _discount,
-      _percentageDiscount,
+      localDiscountPrice,
+      localPercentageDiscount,
       onChangePayMethods,
       DISCOUNT_TABS,
       commentVal

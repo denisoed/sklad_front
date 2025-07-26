@@ -240,28 +240,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.dialog-close {
-  width: 100%;
-  height: 20px;
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  background-color: var(--block-bg);
-
-  &-line {
-    width: 40px;
-    height: 5px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: var(--border-radius-sm);
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-}
-
 .sizes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
