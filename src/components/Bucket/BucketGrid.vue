@@ -6,15 +6,7 @@
       :id="b.id"
       :product-id="b.product?.id"
       :name="b.product?.name"
-      :sum-price="getNewPrice(
-        b.product,
-        b.payCash,
-        b.payCard,
-        b.cashSum,
-        b.cardSum,
-        b.percentageDiscount,
-        b.discount
-      )"
+      :sum-price="b.cashSum"
       :color="b.product?.color"
       :image="b.product?.image?.url"
       :sizes="b.sizes"
@@ -41,7 +33,6 @@
 <script>
 import { defineComponent } from 'vue'
 import BucketCard from 'src/components/BucketCard.vue'
-import { getNewPrice } from './helpers'
 
 export default defineComponent({
   name: 'BucketGrid',
@@ -77,7 +68,6 @@ export default defineComponent({
     }
 
     return {
-      getNewPrice,
       update,
       remove,
       onChecked
