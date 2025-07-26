@@ -76,7 +76,7 @@
       </template>
     </Dropdown>
 
-    <Dropdown :title="$t('mainSettings.userTab.theme.title')">
+    <!-- <Dropdown :title="$t('mainSettings.userTab.theme.title')">
       <template #icon>
         <q-icon name="mdi-theme-light-dark" size="sm" class="q-mr-sm" />
       </template>
@@ -87,7 +87,7 @@
           <q-toggle v-model="isDark" class="q-ml-auto" />
         </label>
       </template>
-    </Dropdown>
+    </Dropdown> -->
 
     <!-- <Dropdown :title="$t('mainSettings.userTab.info')">
       <template #icon>

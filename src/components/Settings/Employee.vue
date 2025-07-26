@@ -17,7 +17,7 @@
       :pagination="pagination"
       row-key="name"
       separator="cell"
-      class="statistic-table full-width q-mb-sm"
+      class="statistic-table block-bg full-width q-mb-sm"
       hide-pagination
       no-data-label="Люди не добавлены"
     >
