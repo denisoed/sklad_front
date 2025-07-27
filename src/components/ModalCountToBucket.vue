@@ -25,7 +25,7 @@
             <p class="q-mb-none">Оплата</p>
             <PriceList
               :prices="prices"
-              :default-price="defaultPrice"
+              :default-price="newPrice"
               @on-change="onChangePrice"
             />
             <PayMethods
@@ -170,10 +170,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  withDiscount: {
-    type: Boolean,
-    default: false
-  },
   percentageDiscount: {
     type: Boolean,
     default: false
@@ -204,7 +200,7 @@ const {
 const commentVal = ref(comment.value)
 const selectedCount = ref(selected.value)
 const localPercentageDiscount = ref(props.percentageDiscount)
-const localDiscountPrice = ref(props.withDiscount ? props.discountPrice : null)
+const localDiscountPrice = ref(props.discountPrice)
 const payMethods = reactive({})
 const price = ref(props.newPrice)
 
@@ -217,8 +213,6 @@ const totalSum = computed(() => {
   }
   return Math.max(sum, 0)
 })
-
-const defaultPrice = computed(() => props.withDiscount ? props.discountPrice : props.newPrice)
 
 function close() {
   emit('update:modelValue', false)
@@ -244,9 +238,12 @@ function onChangePayMethods(obj) {
   Object.assign(payMethods, obj);
 }
 
-watch(props.modelValue, (val) => {
+watch(() => props.modelValue, (val) => {
   if (val) {
+    localPercentageDiscount.value = props.percentageDiscount
+    localDiscountPrice.value = props.discountPrice
     selectedCount.value = selected.value
+    price.value = props.newPrice
   }
 })
 </script>

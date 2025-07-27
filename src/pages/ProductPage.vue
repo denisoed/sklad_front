@@ -288,23 +288,15 @@
               </q-menu>
             </q-btn>
             <div v-if="isEdit" v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: product?.sklad?.value }">
-              <ModalCountToBucket
-                v-if="product?.useNumberOfSizes"
-                :max="product?.countSizes"
-                :prices="product?.prices"
-                :with-discount="product?.withDiscount"
-                :discount-price="product?.discountPrice"
-                :new-price="product?.newPrice"
-                @submit="onAddCountToBucket(product, $event)"
-              >
-                <q-btn
-                  icon="mdi-basket-plus-outline"
-                  push
-                  color="deep-orange"
-                  mr="auto"
-                />
-              </ModalCountToBucket>
-              <ModalSizesToBucket
+              <q-btn
+                icon="mdi-basket-plus-outline"
+                push
+                color="deep-orange"
+                mr="auto"
+                :disable="!product?.countSizes && !product?.sizes?.length"
+                @click="modalCountToBucket = true"
+              />
+              <!-- <ModalSizesToBucket
                 v-else
                 btn-size="md"
                 :sizes="product?.sizes"
@@ -317,7 +309,7 @@
                   color="deep-orange"
                   mr="auto"
                 />
-              </ModalSizesToBucket>
+              </ModalSizesToBucket> -->
             </div>
             <q-btn
               v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad?.value }"
@@ -334,10 +326,19 @@
         </div>
       </q-form>
     </div>
+
+    <ModalCountToBucket
+      v-if="product?.useNumberOfSizes"
+      v-model="modalCountToBucket"
+      :max="product?.countSizes"
+      :prices="product?.prices"
+      :new-price="product?.withDiscount ? product?.discountPrice : product?.newPrice"
+      @submit="onAddCountToBucket(product, $event)"
+    />
   </q-page>
 </template>
 
-<script>
+<script setup>
 import moment from 'moment'
 import { useQuasar } from 'quasar'
 import { useMutation, useLazyQuery } from '@vue/apollo-composable'
@@ -361,7 +362,7 @@ import { CATEGORIES, CREATE_CATEGORY } from 'src/graphql/category'
 import { CREATE_SKLAD } from 'src/graphql/sklads'
 import {
   computed,
-  defineComponent,
+  ref,
   reactive,
   watch,
 } from 'vue'
@@ -410,508 +411,455 @@ const DEFAULT_DATA = {
   imageId: null,
 }
 
-export default defineComponent({
-  name: 'ProductPage',
-  components: {
-    ColorPicker,
-    ImageUploader,
-    PageTitle,
-    InputPrice,
-    ModalCountToBucket,
-    ModalSizesToBucket,
-    FilterDates,
-    InputPlusMinus,
-    ProductSizes,
-    Selector
-  },
-  setup() {
-    const TODAY = Date.now()
-    const $q = useQuasar()
-    const { params, query } = useRoute()
-    const { replace, push } = useRouter()
-    const { showSuccess, showError, difference } = useHelpers()
-    const { profile } = useProfile()
-    const { sizes, fetchSizes } = useSizes()
-    const {
-      addSizesToBucket,
-      addCountToBucket,
-      removeProduct,
-      updateProductById,
-      updateProductError,
-      updateProductLoading,
-      generateProductMeta,
-    } = useProduct()
-    const {
-      createHistory,
-      history
-    } = useHistory()
-    const {
-      createCost,
-      errorCost
-    } = useCosts()
-    const { sklad, sklads, onCreateNew, fetchSklads } = useSklads()
-  
-    const {
-      mutate: uploadImage,
-      error: uploadImageError,
-      loading: uploadImageLoading
-    } = useMutation(UPLOAD)
-    const {
-      mutate: removeImage,
-      loading: removeImageLoading,
-    } = useMutation(DELETE_FILE)
-    const {
-      mutate: createProduct,
-      error: createProductError,
-      loading: createProductLoading
-    } = useMutation(CREATE_PRODUCT)
-    const {
-      load: getEditProduct,
-      result: editProduct,
-      loading: loadingProduct,
-      refetch: refetchEditProduct
-    } = useLazyQuery(GET_PRODUCT)
-    const {
-      result: categoriesResult,
-      load: loadCategories,
-      refetch: refetchCategories
-    } = useLazyQuery(CATEGORIES)
+const TODAY = Date.now()
+const $q = useQuasar()
+const { params, query } = useRoute()
+const { replace, push } = useRouter()
+const { showSuccess, showError, difference } = useHelpers()
+const { profile } = useProfile()
+const { sizes, fetchSizes } = useSizes()
+const {
+  addSizesToBucket,
+  addCountToBucket,
+  removeProduct,
+  updateProductById,
+  updateProductError,
+  updateProductLoading,
+  generateProductMeta,
+} = useProduct()
+const {
+  createHistory,
+  history
+} = useHistory()
+const {
+  createCost,
+  errorCost
+} = useCosts()
+const { sklad, sklads, onCreateNew, fetchSklads } = useSklads()
 
-    const product = reactive({ ...DEFAULT_DATA })
-    const copiedProductForDirty = reactive({})
+const modalCountToBucket = ref(false)
 
-    function onChangeSizes(sizes) {
-      product.sizes = sizes.list
-      product.typeSizeId = sizes.id
+const {
+  mutate: uploadImage,
+  error: uploadImageError,
+  loading: uploadImageLoading
+} = useMutation(UPLOAD)
+const {
+  mutate: removeImage,
+  loading: removeImageLoading,
+} = useMutation(DELETE_FILE)
+const {
+  mutate: createProduct,
+  error: createProductError,
+  loading: createProductLoading
+} = useMutation(CREATE_PRODUCT)
+const {
+  load: getEditProduct,
+  result: editProduct,
+  loading: loadingProduct,
+  refetch: refetchEditProduct
+} = useLazyQuery(GET_PRODUCT)
+const {
+  result: categoriesResult,
+  load: loadCategories,
+  refetch: refetchCategories
+} = useLazyQuery(CATEGORIES)
+
+const product = reactive({ ...DEFAULT_DATA })
+const copiedProductForDirty = reactive({})
+
+function onChangeSizes(sizes) {
+  product.sizes = sizes.list
+  product.typeSizeId = sizes.id
+}
+
+async function uploadImg(file) {
+  const response = await uploadImage({ file });
+  return response;
+}
+
+function setColorName(color) {
+  product.color = color.color
+  product.colorName = color.name
+}
+
+function resetAll() {
+  Object.assign(product, DEFAULT_DATA)
+  clearDraft()
+}
+
+async function onAddCountToBucket(product, payload) {
+  await addCountToBucket({
+    ...product,
+    sklad: {
+      id: product.sklad.value
     }
+  }, payload)
+  refetchEditProduct()
+}
 
-    async function uploadImg(file) {
-      const response = await uploadImage({ file });
-      return response;
+async function onAddSizesToBucket(product, payload) {
+  await addSizesToBucket({
+    ...product,
+    sklad: {
+      id: product.sklad.value
     }
+  }, payload)
+  refetchEditProduct()
+}
 
-    function setColorName(color) {
-      product.color = color.color
-      product.colorName = color.name
-    }
+function clearDraft() {
+  localStorage.removeItem(SKLAD_DRAFT_KEY);
+}
 
-    function resetAll() {
-      Object.assign(product, DEFAULT_DATA)
-      clearDraft()
-    }
-
-    async function onAddCountToBucket(product, payload) {
-      await addCountToBucket({
-        ...product,
-        sklad: {
-          id: product.sklad.value
-        }
-      }, payload)
-      refetchEditProduct()
-    }
-
-    async function onAddSizesToBucket(product, payload) {
-      await addSizesToBucket({
-        ...product,
-        sklad: {
-          id: product.sklad.value
-        }
-      }, payload)
-      refetchEditProduct()
-    }
-
-    function clearDraft() {
-      localStorage.removeItem(SKLAD_DRAFT_KEY);
-    }
-
-    async function saveCost(sum, isAdd) {
-      const description = isAdd ? `Добавлены размеры в товар: ${product.name}`: `Убраны размеры из товара: ${product.name}`
-      await createCost(description, sum)
-      if (!errorCost.value) {
-        history(
-          isAdd ? HISTORY_UPDATE : HISTORY_DELETE,
-          `${isAdd ? 'Добавлены размеры в товар' : 'Убраны размеры из товара'}: ${product.name}. Сумма: ${sum}`
-        )
-      } else {
-        showError('Произошла ошибка. Попробуйте позже.')
-      }
-    }
-
-    async function handleCost() {
-      const pL = product?.sizes?.length
-      const cL = copiedProductForDirty?.sizes?.length
-      const isAdd = product.countSizes ?
-        product.countSizes > copiedProductForDirty.countSizes :
-        (!cL || pL > cL)
-      if (isAdd) {
-        const sizesLength = pL - (cL || 0)
-        const sum = ((product.countSizes - copiedProductForDirty.countSizes) || sizesLength) * product.origPrice
-        if (sum > 0) {
-          saveCost(sum, true)
-        }
-      } else {
-        const sizesLength = cL - pL
-        const sum = 0 - (((copiedProductForDirty.countSizes - product.countSizes) || sizesLength) * product.origPrice)
-        saveCost(sum, false)
-      }
-    }
-
-    function generateHistoryForUpdate(oldData, newData) {
-      let fields = []
-      if (oldData.name !== newData.name) {        
-        fields.push({
-          name: oldData.name,
-          old: oldData.name,
-          new: newData.name,
-          type: 'name'
-        });
-      }
-      if (oldData.color !== newData.color) {     
-        fields.push({
-          name: oldData.name,
-          old: oldData.color,
-          new: newData.color,
-          type: 'color'
-        });
-      }
-      if (oldData.origPrice !== newData.origPrice) {
-        fields.push({
-          name: oldData.name,
-          old: oldData.origPrice,
-          new: newData.origPrice,
-          type: 'origPrice'
-        });
-      }
-      if (oldData.newPrice !== newData.newPrice) {
-        fields.push({
-          name: oldData.name,
-          old: oldData.newPrice,
-          new: newData.newPrice,
-          type: 'newPrice'
-        });
-      }
-      if (oldData.countSizes !== newData.countSizes) {
-        fields.push({
-          name: oldData.name,
-          old: oldData.countSizes,
-          new: newData.countSizes,
-          type: 'countSizes'
-        });
-      }
-      if (JSON.stringify(oldData.sizes.map(s => s.size)) !== JSON.stringify(newData.sizes)) {
-        const started = oldData.sizes.map(s => s.size)
-        const updated = newData.sizes.map(s => s.size)
-        if (started.length > updated.length) {
-          const filtered = difference(started, updated)          
-          fields.push({
-            name: oldData.name,
-            sizes: filtered,
-            type: 'removedSizes'
-          });
-        }
-        if (started.length < updated.length) {
-          const filtered = difference(updated, started)
-          fields.push({
-            name: oldData.name,
-            sizes: filtered,
-            type: 'addedSizes'
-          });
-        }
-      }
-      for (let field of fields) {
-        createHistory({
-          action: HISTORY_UPDATE,
-          productId: product.id,
-          skladId: product.sklad.value,
-          json: {
-            ...field
-          }
-        })
-      }
-    }
-
-    async function create() {
-      const uploaded = await uploadImg(product.image)
-      if (!uploadImageError.value) {
-        try {
-          const data = {
-            name: product.name,
-            sklad: product.sklad?.value,
-            category: product.category?.value,
-            origPrice: Number(product.origPrice),
-            newPrice: Number(product.newPrice),
-            discountPrice: Number(product.discountPrice),
-            discountDays: product.discountDays,
-            withDiscount: product.withDiscount,
-            image: uploaded.data.upload.id,
-            color: product.color,
-            colorName: product.colorName,
-            sizes: product.sizes,
-            countSizes: product.countSizes,
-            useNumberOfSizes: product.useNumberOfSizes,
-            meta: generateProductMeta(product),
-            ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
-          }
-          const response = await createProduct({ data })
-          if (!createProductError.value) {
-            showSuccess('Товар успешно создан!')
-            createHistory({
-              action: HISTORY_CREATE,
-              productId: response.data.createProduct.product.id,
-              skladId: product.sklad.value,
-              json: {
-                name: product.name,
-                origPrice: product.origPrice,
-                newPrice: product.newPrice,
-                sizes: product.sizes.map(s => s.size),
-                countSizes: product.countSizes
-              }
-            })
-            clearDraft()
-            replace(`/products?product=${response.data.createProduct.product.id}`)
-          } else {
-            await removeImage({ id: uploaded.data.upload.id })
-            showError('Не удалось создать продукт. Проблемы на сервере.')
-          }
-        } catch (error) {
-          showError('Не удалось создать продукт. Проблемы на сервере.')
-        }
-      } else {
-        showError('Не удалось загрузить фото. Проблемы на сервере.')
-      }
-    }
-
-    async function update() {
-      let uploaded = null
-      if (typeof product.image !== 'string') {
-        uploaded = await uploadImg(product.image)
-      }
-      if (!uploadImageError.value) {
-        try {
-          const data = {
-            sklad: product.sklad?.value,
-            category: product.category?.value,
-            origPrice: Number(product.origPrice),
-            image: uploaded ? uploaded.data.upload.id : product.imageId,
-            newPrice: Number(product.newPrice),
-            discountPrice: Number(product.discountPrice),
-            sizes: product.sizes.map(s => ({ size: s.size })),
-            countSizes: product.countSizes,
-            useNumberOfSizes: product.useNumberOfSizes,
-            discountDays: product.discountDays,
-            withDiscount: product.withDiscount,
-            name: product.name,
-            color: product.color,
-            colorName: product.colorName,
-            meta: generateProductMeta(product),
-            ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
-          }
-          await updateProductById(params?.productId, data)
-          if (!updateProductError.value) {
-            if (typeof product.image !== 'string' && product.imageId) {
-              removeImage({ id: product.imageId })
-              product.imageId = null
-            }
-            generateHistoryForUpdate(editProduct.value?.product, product)
-            Object.assign(copiedProductForDirty, product)
-            showSuccess('Продукт успешно обновлён!')
-          } else {
-            removeImage({ id: uploaded.data.upload.id })
-            showError('Не удалось обновить продукт. Проблемы на сервере.')
-          }
-        } catch (error) {
-          showError('Не удалось обновить продукт. Проблемы на сервере.')
-        }
-      } else {
-        showError('Не удалось загрузить фото. Проблемы на сервере.')
-      }
-    }
-
-    async function onValidationError(ref) {  
-      const el = ref.$el
-      el.scrollIntoView({ block: 'center', behavior: 'smooth' })
-    }
-
-    async function submit(type) {
-      // handleCost()
-      if (type === 'create') {
-        return create()
-      }
-      if (type === 'update') {
-        return update()
-      }
-    }
-
-    function cancel(type) {
-      $q.dialog({
-        title: type === 'remove' ? 'Удалить этот товар?' : 'Сбосить введенные значения?',
-        message: type === 'remove' ? 'При удалении товара, он пропадет со склада навсегда!' : 'Всё что Вы ввели будет стёрто!',
-        cancel: true,
-        persistent: true,
-        ok: {
-          color: 'deep-orange',
-          label: type === 'remove' ? 'Удалить' : 'Сбросить',
-          push: true
-        },
-        cancel: {
-          color: 'white',
-          textColor: 'black', 
-          label: 'Отмена',
-          push: true
-        }
-      }).onOk(async () => {
-        if (type === 'reset') {
-          resetAll()
-        } else {
-          await removeProduct(params?.productId, product)
-          showSuccess('Товар успешно удалён!')
-          push('/products')
-        }
-      })
-    }
-
-    function setCategoryFromParams() {
-      if (query?.category) {
-        const category = categoriesResult.value?.categories.find(c => c.id === query?.category)
-        if (category) {
-          product.category = {
-            label: category.name,
-            value: category.id,
-          }
-        }
-      }
-    }
-
-    function setDiscount({ dates }) {
-      product.discountDays = dates
-    }
-
-    function loadData() {
-      resetAll();
-      fetchSizes(profile.value.id)
-      if (params?.productId) {
-        getEditProduct(
-          null,
-          { id: params?.productId },
-          {
-            fetchPolicy: 'network-only'
-          }
-        )
-      }
-    }
-
-    function refetchSklads() {
-      fetchSklads(profile.value.id)
-    }
-
-    const skladsOptions = computed(() => {
-      return sklads.value?.map(c => ({
-        label: c.name,
-        value: c.id
-      }))
-    })
-
-    const categoriesOptions = computed(() => {
-      return categoriesResult.value?.categories.map(c => ({
-        label: c.name,
-        value: c.id
-      }))
-    })
-    const isEdit = computed(() => !!params?.productId)
-    const historyLink = computed(
-      () => product?.sklad?.value ?
-        `/sklad/${product.sklad.value}/history/${params?.productId}?product=${product?.name}` :
-          null
+async function saveCost(sum, isAdd) {
+  const description = isAdd ? `Добавлены размеры в товар: ${product.name}`: `Убраны размеры из товара: ${product.name}`
+  await createCost(description, sum)
+  if (!errorCost.value) {
+    history(
+      isAdd ? HISTORY_UPDATE : HISTORY_DELETE,
+      `${isAdd ? 'Добавлены размеры в товар' : 'Убраны размеры из товара'}: ${product.name}. Сумма: ${sum}`
     )
-    const sizesList = computed(() => sklad.value?.sizes || [])
-    const isDiscountToday = computed(() => {
-      return product?.discountDays?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
-    })
-    const isDirty = computed(() => isEqual(product, copiedProductForDirty))
+  } else {
+    showError('Произошла ошибка. Попробуйте позже.')
+  }
+}
 
-    watch(categoriesResult, (newValue) => {
-      if (newValue?.categories?.length) {
-        setCategoryFromParams()
-      }
-    })
+async function handleCost() {
+  const pL = product?.sizes?.length
+  const cL = copiedProductForDirty?.sizes?.length
+  const isAdd = product.countSizes ?
+    product.countSizes > copiedProductForDirty.countSizes :
+    (!cL || pL > cL)
+  if (isAdd) {
+    const sizesLength = pL - (cL || 0)
+    const sum = ((product.countSizes - copiedProductForDirty.countSizes) || sizesLength) * product.origPrice
+    if (sum > 0) {
+      saveCost(sum, true)
+    }
+  } else {
+    const sizesLength = cL - pL
+    const sum = 0 - (((copiedProductForDirty.countSizes - product.countSizes) || sizesLength) * product.origPrice)
+    saveCost(sum, false)
+  }
+}
 
-    watch(editProduct, (newValue) => {
-      if (newValue?.product) {
-        Object.assign(product, {
-          ...newValue.product,
-          sklad: {
-            label: newValue.product.sklad?.name,
-            value: newValue.product.sklad?.id,
-          },
-          category: {
-            label: newValue.product.category?.name,
-            value: newValue.product.category?.id,
-          },
-          image: newValue.product.image?.url,
-          imageId: newValue.product.image?.id
-        })
-        Object.assign(copiedProductForDirty, product)
-      }
+function generateHistoryForUpdate(oldData, newData) {
+  let fields = []
+  if (oldData.name !== newData.name) {        
+    fields.push({
+      name: oldData.name,
+      old: oldData.name,
+      new: newData.name,
+      type: 'name'
     });
-
-    watch(sklads, (val) => {
-      if (val?.length) {
-        resetAll();
-        loadData();
-      }
-    }, {
-      immediate: true
+  }
+  if (oldData.color !== newData.color) {     
+    fields.push({
+      name: oldData.name,
+      old: oldData.color,
+      new: newData.color,
+      type: 'color'
     });
-
-    watch(product, () => {
-      if (product.sklad) {
-        loadCategories(
-          null,
-          { where: { sklad: product.sklad.value } },
-          { fetchPolicy: 'network-only' }
-        )
-      }
+  }
+  if (oldData.origPrice !== newData.origPrice) {
+    fields.push({
+      name: oldData.name,
+      old: oldData.origPrice,
+      new: newData.origPrice,
+      type: 'origPrice'
     });
-
-    return {
-      onValidationError,
-      product,
-      sklad,
-      onChangeSizes,
-      cancel,
-      submit,
-      isEdit,
-      sizes,
-      skladsOptions,
-      setDiscount,
-      sizesList,
-      historyLink,
-      isDiscountToday,
-      createProductLoading,
-      uploadImageLoading,
-      removeImageLoading,
-      updateProductLoading,
-      loadingProduct,
-      categoriesOptions,
-      CREATE_CATEGORY,
-      refetchCategories,
-      isDirty,
-      profile,
-      READ_ORIGINAL_PRICE,
-      CAN_REMOVE_PRODUCT,
-      onAddSizesToBucket,
-      onAddCountToBucket,
-      CAN_SELL_PRODUCT,
-      CAN_UPDATE_PRODUCT,
-      CAN_ADD_PRODUCT,
-      READ_HISTORY,
-      CREATE_SKLAD,
-      onCreateNew,
-      refetchSklads,
-      setColorName
+  }
+  if (oldData.newPrice !== newData.newPrice) {
+    fields.push({
+      name: oldData.name,
+      old: oldData.newPrice,
+      new: newData.newPrice,
+      type: 'newPrice'
+    });
+  }
+  if (oldData.countSizes !== newData.countSizes) {
+    fields.push({
+      name: oldData.name,
+      old: oldData.countSizes,
+      new: newData.countSizes,
+      type: 'countSizes'
+    });
+  }
+  if (JSON.stringify(oldData.sizes.map(s => s.size)) !== JSON.stringify(newData.sizes)) {
+    const started = oldData.sizes.map(s => s.size)
+    const updated = newData.sizes.map(s => s.size)
+    if (started.length > updated.length) {
+      const filtered = difference(started, updated)          
+      fields.push({
+        name: oldData.name,
+        sizes: filtered,
+        type: 'removedSizes'
+      });
+    }
+    if (started.length < updated.length) {
+      const filtered = difference(updated, started)
+      fields.push({
+        name: oldData.name,
+        sizes: filtered,
+        type: 'addedSizes'
+      });
     }
   }
+  for (let field of fields) {
+    createHistory({
+      action: HISTORY_UPDATE,
+      productId: product.id,
+      skladId: product.sklad.value,
+      json: {
+        ...field
+      }
+    })
+  }
+}
+
+async function create() {
+  const uploaded = await uploadImg(product.image)
+  if (!uploadImageError.value) {
+    try {
+      const data = {
+        name: product.name,
+        sklad: product.sklad?.value,
+        category: product.category?.value,
+        origPrice: Number(product.origPrice),
+        newPrice: Number(product.newPrice),
+        discountPrice: Number(product.discountPrice),
+        discountDays: product.discountDays,
+        withDiscount: product.withDiscount,
+        image: uploaded.data.upload.id,
+        color: product.color,
+        colorName: product.colorName,
+        sizes: product.sizes,
+        countSizes: product.countSizes,
+        useNumberOfSizes: product.useNumberOfSizes,
+        meta: generateProductMeta(product),
+        ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+      }
+      const response = await createProduct({ data })
+      if (!createProductError.value) {
+        showSuccess('Товар успешно создан!')
+        createHistory({
+          action: HISTORY_CREATE,
+          productId: response.data.createProduct.product.id,
+          skladId: product.sklad.value,
+          json: {
+            name: product.name,
+            origPrice: product.origPrice,
+            newPrice: product.newPrice,
+            sizes: product.sizes.map(s => s.size),
+            countSizes: product.countSizes
+          }
+        })
+        clearDraft()
+        replace(`/products?product=${response.data.createProduct.product.id}`)
+      } else {
+        await removeImage({ id: uploaded.data.upload.id })
+        showError('Не удалось создать продукт. Проблемы на сервере.')
+      }
+    } catch (error) {
+      showError('Не удалось создать продукт. Проблемы на сервере.')
+    }
+  } else {
+    showError('Не удалось загрузить фото. Проблемы на сервере.')
+  }
+}
+
+async function update() {
+  let uploaded = null
+  if (typeof product.image !== 'string') {
+    uploaded = await uploadImg(product.image)
+  }
+  if (!uploadImageError.value) {
+    try {
+      const data = {
+        sklad: product.sklad?.value,
+        category: product.category?.value,
+        origPrice: Number(product.origPrice),
+        image: uploaded ? uploaded.data.upload.id : product.imageId,
+        newPrice: Number(product.newPrice),
+        discountPrice: Number(product.discountPrice),
+        sizes: product.sizes.map(s => ({ size: s.size })),
+        countSizes: product.countSizes,
+        useNumberOfSizes: product.useNumberOfSizes,
+        discountDays: product.discountDays,
+        withDiscount: product.withDiscount,
+        name: product.name,
+        color: product.color,
+        colorName: product.colorName,
+        meta: generateProductMeta(product),
+        ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+      }
+      await updateProductById(params?.productId, data)
+      if (!updateProductError.value) {
+        if (typeof product.image !== 'string' && product.imageId) {
+          removeImage({ id: product.imageId })
+          product.imageId = null
+        }
+        generateHistoryForUpdate(editProduct.value?.product, product)
+        Object.assign(copiedProductForDirty, product)
+        showSuccess('Продукт успешно обновлён!')
+      } else {
+        removeImage({ id: uploaded.data.upload.id })
+        showError('Не удалось обновить продукт. Проблемы на сервере.')
+      }
+    } catch (error) {
+      showError('Не удалось обновить продукт. Проблемы на сервере.')
+    }
+  } else {
+    showError('Не удалось загрузить фото. Проблемы на сервере.')
+  }
+}
+
+async function onValidationError(ref) {  
+  const el = ref.$el
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+}
+
+async function submit(type) {
+  // handleCost()
+  if (type === 'create') {
+    return create()
+  }
+  if (type === 'update') {
+    return update()
+  }
+}
+
+function cancel(type) {
+  $q.dialog({
+    title: type === 'remove' ? 'Удалить этот товар?' : 'Сбосить введенные значения?',
+    message: type === 'remove' ? 'При удалении товара, он пропадет со склада навсегда!' : 'Всё что Вы ввели будет стёрто!',
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'deep-orange',
+      label: type === 'remove' ? 'Удалить' : 'Сбросить',
+      push: true
+    },
+    cancel: {
+      color: 'white',
+      textColor: 'black', 
+      label: 'Отмена',
+      push: true
+    }
+  }).onOk(async () => {
+    if (type === 'reset') {
+      resetAll()
+    } else {
+      await removeProduct(params?.productId, product)
+      showSuccess('Товар успешно удалён!')
+      push('/products')
+    }
+  })
+}
+
+function setCategoryFromParams() {
+  if (query?.category) {
+    const category = categoriesResult.value?.categories.find(c => c.id === query?.category)
+    if (category) {
+      product.category = {
+        label: category.name,
+        value: category.id,
+      }
+    }
+  }
+}
+
+function setDiscount({ dates }) {
+  product.discountDays = dates
+}
+
+function loadData() {
+  resetAll();
+  fetchSizes(profile.value.id)
+  if (params?.productId) {
+    getEditProduct(
+      null,
+      { id: params?.productId },
+      {
+        fetchPolicy: 'network-only'
+      }
+    )
+  }
+}
+
+function refetchSklads() {
+  fetchSklads(profile.value.id)
+}
+
+const skladsOptions = computed(() => {
+  return sklads.value?.map(c => ({
+    label: c.name,
+    value: c.id
+  }))
 })
+
+const categoriesOptions = computed(() => {
+  return categoriesResult.value?.categories.map(c => ({
+    label: c.name,
+    value: c.id
+  }))
+})
+const isEdit = computed(() => !!params?.productId)
+const historyLink = computed(
+  () => product?.sklad?.value ?
+    `/sklad/${product.sklad.value}/history/${params?.productId}?product=${product?.name}` :
+      null
+)
+const sizesList = computed(() => sklad.value?.sizes || [])
+const isDiscountToday = computed(() => {
+  return product?.discountDays?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
+})
+const isDirty = computed(() => isEqual(product, copiedProductForDirty))
+
+watch(categoriesResult, (newValue) => {
+  if (newValue?.categories?.length) {
+    setCategoryFromParams()
+  }
+})
+
+watch(editProduct, (newValue) => {
+  if (newValue?.product) {
+    Object.assign(product, {
+      ...newValue.product,
+      sklad: {
+        label: newValue.product.sklad?.name,
+        value: newValue.product.sklad?.id,
+      },
+      category: {
+        label: newValue.product.category?.name,
+        value: newValue.product.category?.id,
+      },
+      image: newValue.product.image?.url,
+      imageId: newValue.product.image?.id
+    })
+    Object.assign(copiedProductForDirty, product)
+  }
+});
+
+watch(sklads, (val) => {
+  if (val?.length) {
+    resetAll();
+    loadData();
+  }
+}, {
+  immediate: true
+});
+
+watch(product, () => {
+  if (product.sklad) {
+    loadCategories(
+      null,
+      { where: { sklad: product.sklad.value } },
+      { fetchPolicy: 'network-only' }
+    )
+  }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -99,18 +99,17 @@
 
     <!-- Dialog -->
     <ModalCountToBucket
-      v-if="selectedSaleProduct"
       v-model="modalCountToBucket"
-      :selected="selectedSaleProduct.countSizes"
-      :max="selectedSaleProduct.countSizes"
-      :discount-price="selectedSaleProduct.discount"
-      :percentage-discount="selectedSaleProduct.percentageDiscount"
-      :cash-sum="selectedSaleProduct.cashSum"
-      :card-sum="selectedSaleProduct.cardSum"
-      :pay-cash="selectedSaleProduct.payCash"
-      :pay-card="selectedSaleProduct.payCard"
-      :comment="selectedSaleProduct.comment"
-      :new-price="selectedSaleProduct.product?.newPrice"
+      :selected="selectedSaleProduct?.countSizes"
+      :max="selectedSaleProduct?.countSizes"
+      :discount-price="selectedSaleProduct?.discount"
+      :percentage-discount="selectedSaleProduct?.percentageDiscount"
+      :cash-sum="selectedSaleProduct?.cashSum"
+      :card-sum="selectedSaleProduct?.cardSum"
+      :pay-cash="selectedSaleProduct?.payCash"
+      :pay-card="selectedSaleProduct?.payCard"
+      :comment="selectedSaleProduct?.comment"
+      :new-price="selectedSaleProduct?.product?.withDiscount ? selectedSaleProduct?.product?.discountPrice : selectedSaleProduct?.product?.newPrice"
       @submit="update(selectedSaleProduct, $event)"
     />
 
@@ -218,46 +217,39 @@ const modalCountToBucket = ref(false)
 // View mode toggle (grid/table)
 const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_GRID)
 
-function removeItemOnce(arr, value) {
-  const index = arr.map(s => s.size).indexOf(value.size)
-  if (index > -1) {
-    arr.splice(index, 1)
-  }
-  return arr
-}
-
-async function update(item, payload) {
-  selectedProduct.value = payload
-  const allSizes = [...item.sizes]
-  if (payload?.sizes?.length) {
-    payload.sizes.forEach(ps => {
+async function update(selectedItem, newData) {
+  selectedProduct.value = newData
+  const allSizes = [...selectedItem.sizes]
+  if (newData?.sizes?.length) {
+    newData.sizes.forEach(ps => {
       if (allSizes.some(s => s.size === ps.size)) {
-        removeItemOnce(allSizes, ps)
+        removeselectedItemOnce(allSizes, ps)
       }
     });
   }
-  const newSizes = [...allSizes, ...item.product.sizes]
+  const newSizes = [...allSizes, ...selectedItem.product.sizes]
   await updateProduct({
-    id: item.product.id,
+    id: selectedItem.product.id,
     data: {
       sizes: newSizes.map(ns => ({ size: ns.size })),
-      countSizes: item.product.countSizes + (item.countSizes - payload.countSizes)
+      countSizes: selectedItem.product.countSizes + (selectedItem.countSizes - newData.countSizes)
     }
   })
   if (!updateProductError.value) {
     await updateSaleProduct({
-      id: item.id,
+      id: selectedItem.id,
       data: {
-        discount: payload.discount,
-        percentageDiscount: payload.percentageDiscount,
-        sizes: payload?.sizes?.map(s => ({
+        discount: newData.discount,
+        percentageDiscount: newData.percentageDiscount,
+        sizes: newData?.sizes?.map(s => ({
           size: s.size,
         })),
-        payCard: payload.payCard,
-        payCash: payload.payCash,
-        cashSum: payload.cashSum,
-        cardSum: payload.cardSum,
-        comment: payload.comment,
+        countSizes: newData.countSizes,
+        payCard: newData.payCard,
+        payCash: newData.payCash,
+        cashSum: newData.cashSum,
+        cardSum: newData.cardSum,
+        comment: newData.comment,
       }
     })
     await forceRefreshBucket()

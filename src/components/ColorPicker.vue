@@ -65,8 +65,7 @@
 import {
   reactive,
   defineComponent,
-  toRefs,
-  computed
+  toRefs
 } from 'vue'
 import useColors, { COLORS } from '../modules/useColors'
 
@@ -91,17 +90,14 @@ export default defineComponent({
     const { findColorByHex } = useColors()
 
     const { selected, selectedColors, multiselect } = toRefs(props)
-    
-    // Для обратной совместимости - одиночный выбор
+
     const pick = reactive({
       color: selected.value,
       name: findColorByHex(selected.value)?.name || ''
     })
 
-    // Для мультивыбора - массив выбранных цветов
     const selectedColorsArray = reactive([...selectedColors.value])
 
-    // Проверяем, выбран ли цвет (для мультивыбора)
     const isColorSelected = (color) => {
       if (multiselect.value) {
         return selectedColorsArray.some(selectedColor => selectedColor.color === color.color)
@@ -132,15 +128,12 @@ export default defineComponent({
       if (multiselect.value) {
         const existingIndex = selectedColorsArray.findIndex(color => color.color === c.color)
         if (existingIndex !== -1) {
-          // Удаляем цвет если уже выбран
           selectedColorsArray.splice(existingIndex, 1)
         } else {
-          // Добавляем новый цвет
           selectedColorsArray.push(c)
         }
         emit('on-change', [...selectedColorsArray])
       } else {
-        // Одиночный выбор (обратная совместимость)
         pick.color = c.color
         pick.name = c.name
         emit('on-change', pick)
@@ -182,6 +175,7 @@ export default defineComponent({
   }
 
   &--selected {
+    min-width: calc(50% - 2px);
     height: 25px;
     display: flex;
     align-items: center;
