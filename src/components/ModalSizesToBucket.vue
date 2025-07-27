@@ -25,9 +25,9 @@
           <!-- Step 1 -->
           <div
             v-if="!isStepTwo"
-            class="full-width q-mt-sm"
+            class="full-width"
           >
-            <div class="full-width flex column q-gap-sm q-mb-sm">
+            <div class="full-width flex column q-gap-sm q-mb-md">
               <p class="q-mb-none">Оплата</p>
               <PriceList
                 :prices="prices"
@@ -35,7 +35,6 @@
                 @on-change="onChangePrice"
               />
               <PayMethods
-                class="q-mb-md"
                 @on-change="onChangePayMethods"
                 :cash-sum="cashSum"
                 :card-sum="cardSum"
@@ -45,7 +44,7 @@
               />
             </div>
 
-            <div class="full-width flex column q-mt-sm q-mb-md q-gap-sm">
+            <div class="full-width flex column q-mb-md q-gap-sm">
               <q-input
                 v-model="commentVal"
                 outlined
