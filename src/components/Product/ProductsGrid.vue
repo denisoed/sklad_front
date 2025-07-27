@@ -34,35 +34,22 @@
           />
         </q-btn>
         <div v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: p?.sklad?.id }">
-          <ModalCountToBucket
+          <q-btn
             v-if="p.useNumberOfSizes"
-            :max="p.countSizes"
-            :prices="p.prices"
-            :with-discount="p.withDiscount"
-            :discount-price="p.discountPrice"
-            :new-price="p.newPrice"
-            @submit="$emit('addCountToBucket', p, $event)"
-          >
-            <q-btn
-              round
-              push
-              icon="mdi-basket-plus-outline"
-              text-color="deep-orange"
-            />
-          </ModalCountToBucket>
-          <ModalSizesToBucket
+            round
+            push
+            icon="mdi-basket-plus-outline"
+            text-color="deep-orange"
+            @click="$emit('openCountModal', p)"
+          />
+          <q-btn
             v-else
-            :sizes="p.sizes"
-            :type-sizes="p?.typeSize?.list || []"
-            @submit="$emit('addSizesToBucket', p, $event)"
-          >
-            <q-btn
-              round
-              push
-              icon="mdi-basket-plus-outline"
-              text-color="deep-orange"
-            />
-          </ModalSizesToBucket>
+            round
+            push
+            icon="mdi-basket-plus-outline"
+            text-color="deep-orange"
+            @click="$emit('openSizesModal', p)"
+          />
         </div>
         <q-checkbox
           :model-value="bulkProducts"
@@ -78,8 +65,6 @@
 <script>
 import { defineComponent } from 'vue'
 import CardProduct from 'src/components/CardProduct.vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import {
   CAN_SELL_PRODUCT,
   CAN_UPDATE_PRODUCT
@@ -88,9 +73,7 @@ import {
 export default defineComponent({
   name: 'ProductsGrid',
   components: {
-    CardProduct,
-    ModalSizesToBucket,
-    ModalCountToBucket
+    CardProduct
   },
   props: {
     products: {
@@ -106,7 +89,9 @@ export default defineComponent({
     'openImagePreview',
     'addCountToBucket',
     'addSizesToBucket',
-    'update:bulkProducts'
+    'update:bulkProducts',
+    'openCountModal',
+    'openSizesModal'
   ],
   setup() {
     return {

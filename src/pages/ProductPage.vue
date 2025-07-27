@@ -294,22 +294,8 @@
                 color="deep-orange"
                 mr="auto"
                 :disable="!product?.countSizes && !product?.sizes?.length"
-                @click="modalCountToBucket = true"
+                @click="product?.useNumberOfSizes ? modalCountToBucket = true : modalSizesToBucket = true"
               />
-              <!-- <ModalSizesToBucket
-                v-else
-                btn-size="md"
-                :sizes="product?.sizes"
-                :type-sizes="product?.typeSize?.list || []"
-                @submit="onAddSizesToBucket(product, $event)"
-              >
-                <q-btn
-                  icon="mdi-basket-plus-outline"
-                  push
-                  color="deep-orange"
-                  mr="auto"
-                />
-              </ModalSizesToBucket> -->
             </div>
             <q-btn
               v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad?.value }"
@@ -334,6 +320,14 @@
       :prices="product?.prices"
       :new-price="product?.withDiscount ? product?.discountPrice : product?.newPrice"
       @submit="onAddCountToBucket(product, $event)"
+    />
+
+    <ModalSizesToBucket
+      v-if="!product?.useNumberOfSizes"
+      v-model="modalSizesToBucket"
+      :sizes="product?.sizes"
+      :type-sizes="product?.typeSize?.list || []"
+      @submit="onAddSizesToBucket(product, $event)"
     />
   </q-page>
 </template>
@@ -438,6 +432,7 @@ const {
 const { sklad, sklads, onCreateNew, fetchSklads } = useSklads()
 
 const modalCountToBucket = ref(false)
+const modalSizesToBucket = ref(false)
 
 const {
   mutate: uploadImage,

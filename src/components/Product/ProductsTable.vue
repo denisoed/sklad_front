@@ -94,38 +94,25 @@
             
             <!-- Add to Basket -->
             <div v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: props.row?.sklad?.id }">
-              <ModalCountToBucket
+              <q-btn
                 v-if="props.row.useNumberOfSizes"
-                :max="props.row.countSizes"
-                :prices="props.row.prices"
-                :with-discount="props.row.withDiscount"
-                :discount-price="props.row.discountPrice"
-                :new-price="props.row.newPrice"
-                @submit="$emit('addCountToBucket', props.row, $event)"
-              >
-                <q-btn
-                  push
-                  round
-                  size="sm"
-                  icon="mdi-basket-plus-outline"
-                  text-color="deep-orange"
-                />
-              </ModalCountToBucket>
+                push
+                round
+                size="sm"
+                icon="mdi-basket-plus-outline"
+                text-color="deep-orange"
+                @click="$emit('openCountModal', props.row)"
+              />
               
-              <ModalSizesToBucket
+              <q-btn
                 v-else
-                :sizes="props.row.sizes"
-                :type-sizes="props.row?.typeSize?.list || []"
-                @submit="$emit('addSizesToBucket', props.row, $event)"
-              >
-                <q-btn
-                  round
-                  push
-                  size="sm"
-                  icon="mdi-basket-plus-outline"
-                  text-color="deep-orange"
-                />
-              </ModalSizesToBucket>
+                round
+                push
+                size="sm"
+                icon="mdi-basket-plus-outline"
+                text-color="deep-orange"
+                @click="$emit('openSizesModal', props.row)"
+              />
             </div>
           </div>
         </q-td>
@@ -137,8 +124,6 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
@@ -150,8 +135,6 @@ import {
 export default defineComponent({
   name: 'ProductsTable',
   components: {
-    ModalSizesToBucket,
-    ModalCountToBucket,
     ColorDisplay,
     PriceFormatter,
     SizeCount
@@ -170,7 +153,9 @@ export default defineComponent({
     'openImagePreview',
     'addCountToBucket',
     'addSizesToBucket',
-    'update:bulkProducts'
+    'update:bulkProducts',
+    'openCountModal',
+    'openSizesModal'
   ],
   setup() {
     const router = useRouter()
@@ -273,4 +258,4 @@ export default defineComponent({
     box-shadow: none;
   }
 }
-</style> 
+</style>

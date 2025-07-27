@@ -1,43 +1,63 @@
 <template>
-  <div>
-    <div @click="mainMenu = true">
-      <slot />
-    </div>
-    <q-dialog
-      :model-value="mainMenu"
-      position="bottom"
-      @update:model-value="close"
+  <q-dialog
+    :model-value="modelValue"
+    position="bottom"
+    @update:model-value="$emit('update:modelValue', $event)"
+  >
+    <SwipeToClose
+      direction="down"
+      @on-close="close"
     >
-      <q-card style="width: 350px">
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
-          <p
-            class="full-width text-left text-bold q-mb-none text-subtitle1"
+      <q-card>
+        <div class="dialog-close" id="dialog-close">
+          <div class="dialog-close-line" />
+        </div>
+      <q-card-section class="flex no-wrap column row items-center no-wrap q-pt-none q-pb-xl">
+        <p
+          class="full-width text-left text-bold q-mb-none text-subtitle1"
+        >
+          {{ title || 'Добавить товар в корзину' }}
+        </p>
+
+        <q-separator class="full-width q-my-sm" />
+  
+        <transition name="slide-fade" mode="out-in">
+          <!-- Step 1 -->
+          <div
+            v-if="!isStepTwo"
+            class="full-width q-mt-sm"
           >
-            {{ title || 'Добавить товар в корзину' }}
-          </p>
+            <div class="full-width flex column q-gap-sm q-mb-sm">
+              <p class="q-mb-none">Оплата</p>
+              <PriceList
+                :prices="prices"
+                :default-price="newPrice"
+                @on-change="onChangePrice"
+              />
+              <PayMethods
+                class="q-mb-md"
+                @on-change="onChangePayMethods"
+                :cash-sum="cashSum"
+                :card-sum="cardSum"
+                :pay-card="payCard"
+                :pay-cash="payCash"
+                :sum="totalSum"
+              />
+            </div>
 
-          <q-separator class="full-width q-my-sm" />
-    
-          <transition name="slide-fade" mode="out-in">
-            <!-- Step 1 -->
-            <div
-              v-if="!isStepTwo"
-              class="full-width q-mt-sm"
-            >
-              <div class="full-width full-height flex column q-mb-md">
-                <q-input
-                  v-model="commentVal"
-                  outlined
-                  class="full-width"
-                  dense
-                  label="Комментарий"
-                />
-              </div>
-
-              <div class="flex no-wrap items-center q-gap-sm q-mb-md">
+            <div class="full-width flex column q-mt-sm q-mb-md q-gap-sm">
+              <q-input
+                v-model="commentVal"
+                outlined
+                class="full-width"
+                dense
+                label="Комментарий"
+                clearable
+              />
+              <div class="flex no-wrap items-center q-gap-sm">
                 <InputPrice
                   v-model="localDiscountPrice"
-                  label="Скидка"
+                  label="Доп. скидка"
                   clear
                   dense
                   class="full-width"
@@ -50,108 +70,111 @@
                   @on-change="localPercentageDiscount = $event"
                 />
               </div>
-              <p class="q-mb-sm">Оплата</p>
-              <PayMethods
-                class="q-mb-md"
-                @on-change="onChangePayMethods"
-                :cash-sum="cashSum"
-                :card-sum="cardSum"
-                :pay-card="payCard"
-                :pay-cash="payCash"
-              />
-              <p class="q-mb-sm">Размеры</p>
-              <div
-                class="btn-sizes_list"
-              >
-                <q-btn
-                  v-for="(s, i) of listSizes"
-                  :key="i"
-                  style="width:30%;height:50px;"
-                  :color="!all && !s.has ? 'grey' : 'primary'"
-                  :outline="!selectedSizes.some(sz => sz.size === s.size)"
-                  push
-                  class="full-width btn-sizes-btn border-radius-sm"
-                  :disable="!all && !s.has"
-                  @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
-                >
-                  <span>{{ s.size }} <sup>{{ s.count > 1 ? `(${s.count} шт)` : '' }}</sup></span>
-                  <q-badge
-                    v-if="s.countSelected"
-                    color="red"
-                    floating
-                  >
-                    Выбрано: {{ s.countSelected }}
-                  </q-badge>
-                </q-btn>
-              </div>
-              <q-separator class="full-width q-my-md" />
-              <div class="flex justify-between full-width no-wrap q-gap-md">
-                <q-btn
-                  class="button-size"
-                  color="grey"
-                  icon="mdi-close"
-                  push
-                  @click="close"
-                />
-                <q-btn
-                  class="button-size"
-                  color="primary"
-                  icon="mdi-check"
-                  push
-                  @click="submit"
-                />
+
+              <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
+                <p class="q-mb-none">Итоговая сумма:</p>
+                <span class="text-bold">{{ formatPrice(totalSum) }}</span>
               </div>
             </div>
-      
-            <!-- Step 2 -->
+
+            <p class="q-mb-sm">Размеры</p>
             <div
-              v-else
-              class="full-width full-height flex column"
+              class="btn-sizes_list"
             >
-              <InputPlusMinus
-                :max="selectedSize.count"
-                :model-value="selectedSize.countSelected"
-                :label="`Кол-во шт для размера <b>${selectedSize.size}</b>`"
-                class="q-my-auto"
-                @update:model-value="onChangeCount"
-              />
-              <q-separator class="full-width q-my-md" />
-              <div class="flex no-wrap q-gap-md">
-                <q-btn
-                  class="button-size"
-                  color="grey"
-                  icon="mdi-arrow-left"
-                  push
-                  @click="isStepTwo = false"
-                />
-                <q-btn
-                  class="button-size"
-                  color="primary"
-                  icon="mdi-check"
-                  push
-                  @click="setSizeWithCounts"
-                />
-              </div>
+              <q-btn
+                v-for="(s, i) of listSizes"
+                :key="i"
+                style="width:30%;height:50px;"
+                :color="!all && !s.has ? 'grey' : 'primary'"
+                :outline="!selectedSizes.some(sz => sz.size === s.size)"
+                push
+                class="full-width btn-sizes-btn border-radius-sm"
+                :disable="!all && !s.has"
+                @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
+              >
+                <span>{{ s.size }} <sup>{{ s.count > 1 ? `(${s.count} шт)` : '' }}</sup></span>
+                <q-badge
+                  v-if="s.countSelected"
+                  color="red"
+                  floating
+                >
+                  Выбрано: {{ s.countSelected }}
+                </q-badge>
+              </q-btn>
             </div>
-          </transition>
-        </q-card-section>
+            <q-separator class="full-width q-my-md" />
+            <div class="flex justify-between full-width no-wrap q-gap-md">
+              <q-btn
+                class="button-size"
+                color="grey"
+                icon="mdi-close"
+                push
+                @click="close"
+              />
+              <q-btn
+                class="button-size"
+                color="primary"
+                icon="mdi-check"
+                push
+                @click="submit"
+                :disable="!selectedSizes.length || !price || totalSum <= 0"
+              />
+            </div>
+          </div>
+    
+          <!-- Step 2 -->
+          <div
+            v-else
+            class="full-width full-height flex column"
+          >
+            <InputPlusMinus
+              :max="selectedSize.count"
+              :model-value="selectedSize.countSelected"
+              :label="`Кол-во шт для размера <b>${selectedSize.size}</b>`"
+              class="q-my-auto"
+              @update:model-value="onChangeCount"
+            />
+            <q-separator class="full-width q-my-md" />
+            <div class="flex no-wrap q-gap-md">
+              <q-btn
+                class="button-size"
+                color="grey"
+                icon="mdi-arrow-left"
+                push
+                @click="isStepTwo = false"
+              />
+              <q-btn
+                class="button-size"
+                color="primary"
+                icon="mdi-check"
+                push
+                @click="setSizeWithCounts"
+              />
+            </div>
+          </div>
+        </transition>
+      </q-card-section>
       </q-card>
-    </q-dialog>
-  </div>
+    </SwipeToClose>
+  </q-dialog>
 </template>
 
 <script>
 import useHelpers from 'src/modules/useHelpers'
+import useMoney from 'src/modules/useMoney'
 import InputPlusMinus from 'src/components/InputPlusMinus'
 import InputPrice from 'src/components/InputPrice'
 import PayMethods from 'src/components/Product/PayMethods.vue'
+import PriceList from 'src/components/Product/PriceList.vue'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
+import SwipeToClose from 'src/components/SwipeToClose.vue'
 import {
   defineComponent,
   reactive,
   ref,
   toRefs,
-  watch
+  watch,
+  computed
 } from 'vue'
 
 const DISCOUNT_TABS = [
@@ -171,7 +194,9 @@ export default defineComponent({
     InputPlusMinus,
     InputPrice,
     PayMethods,
+    PriceList,
     SwitchTabs,
+    SwipeToClose,
   },
   props: {
     modelValue: {
@@ -233,6 +258,14 @@ export default defineComponent({
     typeSizes: {
       type: Array,
       default: () => []
+    },
+    newPrice: {
+      type: Number,
+      default: null
+    },
+    prices: {
+      type: Array,
+      default: () => []
     }
   },
   emits: ['submit'],
@@ -248,7 +281,6 @@ export default defineComponent({
     } = toRefs(props)
     const commentVal = ref(comment.value)
     const selectedSizes = ref([...selected.value])
-    const mainMenu = ref(false)
     const selectedSize = ref(null)
     const selectedCounts = ref(null)
     const isStepTwo = ref(false)
@@ -256,8 +288,20 @@ export default defineComponent({
     const localDiscountPrice = ref(discount.value)
     const localPercentageDiscount = ref(percentageDiscount.value)
     const payMethods = reactive({})
+    const price = ref(props.newPrice)
 
     const { showError } = useHelpers()
+    const { formatPrice } = useMoney()
+
+    const totalSum = computed(() => {
+      let sum = 0
+      if (localPercentageDiscount.value) {
+        sum = (price.value - ((price.value / 100) * localDiscountPrice.value)) * selectedSizes.value.length
+      } else {
+        sum = (price.value * selectedSizes.value.length) - localDiscountPrice.value
+      }
+      return Math.max(sum, 0)
+    })
 
     function removeItemOnce(arr, value) {
       const index = arr.map(s => s.size).indexOf(value.size)
@@ -315,13 +359,13 @@ export default defineComponent({
     }
 
     function close() {
-      mainMenu.value = false
       isStepTwo.value = false
       selectedCounts.value = null
       selectedSize.value = null
       localDiscountPrice.value = null
       localPercentageDiscount.value = false
       if (!useForSale.value) selectedSizes.value = []
+      emit('update:modelValue', false)
     }
 
     function onChangeCount(count) {
@@ -348,7 +392,8 @@ export default defineComponent({
           discount: +localDiscountPrice.value,
           percentageDiscount: localPercentageDiscount.value,
           comment: commentVal.value,
-          ...payMethods
+          ...payMethods,
+          cashSum: totalSum.value,
         })
       } else {
         let sizesIds = []
@@ -368,7 +413,8 @@ export default defineComponent({
           discount: +localDiscountPrice.value,
           percentageDiscount: localPercentageDiscount.value,
           comment: commentVal.value,
-          ...payMethods
+          ...payMethods,
+          cashSum: totalSum.value,
         })
       }
       close()
@@ -391,10 +437,15 @@ export default defineComponent({
       Object.assign(payMethods, obj);
     }
 
-    watch(mainMenu, (val) => {
+    function onChangePrice(p) {
+      price.value = p
+    }
+
+    watch(() => props.modelValue, (val) => {
       if (val) {
         localDiscountPrice.value = discount.value
         localPercentageDiscount.value = percentageDiscount.value
+        price.value = props.newPrice
         createListSizes(typeSizes.value.map(ts => ts.size) || [])
       }
     })
@@ -402,7 +453,6 @@ export default defineComponent({
     return {
       setSizeV2,
       selectedSizes,
-      mainMenu,
       submit,
       getCountSize,
       isStepTwo,
@@ -414,6 +464,10 @@ export default defineComponent({
       localDiscountPrice,
       localPercentageDiscount,
       onChangePayMethods,
+      onChangePrice,
+      totalSum,
+      formatPrice,
+      price,
       DISCOUNT_TABS,
       commentVal
     }
@@ -484,5 +538,9 @@ export default defineComponent({
   .slide-fade-leave-to {
     transform: translateX(-20px);
     opacity: 0;
+  }
+
+  .total-sum {
+    border-radius: var(--border-radius-xs);
   }
 </style>
