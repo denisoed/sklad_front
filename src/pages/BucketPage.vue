@@ -180,8 +180,8 @@ import {
 import BucketGrid from 'src/components/Bucket/BucketGrid.vue'
 import BucketTable from 'src/components/Bucket/BucketTable.vue'
 import PageTitle from 'src/components/PageTitle.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
+import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
+import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import { useMutation } from "@vue/apollo-composable";
 import {
   CREATE_ACTIVITY,

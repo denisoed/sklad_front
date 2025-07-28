@@ -344,8 +344,8 @@ import useHistory from 'src/modules/useHistory'
 import useCosts from 'src/modules/useCosts'
 import FilterDates from 'src/components/FilterDates.vue'
 import InputPlusMinus from 'src/components/InputPlusMinus.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
+import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
+import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ProductSizes from 'src/components/Product/ProductSizes.vue'
 import {
   UPLOAD,

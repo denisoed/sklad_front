@@ -188,8 +188,8 @@ import ProductControls from 'src/components/ProductControls.vue'
 import MiniTabs from 'src/components/Product/MiniTabs.vue'
 import ProductsGrid from 'src/components/Product/ProductsGrid.vue'
 import ProductsTable from 'src/components/Product/ProductsTable.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
+import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
+import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 
 const ALL_TAB = {
   id: 0,
