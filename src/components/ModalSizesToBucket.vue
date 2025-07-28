@@ -91,7 +91,7 @@
                 :disable="!all && !s.has"
                 @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
               >
-                <span>{{ s.size }} <sup>{{ s.count > 1 ? `(${s.count} шт)` : '' }}</sup></span>
+                <span>{{ s.size }} <sup>{{ getCountSizes(s.count, s.countSelected) > 1 ? `(${getCountSizes(s.count, s.countSelected)} шт)` : '' }}</sup></span>
                 <q-badge
                   v-if="s.countSelected"
                   color="red"
@@ -316,6 +316,10 @@ function setSizeV2(sizes, setter, withCount = false) {
       }
     }
   }
+}
+
+function getCountSizes(count, selectedCount) {
+  return count - selectedCount
 }
 
 function isSetter(countSelectd, selectdLength) {

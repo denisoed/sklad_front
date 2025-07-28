@@ -327,6 +327,7 @@
       v-model="modalSizesToBucket"
       :sizes="product?.sizes"
       :type-sizes="product?.typeSize?.list || []"
+      :new-price="product?.withDiscount ? product?.discountPrice : product?.newPrice"
       @submit="onAddSizesToBucket(product, $event)"
     />
   </q-page>
