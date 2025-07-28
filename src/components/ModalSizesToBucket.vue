@@ -438,6 +438,7 @@ watch(() => props.modelValue, (val) => {
     localDiscountPrice.value = discountPrice.value
     localPercentageDiscount.value = percentageDiscount.value
     price.value = props.newPrice
+    selectedSizes.value = selected.value
     createListSizes(typeSizes.value.map(ts => ts.size) || [])
   }
 })
