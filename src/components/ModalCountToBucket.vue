@@ -1,14 +1,18 @@
 <template>
-  <div>
-    <div @click="dialog = true">
-      <slot />
-    </div>
-    <q-dialog
-      v-model="dialog"
-      position="bottom"
+  <q-dialog
+    :model-value="modelValue"
+    position="bottom"
+    @update:model-value="$emit('update:modelValue', $event)"
+  >
+    <SwipeToClose
+      direction="down"
+      @on-close="close"
     >
-      <q-card style="width: 350px">
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
+      <q-card>
+        <div class="dialog-close" id="dialog-close">
+          <div class="dialog-close-line" />
+        </div>
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
           <p
             class="full-width text-left text-bold q-mb-none text-subtitle1"
           >
@@ -17,50 +21,62 @@
 
           <q-separator class="full-width q-my-sm" />
 
-          <div class="full-width full-height flex column q-my-sm">
-            <q-input
-              v-model="commentVal"
-              outlined
-              class="full-width"
-              dense
-              label="Комментарий"
+          <div class="full-width flex column q-gap-sm q-mb-sm">
+            <p class="q-mb-none">Оплата</p>
+            <PriceList
+              :prices="prices"
+              :default-price="newPrice"
+              @on-change="onChangePrice"
             />
-          </div>
-
-          <div class="full-width flex column q-my-sm">
-            <div class="flex no-wrap items-center q-gap-sm q-mb-md">
-              <InputPrice
-                v-model="_discount"
-                label="Скидка"
-                clear
-                :color="_discount && 'white'"
-                :bg-color="_discount && 'primary'"
-                class="full-width"
-                dense
-                :icon="_percentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
-              />
-              <SwitchTabs
-                :tabs="DISCOUNT_TABS"
-                :selected-tab="_percentageDiscount"
-                class="discount-tabs"
-                @on-change="_percentageDiscount = $event"
-              />
-            </div>
-            <p class="q-mb-sm">Способ оплаты</p>
             <PayMethods
               @on-change="onChangePayMethods"
               :cash-sum="cashSum"
               :card-sum="cardSum"
               :pay-card="payCard"
               :pay-cash="payCash"
+              :sum="totalSum"
             />
+          </div>
+
+          <div class="full-width flex column q-mt-sm q-gap-sm">
+            <q-input
+              v-model="commentVal"
+              outlined
+              class="full-width"
+              dense
+              label="Комментарий"
+              clearable
+            />
+            <div class="flex no-wrap items-center q-gap-sm">
+              <InputPrice
+                v-model="localDiscountPrice"
+                label="Доп. скидка"
+                clear
+                class="full-width"
+                dense
+                :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
+              />
+              <SwitchTabs
+                :tabs="DISCOUNT_TABS"
+                :selected-tab="localPercentageDiscount"
+                class="discount-tabs"
+                @on-change="localPercentageDiscount = $event"
+              />
+            </div>
+
+            <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
+              <p class="q-mb-none">Итоговая сумма:</p>
+              <span class="text-bold">{{ formatPrice(totalSum) }}</span>
+            </div>
           </div>
     
           <div class="full-width full-height flex column q-mt-md">
             <InputPlusMinus
               v-model="selectedCount"
               :max="max"
+              :min="1"
               label="Кол-во товара для продажи"
+              :tooltip-plus-text="`Минимальное количество: ${min}`"
               class="q-my-auto"
             />
             <q-separator class="full-width q-my-md" />
@@ -78,27 +94,30 @@
                 icon="mdi-check"
                 push
                 @click="submit"
-                :disable="!selectedCount"
+                :disable="!selectedCount || !price || totalSum <= 0"
               />
             </div>
           </div>
         </q-card-section>
       </q-card>
-    </q-dialog>
-  </div>
+    </SwipeToClose>
+  </q-dialog>
 </template>
 
-<script>
+<script setup>
 import InputPlusMinus from 'src/components/InputPlusMinus'
 import InputPrice from 'src/components/InputPrice'
+import useMoney from 'src/modules/useMoney'
 import PayMethods from 'src/components/Product/PayMethods.vue'
+import PriceList from 'src/components/Product/PriceList.vue'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
+import SwipeToClose from 'src/components/SwipeToClose.vue'
 import {
-  defineComponent,
   ref,
   toRefs,
   watch,
-  reactive
+  reactive,
+  computed
 } from 'vue'
 
 const DISCOUNT_TABS = [
@@ -112,105 +131,119 @@ const DISCOUNT_TABS = [
   },
 ]
 
-export default defineComponent({
-  name: 'ModalCountToBucket',
-  components: {
-    InputPlusMinus,
-    InputPrice,
-    PayMethods,
-    SwitchTabs
+const emit = defineEmits(['submit'])
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
   },
-  props: {
-    title: {
-      type: String,
-      default: null
-    },
-    comment: {
-      type: String,
-      default: null
-    },
-    selected: {
-      type: Number,
-      default: 0
-    },
-    max: {
-      type: Number,
-      default: null
-    },
-    cashSum: {
-      type: Number,
-      default: null
-    },
-    cardSum: {
-      type: Number,
-      default: null
-    },
-    payCash: {
-      type: Boolean,
-      default: false
-    },
-    payCard: {
-      type: Boolean,
-      default: false
-    },
-    discount: {
-      type: Number,
-      default: null
-    },
-    percentageDiscount: {
-      type: Boolean,
-      default: false
-    },
+  title: {
+    type: String,
+    default: null
   },
-  emits: ['submit'],
-  setup(props, { emit }) {
-    const {
-      selected,
-      comment
-    } = toRefs(props)
-    const dialog = ref(false)
-    const commentVal = ref(comment.value)
-    const selectedCount = ref(selected.value)
-    const _percentageDiscount = ref(props.percentageDiscount)
-    const _discount = ref(props.discount)
-    const payMethods = reactive({})
+  comment: {
+    type: String,
+    default: null
+  },
+  selected: {
+    type: Number,
+    default: 1
+  },
+  max: {
+    type: Number,
+    default: null
+  },
+  cashSum: {
+    type: Number,
+    default: null
+  },
+  cardSum: {
+    type: Number,
+    default: null
+  },
+  payCash: {
+    type: Boolean,
+    default: false
+  },
+  payCard: {
+    type: Boolean,
+    default: false
+  },
+  percentageDiscount: {
+    type: Boolean,
+    default: false
+  },
+  discountPrice: {
+    type: Number,
+    default: null
+  },
+  newPrice: {
+    type: Number,
+    default: null
+  },
+  prices: {
+    type: Array,
+    default: () => []
+  }
+})
 
-    function close() {
-      dialog.value = false
-    }
+const {
+  selected,
+  comment
+} = toRefs(props)
 
-    function submit() {
-      emit('submit', {
-        countSizes: selectedCount.value,
-        percentageDiscount: _percentageDiscount.value,
-        discount: _discount.value,
-        comment: commentVal.value,
-        ...payMethods
-      })
-      close()
-    }
+const {
+  formatPrice
+} = useMoney()
 
-    function onChangePayMethods(obj) {
-      Object.assign(payMethods, obj);
-    }
+const commentVal = ref(comment.value)
+const selectedCount = ref(selected.value)
+const localPercentageDiscount = ref(props.percentageDiscount)
+const localDiscountPrice = ref(props.discountPrice)
+const payMethods = reactive({})
+const price = ref(props.newPrice)
 
-    watch(dialog, (val) => {
-      if (val) {
-        selectedCount.value = selected.value
-      }
-    })
+const totalSum = computed(() => {
+  let sum = 0
+  if (localPercentageDiscount.value) {
+    sum = (price.value - ((price.value / 100) * localDiscountPrice.value)) * selectedCount.value
+  } else {
+    sum = (price.value * selectedCount.value) - localDiscountPrice.value
+  }
+  return Math.max(sum, 0)
+})
 
-    return {
-      dialog,
-      submit,
-      selectedCount,
-      close,
-      _discount,
-      _percentageDiscount,
-      onChangePayMethods,
-      DISCOUNT_TABS,
-      commentVal
-    }
+function close() {
+  emit('update:modelValue', false)
+}
+
+function submit() {
+  emit('submit', {
+    countSizes: selectedCount.value,
+    percentageDiscount: localPercentageDiscount.value,
+    discount: localDiscountPrice.value,
+    comment: commentVal.value,
+    ...payMethods,
+    cashSum: price.value,
+  })
+  close()
+}
+
+function onChangePrice(p) {
+  price.value = p
+}
+
+function onChangePayMethods(obj) {
+  Object.assign(payMethods, obj);
+}
+
+watch(() => props.modelValue, (val) => {
+  if (val) {
+    localPercentageDiscount.value = props.percentageDiscount
+    localDiscountPrice.value = props.discountPrice
+    selectedCount.value = selected.value
+    price.value = props.newPrice
   }
 })
 </script>
@@ -225,5 +258,9 @@ export default defineComponent({
     min-width: auto;
     font-size: 18px;
   }
+}
+
+.total-sum {
+  border-radius: var(--border-radius-xs);
 }
 </style>

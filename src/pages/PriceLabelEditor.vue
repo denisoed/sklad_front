@@ -46,7 +46,7 @@
           :columns="columns"
           row-key="type"
           separator="cell"
-          class="full-width table"
+          class="full-width table block-bg"
           hide-pagination
           no-data-label="Список пуст"
         >

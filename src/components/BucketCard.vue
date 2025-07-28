@@ -22,7 +22,7 @@
         <div class="full-width flex column items-start">
           <div class="full-width flex justify-between">
             <div class="bucket-card_name q-mr-sm">
-              <span class="text-primary">#{{ productId }}</span>
+              <span class="text-grey-6">#{{ productId }}</span>
               <p>{{ name }}</p>
             </div>
           </div>
@@ -100,52 +100,15 @@
         text-color="deep-orange"
         @click="removeFromBucket(useNumberOfSizes ? { countSizes } : { sizes })"
       />
-      <ModalCountToBucket
-        v-if="useNumberOfSizes"
-        :selected="countSizes"
-        :max="countSizes"
-        :discount="discount"
-        :percentage-discount="percentageDiscount"
-        :cash-sum="cashSum"
-        :card-sum="cardSum"
-        :pay-cash="payCash"
-        :pay-card="payCard"
-        :comment="comment"
-        @submit="updateSizes"
-      >
-        <q-btn
-          icon="mdi-pencil"
-          text-color="primary"
-          push
-          round
-          size="sm"
-          mr="auto"
-        />
-      </ModalCountToBucket>
-      <ModalSizesToBucket
-        v-else
+      <q-btn
+        icon="mdi-pencil"
         text-color="primary"
-        :sizes="sizes"
-        :selected="sizes"
-        :discount="discount"
-        :percentage-discount="percentageDiscount"
-        :type-sizes="typeSizes"
-        :cash-sum="cashSum"
-        :card-sum="cardSum"
-        :pay-cash="payCash"
-        :pay-card="payCard"
-        :comment="comment"
-        use-for-sale
-        @submit="updateSizes"
-      >
-        <q-btn
-          icon="mdi-pencil"
-          text-color="primary"
-          push
-          round
-          size="sm"
-        />
-      </ModalSizesToBucket>
+        push
+        round
+        size="sm"
+        mr="auto"
+        @click="$emit('update')"
+      />
       <q-checkbox
         v-model="checked"
         flat
@@ -155,184 +118,144 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useQuasar } from 'quasar'
 import {
   computed,
-  defineComponent,
   ref,
   toRefs,
   watch
 } from 'vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
-import { READ_ORIGINAL_PRICE } from 'src/permissions'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import { formatPrice } from 'src/modules/usePriceFormatter'
 
-export default defineComponent({
-  name: 'BucketCard',
-  components: {
-    ModalSizesToBucket,
-    ModalCountToBucket,
-    PriceFormatter
+const props = defineProps({
+  id: {
+    type: String,
+    default: null
   },
-  props: {
-    id: {
-      type: String,
-      default: null
-    },
-    comment: {
-      type: String,
-      default: null
-    },
-    sklad: {
-      type: String,
-      default: null
-    },
-    productId: {
-      type: String,
-      default: null
-    },
-    name: {
-      type: String,
-      default: null
-    },
-    origPrice: {
-      type: [String, Number],
-      default: null
-    },
-    newPrice: {
-      type: [String, Number],
-      default: null
-    },
-    sizes: {
-      type: Array,
-      default: () => []
-    },
-    typeSizes: {
-      type: Array,
-      default: () => []
-    },
-    color: {
-      type: String,
-      default: null
-    },
-    image: {
-      type: String,
-      default: null
-    },
-    discount: {
-      type: Number,
-      default: null
-    },
-    cashSum: {
-      type: Number,
-      default: null
-    },
-    cardSum: {
-      type: Number,
-      default: null
-    },
-    percentageDiscount: {
-      type: Boolean,
-      default: false
-    },
-    payCash: {
-      type: Boolean,
-      default: false
-    },
-    payCard: {
-      type: Boolean,
-      default: false
-    },
-    loading: {
-      type: Boolean,
-      default: true
-    },
-    countSizes: {
-      type: Number,
-      default: null
-    },
-    useNumberOfSizes: {
-      type: Boolean,
-      default: false
-    },
+  comment: {
+    type: String,
+    default: null
   },
-  emits: ['update', 'remove', 'on-checked'],
-  setup(props, { emit }) {
-    const $q = useQuasar()
-    const {
-      id,
-      payCard,
-      payCash,
-      cardSum,
-      cashSum,
-      newPrice,
-      discount,
-      percentageDiscount
-    } = toRefs(props)
-    const checked = ref(true)
+  sklad: {
+    type: String,
+    default: null
+  },
+  productId: {
+    type: String,
+    default: null
+  },
+  name: {
+    type: String,
+    default: null
+  },
+  sumPrice: {
+    type: [String, Number],
+    default: null
+  },
+  sizes: {
+    type: Array,
+    default: () => []
+  },
+  typeSizes: {
+    type: Array,
+    default: () => []
+  },
+  color: {
+    type: String,
+    default: null
+  },
+  image: {
+    type: String,
+    default: null
+  },
+  discount: {
+    type: Number,
+    default: null
+  },
+  cashSum: {
+    type: Number,
+    default: null
+  },
+  cardSum: {
+    type: Number,
+    default: null
+  },
+  percentageDiscount: {
+    type: Boolean,
+    default: false
+  },
+  payCash: {
+    type: Boolean,
+    default: false
+  },
+  payCard: {
+    type: Boolean,
+    default: false
+  },
+  loading: {
+    type: Boolean,
+    default: true
+  },
+  countSizes: {
+    type: Number,
+    default: null
+  },
+  newPrice: {
+    type: Number,
+    default: null
+  },
+  useNumberOfSizes: {
+    type: Boolean,
+    default: false
+  },
+})
 
-    const payMethod = computed(() => {
-      if (payCash.value && payCard.value)
-        return `Нал: ${formatPrice(cashSum.value || 0)} + Карт: ${formatPrice(cardSum.value || 0)}`
-      if (payCash.value) return 'Наличными'
-      if (payCard.value) return 'Картой'
-      return null
-    })
+const emit = defineEmits(['update', 'remove', 'on-checked'])
 
-    const sumPrice = computed(() => {
-      let sum = 0;
-      if (payCash.value && payCard.value) {
-        sum = ((cashSum.value || 0) + (cardSum.value || 0))
-      } else {
-        sum = newPrice.value
-      }
-      return percentageDiscount.value ?
-        sum - ((sum / 100) * discount.value) :
-          sum - discount.value;
-    })
+const $q = useQuasar()
+const {
+  id,
+  payCard,
+  payCash,
+  cardSum,
+  cashSum
+} = toRefs(props)
+const checked = ref(true)
 
-    function updateSizes(payload) {
-      emit('update', { id: id.value, ...payload })
+const payMethod = computed(() => {
+  if (payCash.value && payCard.value)
+    return `Нал: ${formatPrice(cashSum.value || 0)} + Карт: ${formatPrice(cardSum.value || 0)}`
+  if (payCash.value) return 'Наличными'
+  if (payCard.value) return 'Картой'
+  return null
+})
+
+function removeFromBucket(payload) {
+  $q.dialog({
+    title: 'Удалить этот товар из корзины?',
+    message: 'При удалении товара из корзины, он будет возвращен на склад.',
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'deep-orange',
+      label: 'Удалить',
+      push: true
+    },
+    cancel: {
+      color: 'white',
+      textColor: 'black', 
+      label: 'Отмена',
+      push: true
     }
+  }).onOk(() => {
+    emit('remove', { id: id.value, ...payload })
+  })
+}
 
-    function removeFromBucket(payload) {
-      $q.dialog({
-        title: 'Удалить этот товар из корзины?',
-        message: 'При удалении товара из корзины, он будет возвращен на склад.',
-        cancel: true,
-        persistent: true,
-        ok: {
-          color: 'deep-orange',
-          label: 'Удалить',
-          push: true
-        },
-        cancel: {
-          color: 'white',
-          textColor: 'black', 
-          label: 'Отмена',
-          push: true
-        }
-      }).onOk(() => {
-        emit('remove', { id: id.value, ...payload })
-      })
-    }
-
-    watch(checked, (newValue) => {
-      emit('on-checked', { id: id.value, checked: newValue })
-    })
-
-    return {
-      checked,
-      updateSizes,
-      removeFromBucket,
-      READ_ORIGINAL_PRICE,
-      payMethod,
-      sumPrice
-    }
-  }
+watch(checked, (newValue) => {
+  emit('on-checked', { id: id.value, checked: newValue })
 })
 </script>
 
@@ -342,6 +265,7 @@ export default defineComponent({
   position: relative;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+  overflow: hidden;
 
   &_discount {
     padding: 2px 6px;

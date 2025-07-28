@@ -1,71 +1,76 @@
 <template>
-  <div class="filters flex no-wrap flex-center q-mb-lg">
-    <BtnBack
-      class="q-mr-md"
-    />
-    
-    <!-- Основное поле поиска -->
-    <q-input
-      v-model="selectedFilters.name_contains"
-      outlined
-      debounce="800"
-      label="Умный поиск"
-      class="full-width block-bg"
-      dense
-      :autofocus="autofocus"
-      clearable
-      @update:model-value="search"
-    >
-      <template v-if="!selectedFilters.name_contains"  #append>
-        <q-btn
-          round
-          dense
-          color="primary"
-          icon="mic"
-          size="sm"
-          @click="showVoiceOverlay = true"
-          aria-label="Голосовой поиск"
-        />
-      </template>
-    </q-input>
-    
-    <q-btn
-      class="q-ml-md"
-      push
-      clearable
-      round
-      size="md"
-      color="white"
-      text-color="black"
-      @click="leftDrawerOpen = true"
-    >
-      <q-icon
-        name="mdi-filter-variant"
+  <q-pull-to-refresh
+    @refresh="refresh"
+    bg-color="dark"
+    class="filters"
+  >
+    <div class="flex no-wrap flex-center q-mb-lg">
+      <BtnBack
+        class="q-mr-md"
       />
-      <div v-if="hasFilters" class="alert_dot" />
-    </q-btn>
-
-    <!-- Расширенные фильтры -->
-    <FilterDialog
-      v-model="leftDrawerOpen"
-      :filters="selectedFilters"
-      @apply="applyFilters"
-      @clear="clear"
-    />
-
-    <VoiceOverlay 
-      :model-value="showVoiceOverlay" 
-      @cancel="showVoiceOverlay = false"
-      @result="handleVoiceResult"
-      @update:model-value="showVoiceOverlay = $event"
-    />
-  </div>
+      
+      <!-- Основное поле поиска -->
+      <q-input
+        v-model="selectedFilters.name_contains"
+        outlined
+        debounce="800"
+        label="Умный поиск"
+        class="full-width block-bg border-radius-sm"
+        dense
+        :autofocus="autofocus"
+        clearable
+        @update:model-value="search"
+      >
+        <template v-if="!selectedFilters.name_contains"  #append>
+          <q-btn
+            round
+            dense
+            color="primary"
+            icon="mic"
+            size="sm"
+            @click="showVoiceOverlay = true"
+            aria-label="Голосовой поиск"
+          />
+        </template>
+      </q-input>
+      
+      <q-btn
+        class="q-ml-md"
+        push
+        clearable
+        round
+        size="md"
+        color="white"
+        text-color="black"
+        @click="leftDrawerOpen = true"
+      >
+        <q-icon
+          name="mdi-filter-variant"
+        />
+        <div v-if="hasFilters" class="alert_dot" />
+      </q-btn>
+  
+      <!-- Расширенные фильтры -->
+      <FilterDialog
+        v-model="leftDrawerOpen"
+        :filters="selectedFilters"
+        @apply="applyFilters"
+        @clear="clear"
+      />
+  
+      <VoiceOverlay 
+        :model-value="showVoiceOverlay" 
+        @cancel="showVoiceOverlay = false"
+        @result="handleVoiceResult"
+        @update:model-value="showVoiceOverlay = $event"
+      />
+    </div>
+  </q-pull-to-refresh>
 </template>
 
-<script>
+<script setup>
 import {
   computed,
-  defineComponent,
   ref,
   reactive,
 } from 'vue'
@@ -73,109 +78,100 @@ import BtnBack from 'src/components/BtnBack.vue'
 import FilterDialog from 'src/components/Dialogs/FilterDialog.vue'
 import VoiceOverlay from './VoiceOverlay.vue'
 
-export default defineComponent({
-  name: 'FiltersComp',
-  components: {
-    BtnBack,
-    FilterDialog,
-    VoiceOverlay
-  },
-  props: {
-    autofocus: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ['on-search'],
-  setup(props, { emit }) {
-    const leftDrawerOpen = ref(false)
-    const showVoiceOverlay = ref(false)
-
-    const selectedFilters = reactive({
-      color: null,
-      colorName: null,
-      name_contains: null,
-      withDiscount: false,
-      priceFrom: null,
-      priceTo: null,
-      sizes: []
-    })
-
-    const hasFilters = computed(() => {
-      return Object.keys(selectedFilters).some(key => {
-        const value = selectedFilters[key]
-        if (Array.isArray(value)) return value.length > 0
-        if (typeof value === 'boolean') return value
-        return value !== null && value !== undefined && value !== ''
-      })
-    })
-
-    function search() {
-      const filters = {}
-      if (selectedFilters.name_contains) {
-        filters.name_contains = selectedFilters.name_contains
-      }
-      if (selectedFilters.color?.length) {
-        filters.color = selectedFilters.color
-      }
-      if (selectedFilters.sizes?.length) {
-        filters.sizes = selectedFilters.sizes
-      }
-      if (selectedFilters.priceFrom !== null) {
-        filters.newPrice_gte = selectedFilters.priceFrom
-      }
-      if (selectedFilters.priceTo !== null) {
-        filters.newPrice_lte = selectedFilters.priceTo
-      }
-      if (selectedFilters.withDiscount) {
-        filters.withDiscount = selectedFilters.withDiscount
-      }
-      if (selectedFilters.lowStock) {
-        filters.countSizes_lte = 5
-      }
-      if (selectedFilters.inStock) {
-        filters.countSizes_gt = 0
-      }
-      emit('on-search', hasFilters.value ? { ...filters } : {})
-    }
-
-    function applyFilters(newFilters) {
-      Object.assign(selectedFilters, newFilters)
-      search()
-    }
-
-    function clear() {
-      Object.keys(selectedFilters).forEach(key => {
-        if (Array.isArray(selectedFilters[key])) {
-          selectedFilters[key] = []
-        } else if (typeof selectedFilters[key] === 'boolean') {
-          selectedFilters[key] = false
-        } else {
-          selectedFilters[key] = null
-        }
-      })
-      search()
-    }
-
-    function handleVoiceResult(text) {
-      if (text && text.trim()) {
-        selectedFilters.name_contains = text.trim()
-        search()
-      }
-    }
-
-    return {
-      clear,
-      search,
-      leftDrawerOpen,
-      selectedFilters,
-      hasFilters,
-      applyFilters,
-      showVoiceOverlay,
-      handleVoiceResult,
-    }
+const props = defineProps({
+  autofocus: {
+    type: Boolean,
+    default: false
   }
 })
+
+const emit = defineEmits(['on-search', 'clear'])
+
+const leftDrawerOpen = ref(false)
+const showVoiceOverlay = ref(false)
+
+const selectedFilters = reactive({
+  color: null,
+  colorName: null,
+  colors: [],
+  name_contains: null,
+  withDiscount: false,
+  priceFrom: null,
+  priceTo: null,
+  sizes: []
+})
+
+const hasFilters = computed(() => {
+  return Object.keys(selectedFilters).some(key => {
+    const value = selectedFilters[key]
+    if (Array.isArray(value)) return value.length > 0
+    if (typeof value === 'boolean') return value
+    return value !== null && value !== undefined && value !== ''
+  })
+})
+
+function search() {
+  const filters = {}
+  if (selectedFilters.name_contains) {
+    filters.name_contains = selectedFilters.name_contains
+  }
+  if (selectedFilters.colors?.length) {
+    // Если выбран мультивыбор цветов, отправляем массив цветов в ключ "color"
+    filters.color = selectedFilters.colors.map(c => c.color)
+  } else if (selectedFilters.color) {
+    // Для обратной совместимости - одиночный цвет
+    filters.color = selectedFilters.color
+  }
+  if (selectedFilters.sizes?.length) {
+    filters.sizes = selectedFilters.sizes
+  }
+  if (selectedFilters.priceFrom !== null) {
+    filters.newPrice_gte = selectedFilters.priceFrom
+  }
+  if (selectedFilters.priceTo !== null) {
+    filters.newPrice_lte = selectedFilters.priceTo
+  }
+  if (selectedFilters.withDiscount) {
+    filters.withDiscount = selectedFilters.withDiscount
+  }
+  if (selectedFilters.lowStock) {
+    filters.countSizes_lte = 5
+  }
+  if (selectedFilters.inStock) {
+    filters.countSizes_gt = 0
+  }
+  emit('on-search', hasFilters.value ? { ...filters } : {})
+}
+
+function applyFilters(newFilters) {
+  Object.assign(selectedFilters, newFilters)
+  search()
+}
+
+function clear() {
+  Object.keys(selectedFilters).forEach(key => {
+    if (Array.isArray(selectedFilters[key])) {
+      selectedFilters[key] = []
+    } else if (typeof selectedFilters[key] === 'boolean') {
+      selectedFilters[key] = false
+    } else {
+      selectedFilters[key] = null
+    }
+  })
+  emit('clear')
+  search()
+}
+
+function handleVoiceResult(text) {
+  if (text && text.trim()) {
+    selectedFilters.name_contains = text.trim()
+    search()
+  }
+}
+
+function refresh() {
+  window.location.reload()
+}
 </script>
 
 <style lang="scss" scoped>

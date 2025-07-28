@@ -7,7 +7,7 @@
     separator="cell"
     :pagination="{ rowsPerPage: 0 }"
     hide-pagination
-    class="statistic-table full-width q-mb-sm border-radius-sm"
+    class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
   >
     <template v-slot:body="props">
       <q-tr
@@ -47,8 +47,8 @@
         
         <!-- Name -->
         <q-td key="name" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
-          <div class="text-weight-medium">{{ props.row.product?.name }}</div>
           <div class="text-caption text-grey-6">#{{ props.row.product?.id }}</div>
+          <div class="text-weight-medium">{{ props.row.product?.name }}</div>
           <div v-if="props.row.product?.color" class="flex items-center q-gutter-xs q-mt-xs">
             <span class="text-caption text-grey-6">Цвет:</span>
             <ColorDisplay :color="props.row.product?.color" size="16px" />
@@ -66,8 +66,10 @@
         <!-- Price -->
         <q-td key="price" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="price-column">
-            <div class="text-weight-bold">
-              <PriceFormatter :value="getNewPrice(props.row.product)" />
+            <div class="text-caption text-grey-">
+              <PriceFormatter
+                :value="props.row.cashSum"
+              />
             </div>
             <div v-if="props.row.discount" class="text-caption text-red">
               Скидка: 
@@ -77,6 +79,10 @@
               <template v-else>
                 <PriceFormatter :value="props.row.discount" />
               </template>
+            </div>
+            <div class="text-weight-bold">
+              Итого:
+              <PriceFormatter :value="getTotalSum(props.row)" />
             </div>
           </div>
         </q-td>
@@ -121,59 +127,21 @@
               :to="`/product/${props.row.product?.id}`"
             />
             
-            <!-- Edit -->
-            <ModalCountToBucket
-              v-if="props.row.product?.useNumberOfSizes"
-              :selected="props.row.countSizes"
-              :max="props.row.countSizes"
-              :discount="props.row.discount"
-              :percentage-discount="props.row.percentageDiscount"
-              :cash-sum="props.row.cashSum"
-              :card-sum="props.row.cardSum"
-              :pay-cash="props.row.payCash"
-              :pay-card="props.row.payCard"
-              :comment="props.row.comment"
-              @submit="onUpdate(props.row, $event)"
-            >
-              <q-btn
-                push
-                round
-                size="sm"
-                icon="mdi-pencil"
-                text-color="primary"
-              />
-            </ModalCountToBucket>
-            
-            <ModalSizesToBucket
-              v-else
-              :sizes="props.row.sizes"
-              :selected="props.row.sizes"
-              :discount="props.row.discount"
-              :percentage-discount="props.row.percentageDiscount"
-              :type-sizes="props.row?.product?.typeSize?.list || []"
-              :cash-sum="props.row.cashSum"
-              :card-sum="props.row.cardSum"
-              :pay-cash="props.row.payCash"
-              :pay-card="props.row.payCard"
-              :comment="props.row.comment"
-              use-for-sale
-              @submit="onUpdate(props.row, $event)"
-            >
-              <q-btn
-                push
-                round
-                size="sm"
-                icon="mdi-pencil"
-                text-color="primary"
-              />
-            </ModalSizesToBucket>
+            <q-btn
+              push
+              round
+              size="sm"
+              icon="mdi-pencil"
+              text-color="primary"
+              @click="props.row.product?.useNumberOfSizes ? $emit('openModalCountToBucket', props.row) : $emit('openModalSizesToBucket', props.row)"
+            />
 
             <!-- Remove -->
             <q-btn
               round
               push
               size="sm"
-              icon="mdi-close"
+              icon="mdi-keyboard-return"
               text-color="deep-orange"
               @click="removeFromBucket(props.row)"
             />
@@ -184,160 +152,132 @@
   </q-table>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
-import moment from 'moment'
-import { FILTER_FORMAT } from 'src/config'
 
-export default defineComponent({
-  name: 'BucketTable',
-  components: {
-    ModalSizesToBucket,
-    ModalCountToBucket,
-    ColorDisplay,
-    PriceFormatter,
-    SizeCount
+const props = defineProps({
+  bucketProducts: {
+    type: Array,
+    default: () => []
   },
-  props: {
-    bucketProducts: {
-      type: Array,
-      default: () => []
-    },
-    checkedSaleProducts: {
-      type: Array,
-      default: () => []
-    }
-  },
-  emits: [
-    'openImagePreview',
-    'update',
-    'remove',
-    'update:checkedSaleProducts'
-  ],
-  setup(props, { emit }) {
-    const router = useRouter()
-    const $q = useQuasar()
-    const highlightRowId = ref(null)
-    const TODAY = Date.now()
-    
-    const goToProduct = (bucketProduct) => {
-      if (bucketProduct?.product?.id) {
-        router.push(`/product/${bucketProduct.product.id}`)
-      }
-    }
-
-    function onUpdate(row, event) {
-      emit('update', row, event)
-    }
-
-    function getNewPrice(product) {
-      const isDiscountToday = product?.discountDays?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
-      if (isDiscountToday && product?.withDiscount) {
-        return product?.discountPrice
-      }
-      return product?.newPrice
-    }
-
-    function removeFromBucket(bucketProduct) {
-      $q.dialog({
-        title: 'Удалить этот товар из корзины?',
-        message: 'При удалении товара из корзины, он будет возвращен на склад.',
-        cancel: true,
-        persistent: true,
-        ok: {
-          color: 'deep-orange',
-          label: 'Удалить',
-          push: true
-        },
-        cancel: {
-          color: 'white',
-          textColor: 'black', 
-          label: 'Отмена',
-          push: true
-        }
-      }).onOk(() => {
-        emit('remove', bucketProduct.product, { 
-          id: bucketProduct.id, 
-          ...(bucketProduct.product?.useNumberOfSizes ? { countSizes: bucketProduct.countSizes } : { sizes: bucketProduct.sizes })
-        })
-      })
-    }
-    
-    const columns = [
-      {
-        name: 'select',
-        label: '',
-        field: 'select',
-        align: 'center',
-        style: 'width: 50px'
-      },
-      {
-        name: 'image',
-        label: 'Фото',
-        field: 'image',
-        align: 'center',
-        style: 'width: 60px'
-      },
-      {
-        name: 'name',
-        label: 'Название',
-        field: 'name',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'sizes',
-        label: 'Размеры/Кол-во',
-        field: 'sizes',
-        align: 'left'
-      },
-      {
-        name: 'price',
-        label: 'Цена',
-        field: 'price',
-        align: 'left',
-        style: 'width: 120px'
-      },
-      {
-        name: 'payment',
-        label: 'Оплата',
-        field: 'payment',
-        align: 'left',
-        style: 'width: 100px'
-      },
-      {
-        name: 'comment',
-        label: 'Комментарий',
-        field: 'comment',
-        align: 'left',
-        style: 'width: 120px'
-      },
-      {
-        name: 'actions',
-        label: 'Действия',
-        field: 'actions',
-        align: 'center',
-        style: 'width: 150px'
-      }
-    ]
-
-    return {
-      columns,
-      highlightRowId,
-      goToProduct,
-      getNewPrice,
-      removeFromBucket,
-      onUpdate
-    }
+  checkedSaleProducts: {
+    type: Array,
+    default: () => []
   }
 })
+
+const emit = defineEmits([
+  'openImagePreview',
+  'remove',
+  'update:checkedSaleProducts',
+  'openModalCountToBucket'
+])
+
+const router = useRouter()
+const $q = useQuasar()
+const highlightRowId = ref(null)
+
+const goToProduct = (bucketProduct) => {
+  if (bucketProduct?.product?.id) {
+    router.push(`/product/${bucketProduct.product.id}`)
+  }
+}
+
+function getTotalSum(bucketProduct) {
+  if (bucketProduct.product?.useNumberOfSizes) {
+    return (bucketProduct.cashSum * bucketProduct.countSizes) - bucketProduct.discount
+  } else {
+    return (bucketProduct.cashSum * bucketProduct.sizes.length) - bucketProduct.discount
+  }
+}
+
+function removeFromBucket(bucketProduct) {
+  $q.dialog({
+    title: 'Вернуть товар на склад?',
+    message: 'Товар будет возвращен на склад. Вы сможете добавить его в корзину позже.',
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'deep-orange',
+      label: 'Вернуть',
+      push: true
+    },
+    cancel: {
+      color: 'white',
+      textColor: 'black', 
+      label: 'Отмена',
+      push: true
+    }
+  }).onOk(() => {
+    emit('remove', bucketProduct.product, { 
+      id: bucketProduct.id, 
+      ...(bucketProduct.product?.useNumberOfSizes ? { countSizes: bucketProduct.countSizes } : { sizes: bucketProduct.sizes })
+    })
+  })
+}
+
+const columns = [
+  {
+    name: 'select',
+    label: '',
+    field: 'select',
+    align: 'center',
+    style: 'width: 50px'
+  },
+  {
+    name: 'image',
+    label: 'Фото',
+    field: 'image',
+    align: 'center',
+    style: 'width: 60px'
+  },
+  {
+    name: 'name',
+    label: 'Информация',
+    field: 'name',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'sizes',
+    label: 'Размеры/Кол-во',
+    field: 'sizes',
+    align: 'left'
+  },
+  {
+    name: 'price',
+    label: 'Цена',
+    field: 'price',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'payment',
+    label: 'Оплата',
+    field: 'payment',
+    align: 'left',
+    style: 'width: 100px'
+  },
+  {
+    name: 'comment',
+    label: 'Комментарий',
+    field: 'comment',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'actions',
+    label: 'Действия',
+    field: 'actions',
+    align: 'center',
+    style: 'width: 150px'
+  }
+]
 </script>
 
 <style lang="scss" scoped>
@@ -356,10 +296,6 @@ export default defineComponent({
   :deep(.q-table) {
     border-radius: 8px;
     overflow: hidden;
-  }
-  
-  :deep(.q-table tbody tr:hover) {
-    background-color: rgba(var(--q-primary-rgb), 0.1);
   }
 }
 

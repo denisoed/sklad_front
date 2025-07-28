@@ -9,7 +9,7 @@
         color="primary"
         outline
         @click="minus"
-        :disable="count < 1"
+        :disable="count <= min"
         style="height:50px;"
       >
         <q-icon
@@ -24,7 +24,7 @@
         placeholder="Кол-во"
         dense
         height="50px"
-        :min="0"
+        :min="min"
         :max="max"
         type="number"
         pattern="[0-9]*"
@@ -65,6 +65,10 @@ export default defineComponent({
       type: Number,
       default: null
     },
+    min: {
+      type: Number,
+      default: 0
+    },
     label: {
       type: String,
       default: null
@@ -72,7 +76,7 @@ export default defineComponent({
   },
   emits: ['update:model-value'],
   setup(props, { emit }) {
-    const { modelValue } = toRefs(props)
+    const { modelValue, min } = toRefs(props)
     const count = ref(modelValue.value)
 
     function plus() {
@@ -81,7 +85,7 @@ export default defineComponent({
     }
 
     function minus() {
-      if (count.value >= 1) {
+      if (count.value > min.value) {
         count.value -= 1
         emit('update:model-value', count.value)
       }

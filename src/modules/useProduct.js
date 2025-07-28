@@ -1,4 +1,4 @@
-import { computed, watch } from 'vue'
+import { computed, watch, ref } from 'vue'
 import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import {
   DELETE_PRODUCT,
@@ -48,6 +48,8 @@ const useProduct = () => {
     error: deleteProductError,
     loading: removeProductLoading,
   } = useMutation(DELETE_PRODUCT)
+
+  const searchLoading = ref(false)
 
   async function addCountToBucket(p, payload) {
     if (!payload.countSizes) return
@@ -165,7 +167,7 @@ const useProduct = () => {
 
   async function searchProducts({ q = null, where = {}, sizes = null }) {
     try {
-      isLoading.value = true;
+      searchLoading.value = true
       const { data } = await apolloClient.query({
         query: SEARCH_PRODUCTS,
         variables: {
@@ -181,7 +183,7 @@ const useProduct = () => {
       console.log(error);
       showError('Неизвестная ошибка. Перегрузите приложение!')
     } finally {
-      isLoading.value = false;
+      searchLoading.value = false
     }
   }
 
@@ -212,7 +214,8 @@ const useProduct = () => {
     loadProductsWithMinSizes,
     refetchProductsWithMinSizes,
     searchProducts,
-    products
+    products,
+    searchLoading
   }
 }
 

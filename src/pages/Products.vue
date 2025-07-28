@@ -2,9 +2,10 @@
   <q-page>
     <div class="products container">
       <FiltersComp
-        :loading="loadingProducts"
+        :loading="searchLoading"
         :autofocus="searchAutofocus"
         @on-search="onSearch"
+        @clear="onClear"
       />
 
       <p class="q-mb-sm text-subtitle2">Склады</p>
@@ -66,6 +67,8 @@
           @open-image-preview="onOpenImagePreview"
           @add-count-to-bucket="onAddCountToBucket"
           @add-sizes-to-bucket="onAddSizesToBucket"
+          @open-count-modal="onOpenCountModal"
+          @open-sizes-modal="onOpenSizesModal"
         />
         
         <!-- Table View -->
@@ -76,6 +79,8 @@
           @open-image-preview="onOpenImagePreview"
           @add-count-to-bucket="onAddCountToBucket"
           @add-sizes-to-bucket="onAddSizesToBucket"
+          @open-count-modal="onOpenCountModal"
+          @open-sizes-modal="onOpenSizesModal"
         />
       </template>
       <h6
@@ -83,7 +88,7 @@
         class="full-width flex column items-center text-center text-grey-5"
       >
         <span
-          v-if="loadingProducts"
+          v-if="searchLoading"
         >
           <q-icon
             size="sm"
@@ -111,7 +116,7 @@
       @on-finish-update="onFinishUpdate"
     />
 
-    <!-- Dialog -->
+    <!-- Image Preview Dialog -->
     <q-dialog v-model="imagePreviewDialog" position="bottom">
       <q-swipe-to-close
         v-model="imagePreviewDialog"
@@ -139,6 +144,24 @@
         </q-card>
       </q-swipe-to-close>
     </q-dialog>
+
+    <!-- Count Modal -->
+    <ModalCountToBucket
+      v-model="countModalVisible"
+      :max="selectedProduct?.countSizes"
+      :prices="selectedProduct?.prices"
+      :new-price="selectedProduct?.withDiscount ? selectedProduct?.discountPrice : selectedProduct?.newPrice"
+      @submit="onAddCountToBucket(selectedProduct, $event)"
+    />
+
+    <!-- Sizes Modal -->
+    <ModalSizesToBucket
+      v-model="sizesModalVisible"
+      :sizes="selectedProduct?.sizes"
+      :type-sizes="selectedProduct?.typeSize?.list || []"
+      :new-price="selectedProduct?.withDiscount ? selectedProduct?.discountPrice : selectedProduct?.newPrice"
+      @submit="onAddSizesToBucket(selectedProduct, $event)"
+    />
   </q-page>
 </template>
 
@@ -165,6 +188,8 @@ import ProductControls from 'src/components/ProductControls.vue'
 import MiniTabs from 'src/components/Product/MiniTabs.vue'
 import ProductsGrid from 'src/components/Product/ProductsGrid.vue'
 import ProductsTable from 'src/components/Product/ProductsTable.vue'
+import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
+import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 
 const ALL_TAB = {
   id: 0,
@@ -187,7 +212,9 @@ export default defineComponent({
     ProductControls,
     MiniTabs,
     ProductsGrid,
-    ProductsTable
+    ProductsTable,
+    ModalCountToBucket,
+    ModalSizesToBucket
   },
   props: {
     searchAutofocus: {
@@ -204,7 +231,6 @@ export default defineComponent({
       sklad,
       sklads,
       skladProducts,
-      isLoading: loadingProducts
     } = useSklads()
     const { forceRefreshBucket } = useBucket()
     const {
@@ -215,7 +241,8 @@ export default defineComponent({
       addSizesToBucket,
       searchProducts,
       addCountToBucket,
-      products
+      products,
+      searchLoading
     } = useProduct()
 
     const selectedSkladId = ref(
@@ -227,8 +254,13 @@ export default defineComponent({
     const selectedFilters = reactive({})
     const showFiltersInfo = ref(false)
     
+    // Modal states
+    const countModalVisible = ref(false)
+    const sizesModalVisible = ref(false)
+    const selectedProduct = ref(null)
+    
     // View mode toggle (grid/table)
-    const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
+    const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
     
     // Вычисляемые свойства для работы с фильтрами
     const hasActiveFilters = computed(() => {
@@ -358,12 +390,16 @@ export default defineComponent({
       await addSizesToBucket(product, payload)
       await forceRefreshBucket()
       loadData()
+      sizesModalVisible.value = false
+      selectedProduct.value = null
     }
 
     async function onAddCountToBucket(product, payload) {
       await addCountToBucket(product, payload)
       await forceRefreshBucket()
       loadData()
+      countModalVisible.value = false
+      selectedProduct.value = null
     }
 
     function onCloseBulk() {
@@ -396,6 +432,11 @@ export default defineComponent({
           element.classList.remove('highlight')
         }, 10000)
       }
+    }
+
+    function onClear() {
+      selectedSkladId.value = ALL_TAB.id
+      selectedCategoryId.value = ALL_TAB.id
     }
 
     async function loadData() {
@@ -454,6 +495,16 @@ export default defineComponent({
       imagePreviewDialog.value = true
     }
 
+    function onOpenCountModal(product) {
+      selectedProduct.value = product
+      countModalVisible.value = true
+    }
+
+    function onOpenSizesModal(product) {
+      selectedProduct.value = product
+      sizesModalVisible.value = true
+    }
+
     function toggleViewMode() {
       viewMode.value = viewMode.value === VIEW_GRID ? VIEW_TABLE : VIEW_GRID
     }
@@ -479,8 +530,9 @@ export default defineComponent({
     })
 
     return {
-      loadingProducts,
+      searchLoading,
       onSearch,
+      onClear,
       sklad,
       sklads,
       params,
@@ -502,6 +554,11 @@ export default defineComponent({
       imagePreviewDialog,
       imagePreview,
       onOpenImagePreview,
+      onOpenCountModal,
+      onOpenSizesModal,
+      countModalVisible,
+      sizesModalVisible,
+      selectedProduct,
       hasActiveFilters,
       activeFiltersCount,
       activeFiltersInfo,

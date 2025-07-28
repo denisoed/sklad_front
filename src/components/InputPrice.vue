@@ -3,13 +3,14 @@
     ref="inputRef"
     :model-value="formattedValue"
     outlined
-    :class="{ 'is-clearable': clear }"
+    :class="{ 'is-clearable': clear && formattedValue }"
+    :max="max"
     v-bind="$attrs"
   >
     <template #prepend>
       <q-icon :name="icon" />
     </template>
-    <template v-if="clear" #append>
+    <template v-if="clear && formattedValue" #append>
       <q-btn
         icon="mdi-close-circle"
         class="q-p-none"
@@ -43,7 +44,7 @@ export default defineComponent({
     modelValue: {
       type: Number,
       default: null
-    }
+    },
   },
   emits: ['update:model-value'],
   setup(props) {

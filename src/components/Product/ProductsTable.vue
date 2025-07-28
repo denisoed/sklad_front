@@ -7,7 +7,7 @@
     separator="cell"
     :pagination="{ rowsPerPage: 0 }"
     hide-pagination
-    class="statistic-table full-width q-mb-sm border-radius-sm"
+    class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
   >
     <template v-slot:body="props">
       <q-tr
@@ -47,6 +47,7 @@
         
         <!-- Name -->
         <q-td key="name" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
+          <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
           <div class="text-weight-medium">{{ props.row.name }}</div>
           <div v-if="props.row.color" class="flex items-center q-gutter-xs q-mt-xs">
             <span class="text-caption text-grey-6">Цвет:</span>
@@ -93,34 +94,25 @@
             
             <!-- Add to Basket -->
             <div v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: props.row?.sklad?.id }">
-              <ModalCountToBucket
+              <q-btn
                 v-if="props.row.useNumberOfSizes"
-                :max="props.row.countSizes"
-                @submit="$emit('addCountToBucket', props.row, $event)"
-              >
-                <q-btn
-                  push
-                  round
-                  size="sm"
-                  icon="mdi-basket-plus-outline"
-                  text-color="deep-orange"
-                />
-              </ModalCountToBucket>
+                push
+                round
+                size="sm"
+                icon="mdi-basket-plus-outline"
+                text-color="deep-orange"
+                @click="$emit('openCountModal', props.row)"
+              />
               
-              <ModalSizesToBucket
+              <q-btn
                 v-else
-                :sizes="props.row.sizes"
-                :type-sizes="props.row?.typeSize?.list || []"
-                @submit="$emit('addSizesToBucket', props.row, $event)"
-              >
-                <q-btn
-                  round
-                  push
-                  size="sm"
-                  icon="mdi-basket-plus-outline"
-                  text-color="deep-orange"
-                />
-              </ModalSizesToBucket>
+                round
+                push
+                size="sm"
+                icon="mdi-basket-plus-outline"
+                text-color="deep-orange"
+                @click="$emit('openSizesModal', props.row)"
+              />
             </div>
           </div>
         </q-td>
@@ -132,8 +124,6 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
-import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
@@ -145,8 +135,6 @@ import {
 export default defineComponent({
   name: 'ProductsTable',
   components: {
-    ModalSizesToBucket,
-    ModalCountToBucket,
     ColorDisplay,
     PriceFormatter,
     SizeCount
@@ -165,7 +153,9 @@ export default defineComponent({
     'openImagePreview',
     'addCountToBucket',
     'addSizesToBucket',
-    'update:bulkProducts'
+    'update:bulkProducts',
+    'openCountModal',
+    'openSizesModal'
   ],
   setup() {
     const router = useRouter()
@@ -194,7 +184,7 @@ export default defineComponent({
       },
       {
         name: 'name',
-        label: 'Название',
+        label: 'Информация',
         field: 'name',
         align: 'left',
         sortable: true
@@ -249,10 +239,6 @@ export default defineComponent({
     border-radius: 8px;
     overflow: hidden;
   }
-  
-  :deep(.q-table tbody tr:hover) {
-    background-color: rgba(var(--q-primary-rgb), 0.1);
-  }
 }
 
 .price-column {
@@ -272,4 +258,4 @@ export default defineComponent({
     box-shadow: none;
   }
 }
-</style> 
+</style>
