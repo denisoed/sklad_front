@@ -70,19 +70,6 @@ h6 {
   padding-bottom: 32px;
 }
 
-.q-dialog__inner {
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  overflow: hidden;
-  
-  .q-card {
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    background-color: var(--block-bg);
-    box-shadow: 0px 0px 20px 3px rgba(0, 0, 0, 0.15);
-  }
-}
-
 .container {
   width: 100%;
   max-width: 500px;
@@ -100,6 +87,18 @@ h6 {
 .q-drawer__backdrop {
   backdrop-filter: blur(10px);
   background: transparent !important;
+}
+
+.q-dialog__inner {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  overflow: hidden;
+  
+  .q-card {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    background-color: var(--block-bg);
+  }
 }
 
 .q-drawer {
