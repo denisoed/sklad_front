@@ -17,7 +17,7 @@
         <ChartCard
           class="businnes-goal_item q-mr-auto"
           title="Касса"
-          :body="priceTotal"
+          :body="formattedPriceTotal"
           descr="заработано за год"
           :loading="loadingActivities"
         />
@@ -33,9 +33,9 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import moment from 'moment'
-import { defineComponent, computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { FILTER_FORMAT, YEAR } from 'src/config'
 import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
@@ -44,39 +44,23 @@ import PageTitle from 'src/components/PageTitle.vue'
 import ChartCard from 'src/components/Charts/ChartCard.vue'
 import { useRoute } from 'vue-router'
 
-export default defineComponent({
-  name: 'BusinessGoal',
-  components: {
-    PageTitle,
-    ChartCard,
-  },
-  setup() {
-    const {
-      sklad,
-    } = useSklads()
-    const { params } = useRoute()
-    const { loadActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
-    const { formatPrice } = useMoney()
+const {
+  sklad,
+} = useSklads()
+const { params } = useRoute()
+const { loadActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
+const { formatPrice } = useMoney()
 
-    const skladName = computed(() => sklad.value?.name)
-    const skladGoal = computed(() => formatPrice(sklad.value?.goal))
+const skladName = computed(() => sklad.value?.name)
+const skladGoal = computed(() => formatPrice(sklad.value?.goal))
+const formattedPriceTotal = computed(() => formatPrice(priceTotal.value))
 
-    onBeforeMount(() => {
-      const where = {
-        sklad: params?.skladId,
-        created_at_gte: moment().startOf(YEAR).format(FILTER_FORMAT)
-      }
-      loadActivities(where)
-    })
-
-    return {
-      skladName,
-      priceTotal,
-      soldCount,
-      skladGoal,
-      loadingActivities,
-    }; 
-  },
+onBeforeMount(() => {
+  const where = {
+    sklad: params?.skladId,
+    created_at_gte: moment().startOf(YEAR).format(FILTER_FORMAT)
+  }
+  loadActivities(where)
 })
 </script>
 
