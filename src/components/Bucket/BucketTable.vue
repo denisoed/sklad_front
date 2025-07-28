@@ -66,7 +66,7 @@
         <!-- Price -->
         <q-td key="price" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="price-column">
-            <div class="text-weight-bold">
+            <div class="text-caption text-grey-">
               <PriceFormatter
                 :value="props.row.cashSum"
               />
@@ -79,6 +79,10 @@
               <template v-else>
                 <PriceFormatter :value="props.row.discount" />
               </template>
+            </div>
+            <div class="text-weight-bold">
+              Итого:
+              <PriceFormatter :value="getTotalSum(props.row)" />
             </div>
           </div>
         </q-td>
@@ -129,39 +133,15 @@
               size="sm"
               icon="mdi-pencil"
               text-color="primary"
-              @click="$emit('openModalCountToBucket', props.row)"
+              @click="props.row.product?.useNumberOfSizes ? $emit('openModalCountToBucket', props.row) : $emit('openModalSizesToBucket', props.row)"
             />
-            
-            <!-- <ModalSizesToBucket
-              v-else
-              :sizes="props.row.sizes"
-              :selected="props.row.sizes"
-              :discount="props.row.discount"
-              :percentage-discount="props.row.percentageDiscount"
-              :type-sizes="props.row?.product?.typeSize?.list || []"
-              :cash-sum="props.row.cashSum"
-              :card-sum="props.row.cardSum"
-              :pay-cash="props.row.payCash"
-              :pay-card="props.row.payCard"
-              :comment="props.row.comment"
-              use-for-sale
-              @submit="onUpdate(props.row, $event)"
-            >
-              <q-btn
-                push
-                round
-                size="sm"
-                icon="mdi-pencil"
-                text-color="primary"
-              />
-            </ModalSizesToBucket> -->
 
             <!-- Remove -->
             <q-btn
               round
               push
               size="sm"
-              icon="mdi-close"
+              icon="mdi-keyboard-return"
               text-color="deep-orange"
               @click="removeFromBucket(props.row)"
             />
@@ -208,15 +188,23 @@ const goToProduct = (bucketProduct) => {
   }
 }
 
+function getTotalSum(bucketProduct) {
+  if (bucketProduct.product?.useNumberOfSizes) {
+    return (bucketProduct.cashSum * bucketProduct.countSizes) - bucketProduct.discount
+  } else {
+    return (bucketProduct.cashSum * bucketProduct.sizes.length) - bucketProduct.discount
+  }
+}
+
 function removeFromBucket(bucketProduct) {
   $q.dialog({
-    title: 'Удалить этот товар из корзины?',
-    message: 'При удалении товара из корзины, он будет возвращен на склад.',
+    title: 'Вернуть товар на склад?',
+    message: 'Товар будет возвращен на склад. Вы сможете добавить его в корзину позже.',
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: 'Удалить',
+      label: 'Вернуть',
       push: true
     },
     cancel: {

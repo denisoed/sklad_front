@@ -38,6 +38,7 @@
           @remove="remove"
           @on-checked="onChecked"
           @open-modal-count-to-bucket="onOpenModalCountToBucket"
+          @open-modal-sizes-to-bucket="onOpenModalSizesToBucket"
         />
         
         <!-- Table View -->
@@ -50,6 +51,7 @@
           @remove="remove"
           @update:checked-sale-products="onUpdateCheckedSaleProducts"
           @open-modal-count-to-bucket="onOpenModalCountToBucket"
+          @open-modal-sizes-to-bucket="onOpenModalSizesToBucket"
         />
       </div>
       <h6
@@ -109,7 +111,24 @@
       :pay-cash="selectedSaleProduct?.payCash"
       :pay-card="selectedSaleProduct?.payCard"
       :comment="selectedSaleProduct?.comment"
-      :new-price="selectedSaleProduct?.product?.withDiscount ? selectedSaleProduct?.product?.discountPrice : selectedSaleProduct?.product?.newPrice"
+      :new-price="selectedSaleProduct?.cashSum"
+      @submit="update(selectedSaleProduct, $event)"
+    />
+
+    <ModalSizesToBucket
+      v-model="modalSizesToBucket"
+      :sizes="selectedSaleProduct?.sizes"
+      :selected="selectedSaleProduct?.sizes"
+      :discount-price="selectedSaleProduct?.discount"
+      :percentage-discount="selectedSaleProduct?.percentageDiscount"
+      :type-sizes="selectedSaleProduct?.product?.typeSize?.list || []"
+      :cash-sum="selectedSaleProduct?.cashSum"
+      :card-sum="selectedSaleProduct?.cardSum"
+      :pay-cash="selectedSaleProduct?.payCash"
+      :pay-card="selectedSaleProduct?.payCard"
+      :comment="selectedSaleProduct?.comment"
+      :new-price="selectedSaleProduct?.cashSum"
+      use-for-sale
       @submit="update(selectedSaleProduct, $event)"
     />
 
@@ -162,6 +181,7 @@ import BucketGrid from 'src/components/Bucket/BucketGrid.vue'
 import BucketTable from 'src/components/Bucket/BucketTable.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import ModalCountToBucket from 'src/components/ModalCountToBucket.vue'
+import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import { useMutation } from "@vue/apollo-composable";
 import {
   CREATE_ACTIVITY,
@@ -213,6 +233,7 @@ const checkedSaleProducts = ref([])
 const imagePreviewDialog = ref(false)
 const imagePreview = ref(null)
 const modalCountToBucket = ref(false)
+const modalSizesToBucket = ref(false)
 
 // View mode toggle (grid/table)
 const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_GRID)
@@ -253,7 +274,7 @@ async function update(selectedItem, newData) {
       }
     })
     await forceRefreshBucket()
-    showSuccess('Корзина успешно обновлена!')
+    showSuccess('Корзина обновлена')
   } else {
     showError('Не удалось обновить продукт. Попробуйте позже.')
   }
@@ -275,9 +296,9 @@ async function remove(product, payload) {
   })
   if (!deleteSaleProductError.value) {
     await forceRefreshBucket()
-    showSuccess('Товар успешно удален!')
+    showSuccess('Товар возвращен на склад')
   } else {
-    showError('Не удалось удалить продукт. Попробуйте позже.')
+    showError('Не удалось вернуть товар на склад. Попробуйте позже.')
   }
   isLoading.value = false
 }
@@ -306,6 +327,11 @@ function toggleViewMode() {
 function onOpenModalCountToBucket(saleProduct) {
   selectedSaleProduct.value = saleProduct
   modalCountToBucket.value = true
+}
+
+function onOpenModalSizesToBucket(saleProduct) {
+  selectedSaleProduct.value = saleProduct
+  modalSizesToBucket.value = true
 }
 
 function getNewPrice(product) {

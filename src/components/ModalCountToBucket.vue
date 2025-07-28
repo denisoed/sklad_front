@@ -225,7 +225,7 @@ function submit() {
     discount: localDiscountPrice.value,
     comment: commentVal.value,
     ...payMethods,
-    cashSum: totalSum.value,
+    cashSum: price.value,
   })
   close()
 }

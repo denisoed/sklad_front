@@ -101,7 +101,6 @@
         @click="removeFromBucket(useNumberOfSizes ? { countSizes } : { sizes })"
       />
       <q-btn
-        v-if="useNumberOfSizes"
         icon="mdi-pencil"
         text-color="primary"
         push
@@ -110,30 +109,6 @@
         mr="auto"
         @click="$emit('update')"
       />
-      <ModalSizesToBucket
-        v-else
-        text-color="primary"
-        :sizes="sizes"
-        :selected="sizes"
-        :discount="discount"
-        :percentage-discount="percentageDiscount"
-        :type-sizes="typeSizes"
-        :cash-sum="cashSum"
-        :card-sum="cardSum"
-        :pay-cash="payCash"
-        :pay-card="payCard"
-        :comment="comment"
-        use-for-sale
-        @submit="$emit('update')"
-      >
-        <q-btn
-          icon="mdi-pencil"
-          text-color="primary"
-          push
-          round
-          size="sm"
-        />
-      </ModalSizesToBucket>
       <q-checkbox
         v-model="checked"
         flat
@@ -151,7 +126,6 @@ import {
   toRefs,
   watch
 } from 'vue'
-import ModalSizesToBucket from 'src/components/ModalSizesToBucket.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import { formatPrice } from 'src/modules/usePriceFormatter'
 
