@@ -94,7 +94,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import useProfile from 'src/modules/useProfile'
-import CrudModal from 'src/components/CrudModal.vue'
+import CrudModal from 'src/components/Dialogs/CrudModal.vue'
 import { ALL_PERMISSIONS } from 'src/permissions'
 import {
   CREATE_SKLAD,

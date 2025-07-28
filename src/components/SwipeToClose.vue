@@ -137,7 +137,6 @@ export default defineComponent({
   position: relative;
   touch-action: pan-y;
   will-change: transform, opacity;
-  background-color: var(--block-bg);
 
   &--swiping {
     transition: none !important;

@@ -74,7 +74,7 @@ import {
   ref,
   watch
 } from 'vue'
-import CrudModal from 'src/components/CrudModal.vue'
+import CrudModal from 'src/components/Dialogs/CrudModal.vue'
 import { useRouter } from 'vue-router'
 import {
   CREATE_SKLAD,
