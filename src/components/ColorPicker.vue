@@ -22,8 +22,6 @@
         </div>
       </div>
     </div>
-    
-    <!-- Отображение выбранных цветов -->
     <div v-if="multiselect && selectedColors.length > 0" class="color-picker--selected-colors">
       <div
         v-for="color in selectedColors"
@@ -46,10 +44,8 @@
         />
       </div>
     </div>
-    
-    <!-- Отображение одного выбранного цвета (для обратной совместимости) -->
     <div
-      v-else-if="!multiselect && pick"
+      v-else-if="!multiselect && pick.color"
       :class="[
         'color-picker--selected',
         { 'color-picker--selected-white': pick.color === '#FFFFFF' }

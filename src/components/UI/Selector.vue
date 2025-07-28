@@ -60,7 +60,7 @@ import {
   watch
 } from 'vue';
 
-import CrudModal from 'src/components/CrudModal.vue'
+import CrudModal from 'src/components/Dialogs/CrudModal.vue'
 
 export default defineComponent({
   name: 'BulkUpdateStep2',

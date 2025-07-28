@@ -117,7 +117,7 @@ import {
 } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import PageTitle from 'src/components/PageTitle.vue'
-import CrudModal from 'src/components/CrudModal.vue'
+import CrudModal from 'src/components/Dialogs/CrudModal.vue'
 import { useLazyQuery, useMutation } from '@vue/apollo-composable'
 import {
   CATEGORIES,
