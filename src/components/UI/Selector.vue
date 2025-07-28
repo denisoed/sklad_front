@@ -17,24 +17,33 @@
         </q-item>
       </template>
       <template #no-option>
-        <q-btn
-          color="primary"
-          class="full-width"
-          icon="mdi-plus"
-          @click="openedModal = true"
-        >
-          Создать {{ titlePostfix }}
-        </q-btn>
+        <div class="q-pa-md">
+          <div class="text-grey-6 text-center q-mb-md">
+            Список пуст
+          </div>
+          <q-btn
+            push
+            color="primary"
+            class="full-width border-radius-sm"
+            icon="mdi-plus"
+            @click="openedModal = true"
+          >
+            Создать {{ titlePostfix }}
+          </q-btn>
+        </div>
       </template>
       <template #after-options>
-        <q-btn
-          color="primary"
-          class="full-width"
-          icon="mdi-plus"
-          @click="openedModal = true"
-        >
-          Создать {{ titlePostfix }}
-        </q-btn>
+        <div class="q-pa-md">
+          <q-btn
+            push
+            color="primary"
+            class="full-width border-radius-sm"
+            icon="mdi-plus"
+            @click="openedModal = true"
+          >
+            Создать {{ titlePostfix }}
+          </q-btn>
+        </div>
       </template>
     </q-select>
 
