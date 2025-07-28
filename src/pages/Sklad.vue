@@ -6,7 +6,7 @@
         v-if="useMinSizes && countProductsWithMinSizes"
         v-permissions="[READ_PRODUCTS_WITH_MIN_SIZES]"
         title="Остатки"
-        caption="Последние размеры"
+        caption="Товары, которых мало"
         icon="mdi-cart-arrow-up"
         :to="productsWithMinSizesLink"
         accent-color="rgb(255 0 0 / 30%)"

@@ -16,7 +16,8 @@
 import {
   defineComponent,
   ref,
-  computed
+  computed,
+  onUnmounted
 } from 'vue';
 
 export default defineComponent({
@@ -25,6 +26,11 @@ export default defineComponent({
     target: {
       type: String,
       default: null
+    },
+    direction: {
+      type: String,
+      default: 'down',
+      validator: (value) => ['up', 'down', 'left', 'right'].includes(value)
     }
   },
   emits: ['on-close'],
@@ -37,10 +43,39 @@ export default defineComponent({
     const threshold = 100; // Minimum distance to trigger close
     const windowHeight = ref(window.innerHeight);
 
-    const containerStyle = computed(() => ({
-      transform: `translateY(${currentY.value}px)`,
-      opacity: isClosing.value ? 0 : 1
-    }));
+    const containerStyle = computed(() => {
+      const isVertical = props.direction === 'up' || props.direction === 'down';
+      const isHorizontal = props.direction === 'left' || props.direction === 'right';
+      
+      if (isVertical) {
+        return {
+          transform: `translateY(${currentY.value}px)`,
+          opacity: isClosing.value ? 0 : 1
+        };
+      } else if (isHorizontal) {
+        return {
+          transform: `translateX(${currentY.value}px)`,
+          opacity: isClosing.value ? 0 : 1
+        };
+      }
+      
+      return {
+        transform: `translateY(${currentY.value}px)`,
+        opacity: isClosing.value ? 0 : 1
+      };
+    });
+
+    // Block body scroll when swiping
+    function blockBodyScroll() {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    }
+
+    // Unblock body scroll
+    function unblockBodyScroll() {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
 
     // Check if any element inside can be scrolled up
     function canScrollContent(element) {
@@ -81,17 +116,40 @@ export default defineComponent({
       }
       
       isSwiping.value = true;
-      startY.value = event.touches[0].clientY;
+      
+      if (props.direction === 'up' || props.direction === 'down') {
+        startY.value = event.touches[0].clientY;
+      } else {
+        startY.value = event.touches[0].clientX;
+      }
+      
       currentY.value = 0;
+      
+      // Block body scroll when starting to swipe
+      blockBodyScroll();
     }
 
     function handleTouchMove(event) {
       if (!isSwiping.value || isClosing.value) return;
       
-      const deltaY = event.touches[0].clientY - startY.value;
-      // Only allow downward movement
-      if (deltaY > 0) {
-        currentY.value = deltaY;
+      let delta;
+      if (props.direction === 'up' || props.direction === 'down') {
+        delta = event.touches[0].clientY - startY.value;
+      } else {
+        delta = event.touches[0].clientX - startY.value;
+      }
+      
+      // Check direction constraints
+      const isValidDirection = 
+        (props.direction === 'down' && delta > 0) ||
+        (props.direction === 'up' && delta < 0) ||
+        (props.direction === 'right' && delta > 0) ||
+        (props.direction === 'left' && delta < 0);
+      
+      if (isValidDirection) {
+        currentY.value = Math.abs(delta);
+        // Prevent default to block page scroll
+        event.preventDefault();
       }
     }
 
@@ -105,9 +163,11 @@ export default defineComponent({
           emit('on-close');
           isClosing.value = false;
           currentY.value = 0;
+          unblockBodyScroll();
         }, 300);
       } else {
         currentY.value = 0;
+        unblockBodyScroll();
       }
       
       isSwiping.value = false;
@@ -116,6 +176,11 @@ export default defineComponent({
     // Update window height on resize
     window.addEventListener('resize', () => {
       windowHeight.value = window.innerHeight;
+    });
+
+    // Cleanup on component unmount
+    onUnmounted(() => {
+      unblockBodyScroll();
     });
 
     return {
@@ -140,6 +205,13 @@ export default defineComponent({
 
   &--swiping {
     transition: none !important;
+    touch-action: none;
+    
+    // Prevent any scrolling when swiping
+    * {
+      touch-action: none !important;
+      -webkit-overflow-scrolling: auto !important;
+    }
   }
 }
 </style>

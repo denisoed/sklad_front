@@ -7,7 +7,19 @@
     >
       <PageTitle title="Остатки">
         <q-card-section class="q-pt-none">
-          На этой странице будут отображаться товары у которых осталось мало размеров.<br />Это можно регулировать в настройках, в разделе "Размеры"
+          На этой странице отображаются товары, количество которых менее <span class="text-bold">{{ minCountSizes }} шт</span>.<br /><br />
+          <span class="text-grey-5">Это можно регулировать в настройках, в разделе "Размеры"</span>
+        </q-card-section>
+        <q-card-section>
+          <q-btn
+            push
+            size="md"
+            color="primary"
+            class="full-width"
+            :to="`/sklad/${sklad?.id}/settings?tab=sizes`"
+          >
+            Поменять настройки
+          </q-btn>
         </q-card-section>
       </PageTitle>
       <div v-if="products?.length">
@@ -69,11 +81,10 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import {
   computed,
   onBeforeMount,
-  defineComponent,
 } from 'vue'
 import CardProduct from 'src/components/CardProduct.vue'
 import PageTitle from 'src/components/PageTitle.vue'
@@ -87,54 +98,39 @@ import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk';
 import { useProductsStore } from 'src/stores/products'
 
-export default defineComponent({
-  name: 'ProductsWithMinSizesPage',
-  components: {
-    CardProduct,
-    PageTitle,
-    ProductControls
-  },
-  setup() {
-    const bulkStore = useBulkStore()
-    const productsStore = useProductsStore()
-    const { bulkProducts } = storeToRefs(bulkStore)
-    const {
-      loadProductsWithMinSizes,
-      refetchProductsWithMinSizes,
-    } = useProduct()
-    const { sklad } = useSklads()
+const bulkStore = useBulkStore()
+const productsStore = useProductsStore()
+const { bulkProducts } = storeToRefs(bulkStore)
+const {
+  loadProductsWithMinSizes,
+  refetchProductsWithMinSizes,
+} = useProduct()
+const { sklad } = useSklads()
 
-    const products = computed(
-      () => productsStore.getProductsWithMinSizes?.productsWithMinSizes
+const products = computed(
+  () => productsStore.getProductsWithMinSizes?.productsWithMinSizes
+)
+
+const minCountSizes = computed(() => {
+  return sklad.value?.minSizes || 0
+})
+
+function onCloseBulk() {
+  bulkStore.setBulkProducts([])
+}
+
+function onFinishBulk() {
+  refetchProductsWithMinSizes()
+  onCloseBulk()
+}
+
+onBeforeMount(() => {
+  if (sklad.value?.id) {
+    loadProductsWithMinSizes(
+      null,
+      { where: { skladId: sklad.value?.id } },
+      { fetchPolicy: 'network-only' }
     )
-
-    function onCloseBulk() {
-      bulkStore.setBulkProducts([])
-    }
-    
-    function onFinishBulk() {
-      refetchProductsWithMinSizes()
-      onCloseBulk()
-    }
-
-    onBeforeMount(() => {
-      if (sklad.value?.id) {
-        loadProductsWithMinSizes(
-          null,
-          { where: { skladId: sklad.value?.id } },
-          { fetchPolicy: 'network-only' }
-        )
-      }
-    })
-
-    return {
-      sklad,
-      products,
-      CAN_UPDATE_PRODUCT,
-      onFinishBulk,
-      onCloseBulk,
-      bulkProducts,
-    }
   }
 })
 </script>
