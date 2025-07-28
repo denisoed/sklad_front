@@ -18,7 +18,6 @@
       </template>
       <template #no-option>
         <q-btn
-          flat
           color="primary"
           class="full-width"
           icon="mdi-plus"
@@ -29,7 +28,6 @@
       </template>
       <template #after-options>
         <q-btn
-          flat
           color="primary"
           class="full-width"
           icon="mdi-plus"

@@ -7,6 +7,7 @@
     @touchstart="handleTouchStart"
     @touchmove="handleTouchMove"
     @touchend="handleTouchEnd"
+    @wheel="handleWheel"
   >
     <slot />
   </div>
@@ -17,7 +18,8 @@ import {
   defineComponent,
   ref,
   computed,
-  onUnmounted
+  onUnmounted,
+  onMounted
 } from 'vue';
 
 export default defineComponent({
@@ -69,12 +71,52 @@ export default defineComponent({
     function blockBodyScroll() {
       document.body.style.overflow = 'hidden';
       document.body.style.touchAction = 'none';
+      document.body.style.overscrollBehavior = 'none';
     }
 
     // Unblock body scroll
     function unblockBodyScroll() {
       document.body.style.overflow = '';
       document.body.style.touchAction = '';
+      document.body.style.overscrollBehavior = '';
+    }
+
+    // Set overscroll behavior for the component and its children
+    function setOverscrollBehavior() {
+      if (SwipeToCloseRef.value) {
+        // Set overscroll behavior on the component itself
+        SwipeToCloseRef.value.style.overscrollBehavior = 'contain';
+        
+        // Set overscroll behavior on all scrollable children
+        const scrollableElements = SwipeToCloseRef.value.querySelectorAll('*');
+        scrollableElements.forEach(element => {
+          const computedStyle = window.getComputedStyle(element);
+          if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
+              computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
+            element.style.overscrollBehavior = 'contain';
+            element.style.webkitOverflowScrolling = 'touch';
+          }
+        });
+      }
+    }
+
+    // Setup MutationObserver to watch for DOM changes
+    function setupMutationObserver() {
+      if (SwipeToCloseRef.value) {
+        const observer = new MutationObserver(() => {
+          setOverscrollBehavior();
+        });
+        
+        observer.observe(SwipeToCloseRef.value, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['style', 'class']
+        });
+        
+        return observer;
+      }
+      return null;
     }
 
     // Check if any element inside can be scrolled up
@@ -173,9 +215,33 @@ export default defineComponent({
       isSwiping.value = false;
     }
 
+    // Handle wheel events to prevent overscroll
+    function handleWheel(event) {
+      if (!SwipeToCloseRef.value) return;
+      
+      const target = event.target;
+      const isScrollable = target.scrollHeight > target.clientHeight;
+      
+      if (isScrollable) {
+        const isAtTop = target.scrollTop === 0;
+        const isAtBottom = target.scrollTop + target.clientHeight >= target.scrollHeight;
+        
+        // Prevent wheel scroll when at boundaries
+        if ((isAtTop && event.deltaY < 0) || (isAtBottom && event.deltaY > 0)) {
+          event.preventDefault();
+        }
+      }
+    }
+
     // Update window height on resize
     window.addEventListener('resize', () => {
       windowHeight.value = window.innerHeight;
+    });
+
+    // Set overscroll behavior when component mounts
+    onMounted(() => {
+      setOverscrollBehavior();
+      setupMutationObserver(); // Initialize MutationObserver
     });
 
     // Cleanup on component unmount
@@ -190,7 +256,8 @@ export default defineComponent({
       containerStyle,
       handleTouchStart,
       handleTouchMove,
-      handleTouchEnd
+      handleTouchEnd,
+      handleWheel
     }
   },
 });
@@ -202,6 +269,8 @@ export default defineComponent({
   position: relative;
   touch-action: pan-y;
   will-change: transform, opacity;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 
   &--swiping {
     transition: none !important;
@@ -212,6 +281,12 @@ export default defineComponent({
       touch-action: none !important;
       -webkit-overflow-scrolling: auto !important;
     }
+  }
+
+  // Block overscroll on all child elements
+  * {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 }
 </style>
