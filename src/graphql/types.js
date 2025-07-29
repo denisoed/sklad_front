@@ -88,6 +88,11 @@ export const GET_PRODUCT = gql`
       color
       countSizes
       useNumberOfSizes
+      prices {
+        id
+        name
+        price
+      }
     }
   }
 `
@@ -125,6 +130,11 @@ export const GET_PRODUCTS = gql`
       useNumberOfSizes
       category {
         id
+      }
+      prices {
+        id
+        name
+        price
       }
     }
   }
@@ -195,6 +205,11 @@ export const PRODUCTS_WITH_MIN_SIZES = gql`
       useNumberOfSizes
       category {
         id
+      }
+      prices {
+        id
+        name
+        price
       }
     }
   }

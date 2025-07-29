@@ -7,7 +7,7 @@
     :max="max"
     v-bind="$attrs"
   >
-    <template #prepend>
+    <template v-if="icon" #prepend>
       <q-icon :name="icon" />
     </template>
     <template v-if="clear && formattedValue" #append>

@@ -117,15 +117,11 @@
               tabindex="5"
             />
           </div>
-          <div class="col-12 q-mb-sm">
-            <InputPrice
-              data-scroller="newPrice"
-              v-model="product.newPrice"
-              label="Розничная цена за 1 шт"
-              hint="Можно указать позже"
-              clear
-              tabindex="6"
-              :disable="isDiscountToday && product.withDiscount"
+          <div class="col-12">
+            <NewPriceInput
+              :retail-price="product.newPrice"
+              :additional-prices="product.prices || []"
+              @on-change="onPriceChange"
             />
           </div>
           <div
@@ -135,6 +131,7 @@
             <q-checkbox
               v-model="product.withDiscount"
               label="Установить скидку на этот товар"
+              class="full-width"
             />
             <div v-if="product.withDiscount" class="col-12 q-pa-sm">
               <template v-if="product.discountDays">
@@ -365,6 +362,7 @@ import ColorPicker from 'src/components/ColorPicker.vue'
 import Selector from 'src/components/UI/Selector.vue'
 import ImageUploader from 'src/components/ImageUploader.vue'
 import InputPrice from 'src/components/InputPrice.vue'
+import NewPriceInput from 'src/components/NewPriceInput.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { useRoute, useRouter } from 'vue-router'
 import useSizes from 'src/modules/useSizes'
@@ -404,6 +402,7 @@ const DEFAULT_DATA = {
   image: null,
   typeSizeId: null,
   imageId: null,
+  prices: [],
 }
 
 const TODAY = Date.now()
@@ -467,6 +466,11 @@ const copiedProductForDirty = reactive({})
 function onChangeSizes(sizes) {
   product.sizes = sizes.list
   product.typeSizeId = sizes.id
+}
+
+function onPriceChange(priceData) {
+  product.newPrice = priceData.retailPrice
+  product.prices = priceData.additionalPrices
 }
 
 async function uploadImg(file) {
@@ -633,6 +637,7 @@ async function create() {
         sizes: product.sizes,
         countSizes: product.countSizes,
         useNumberOfSizes: product.useNumberOfSizes,
+        prices: product.prices,
         meta: generateProductMeta(product),
         ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
       }
@@ -687,6 +692,7 @@ async function update() {
         name: product.name,
         color: product.color,
         colorName: product.colorName,
+        prices: product.prices,
         meta: generateProductMeta(product),
         ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
       }
