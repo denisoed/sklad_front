@@ -677,6 +677,9 @@ async function update() {
   }
   if (!uploadImageError.value) {
     try {
+      // Filter out prices that have IDs (existing prices) and only send new prices
+      const newPrices = product.prices?.filter(price => !price.id) || []
+      
       const data = {
         sklad: product.sklad?.value,
         category: product.category?.value,
@@ -692,7 +695,7 @@ async function update() {
         name: product.name,
         color: product.color,
         colorName: product.colorName,
-        prices: product.prices,
+        prices: newPrices,
         meta: generateProductMeta(product),
         ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
       }
@@ -813,7 +816,6 @@ const historyLink = computed(
     `/sklad/${product.sklad.value}/history/${params?.productId}?product=${product?.name}` :
       null
 )
-const sizesList = computed(() => sklad.value?.sizes || [])
 const isDiscountToday = computed(() => {
   return product?.discountDays?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
 })

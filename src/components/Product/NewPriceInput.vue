@@ -13,7 +13,7 @@
       class="full-width border-radius-sm q-mb-md"
       style="border: 1px solid var(--border-color);"
     >
-      <div class="flex items-center justify-between no-wrap q-pa-sm">
+      <div class="flex items-center justify-between no-wrap q-pr-sm">
         <q-checkbox
           v-model="showAdditionalPrices"
           label="Дополнительные цены"
@@ -136,10 +136,11 @@ const emit = defineEmits(['on-change'])
 const localRetailPrice = ref(retailPrice.value)
 const localAdditionalPrices = ref(propAdditionalPrices.value.length > 0 
   ? [...propAdditionalPrices.value] 
-  : [{ name: '', price: null, id: 0 }]
+  : [{ name: '', price: null }]
 )
 const showAdditionalPrices = ref(propAdditionalPrices.value.length > 0)
 const showInfoDialog = ref(false)
+const isInternalUpdate = ref(false)
 
 function onRetailPriceChange(value) {
   localRetailPrice.value = value
@@ -157,7 +158,7 @@ function onAdditionalPriceValueChange(index, value) {
 }
 
 function addAdditionalPrice() {
-  localAdditionalPrices.value.push({ name: '', price: null, id: localAdditionalPrices.value.length + 1 })
+  localAdditionalPrices.value.push({ name: '', price: null })
   emitChange()
 }
 
@@ -170,14 +171,24 @@ function removeAdditionalPrice(index) {
 }
 
 function emitChange() {
+  isInternalUpdate.value = true
   const validPrices = localAdditionalPrices.value.filter(price => 
     price.name && price.price
-  )
+  ).map(price => {
+    // Удаляем локальные id для новых цен, оставляем только серверные id
+    const { id, ...priceWithoutLocalId } = price
+    return id && typeof id === 'number' && id > 0 ? price : priceWithoutLocalId
+  })
   
   emit('on-change', {
     retailPrice: localRetailPrice.value,
     additionalPrices: validPrices
   })
+  
+  // Сбрасываем флаг после следующего тика
+  setTimeout(() => {
+    isInternalUpdate.value = false
+  }, 0)
 }
 
 // Следим за изменениями пропсов
@@ -186,9 +197,19 @@ watch(retailPrice, (newValue) => {
 })
 
 watch(propAdditionalPrices, (newValue) => {
+  // Не обновляем локальное состояние, если изменения инициированы самим компонентом
+  if (isInternalUpdate.value) {
+    return
+  }
+  
   if (newValue.length > 0) {
     localAdditionalPrices.value = [...newValue]
     showAdditionalPrices.value = true
+  } else {
+    // Если props пустые, но у нас есть локальные данные, не перезаписываем
+    if (localAdditionalPrices.value.length === 0) {
+      localAdditionalPrices.value = [{ name: '', price: null }]
+    }
   }
 }, { immediate: true })
 </script>
