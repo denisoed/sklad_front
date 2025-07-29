@@ -18,6 +18,7 @@
           v-model="showAdditionalPrices"
           label="Дополнительные цены"
           class="full-width"
+          @update:model-value="onShowAdditionalPricesChange"
         />
         <q-btn
           icon="mdi-information-outline"
@@ -148,23 +149,36 @@ function onRetailPriceChange(value) {
 }
 
 function onAdditionalPriceNameChange(index, value) {
-  localAdditionalPrices.value[index].name = value
+  const newPrices = [...localAdditionalPrices.value]
+  newPrices[index] = { ...newPrices[index], name: value }
+  localAdditionalPrices.value = newPrices
   emitChange()
 }
 
 function onAdditionalPriceValueChange(index, value) {
-  localAdditionalPrices.value[index].price = value
+  const newPrices = [...localAdditionalPrices.value]
+  newPrices[index] = { ...newPrices[index], price: value }
+  localAdditionalPrices.value = newPrices
   emitChange()
 }
 
 function addAdditionalPrice() {
-  localAdditionalPrices.value.push({ name: '', price: null })
+  localAdditionalPrices.value = [...localAdditionalPrices.value, { name: '', price: null }]
   emitChange()
 }
 
 function removeAdditionalPrice(index) {
-  localAdditionalPrices.value.splice(index, 1)
-  if (localAdditionalPrices.value.length === 0) {
+  const newPrices = localAdditionalPrices.value.filter((_, i) => i !== index)
+  if (newPrices.length === 0) {
+    localAdditionalPrices.value = [{ name: '', price: null }]
+  } else {
+    localAdditionalPrices.value = newPrices
+  }
+  emitChange()
+}
+
+function onShowAdditionalPricesChange(value) {
+  if (!value) {
     localAdditionalPrices.value = [{ name: '', price: null }]
   }
   emitChange()
@@ -175,9 +189,9 @@ function emitChange() {
   const validPrices = localAdditionalPrices.value.filter(price => 
     price.name && price.price
   ).map(price => {
-    // Удаляем локальные id для новых цен, оставляем только серверные id
-    const { id, ...priceWithoutLocalId } = price
-    return id && typeof id === 'number' && id > 0 ? price : priceWithoutLocalId
+    // Remove __typename and handle id properly
+    const { __typename, id, ...priceWithoutLocalId } = price
+    return id && typeof id === 'number' && id > 0 ? { id, ...priceWithoutLocalId } : priceWithoutLocalId
   })
   
   emit('on-change', {
@@ -185,28 +199,24 @@ function emitChange() {
     additionalPrices: validPrices
   })
   
-  // Сбрасываем флаг после следующего тика
   setTimeout(() => {
     isInternalUpdate.value = false
   }, 0)
 }
 
-// Следим за изменениями пропсов
 watch(retailPrice, (newValue) => {
   localRetailPrice.value = newValue
 })
 
 watch(propAdditionalPrices, (newValue) => {
-  // Не обновляем локальное состояние, если изменения инициированы самим компонентом
   if (isInternalUpdate.value) {
     return
   }
   
-  if (newValue.length > 0) {
-    localAdditionalPrices.value = [...newValue]
+  if (newValue && newValue.length > 0) {
+    localAdditionalPrices.value = newValue.map(price => ({ ...price }))
     showAdditionalPrices.value = true
   } else {
-    // Если props пустые, но у нас есть локальные данные, не перезаписываем
     if (localAdditionalPrices.value.length === 0) {
       localAdditionalPrices.value = [{ name: '', price: null }]
     }

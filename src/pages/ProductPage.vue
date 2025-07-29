@@ -470,7 +470,7 @@ function onChangeSizes(sizes) {
 
 function onPriceChange(priceData) {
   product.newPrice = priceData.retailPrice
-  product.prices = priceData.additionalPrices
+  product.prices = [...priceData.additionalPrices]
 }
 
 async function uploadImg(file) {
@@ -622,6 +622,12 @@ async function create() {
   const uploaded = await uploadImg(product.image)
   if (!uploadImageError.value) {
     try {
+      // Remove __typename field from GraphQL response
+      const cleanPrices = product.prices?.map(price => {
+        const { __typename, ...cleanPrice } = price
+        return cleanPrice
+      }) || []
+      
       const data = {
         name: product.name,
         sklad: product.sklad?.value,
@@ -637,7 +643,7 @@ async function create() {
         sizes: product.sizes,
         countSizes: product.countSizes,
         useNumberOfSizes: product.useNumberOfSizes,
-        prices: product.prices,
+        prices: cleanPrices,
         meta: generateProductMeta(product),
         ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
       }
@@ -678,7 +684,12 @@ async function update() {
   if (!uploadImageError.value) {
     try {
       // Filter out prices that have IDs (existing prices) and only send new prices
+      // Also remove __typename field from GraphQL response
       const newPrices = product.prices?.filter(price => !price.id) || []
+      const cleanPrices = newPrices.map(price => {
+        const { __typename, ...cleanPrice } = price
+        return cleanPrice
+      })
       
       const data = {
         sklad: product.sklad?.value,
@@ -695,7 +706,7 @@ async function update() {
         name: product.name,
         color: product.color,
         colorName: product.colorName,
-        prices: newPrices,
+        prices: cleanPrices,
         meta: generateProductMeta(product),
         ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
       }
@@ -706,7 +717,11 @@ async function update() {
           product.imageId = null
         }
         generateHistoryForUpdate(editProduct.value?.product, product)
-        Object.assign(copiedProductForDirty, product)
+        // Создаем глубокую копию для корректного отслеживания изменений
+        Object.assign(copiedProductForDirty, {
+          ...product,
+          prices: [...(product.prices || [])]
+        })
         showSuccess('Продукт успешно обновлён!')
       } else {
         removeImage({ id: uploaded.data.upload.id })
@@ -842,7 +857,11 @@ watch(editProduct, (newValue) => {
       image: newValue.product.image?.url,
       imageId: newValue.product.image?.id
     })
-    Object.assign(copiedProductForDirty, product)
+    // Создаем глубокую копию для корректного отслеживания изменений
+    Object.assign(copiedProductForDirty, {
+      ...product,
+      prices: [...(product.prices || [])]
+    })
   }
 });
 
