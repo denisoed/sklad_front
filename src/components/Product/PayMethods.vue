@@ -113,6 +113,16 @@ const formData = reactive({
   cashSum: props.cashSum,
 });
 
+// Watch for props changes to update selected value
+watch(() => [props.payCard, props.payCash], ([payCard, payCash]) => {
+  selected.value = payCard && payCash ? PAY_BOTH : payCard ? PAY_CARD : PAY_CASH;
+}, { immediate: true });
+
+// Watch for cashSum prop changes
+watch(() => props.cashSum, (newCashSum) => {
+  formData.cashSum = newCashSum;
+}, { immediate: true });
+
 const debouncedWatch = debounce(() => {
   const result = {
     payCash: selected.value === PAY_BOTH || selected.value === PAY_CASH,

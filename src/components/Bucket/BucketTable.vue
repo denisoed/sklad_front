@@ -66,7 +66,7 @@
         <!-- Price -->
         <q-td key="price" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="price-column">
-            <div class="text-caption text-grey-">
+            <div v-if="props.row.discount" class="text-caption text-grey-5">
               <PriceFormatter
                 :value="props.row.cashSum"
               />

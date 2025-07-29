@@ -20,7 +20,7 @@
         </p>
 
         <q-separator class="full-width q-my-sm" />
-  
+
         <transition name="slide-fade" mode="out-in">
           <!-- Step 1 -->
           <div
@@ -32,6 +32,7 @@
               <PriceList
                 :prices="prices"
                 :default-price="newPrice"
+                :model-value="price"
                 @on-change="onChangePrice"
               />
               <PayMethods
@@ -442,7 +443,7 @@ watch(() => props.modelValue, (val) => {
     localDiscountPrice.value = discountPrice.value
     localPercentageDiscount.value = percentageDiscount.value
     price.value = props.newPrice
-    selectedSizes.value = selected.value
+    selectedSizes.value = [...selected.value]
     createListSizes(typeSizes.value.map(ts => ts.size) || [])
   }
 })
