@@ -110,109 +110,87 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   watch,
   toRefs
 } from 'vue'
 import InputPrice from 'src/components/InputPrice.vue'
 
-export default defineComponent({
-  name: 'PriceInput',
-  components: {
-    InputPrice,
+const props = defineProps({
+  retailPrice: {
+    type: Number,
+    default: null
   },
-  props: {
-    retailPrice: {
-      type: Number,
-      default: null
-    },
-    additionalPrices: {
-      type: Array,
-      default: () => []
-    }
-  },
-  emits: ['on-change'],
-  setup(props, { emit }) {
-    const { retailPrice, additionalPrices: propAdditionalPrices } = toRefs(props)
-    
-    const localRetailPrice = ref(retailPrice.value)
-    const localAdditionalPrices = ref(propAdditionalPrices.value.length > 0 
-      ? [...propAdditionalPrices.value] 
-      : [{ name: '', price: null }]
-    )
-    const showAdditionalPrices = ref(propAdditionalPrices.value.length > 0)
-    const showInfoDialog = ref(false)
-
-    function onRetailPriceChange(value) {
-      localRetailPrice.value = value
-      emitChange()
-    }
-
-    function onAdditionalPriceChange() {
-      emitChange()
-    }
-
-    function onAdditionalPriceNameChange(index, value) {
-      localAdditionalPrices.value[index].name = value
-      emitChange()
-    }
-
-    function onAdditionalPriceValueChange(index, value) {
-      localAdditionalPrices.value[index].price = value
-      emitChange()
-    }
-
-    function addAdditionalPrice() {
-      localAdditionalPrices.value.push({ name: '', price: null })
-      emitChange()
-    }
-
-    function removeAdditionalPrice(index) {
-      localAdditionalPrices.value.splice(index, 1)
-      if (localAdditionalPrices.value.length === 0) {
-        localAdditionalPrices.value = [{ name: '', price: null }]
-      }
-      emitChange()
-    }
-
-    function emitChange() {
-      const validPrices = localAdditionalPrices.value.filter(price => 
-        price.name && price.price
-      )
-      
-      emit('on-change', {
-        retailPrice: localRetailPrice.value,
-        additionalPrices: validPrices
-      })
-    }
-
-    // Следим за изменениями пропсов
-    watch(retailPrice, (newValue) => {
-      localRetailPrice.value = newValue
-    })
-
-    watch(propAdditionalPrices, (newValue) => {
-      if (newValue.length > 0) {
-        localAdditionalPrices.value = [...newValue]
-        showAdditionalPrices.value = true
-      }
-    }, { immediate: true })
-
-    return {
-      localRetailPrice,
-      localAdditionalPrices,
-      showAdditionalPrices,
-      showInfoDialog,
-      onRetailPriceChange,
-      onAdditionalPriceChange,
-      addAdditionalPrice,
-      removeAdditionalPrice
-    }
+  additionalPrices: {
+    type: Array,
+    default: () => []
   }
 })
+
+const { retailPrice, additionalPrices: propAdditionalPrices } = toRefs(props)
+
+const emit = defineEmits(['on-change'])
+
+const localRetailPrice = ref(retailPrice.value)
+const localAdditionalPrices = ref(propAdditionalPrices.value.length > 0 
+  ? [...propAdditionalPrices.value] 
+  : [{ name: '', price: null, id: 0 }]
+)
+const showAdditionalPrices = ref(propAdditionalPrices.value.length > 0)
+const showInfoDialog = ref(false)
+
+function onRetailPriceChange(value) {
+  localRetailPrice.value = value
+  emitChange()
+}
+
+function onAdditionalPriceNameChange(index, value) {
+  localAdditionalPrices.value[index].name = value
+  emitChange()
+}
+
+function onAdditionalPriceValueChange(index, value) {
+  localAdditionalPrices.value[index].price = value
+  emitChange()
+}
+
+function addAdditionalPrice() {
+  localAdditionalPrices.value.push({ name: '', price: null, id: localAdditionalPrices.value.length + 1 })
+  emitChange()
+}
+
+function removeAdditionalPrice(index) {
+  localAdditionalPrices.value.splice(index, 1)
+  if (localAdditionalPrices.value.length === 0) {
+    localAdditionalPrices.value = [{ name: '', price: null }]
+  }
+  emitChange()
+}
+
+function emitChange() {
+  const validPrices = localAdditionalPrices.value.filter(price => 
+    price.name && price.price
+  )
+  
+  emit('on-change', {
+    retailPrice: localRetailPrice.value,
+    additionalPrices: validPrices
+  })
+}
+
+// Следим за изменениями пропсов
+watch(retailPrice, (newValue) => {
+  localRetailPrice.value = newValue
+})
+
+watch(propAdditionalPrices, (newValue) => {
+  if (newValue.length > 0) {
+    localAdditionalPrices.value = [...newValue]
+    showAdditionalPrices.value = true
+  }
+}, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
