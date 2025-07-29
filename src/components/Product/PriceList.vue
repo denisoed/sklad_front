@@ -61,24 +61,8 @@ const DEFAULT_PRICE = 'DEFAULT_PRICE';
 const OTHER_PRICE = 'OTHER_PRICE';
 
 export default defineComponent({
-  name: 'PayMethods',
+  name: 'PriceList',
   props: {
-    cashSum: {
-      type: Number,
-      default: null,
-    },
-    cardSum: {
-      type: Number,
-      default: null,
-    },
-    payCash: {
-      type: Boolean,
-      default: false
-    },
-    payCard: {
-      type: Boolean,
-      default: false
-    },
     defaultPrice: {
       type: Number,
       default: null
@@ -86,6 +70,10 @@ export default defineComponent({
     prices: {
       type: Array,
       default: () => []
+    },
+    modelValue: {
+      type: Number,
+      default: null
     }
   },
   components: {
@@ -94,9 +82,23 @@ export default defineComponent({
   },
   emits: ['on-change'],
   setup(props, { emit }) {
-    const selected = ref(DEFAULT_PRICE);
+    // Initialize selected based on modelValue
+    const getInitialSelected = () => {
+      if (props.modelValue === props.defaultPrice) {
+        return DEFAULT_PRICE;
+      }
+      const foundPrice = props.prices.find(price => price.price === props.modelValue);
+      if (foundPrice) {
+        return foundPrice.id;
+      }
+      return OTHER_PRICE;
+    };
+
+    const selected = ref(getInitialSelected());
     const formData = reactive({
-      otherPrice: null,
+      otherPrice: props.modelValue !== props.defaultPrice && 
+                  !props.prices.find(price => price.price === props.modelValue) ? 
+                  props.modelValue : null,
     });
     
     const debouncedWatch = debounce((val) => {
@@ -106,6 +108,23 @@ export default defineComponent({
       const result = selected.value === OTHER_PRICE ? formData.otherPrice : price
       emit('on-change', result)
     }, 300);
+
+    // Watch for modelValue changes to update selected
+    watch(() => props.modelValue, (newValue) => {
+      if (newValue === props.defaultPrice) {
+        selected.value = DEFAULT_PRICE;
+        formData.otherPrice = null;
+      } else {
+        const foundPrice = props.prices.find(price => price.price === newValue);
+        if (foundPrice) {
+          selected.value = foundPrice.id;
+          formData.otherPrice = null;
+        } else {
+          selected.value = OTHER_PRICE;
+          formData.otherPrice = newValue;
+        }
+      }
+    }, { immediate: true });
 
     watch([selected, formData], debouncedWatch, {
       immediate: true
