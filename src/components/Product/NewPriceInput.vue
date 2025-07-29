@@ -13,11 +13,20 @@
       class="full-width border-radius-sm q-mb-md"
       style="border: 1px solid var(--border-color);"
     >
-      <q-checkbox
-        v-model="showAdditionalPrices"
-        label="Дополнительные цены"
-        class="full-width"
-      />
+      <div class="flex items-center justify-between no-wrap q-pa-sm">
+        <q-checkbox
+          v-model="showAdditionalPrices"
+          label="Дополнительные цены"
+          class="full-width"
+        />
+        <q-btn
+          icon="mdi-information-outline"
+          text-color="primary"
+          round
+          size="sm"
+          @click="showInfoDialog = true"
+        />
+      </div>
       
       <div v-if="showAdditionalPrices" class="q-pa-sm">
         <q-separator class="q-mb-md" />
@@ -60,6 +69,44 @@
         />
       </div>
     </div>
+
+    <!-- Диалог с информацией о дополнительных ценах -->
+    <q-dialog v-model="showInfoDialog">
+      <q-card style="min-width: 350px">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Дополнительные цены</div>
+          <q-space />
+          <q-btn
+            round
+            push
+            color="deep-orange"
+            size="sm"
+            v-close-popup
+            class="absolute-top-right q-mr-md q-mt-md"
+          >
+            <q-icon
+              name="mdi-close"
+              color="white"
+            />
+          </q-btn>
+        </q-card-section>
+
+        <q-card-section>
+          <p class="text-subtitle2">
+            Доп. цены позволяют указать различные варианты розничных цен для одного товара. Например:
+          </p>
+          <ul class="q-mt-md">
+            <li>Цена для постоянных клиентов</li>
+            <li>Цена после 18:00</li>
+            <li>Цена для бракованных товаров</li>
+            <li>И другие варианты</li>
+          </ul>
+          <p class="text-body2 q-mt-md text-grey-5">
+            Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.
+          </p>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -97,6 +144,7 @@ export default defineComponent({
       : [{ name: '', price: null }]
     )
     const showAdditionalPrices = ref(propAdditionalPrices.value.length > 0)
+    const showInfoDialog = ref(false)
 
     function onRetailPriceChange(value) {
       localRetailPrice.value = value
@@ -157,6 +205,7 @@ export default defineComponent({
       localRetailPrice,
       localAdditionalPrices,
       showAdditionalPrices,
+      showInfoDialog,
       onRetailPriceChange,
       onAdditionalPriceChange,
       addAdditionalPrice,
