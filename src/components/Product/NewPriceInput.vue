@@ -16,7 +16,7 @@
       <div class="flex items-center justify-between no-wrap q-pr-sm">
         <q-checkbox
           v-model="showAdditionalPrices"
-          label="Дополнительные цены"
+          label="Доп. розничные цены"
           class="full-width"
           @update:model-value="onShowAdditionalPricesChange"
         />
@@ -75,7 +75,7 @@
     <q-dialog v-model="showInfoDialog">
       <q-card style="min-width: 350px">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Дополнительные цены</div>
+          <div class="text-h6">Доп. розничные цены</div>
           <q-space />
           <q-btn
             round
@@ -94,12 +94,11 @@
 
         <q-card-section>
           <p class="text-subtitle2">
-            Доп. цены позволяют указать различные варианты розничных цен для одного товара. Например:
+            Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например,
           </p>
           <ul class="q-mt-md">
             <li>Цена для постоянных клиентов</li>
             <li>Цена после 18:00</li>
-            <li>Цена для бракованных товаров</li>
             <li>И другие варианты</li>
           </ul>
           <p class="text-body2 q-mt-md text-grey-5">

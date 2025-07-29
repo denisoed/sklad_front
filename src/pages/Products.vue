@@ -158,6 +158,7 @@
     <ModalSizesToBucket
       v-model="sizesModalVisible"
       :sizes="selectedProduct?.sizes"
+      :prices="selectedProduct?.prices"
       :type-sizes="selectedProduct?.typeSize?.list || []"
       :new-price="selectedProduct?.withDiscount ? selectedProduct?.discountPrice : selectedProduct?.newPrice"
       @submit="onAddSizesToBucket(selectedProduct, $event)"

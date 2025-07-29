@@ -323,6 +323,7 @@
       v-if="!product?.useNumberOfSizes"
       v-model="modalSizesToBucket"
       :sizes="product?.sizes"
+      :prices="product?.prices"
       :type-sizes="product?.typeSize?.list || []"
       :new-price="product?.withDiscount ? product?.discountPrice : product?.newPrice"
       @submit="onAddSizesToBucket(product, $event)"
