@@ -66,14 +66,19 @@
         <!-- Price -->
         <q-td key="price" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="price-column">
+            <div
+              v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: props.row?.sklad?.id }"
+              class="text-grey-6">
+              Опт. цена: <PriceFormatter :value="props.row.origPrice" />
+            </div>
             <div v-if="props.row.withDiscount" class="text-weight-bold text-red">
               <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
-                <PriceFormatter :value="props.row.newPrice" />
+                Розн. цена: <PriceFormatter :value="props.row.newPrice" />
               </div>
-              <PriceFormatter :value="props.row.discountPrice" />
+              Акц. цена: <PriceFormatter :value="props.row.discountPrice" />
             </div>
             <div v-else class="text-weight-bold">
-              <PriceFormatter :value="props.row.newPrice" />
+              Розн. цена: <PriceFormatter :value="props.row.newPrice" />
             </div>
           </div>
         </q-td>
@@ -129,7 +134,8 @@ import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
 import {
   CAN_SELL_PRODUCT,
-  CAN_UPDATE_PRODUCT
+  CAN_UPDATE_PRODUCT,
+  READ_ORIGINAL_PRICE
 } from 'src/permissions'
 
 export default defineComponent({
@@ -216,7 +222,8 @@ export default defineComponent({
       highlightRowId,
       goToProduct,
       CAN_SELL_PRODUCT,
-      CAN_UPDATE_PRODUCT
+      CAN_UPDATE_PRODUCT,
+      READ_ORIGINAL_PRICE
     }
   }
 })

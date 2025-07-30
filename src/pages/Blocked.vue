@@ -4,7 +4,7 @@
   >
     <div class="column q-pa-md">
       <div class="row">
-        <q-card style="box-shadow:var(--box-shadow);width:100%;max-width:346px;">
+        <q-card style="box-shadow:var(--box-shadow);width:100%;max-width:346px;" class="border-radius-md">
           <q-card-section class="bg-deep-orange">
             <h4 class="text-h6 text-white q-my-none">{{ title }}</h4>
           </q-card-section>

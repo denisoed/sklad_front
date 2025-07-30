@@ -30,7 +30,7 @@
               class="flex items-center q-pa-sm q-mb-md q-px-md"
               style="background-color: rgb(255 0 0 / 8%);border-radius: 3px;"
             >
-              <span class="q-mr-sm">Установлена скидка на некоторые дни</span>
+              <span class="q-mr-sm">На этот товар действует акция</span>
               <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
             </div>
 
@@ -130,46 +130,46 @@
           >
             <q-checkbox
               v-model="product.withDiscount"
-              label="Установить скидку на этот товар"
+              label="Установить акционную цену"
               class="full-width"
             />
             <div v-if="product.withDiscount" class="col-12 q-pa-sm">
               <template v-if="product.discountDays">
                 <p v-if="!isDiscountToday" class="flex items-center no-wrap q-px-sm product-page_discount-not-today">
-                  <span class="q-mr-sm">На сегодня скидки нет</span>
+                  <span class="q-mr-sm">На сегодня акции нет</span>
                   <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="xs" />
                 </p>
                 <InputPrice
                   v-model="product.discountPrice"
-                  label="Скидочная цена за 1 шт"
+                  label="Акционная цена за 1 шт"
                   clear
                   tabindex="7"
                   :rules="[
-                    val => val?.length || 'Укажите скидку',
-                    val => +val !== 0 || 'Укажите скидку',
-                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || 'Скидка должна быть меньше Роз. цены'
+                    val => val?.length || 'Укажите акционную цену',
+                    val => +val !== 0 || 'Укажите акционную цену',
+                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || 'Акционная цена должна быть меньше Роз. цены'
                   ]"
                 />
               </template>
               <div class="flex items-center no-wrap q-px-md q-py-sm product-page_discount">
                 <div v-if="product.discountDays" class="q-mr-sm product-page_discount-dates">
                   <p class="q-mr-md q-mb-sm">
-                    Скидка на даты:
+                    Акция на даты:
                   </p>
                   <div class="flex q-gap-xs">
                     <q-chip
                       v-for="(day, i) of product.discountDays"
                       :key="i"
                       dense
+                      outline
                       size="12px"
                       color="primary"
-                      text-color="white"
                     >
-                      {{ day }}
+                      <span class="text-white">{{ day }}</span>
                     </q-chip>
                   </div>
                 </div>
-                <p v-else class="q-mr-md q-mb-none">Выставить скидку на определенные даты</p>
+                <p v-else class="q-mr-md q-mb-none">Выставить акционную цену на определенные даты</p>
                 <FilterDates
                   class="q-ml-auto"
                   :with-buttons="false"
