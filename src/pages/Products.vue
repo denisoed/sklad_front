@@ -56,6 +56,15 @@
                 size="xs"
               />
             </q-btn>
+
+            <q-btn
+              icon="mdi-plus"
+              round
+              size="sm"
+              color="primary"
+              push
+              to="/create-product"
+            />
           </div>
         </div>
 
@@ -99,7 +108,7 @@
         </span>
         <div v-else class="flex column items-center">
           <span>
-            <q-icon size="sm" name="mdi-basket-outline" class="q-mr-xs text-grey-5" />
+            <q-icon size="sm" name="mdi-cart-outline" class="q-mr-xs text-grey-5" />
             Список пуст
           </span>
           <p class="q-mt-md text-subtitle2 text-grey-5" style="max-width:220px;">
@@ -443,10 +452,12 @@ export default defineComponent({
     async function loadData() {
       const { sort, ...otherFilters } = selectedFilters.value || {};
       const sizes = otherFilters.sizes
+      const search = otherFilters.search
       const filters = { ...otherFilters }
       delete filters.sizes
+      delete filters.search
       const resp = await searchProducts({
-        q: filters.name_contains || null,
+        q: search || null,
         where: {
           ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
           ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),

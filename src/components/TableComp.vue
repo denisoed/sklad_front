@@ -8,7 +8,7 @@
       :pagination="pagination"
       row-key="name"
       separator="cell"
-      class="table full-width"
+      class="table full-width block-bg border-radius-sm"
       no-data-label="Нет данных"
       rows-per-page-label="Записей на странице"
     >

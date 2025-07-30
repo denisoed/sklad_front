@@ -5,7 +5,7 @@
       <span>{{ $t('footer.home') }}</span>
     </router-link>
     <router-link class="router-link" :to="productsLink">
-      <q-icon name="mdi-cart-outline" />
+      <q-icon name="mdi-cube-outline" />
       <span>{{ $t('footer.products') }}</span>
     </router-link>
     <q-btn
@@ -21,7 +21,7 @@
       <span>{{ $t('footer.statistic') }}</span>
     </router-link>
     <router-link class="router-link" :to="bucketLink">
-      <q-icon name="mdi-basket-outline">
+      <q-icon name="mdi-cart-outline">
         <div v-if="hasInBucket" class="has-in-backet" />
       </q-icon>
       <span>{{ $t('footer.bucket') }}</span>

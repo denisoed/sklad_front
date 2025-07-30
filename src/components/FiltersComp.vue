@@ -11,17 +11,17 @@
       
       <!-- Основное поле поиска -->
       <q-input
-        v-model="selectedFilters.name_contains"
+        v-model="selectedFilters.search"
         outlined
         debounce="800"
-        label="Умный поиск"
+        label="Поиск по названию"
         class="full-width block-bg border-radius-sm"
         dense
         :autofocus="autofocus"
         clearable
         @update:model-value="search"
       >
-        <template v-if="!selectedFilters.name_contains"  #append>
+        <template v-if="!selectedFilters.search"  #append>
           <q-btn
             round
             dense
@@ -94,7 +94,7 @@ const selectedFilters = reactive({
   color: null,
   colorName: null,
   colors: [],
-  name_contains: null,
+  search: null,
   withDiscount: false,
   priceFrom: null,
   priceTo: null,
@@ -112,8 +112,8 @@ const hasFilters = computed(() => {
 
 function search() {
   const filters = {}
-  if (selectedFilters.name_contains) {
-    filters.name_contains = selectedFilters.name_contains
+  if (selectedFilters.search) {
+    filters.search = selectedFilters.search
   }
   if (selectedFilters.colors?.length) {
     // Если выбран мультивыбор цветов, отправляем массив цветов в ключ "color"
@@ -164,7 +164,7 @@ function clear() {
 
 function handleVoiceResult(text) {
   if (text && text.trim()) {
-    selectedFilters.name_contains = text.trim()
+    selectedFilters.search = text.trim()
     search()
   }
 }

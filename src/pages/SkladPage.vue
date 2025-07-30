@@ -19,12 +19,11 @@
         </q-badge>
       </BlockLink>
       <BlockLink
-        v-permissions="[READ_COST]"
-        title="Расходы"
-        caption="Траты по складу"
-        icon="mdi-cash"
-        :to="costsLink"
-        accent-color="rgb(255 255 0 / 20%)"
+        title="Товары"
+        caption="Товары на складе"
+        icon="mdi-cube-outline"
+        :to="productsLink"
+        accent-color="rgb(0 0 255 / 20%)"
       />
       <div class="flex no-wrap full-width q-gap-md">
         <BlockLink
@@ -41,18 +40,31 @@
           caption="Настройки склада"
           icon="mdi-cog-outline"
           :to="settingsLink"
-          class="q-mb-md"
           accent-color="rgb(255 95 95 / 20%)"
         />
       </div>
+      <BlockLink
+        v-permissions="[READ_COST]"
+        title="Расходы"
+        caption="Траты по складу"
+        icon="mdi-cash"
+        :to="costsLink"
+        accent-color="rgb(255 255 0 / 20%)"
+      />
+      <BlockLink
+        title="Категории"
+        caption="Категории товаров"
+        icon="mdi-folder-outline"
+        :to="categoriesLink"
+        accent-color="rgb(255 0 255 / 20%)"
+      />
     </div>
     <QRModal :opened="qrModalOpened" @close="qrModalOpened = false" />
   </q-page>
 </template>
 
-<script>
-import { defineComponent, computed, ref } from 'vue'
-import useJwtMethods from 'src/modules/auth/useJwtMethods'
+<script setup>
+import { computed, ref } from 'vue'
 import useSklads from 'src/modules/useSklads'
 import BlockLink from 'src/components/BlockLink.vue'
 import QRModal from 'src/components/QRModal.vue'
@@ -68,49 +80,27 @@ import {
   READ_PRODUCTS_WITH_MIN_SIZES
 } from 'src/permissions'
 
-export default defineComponent({
-  name: 'IndexPage',
-  components: {
-    BlockLink,
-    BusinessGoal,
-    QRModal
-  },
-  setup() {
-    const { sklad } = useSklads()
-    const { logout } = useJwtMethods()
-    const { params } = useRoute()
-
-    const qrModalOpened = ref(false)
-
-    const productsStore = useProductsStore()
-    const useMinSizes = computed(() => sklad.value?.useMinSizes)
-    const countProductsWithMinSizes = computed(
-      () => productsStore.getProductsWithMinSizes?.productsWithMinSizes?.length
-    )
-
-    const historyLink = computed(() => `/sklad/${params?.skladId}/history`)
-    const costsLink = computed(() => `/sklad/${params?.skladId}/costs`)
-    const settingsLink = computed(() => `/sklad/${params?.skladId}/settings`)
-    const productsWithMinSizesLink = computed(() => `/sklad/${params?.skladId}/products-with-min-sizes`)
-    
-    return {
-      logout,
-      historyLink,
-      costsLink,
-      productsWithMinSizesLink,
-      READ_HISTORY,
-      READ_SETTINGS,
-      READ_STATISTIC,
-      READ_COST,
-      CAN_ADD_PRODUCT,
-      useMinSizes,
-      countProductsWithMinSizes,
-      READ_PRODUCTS_WITH_MIN_SIZES,
-      qrModalOpened,
-      settingsLink,
-    }
-  }
+defineOptions({
+  name: 'SkladPage',
 })
+
+const { sklad } = useSklads()
+const { params } = useRoute()
+
+const qrModalOpened = ref(false)
+
+const productsStore = useProductsStore()
+const useMinSizes = computed(() => sklad.value?.useMinSizes)
+const countProductsWithMinSizes = computed(
+  () => productsStore.getProductsWithMinSizes?.productsWithMinSizes?.length
+)
+
+const historyLink = computed(() => `/sklad/${params?.skladId}/history`)
+const costsLink = computed(() => `/sklad/${params?.skladId}/costs`)
+const settingsLink = computed(() => `/sklad/${params?.skladId}/settings`)
+const productsWithMinSizesLink = computed(() => `/sklad/${params?.skladId}/products-with-min-sizes`)
+const categoriesLink = computed(() => `/sklad/${params?.skladId}/categories`)
+const productsLink = computed(() => `/sklad/${params?.skladId}/products`)
 </script>
 
 <style lang="scss" scoped>
