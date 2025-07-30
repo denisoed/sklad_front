@@ -21,6 +21,7 @@ import { SKLAD_PWA_INSTALLED } from 'src/config'
 import '@khmyznikov/pwa-install'
 
 import InstallPwaDialog from 'src/components/Dialogs/InstallPwaDialog.vue'
+import useKeyboardHandler from 'src/modules/useKeyboardHandler'
 
 export default defineComponent({
   name: 'App',
@@ -32,6 +33,8 @@ export default defineComponent({
     const offline = ref(false);
     const pwaInstallerRef = ref();
     const instalTgPwaDialog = ref(false);
+
+    useKeyboardHandler();
 
     function openInstallPwaOnlyTelegram() {
       if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED) && telegram?.initData) {
