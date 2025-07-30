@@ -378,7 +378,7 @@ export default defineComponent({
       () => {
         const categories = categoriesResult.value?.categories || []
         const skladCategories =
-          categories.filter(c => c.sklad.id === selectedSkladId.value)
+          categories.filter(c => c?.sklad?.id === selectedSkladId.value)
         
         return [
           ALL_TAB,

@@ -21,7 +21,7 @@
     >
       <div class="flex column full-height">
         <q-btn
-          color="primary"
+          text-color="primary"
           @click="onEdit"
           round
           push

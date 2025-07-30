@@ -206,7 +206,7 @@ export default defineComponent({
           isClosing.value = false;
           currentY.value = 0;
           unblockBodyScroll();
-        }, 300);
+        }, 100);
       } else {
         currentY.value = 0;
         unblockBodyScroll();
