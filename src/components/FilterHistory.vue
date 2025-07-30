@@ -76,6 +76,7 @@
               clearable
               label="Поиск по описанию"
               class="full-width"
+              enterkeyhint="done"
             />
           </div>
           <q-separator class="full-width q-my-md" />

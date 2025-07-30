@@ -9,6 +9,7 @@
       :label="label"
       :hint="hint"
       lazy-rules
+      enterkeyhint="done"
       :class="{ 'focused': showing }"
     >
       <q-menu

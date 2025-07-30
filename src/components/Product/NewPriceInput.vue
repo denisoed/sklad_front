@@ -38,6 +38,7 @@
               outlined
               label="Название"
               class="full-width"
+              enterkeyhint="done"
               @update:model-value="(value) => onAdditionalPriceNameChange(index, value)"
             />
             <InputPrice

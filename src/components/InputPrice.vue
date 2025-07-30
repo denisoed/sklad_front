@@ -5,6 +5,7 @@
     outlined
     :class="{ 'is-clearable': clear && formattedValue }"
     :max="max"
+    enterkeyhint="done"
     v-bind="$attrs"
   >
     <template v-if="icon" #prepend>

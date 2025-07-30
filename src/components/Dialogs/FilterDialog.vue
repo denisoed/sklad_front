@@ -59,6 +59,7 @@
                 suffix="сом"
                 style="flex: 1"
                 clearable
+                enterkeyhint="done"
               />
               <q-input
                 v-model.number="localFilters.priceTo"
@@ -69,6 +70,7 @@
                 suffix="сом"
                 style="flex: 1"
                 clearable
+                enterkeyhint="done"
               />
             </div>
           </div>

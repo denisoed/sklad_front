@@ -27,6 +27,7 @@
               dense
               class="q-pr-sm full-width"
               :placeholder="$t('mainSettings.userTab.user.fullnamePlaceholder')"
+              enterkeyhint="done"
             />
           </div>
           <q-btn

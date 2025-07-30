@@ -58,6 +58,7 @@
                   cols="30"
                   rows="3"
                   outlined
+                  enterkeyhint="done"
                 />
                 <div class="flex q-gap-md">
                   <q-btn

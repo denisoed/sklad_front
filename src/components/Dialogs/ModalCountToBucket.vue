@@ -46,6 +46,7 @@
               dense
               label="Комментарий"
               clearable
+              enterkeyhint="done"
             />
             <div class="flex no-wrap items-center q-gap-sm">
               <InputPrice

@@ -52,6 +52,7 @@
           <Dropdown
             class="q-mt-md"
             title="Название склада"
+            opened
           >
             <template #body>
               <q-input
@@ -60,6 +61,7 @@
                 dense
                 placeholder="Название"
                 class="q-mt-sm"
+                enterkeyhint="done"
               />
             </template>
           </Dropdown>
@@ -67,6 +69,7 @@
           <Dropdown
             class="q-mt-md"
             title="Цвет склада"
+            opened
           >
             <template #body>
               <ColorPicker
@@ -106,6 +109,7 @@
                   hint="Значение должно быть больше или равно нулю"
                   :disable="!formData.useMinSizes"
                   :rules="[val => val >= 0 || 'Значение должно быть больше или равно нулю']"
+                  enterkeyhint="done"
                 />
               </div>
             </template>

@@ -29,6 +29,7 @@
         type="number"
         pattern="[0-9]*"
         inputmode="numeric"
+        enterkeyhint="done"
         @keyup="validate"
       />
       <q-btn
