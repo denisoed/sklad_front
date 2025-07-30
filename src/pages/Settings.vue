@@ -20,78 +20,95 @@
 
       <q-tab-panels v-model="tab" animated class="full-width">
         <q-tab-panel class="q-px-sm" name="main">
-          <div class="q-mt-md">
-            <h6 class="q-ma-none  text-subtitle1">Название склада</h6>
-            <q-input
-              v-model="formData.name"
-              outlined
-              dense
-              placeholder="Название"
-              class="q-mt-sm"
-            />
-          </div>
-          <div class="q-mt-md">
-            <h6 class="q-ma-none  text-subtitle1">Цвет склада</h6>
-            <div class="col-12 q-mt-md flex flex-center">
-              <ColorPicker
-                :selected="formData.color"
-                @on-change="onChangeColor"
-              />
-            </div>
-          </div>
+          <Dropdown
+            class="q-mt-md"
+            title="Название склада"
+          >
+            <template #body>
+              <div class="flex column">
+                <q-input
+                  v-model="formData.name"
+                  outlined
+                  dense
+                  placeholder="Название"
+                  class="q-mt-sm"
+                />
+              </div>
+            </template>
+          </Dropdown>
+          
+          <Dropdown
+            class="q-mt-md"
+            title="Цвет склада"
+          >
+            <template #body>
+              <div class="flex column">
+                <div class="col-12 q-mt-md flex flex-center">
+                  <ColorPicker
+                    :selected="formData.color"
+                    @on-change="onChangeColor"
+                  />
+                </div>
+              </div>
+            </template>
+          </Dropdown>
         </q-tab-panel>
 
         <q-tab-panel name="sizes" class="q-px-sm">
-          <div
-            class="full-width q-pa-xs q-mt-md"
-            style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
+          <Dropdown
+            class="q-mt-md"
+            title="Остатки"
+            :opened="formData.useMinSizes"
           >
-            <q-checkbox
-              v-model="formData.useMinSizes"
-              label="Оповещать о товарах, которые скоро закончатся"
-            />
-            <div v-if="formData.useMinSizes" class="q-pa-sm">
-              <h6
-                class="q-ma-none q-mb-sm text-subtitle2"
-              >
-                Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада
-              </h6>
-              <q-input
-                v-model="formData.minSizes"
-                type="number"
-                outlined
-                min="0"
-                label="Мин кол-во размеров в товаре"
-                hint="Значение должно быть больше или равно нулю"
-                :rules="[val => val >= 0 || 'Значение должно быть больше или равно нулю']"
-              />
-            </div>
-          </div>
+            <template #body>
+              <div class="flex column">
+                <q-checkbox
+                  v-model="formData.useMinSizes"
+                  class="q-mb-sm"
+                  dense
+                >
+                  <span class="text-subtitle1">Оповещать о низких остатках</span>
+                </q-checkbox>
+                <h6
+                  class="q-ma-none q-mb-sm text-subtitle2"
+                >
+                  Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада
+                </h6>
+                <q-input
+                  v-model="formData.minSizes"
+                  type="number"
+                  outlined
+                  min="0"
+                  label="Мин кол-во размеров в товаре"
+                  hint="Значение должно быть больше или равно нулю"
+                  :disable="!formData.useMinSizes"
+                  :rules="[val => val >= 0 || 'Значение должно быть больше или равно нулю']"
+                />
+              </div>
+            </template>
+          </Dropdown>
           
           <!-- Size configurations link -->
-          <div
-            class="full-width q-pa-xs q-mt-md"
-            style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
+          <Dropdown
+            class="q-mt-md"
+            title="Конфигурации размеров"
           >
-            <div class="q-pa-sm">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h6 class="q-ma-none text-subtitle1">Конфигурации размеров</h6>
-                  <p class="q-ma-none text-grey-6 text-caption q-mt-xs">
-                    Создавайте и управляйте списками размеров для разных типов товаров
-                  </p>
-                </div>
+            <template #body>
+              <div class="flex column">
+                <p class="q-ma-none text-grey-6 text-caption q-mb-sm">
+                  Создавайте и управляйте списками размеров для разных типов товаров
+                </p>
                 <q-btn
                   color="primary"
                   outline
                   label="Настроить размеры"
                   icon="mdi-cog"
                   @click="goToSizesSettings"
-                  class="full-width border-radius-sm q-mt-sm"
+                  class="full-width border-radius-sm"
                 />
               </div>
-            </div>
-          </div>
+            </template>
+          </Dropdown>
         </q-tab-panel>
         <q-tab-panel name="accesses" class="q-px-sm">
           <Employee
@@ -171,6 +188,7 @@ import ColorPicker from 'src/components/ColorPicker.vue'
 import Employee from 'src/components/Settings/Employee'
 import SettingsPrint from 'src/components/Settings/Tabs/Print.vue'
 import SettingsGoal from 'src/components/Settings/Tabs/Goal.vue'
+import Dropdown from 'src/components/Dropdown/index.vue'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
 import useProfile from 'src/modules/useProfile'
@@ -188,7 +206,8 @@ export default defineComponent({
     Employee,
     ColorPicker,
     SettingsPrint,
-    SettingsGoal
+    SettingsGoal,
+    Dropdown
   },
   setup() {
     const { query, params } = useRoute()
