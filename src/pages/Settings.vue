@@ -153,12 +153,11 @@
       <q-card class="q-mt-md">
       </q-card>
 
-      <div class="col-12 flex q-pt-lg q-mt-auto">
+      <div class="col-12 flex flex-center q-mt-auto">
         <q-btn
-          label="Сохранить"
+          label="Сохранить изменения"
           push
           color="primary"
-          class="q-ml-auto"
           tabindex="8"
           :loading="isLoading"
           :disable="isLoading"
