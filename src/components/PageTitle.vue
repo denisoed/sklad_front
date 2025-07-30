@@ -9,7 +9,8 @@
         class="q-mr-md"
         :link="link"
       />
-      <h6 v-html="title" class="text-h6 q-my-none" />
+      <h6 v-html="title" class="text-h6 q-my-none q-mr-sm" />
+      <slot name="custom" />
       <div v-if="hasSlot" class="q-ml-auto">
         <q-btn
           class="q-ml-md"

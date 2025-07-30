@@ -1,7 +1,36 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Настройки склада" /> 
+      <PageTitle title="Настройки склада">
+        <template #custom>
+            <q-btn
+              icon="mdi-cog-outline"
+              push
+              round
+              text-color="primary"
+              class="q-ml-auto"
+            >
+              <q-menu style="width: 200px;">
+                <q-list>
+                  <q-item
+                    clickable
+                    v-close-popup
+                    py="10px"
+                  >
+                    <q-item-section
+                      @click="onRemoveSklad"
+                    >
+                      <div class="flex items-center no-wrap">
+                        <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
+                        <span class="text-deep-orange whitespace-nowrap">Удалить склад</span>
+                      </div>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+        </template>
+      </PageTitle> 
       <q-tabs
         v-model="tab"
         dense
@@ -25,15 +54,13 @@
             title="Название склада"
           >
             <template #body>
-              <div class="flex column">
-                <q-input
-                  v-model="formData.name"
-                  outlined
-                  dense
-                  placeholder="Название"
-                  class="q-mt-sm"
-                />
-              </div>
+              <q-input
+                v-model="formData.name"
+                outlined
+                dense
+                placeholder="Название"
+                class="q-mt-sm"
+              />
             </template>
           </Dropdown>
           
@@ -42,14 +69,10 @@
             title="Цвет склада"
           >
             <template #body>
-              <div class="flex column">
-                <div class="col-12 q-mt-md flex flex-center">
-                  <ColorPicker
-                    :selected="formData.color"
-                    @on-change="onChangeColor"
-                  />
-                </div>
-              </div>
+              <ColorPicker
+                :selected="formData.color"
+                @on-change="onChangeColor"
+              />
             </template>
           </Dropdown>
         </q-tab-panel>
@@ -70,7 +93,7 @@
                   <span class="text-subtitle1">Оповещать о низких остатках</span>
                 </q-checkbox>
                 <h6
-                  class="q-ma-none q-mb-sm text-subtitle2"
+                  class="q-ma-none q-mb-sm text-subtitle2 text-grey-2"
                 >
                   Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада
                 </h6>
@@ -95,7 +118,7 @@
           >
             <template #body>
               <div class="flex column">
-                <p class="q-ma-none text-grey-6 text-caption q-mb-sm">
+                <p class="q-ma-none text-grey-2 text-caption q-mb-sm">
                   Создавайте и управляйте списками размеров для разных типов товаров
                 </p>
                 <q-btn
@@ -131,31 +154,6 @@
       </q-card>
 
       <div class="col-12 flex q-pt-lg q-mt-auto">
-        <q-btn
-          icon="mdi-cog-outline"
-          push
-          color="secondary"
-          class="q-mr-auto"
-        >
-          <q-menu>
-            <q-list>
-              <q-item
-                clickable
-                v-close-popup
-                py="10px"
-              >
-                <q-item-section
-                  @click="onRemoveSklad"
-                >
-                  <div class="flex items-center">
-                    <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
-                    <span class="text-deep-orange">Удалить склад</span>
-                  </div>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
         <q-btn
           label="Сохранить"
           push

@@ -1,14 +1,21 @@
 <template>
   <div class="settings-goal">
-    <h6 class="q-ma-none q-mb-sm text-subtitle1">Цель на год</h6>
-    <InputPrice
-      :model-value="goalValue"
-      label="Сумма"
-      hint="Отображается на главной странице склада"
-      clear
-      :rules="[val => val?.length || 'Обязательное поле']"
-      @update:model-value="onUpdate"
-    />
+    <Dropdown
+      class="q-mt-md"
+      title="Цель на год"
+      opened
+    >
+      <template #body>
+        <InputPrice
+          :model-value="goalValue"
+          label="Сумма"
+          hint="Отображается на главной странице склада"
+          clear
+          :rules="[val => val?.length || 'Обязательное поле']"
+          @update:model-value="onUpdate"
+        />
+      </template>
+    </Dropdown>
   </div>
 </template>
 
@@ -20,11 +27,13 @@ import {
   toRefs
 } from 'vue'
 import InputPrice from 'src/components/InputPrice.vue'
+import Dropdown from 'src/components/Dropdown/index.vue'
 
 export default defineComponent({
   name: 'SettingsGoal',
   components: {
     InputPrice,
+    Dropdown,
   },
   props: {
     goal: {
