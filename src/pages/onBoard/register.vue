@@ -39,6 +39,7 @@
               class="q-pr-md full-width"
               placeholder="Например: 36, 37, 38"
               :disable="sizesCreated"
+              enterkeyhint="done"
             />
             <q-btn
               color="primary"

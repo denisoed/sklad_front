@@ -19,6 +19,7 @@
         dense
         :autofocus="autofocus"
         clearable
+        enterkeyhint="done"
         @update:model-value="search"
       >
         <template v-if="!selectedFilters.search"  #append>

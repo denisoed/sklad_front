@@ -30,6 +30,7 @@
               clearable
               label="Название шаблона"
               class="full-width q-mb-md"
+              enterkeyhint="done"
             />
             <div class="flex no-wrap">
               <q-input
@@ -42,6 +43,7 @@
                 min="1"
                 hint="миллиметры"
                 style="flex: 1;"
+                enterkeyhint="done"
               />
               <q-input
                 v-model="formData.height"
@@ -52,6 +54,7 @@
                 hint="миллиметры"
                 min="1"
                 style="flex: 1;"
+                enterkeyhint="done"
               />
             </div>
           </div>

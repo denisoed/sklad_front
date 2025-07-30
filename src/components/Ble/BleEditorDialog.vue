@@ -18,6 +18,7 @@
               label="Кол-во точек на дюйм(DPI) *"
               class="full-width"
               hint="Указано в документации принтера"
+              enterkeyhint="done"
               :rules="[
                 (val) => !!val || 'Поле обязательно для заполнения',
               ]"
@@ -29,6 +30,7 @@
               label="Ширина *"
               hint="Ширина рабочей зоны в mm"
               class="full-width"
+              enterkeyhint="done"
               :rules="[
                 (val) => !!val || 'Поле обязательно для заполнения',
               ]"
@@ -46,6 +48,7 @@
                 label="Высота"
                 hint="Высота рабочей зоны в mm"
                 class="full-width"
+                enterkeyhint="done"
               />
               <q-input
                 v-model="formData.offset"
@@ -54,6 +57,7 @@
                 label="Отступ от края бумаги в mm"
                 class="full-width"
                 hint="Для колибровки отступа от края бумаги"
+                enterkeyhint="done"
               />
             </q-expansion-item>
           </div>

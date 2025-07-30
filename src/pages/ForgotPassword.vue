@@ -18,6 +18,7 @@
                 :label="$t('email')"
                 outlined
                 tabindex="1"
+                enterkeyhint="done"
               >
                 <template v-slot:prepend>
                   <q-icon name="email"></q-icon>

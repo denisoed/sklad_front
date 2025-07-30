@@ -22,6 +22,7 @@
               :hint="$t('mainSettings.sizesTab.sizesSettings.modal.inputNameHint')"
               class="full-width"
               autofocus
+              enterkeyhint="done"
             />
             <q-input
               v-model="formData.list"
@@ -29,6 +30,7 @@
               class="full-width"
               :label="$t('mainSettings.sizesTab.sizesSettings.modal.inputSizesLabel')"
               :hint="$t('mainSettings.sizesTab.sizesSettings.modal.inputSizesHint')"
+              enterkeyhint="done"
             />
             <q-separator class="full-width" />
             <div class="flex justify-between no-wrap full-width q-gap-md">

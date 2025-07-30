@@ -91,6 +91,7 @@
                   tabindex="4"
                   class="full-width"
                   data-scroller="name"
+                  enterkeyhint="done"
                 />
               </div>
               <q-input
@@ -100,6 +101,7 @@
                 outlined
                 label="Артикул(ID)"
                 readonly
+                enterkeyhint="done"
               />
             </div>
           </div>

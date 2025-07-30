@@ -9,7 +9,7 @@
           <q-card-section class="q-pb-none">
             <q-form ref="resetForm" class="q-px-sm q-pt-md">
               <q-input v-model="password" :type="visibilityPassword ? 'text' : 'password'" :label="$t('newPassword')"
-                outlined class="q-mb-md" tabindex="1">
+                outlined class="q-mb-md" tabindex="1" enterkeyhint="done">
                 <template v-slot:prepend>
                   <q-icon name="lock"></q-icon>
                 </template>
@@ -21,7 +21,7 @@
               </q-input>
               <q-input v-model="passwordConfirm" :type="visibilityPasswordConfirm ? 'text' : 'password'"
                 :label="$t('repeatPassword')" outlined lazy-rules
-                :rules="[val => val == password || $t('incorrectPassword')]" tabindex="2">
+                :rules="[val => val == password || $t('incorrectPassword')]" tabindex="2" enterkeyhint="done">
                 <template v-slot:prepend>
                   <q-icon name="lock"></q-icon>
                 </template>

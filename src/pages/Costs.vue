@@ -78,6 +78,7 @@
                 outlined
                 placeholder="Например: На рекламу"
                 class="q-mb-md full-width"
+                enterkeyhint="done"
               />
               <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">Сколько потратили?</p>
               <q-input
@@ -86,6 +87,7 @@
                 outlined
                 placeholder="Например: 250"
                 class="q-mb-md full-width"
+                enterkeyhint="done"
               />
             </div>
             <q-separator class="full-width q-mb-md" />

@@ -22,6 +22,7 @@
                 lazy-rules
                 :rules="[val => !!val || $t('requiredEmail'), isValidEmail]"
                 tabindex="1"
+                enterkeyhint="done"
               >
                 <template v-slot:prepend>
                   <q-icon name="email"></q-icon>
@@ -35,6 +36,7 @@
                 lazy-rules
                 :rules="[val => !!val || $t('requiredPassword')]"
                 tabindex="1"
+                enterkeyhint="done"
               >
                 <template v-slot:prepend>
                   <q-icon name="lock"></q-icon>
@@ -56,6 +58,7 @@
                 lazy-rules
                 :rules="[val => val == password || $t('incorrectPassword')]"
                 tabindex="2"
+                enterkeyhint="done"
               >
                 <template v-slot:prepend>
                   <q-icon name="mdi-lock-plus"></q-icon>
