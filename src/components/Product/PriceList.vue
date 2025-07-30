@@ -7,8 +7,13 @@
       <div class="pay-methods flex column q-gap-md">
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === DEFAULT_PRICE }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">Цена: {{ defaultPrice }}</div>
-            <q-radio v-model="selected" :val="DEFAULT_PRICE" dense />
+            <div class="pay-methods_title q-mr-auto">Розничная цена</div>
+            <div class="flex items-center q-gap-sm">
+              <div class="pay-methods_value">
+                <PriceFormatter :value="defaultPrice" />
+              </div>
+              <q-radio v-model="selected" :val="DEFAULT_PRICE" dense />
+            </div>
           </label>
           <div v-if="selected === DEFAULT_PRICE" class="pay-methods_body">
           </div>
@@ -20,8 +25,13 @@
           :class="{ 'pay-methods_item--active': selected === price.id }"
         >
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">{{ price.name }}: {{ price.price }}</div>
-            <q-radio v-model="selected" :val="price.id" dense />
+            <div class="pay-methods_title q-mr-auto">{{ price.name }}</div>
+            <div class="flex items-center q-gap-sm">
+              <div class="pay-methods_value">
+                <PriceFormatter :value="price.price" />
+              </div>
+              <q-radio v-model="selected" :val="price.id" dense />
+            </div>
           </label>
           <div v-if="selected === price.id" class="pay-methods_body">
           </div>
@@ -46,9 +56,8 @@
   </Dropdown>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   reactive,
   watch,
@@ -56,87 +65,71 @@ import {
 import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
 import Dropdown from 'src/components/Dropdown'
+import PriceFormatter from 'src/components/PriceFormatter.vue'
 
 const DEFAULT_PRICE = 'DEFAULT_PRICE';
 const OTHER_PRICE = 'OTHER_PRICE';
 
-export default defineComponent({
-  name: 'PriceList',
-  props: {
-    defaultPrice: {
-      type: Number,
-      default: null
-    },
-    prices: {
-      type: Array,
-      default: () => []
-    },
-    modelValue: {
-      type: Number,
-      default: null
-    }
+const props = defineProps({
+  defaultPrice: {
+    type: Number,
+    default: null
   },
-  components: {
-    InputPrice,
-    Dropdown
+  prices: {
+    type: Array,
+    default: () => []
   },
-  emits: ['on-change'],
-  setup(props, { emit }) {
-    // Initialize selected based on modelValue
-    const getInitialSelected = () => {
-      if (props.modelValue === props.defaultPrice) {
-        return DEFAULT_PRICE;
-      }
-      const foundPrice = props.prices.find(price => price.price === props.modelValue);
-      if (foundPrice) {
-        return foundPrice.id;
-      }
-      return OTHER_PRICE;
-    };
+  modelValue: {
+    type: Number,
+    default: null
+  }
+})
 
-    const selected = ref(getInitialSelected());
-    const formData = reactive({
-      otherPrice: props.modelValue !== props.defaultPrice && 
-                  !props.prices.find(price => price.price === props.modelValue) ? 
-                  props.modelValue : null,
-    });
-    
-    const debouncedWatch = debounce((val) => {
-      const price = selected.value === DEFAULT_PRICE ?
-          props.defaultPrice :
-            props.prices.find(price => price.id === selected.value)?.price
-      const result = selected.value === OTHER_PRICE ? formData.otherPrice : price
-      emit('on-change', result)
-    }, 300);
+const emit = defineEmits(['on-change'])
 
-    // Watch for modelValue changes to update selected
-    watch(() => props.modelValue, (newValue) => {
-      if (newValue === props.defaultPrice) {
-        selected.value = DEFAULT_PRICE;
-        formData.otherPrice = null;
-      } else {
-        const foundPrice = props.prices.find(price => price.price === newValue);
-        if (foundPrice) {
-          selected.value = foundPrice.id;
-          formData.otherPrice = null;
-        } else {
-          selected.value = OTHER_PRICE;
-          formData.otherPrice = newValue;
-        }
-      }
-    }, { immediate: true });
+// Initialize selected based on modelValue
+const getInitialSelected = () => {
+  const foundPrice = props.prices.find(price => price.price === props.modelValue);
+  if (foundPrice) {
+    return foundPrice.id;
+  }
+  return DEFAULT_PRICE;
+};
 
-    watch([selected, formData], debouncedWatch, {
-      immediate: true
-    })
+const selected = ref(getInitialSelected());
+const formData = reactive({
+  otherPrice: props.modelValue !== props.defaultPrice && 
+              !props.prices.find(price => price.price === props.modelValue) ? 
+              props.modelValue : null,
+});
 
-    return {
-      selected,
-      formData,
-      DEFAULT_PRICE,
-      OTHER_PRICE,
+const debouncedWatch = debounce((val) => {
+  const price = selected.value === DEFAULT_PRICE ?
+      props.defaultPrice :
+        props.prices.find(price => price.id === selected.value)?.price
+  const result = selected.value === OTHER_PRICE ? formData.otherPrice : price
+  emit('on-change', result)
+}, 300);
+
+// Watch for modelValue changes to update selected
+watch(() => props.modelValue, (newValue) => {
+  if (newValue === props.defaultPrice) {
+    selected.value = DEFAULT_PRICE;
+    formData.otherPrice = null;
+  } else {
+    const foundPrice = props.prices.find(price => price.price === newValue);
+    if (foundPrice) {
+      selected.value = foundPrice.id;
+      formData.otherPrice = null;
+    } else {
+      selected.value = DEFAULT_PRICE;
+      formData.otherPrice = newValue;
     }
   }
+}, { immediate: true });
+
+watch([selected, formData], debouncedWatch, {
+  immediate: true
 })
 </script>
 
@@ -146,6 +139,15 @@ export default defineComponent({
 
   &_title {
     opacity: 0.7;
+  }
+
+  &_value {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    border: 1px solid var(--q-primary);
+    padding: 4px;
+    border-radius: 4px;
   }
   
   &_body {
@@ -162,6 +164,10 @@ export default defineComponent({
     &--active {
       .pay-methods_title {
         opacity: 1;
+      }
+
+      .pay-methods_value {
+        background-color: var(--q-primary);
       }
     }
 
