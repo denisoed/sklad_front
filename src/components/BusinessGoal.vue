@@ -3,7 +3,7 @@
     <div class="container">
       <PageTitle :title="`Склад${skladName ? `: ${skladName}` : ''}`">
         <div>
-          <q-card-section class="q-pt-none text-primary">
+          <q-card-section class="q-pt-none">
             Это главная страница склада.
           </q-card-section>
         </div>

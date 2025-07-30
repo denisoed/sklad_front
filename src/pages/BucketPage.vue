@@ -73,7 +73,7 @@
         >
           <q-icon
             size="sm"
-            name="mdi-basket-outline"
+            name="mdi-cart-outline"
             class="q-mr-sm text-grey-5"
           />
           Корзина пуста

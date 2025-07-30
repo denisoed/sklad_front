@@ -6,7 +6,7 @@
     <div class="bucket-card block-bg" @click="push('/bucket')" v-ripple>
       <div class="bucket-card-content">
         <div class="bucket-card-icon">
-          <q-icon name="mdi-basket-outline" size="lg" />
+          <q-icon name="mdi-cart-outline" size="lg" />
           <div v-if="bucketProductsCount > 0" class="bucket-badge">
             {{ bucketProductsCount }}
           </div>

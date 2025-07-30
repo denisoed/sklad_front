@@ -3,15 +3,13 @@
     <div class="container">
       <PageTitle title="Категории товаров">
         <div>
-          <q-card-section class="q-pt-none text-primary">
+          <q-card-section class="q-pt-none">
             На этой странице находятся товары разбитые по категориям. Категории обеспечивают более удобный визуальный поиск.
           </q-card-section>
-          <q-card-section class="q-pt-none">
-            <ul>
-              <li>
-                Чтобы удалить или отредактировать категорию, удерживайте её несколько секунд.
-              </li>
-            </ul>
+          <q-card-section class="q-pt-none text-primary">
+            <p class="text-caption">
+              Чтобы удалить или отредактировать категорию, удерживайте её несколько секунд.
+            </p>
           </q-card-section>
         </div>
       </PageTitle> 
@@ -71,7 +69,7 @@
         </span>
         <div v-else class="flex column items-center">
           <span>
-            <q-icon size="sm" name="mdi-basket-outline" class="q-mr-sm text-grey-5" />
+            <q-icon size="sm" name="mdi-cart-outline" class="q-mr-sm text-grey-5" />
             Список пуст
           </span>
           <p class="q-mt-md text-subtitle2 ">

@@ -30,7 +30,7 @@ export const MAIN_ROUTES = [
 ]
 
 export const SKLAD_ROUTES = [
-  { path: '/sklad/:skladId', component: () => import('pages/Sklad.vue') },
+  { path: '/sklad/:skladId', component: () => import('src/pages/SkladPage.vue') },
   { path: '/sklad/:skladId/categories', component: () => import('pages/Categories.vue') },
   { path: '/sklad/:skladId/categories/:categoryId', component: () => import('pages/Products.vue') },
   { path: '/sklad/:skladId/product/:productId', component: () => import('pages/ProductPage.vue') },
