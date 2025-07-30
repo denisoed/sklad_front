@@ -443,10 +443,12 @@ export default defineComponent({
     async function loadData() {
       const { sort, ...otherFilters } = selectedFilters.value || {};
       const sizes = otherFilters.sizes
+      const search = otherFilters.search
       const filters = { ...otherFilters }
       delete filters.sizes
+      delete filters.search
       const resp = await searchProducts({
-        q: filters.name_contains || null,
+        q: search || null,
         where: {
           ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
           ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),

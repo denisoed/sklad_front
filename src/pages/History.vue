@@ -28,7 +28,7 @@
         :pagination="pagination"
         row-key="name"
         separator="cell"
-        class="histories-table block-bg full-width q-mb-sm q-mt-md"
+        class="histories-table block-bg full-width q-mb-sm q-mt-md border-radius-sm"
         hide-pagination
         no-data-label="Нет данных"
       >
