@@ -1,7 +1,7 @@
 <template>
   <div class="businnes-goal full-width q-pt-md q-mb-xl">
     <div class="container">
-      <PageTitle :title="`Склад${skladName ? `: ${skladName}` : ''}`">
+      <PageTitle :title="skladName ? skladName : 'Склад'">
         <div>
           <q-card-section class="q-pt-none">
             Это главная страница склада.
