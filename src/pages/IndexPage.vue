@@ -2,47 +2,53 @@
   <q-page>
     <div class="sklads q-mt-lg">
       <div class="sklads_cards" :class="{ 'sklads_cards--much': sklads?.length > 1 }">
-        <Draggable
-          v-if="sklads?.length"
-          handle=".sklads_card-drag"
-          class="flex no-wrap q-gap-md"
-          v-model="sklads"
-          item-key="id"
-          :drag="false"
-        >
-          <template #item="{ element }">
-            <div
-              :key="i"
-              @click="push(`/sklad/${element.id}`)"
-              class="sklads_card block-bg"
-              v-ripple
-            >
-              <div class="sklads_card-drag" />
-              <div
-                class="sklads_card-color"
-                :style="{
-                  'background-color': element?.color,
-                  'color': element?.color?.toLowerCase()?.includes('fff') ? '#000' : '#fff'
-                }"
-              >
-                {{ element?.name?.[0] }}
-              </div>
-              <div class="sklads_card-name">
-                {{ element?.name }}
-              </div>
-            </div>
-          </template>
-        </Draggable>
-        <div
-          v-ripple
-          @click="openedNewSkladModal = true"
-          class="sklads_add flex column items-center justify-center cursor-pointer text-grey"
-          :class="{ 'sklads_add--active': !sklads?.length }"
-          :style="[!sklads?.length && 'width: 100%']"
-        >
-          <q-icon name="mdi-plus" size="sm" />
-          <span>Создать склад</span>
+        <div v-if="loadingSklads" class="flex no-wrap q-gutter-md overflow-hidden">
+          <q-skeleton width="140px" class="border-radius-sm" height="112px" />
+          <q-skeleton width="140px" class="border-radius-sm" height="112px" />
+          <q-skeleton width="140px" class="border-radius-sm" height="112px" />
         </div>
+        <template v-else>
+          <Draggable
+            v-if="sklads?.length"
+            handle=".sklads_card-drag"
+            class="flex no-wrap q-gap-md"
+            v-model="sklads"
+            item-key="id"
+            :drag="false"
+          >
+            <template #item="{ element }">
+              <div
+                :key="i"
+                @click="push(`/sklad/${element.id}`)"
+                class="sklads_card block-bg"
+                v-ripple
+              >
+                <div class="sklads_card-drag" />
+                <div
+                  class="sklads_card-color"
+                  :style="{
+                    'background-color': element?.color,
+                    'color': element?.color?.toLowerCase()?.includes('fff') ? '#000' : '#fff'
+                  }"
+                >
+                  {{ element?.name?.[0] }}
+                </div>
+                <div class="sklads_card-name">
+                  {{ element?.name }}
+                </div>
+              </div>
+            </template>
+          </Draggable>
+          <div
+            v-ripple
+            @click="openedNewSkladModal = true"
+            class="sklads_add flex column items-center justify-center cursor-pointer text-grey"
+            :class="{ 'sklads_add--active full-width text-bold': !sklads?.length }"
+          >
+            <q-icon name="mdi-plus" size="sm" :class="{ 'text-primary': !sklads?.length }" />
+            <span :class="{ 'text-primary': !sklads?.length }">Создать склад</span>
+          </div>
+        </template>
       </div>
     </div>
 
@@ -93,6 +99,7 @@ const { profile } = useProfile()
 const { fetchSklads, sklads, onCreateNew } = useSklads()
 const { bucketProductsCount, loadBucketProducts } = useBucket()
 const openedNewSkladModal = ref(false)
+const loadingSklads = ref(true)
 
 const skladsIDs = computed(
   () => sklads.value.map(s => s.id) || []
@@ -109,6 +116,7 @@ function refetchSklads() {
 // Load bucket data when sklads change
 watch(sklads, (val) => {
   if (val?.length) {
+    loadingSklads.value = false
     loadBucketProducts(
       null,
       {
@@ -119,6 +127,10 @@ watch(sklads, (val) => {
       { fetchPolicy: 'network-only' }
     )
   }
+
+  setTimeout(() => {
+    loadingSklads.value = false
+  }, 1000)
 }, { immediate: true })
 </script>
 
