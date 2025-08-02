@@ -132,33 +132,10 @@
       @submit="update(selectedSaleProduct, $event)"
     />
 
-    <q-dialog v-model="imagePreviewDialog" position="bottom">
-      <q-swipe-to-close
-        v-model="imagePreviewDialog"
-        direction="down"
-      >
-        <q-card class="full-width">
-          <q-img
-            :src="imagePreview"
-            spinner-size="md"
-            spinner-color="grey"
-          />
-          <q-btn
-            round
-            push
-            color="deep-orange"
-            size="sm"
-            v-close-popup
-            class="absolute-top-right q-mr-md q-mt-md"
-          >
-            <q-icon
-              name="mdi-close"
-              color="white"
-            />
-          </q-btn>
-        </q-card>
-      </q-swipe-to-close>
-    </q-dialog>
+    <ImagePreviewDialog
+      v-model="imagePreviewDialog"
+      :image-src="imagePreview"
+    />
   </q-page>
 </template>
 
@@ -182,6 +159,7 @@ import BucketTable from 'src/components/Bucket/BucketTable.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
 import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
+import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
 import { useMutation } from "@vue/apollo-composable";
 import {
   CREATE_ACTIVITY,

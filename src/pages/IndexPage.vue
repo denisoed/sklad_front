@@ -37,6 +37,7 @@
           v-ripple
           @click="openedNewSkladModal = true"
           class="sklads_add flex column items-center justify-center cursor-pointer text-grey"
+          :class="{ 'sklads_add--active': !sklads?.length }"
           :style="[!sklads?.length && 'width: 100%']"
         >
           <q-icon name="mdi-plus" size="sm" />
@@ -67,9 +68,8 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   computed,
   ref,
   watch
@@ -87,72 +87,39 @@ import SkladsStatistics from 'src/components/Sklads/Statistics.vue'
 import BucketCardHome from 'src/components/BucketCardHome.vue'
 import Draggable from 'vuedraggable'
 
-export default defineComponent({
-  name: 'skladsPage',
-  components: {
-    CrudModal,
-    SkladsStatistics,
-    BucketCardHome,
-    Draggable,
-  },
-  setup() {
-    const { push } = useRouter()
+const { push } = useRouter()
 
-    const { profile, subscrHasExpired } = useProfile()
-    const { fetchSklads, sklads, onCreateNew } = useSklads()
-    const { bucketProductsCount, bucketProducts, loadBucketProducts } = useBucket()
-    const openedNewSkladModal = ref(false)
+const { profile } = useProfile()
+const { fetchSklads, sklads, onCreateNew } = useSklads()
+const { bucketProductsCount, loadBucketProducts } = useBucket()
+const openedNewSkladModal = ref(false)
 
-    const skladsIDs = computed(
-      () => sklads.value.map(s => s.id) || []
-    );
+const skladsIDs = computed(
+  () => sklads.value.map(s => s.id) || []
+);
 
-    function onCloseModal() {
-      openedNewSkladModal.value = false
-    }
+function onCloseModal() {
+  openedNewSkladModal.value = false
+}
 
-    function refresh(done) {
-      window.location.reload()
-      done()
-    }
+function refetchSklads() {
+  fetchSklads(profile.value.id)
+}
 
-    function refetchSklads() {
-      fetchSklads(profile.value.id)
-    }
-
-    // Load bucket data when sklads change
-    watch(sklads, (val) => {
-      if (val?.length) {
-        loadBucketProducts(
-          null,
-          {
-            where: {
-              sklad: val.map(s => s.id)
-            }
-          },
-          { fetchPolicy: 'network-only' }
-        )
-      }
-    }, { immediate: true })
-
-    return {
-      sklads,
-      profile,
-      openedNewSkladModal,
-      onCloseModal,
-      refetchSklads,
-      CREATE_SKLAD,
-      UPDATE_SKLAD,
-      onCreateNew,
-      subscrHasExpired,
-      skladsIDs,
-      refresh,
-      push,
-      bucketProductsCount,
-      bucketProducts,
-    }
+// Load bucket data when sklads change
+watch(sklads, (val) => {
+  if (val?.length) {
+    loadBucketProducts(
+      null,
+      {
+        where: {
+          sklad: val.map(s => s.id)
+        }
+      },
+      { fetchPolicy: 'network-only' }
+    )
   }
-})
+}, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
@@ -173,6 +140,10 @@ export default defineComponent({
     height: 112px;
     border-radius: var(--border-radius);
     border: 2px dashed var(--border-color);
+
+    &--active {
+      border-color: var(--q-primary);
+    }
   }
   
   &_cards {
