@@ -14,6 +14,7 @@
       <q-icon v-if="t.icon" :name="t.icon" />
     </div>
     <div
+      v-if="typeof selected === 'number'"
       class="tab-bg"
       :style="{
         width: `${100 / tabs.length}%`,
@@ -23,37 +24,31 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
-  ref
+  ref,
+  watch
 } from 'vue'
-
-export default defineComponent({
-  name: 'SwitchTabs',
-  props: {
-    tabs: {
-      type: Array,
-      default: () => []
-    },
-    selectedTab: {
-      type: Number,
-      default: 0,
-    }
+const props = defineProps({
+  tabs: {
+    type: Array,
+    default: () => []
   },
-  setup(props, { emit }) {
-    const selected = ref(props.selectedTab)
-
-    function onClick(index, value) {
-      selected.value = index
-      emit('on-change', value)
-    }
-
-    return {
-      selected,
-      onClick
-    }
+  selectedTab: {
+    type: Number,
+    default: 0,
   }
+})
+const emit = defineEmits(['on-change'])
+const selected = ref(props.selectedTab)
+
+function onClick(index, value) {
+  selected.value = index
+  emit('on-change', value)
+}
+
+watch(() => props.selectedTab, (val) => {
+  selected.value = val
 })
 </script>
 
