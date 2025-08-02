@@ -52,7 +52,7 @@ const formattedSizes = computed(() => {
   border-radius: var(--border-radius-sm);
   padding: 3px 4px;
   color: var(--q-primary-text);
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -85,7 +85,7 @@
               <q-btn
                 v-for="(s, i) of listSizes"
                 :key="i"
-                style="width:30%;height:50px;"
+                style="height:50px;"
                 :color="!all && !s.has ? 'grey' : 'primary'"
                 :outline="!selectedSizes.some(sz => sz.size === s.size)"
                 push
@@ -470,9 +470,12 @@ watch(() => props.modelValue, (val) => {
     }
 
     &_list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 8px;
+      display: flex;
+      gap: 8px;
+
+      span {
+        line-height: normal;
+      }
     }
   }
 

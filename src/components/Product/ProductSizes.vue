@@ -1,5 +1,5 @@
 <template>
-  <div class="product-sizes border-section">
+  <div class="product-sizes border-section border-radius-sm">
     <div class="q-pa-xs">
       <q-radio
         v-model="typeId"
@@ -7,10 +7,10 @@
         :val="s.id"
         :key="i"
         :label="s.name"
-        :disable="selected.length > 0"
+        :disable="!!selected.length && !!typeSizeId"
       />
     </div>
-    <div v-if="typeSizes" class="flex no-wrap q-gap-sm items-start q-px-md q-mb-md">
+    <div v-if="typeSizes" class="flex no-wrap q-gap-sm items-start q-px-md q-mb-sm">
       <BtnSizesList
         :selected="selectedSizes"
         :sizes="typeSizes.list.map(l => l.size)"

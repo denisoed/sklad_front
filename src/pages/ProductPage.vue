@@ -1,7 +1,53 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle :title="isEdit ? 'Редактировать товар' : 'Добавить новый товар'" />
+      <PageTitle :title="isEdit ? 'Редактировать товар' : 'Добавить новый товар'">
+        <template #custom>
+          <q-btn
+            v-if="isEdit"
+            v-permissions="{ permissions: [READ_HISTORY, CAN_REMOVE_PRODUCT], skladId: product?.sklad?.value }"
+            icon="mdi-cog-outline"
+            push
+            round
+            text-color="primary"
+            class="q-ml-auto"
+          >
+            <q-menu style="width: 200px;">
+              <q-list>
+                <q-item
+                  v-if="historyLink"
+                  v-permissions="{ permissions: [READ_HISTORY], skladId: product?.sklad?.value }"
+                  :to="historyLink"
+                  clickable
+                  v-close-popup
+                >
+                  <q-item-section>
+                    <div class="flex no-wrap items-center">
+                      <q-icon name="mdi-history" class="q-mr-sm" size="xs" />
+                      История товара
+                    </div>
+                  </q-item-section>
+                </q-item>
+                <q-item
+                  v-permissions="{ permissions: [CAN_REMOVE_PRODUCT], skladId: product?.sklad?.value }"
+                  clickable
+                  v-close-popup
+                  py="10px"
+                >
+                  <q-item-section
+                    @click="cancel('remove')"
+                  >
+                    <div class="flex items-center">
+                      <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
+                      <span class="text-deep-orange">Удалить этот товар</span>
+                    </div>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </template>
+      </PageTitle>
 
       <h6
         class="full-width text-center text-grey-5"
@@ -244,48 +290,6 @@
 
         <div class="row q-mt-md">
           <div class="col-12 flex">
-            <q-btn
-              v-if="isEdit"
-              v-permissions="{ permissions: [READ_HISTORY, CAN_REMOVE_PRODUCT], skladId: product?.sklad?.value }"
-              icon="mdi-cog-outline"
-              push
-              color="secondary"
-              class="q-mr-sm"
-            >
-              <q-menu>
-                <q-list>
-                  <q-item
-                    v-if="historyLink"
-                    v-permissions="{ permissions: [READ_HISTORY], skladId: product?.sklad?.value }"
-                    :to="historyLink"
-                    clickable
-                    v-close-popup
-                  >
-                    <q-item-section>
-                      <div class="flex no-wrap items-center">
-                        <q-icon name="mdi-history" class="q-mr-sm" size="xs" />
-                        История товара
-                      </div>
-                    </q-item-section>
-                  </q-item>
-                  <q-item
-                    v-permissions="{ permissions: [CAN_REMOVE_PRODUCT], skladId: product?.sklad?.value }"
-                    clickable
-                    v-close-popup
-                    py="10px"
-                  >
-                    <q-item-section
-                      @click="cancel('remove')"
-                    >
-                      <div class="flex items-center">
-                        <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
-                        <span class="text-deep-orange">Удалить этот товар</span>
-                      </div>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
             <div v-if="isEdit" v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: product?.sklad?.value }">
               <q-btn
                 icon="mdi-basket-plus-outline"
