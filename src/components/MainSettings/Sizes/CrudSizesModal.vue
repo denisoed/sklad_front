@@ -4,16 +4,19 @@
     position="bottom"
     @update:model-value="close"
   >
-    <q-swipe-to-close
-      @update:model-value="close"
+    <SwipeToClose
       direction="down"
-      style="width: 350px"
+      @on-close="close"
     >
-      <q-card class="full-width">
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
+      <q-card class="full-width" style="width: 350px">
+        <div class="dialog-close" id="dialog-close">
+          <div class="dialog-close-line" />
+        </div>
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
             {{ item ? $t('update') : $t('create') }} {{ title }}
           </p>
+          <q-separator class="full-width q-mt-sm" />
           <div class="flex justify-center q-gap-md full-width q-mt-md">
             <q-input
               v-model="formData.name"
@@ -64,7 +67,7 @@
           <q-spinner size="40px" color="primary" />
         </q-inner-loading>
       </q-card>
-    </q-swipe-to-close>
+    </SwipeToClose>
   </q-dialog>
 </template>
 
@@ -78,9 +81,13 @@ import {
 } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import { useMutation } from '@vue/apollo-composable'
+import SwipeToClose from 'src/components/SwipeToClose.vue'
 
 export default defineComponent({
   name: 'CrubSizesModal',
+  components: {
+    SwipeToClose
+  },
   props: {
     opened: {
       type: Boolean,
