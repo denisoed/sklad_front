@@ -3,32 +3,32 @@
     <div class="container">
       <PageTitle title="Настройки склада">
         <template #custom>
-            <q-btn
-              icon="mdi-cog-outline"
-              push
-              round
-              text-color="primary"
-              class="q-ml-auto"
-            >
-              <q-menu style="width: 200px;">
-                <q-list>
-                  <q-item
-                    clickable
-                    v-close-popup
-                    py="10px"
+          <q-btn
+            icon="mdi-cog-outline"
+            push
+            round
+            text-color="primary"
+            class="q-ml-auto"
+          >
+            <q-menu style="width: 200px;">
+              <q-list>
+                <q-item
+                  clickable
+                  v-close-popup
+                  py="10px"
+                >
+                  <q-item-section
+                    @click="onRemoveSklad"
                   >
-                    <q-item-section
-                      @click="onRemoveSklad"
-                    >
-                      <div class="flex items-center no-wrap">
-                        <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
-                        <span class="text-deep-orange whitespace-nowrap">Удалить склад</span>
-                      </div>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
+                    <div class="flex items-center no-wrap">
+                      <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
+                      <span class="text-deep-orange whitespace-nowrap">Удалить склад</span>
+                    </div>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
         </template>
       </PageTitle> 
       <q-tabs

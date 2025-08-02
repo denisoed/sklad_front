@@ -14,7 +14,7 @@
       <q-icon v-if="t.icon" :name="t.icon" />
     </div>
     <div
-      v-if="typeof selected === 'number'"
+      v-if="selected !== null"
       class="tab-bg"
       :style="{
         width: `${100 / tabs.length}%`,

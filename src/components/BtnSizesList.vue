@@ -30,41 +30,16 @@
         <b>{{ countSizes }}шт</b>
       </div>
     </div>
-    <q-dialog v-model="dialog" position="bottom">
-      <q-card style="width: 350px">
-        <q-card-section class="flex no-wrap column row q-gap-md items-center no-wrap q-pb-xl">
-          <InputPlusMinusVue
-            class="full-width"
-            :max="100"
-            :model-value="selectedSize.count"
-            :label="`Количество единиц для размера <b>${selectedSize.size}</b>`"
-            @update:model-value="selectedCounts = $event"
-          />
-          <q-separator class="full-width" />
-          <div class="flex justify-between full-width no-wrap q-gap-md">
-            <q-btn
-              color="grey"
-              icon="mdi-close"
-              push
-              class="button-size"
-              @click="dialog = false"
-            />
-            <q-btn
-              class="button-size"
-              color="primary"
-              icon="mdi-check"
-              push
-              @click="setSizes"
-            />
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <SizeCountDialog
+      v-model="dialog"
+      :selected-size="selectedSize"
+      @submit="setSizes"
+    />
   </div>
 </template>
 
 <script>
-import InputPlusMinusVue from 'src/components/InputPlusMinus'
+import SizeCountDialog from 'src/components/Dialogs/SizeCountDialog.vue'
 import {
   defineComponent,
   ref,
@@ -76,7 +51,7 @@ import {
 export default defineComponent({
   name: 'BtnSizesList',
   components: {
-    InputPlusMinusVue,
+    SizeCountDialog,
   },
   props: {
     selected: {
@@ -93,7 +68,6 @@ export default defineComponent({
     const { selected, sizes } = toRefs(props)
     const dialog = ref(false)
     const selectedSize = ref(null)
-    const selectedCounts = ref(0)
     const selectedSizes = ref([])
     const listSizes = ref([])
 
@@ -119,23 +93,21 @@ export default defineComponent({
       emit('on-change', selectedSizes.value.map(size => ({ size })))
     }
 
-    function setSizes() {
-      dialog.value = false
-      if (selectedCounts.value !== selectedSize.value.count) {
-        if (selectedCounts.value < selectedSize.value.count) {
-          const iterator = selectedCounts.value == 0 ? selectedSize.value.count : selectedSize.value.count - selectedCounts.value
+    function setSizes(selectedCount) {
+      if (selectedCount !== selectedSize.value.count) {
+        if (selectedCount < selectedSize.value.count) {
+          const iterator = selectedCount == 0 ? selectedSize.value.count : selectedSize.value.count - selectedCount
           for (let index = 0; index < iterator; index++) {
             removeItemOnce(selectedSizes.value, selectedSize.value.size)
           }
         } else {
-          const iterator = selectedCounts.value - selectedSize.value.count   
+          const iterator = selectedCount - selectedSize.value.count   
           for (let index = 0; index < iterator; index++) {
             selectedSizes.value.push(selectedSize.value.size)
           }
         }
         createListSizes(sizes.value, selectedSizes.value)
       }
-      selectedCounts.value = 0
       selectedSize.value = null
       emit('on-change', selectedSizes.value.map(size => ({ size })))
     }
@@ -191,7 +163,6 @@ export default defineComponent({
       setSize,
       listSizes,
       onMouseDown,
-      selectedCounts,
       countSizes
     }
   }
