@@ -488,11 +488,6 @@ export default defineComponent({
     onBeforeMount(() => {
       initFiltersFromUrl();
       loadData();
-      loadCategories(
-        null,
-        { where: { sklad: sklads.value.map(s => s.id) }},
-        { fetchPolicy: 'network-only' }
-      )
     })
 
     onMounted(() => {
@@ -504,6 +499,16 @@ export default defineComponent({
     watch(viewMode, (newValue) => {
       localStorage.setItem('products-view-mode', newValue)
     })
+
+    watch(sklads, (val) => {
+      if (val.length) {
+        loadCategories(
+          null,
+          { where: { sklad: sklads.value.map(s => s.id) }},
+          { fetchPolicy: 'network-only' }
+        )
+      }
+    }, { immediate: true })
 
     return {
       searchLoading,

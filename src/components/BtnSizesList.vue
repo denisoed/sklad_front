@@ -8,7 +8,6 @@
           :key="i"
           color="primary"
           :label="s.size"
-          size="lg"
           class="border-radius-sm"
           v-touch-hold.mouse="onHold"
           @click="setSize(s)"
