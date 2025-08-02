@@ -2,16 +2,15 @@
   <div class="flex no-wrap items-center">
     <SwitchTabs
       v-if="withButtons"
-      :selected-tab="selectedTab"
+      :selected-tab="localSelectedTab"
       class="q-mr-md"
       :tabs="TABS"
-      @on-change="onChange"
+      @on-change="onChangeTab"
       style="width: auto;"
     />
     <q-btn
       icon="event"
       round
-      :text-color="calendarDate ? 'white' : 'primary'"
       :color="calendarDate ? 'primary' : ''"
       class="q-ml-auto"
     >
@@ -34,10 +33,9 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import moment from 'moment'
 import {
-  defineComponent,
   ref
 } from 'vue'
 import useDate from 'src/modules/useDate'
@@ -59,82 +57,71 @@ const TABS = [
   },
 ]
 
-export default defineComponent({
-  name: 'FilterDates',
-  components: {
-    SwitchTabs
+const props = defineProps({
+  withButtons: {
+    type: Boolean,
+    default: true
   },
-  props: {
-    withButtons: {
-      type: Boolean,
-      default: true
-    },
-    disablePrevDates: {
-      type: Boolean,
-      default: false
-    },
-    selectedToday: {
-      type: Boolean,
-      default: false
-    },
-    selectedTab: {
-      type: Number,
-      default: 2
-    }
+  disablePrevDates: {
+    type: Boolean,
+    default: false
   },
-  emits: ['on-change'],
-  setup(props, { emit }) {
-    const { getBetweenDays, getCurrentWeek, getCurrentMonth } = useDate()
-
-    const calendarDate = ref(props.selectedToday ? moment().startOf(DAY).format(FILTER_FORMAT) : null)
-
-    function loadActivities(dates = null) {
-      emit('on-change', dates)
-    }
-
-    function optionsFn(date) {
-      if (props.disablePrevDates) {
-        return date >= moment().startOf(DAY).format(FILTER_FORMAT)
-      }
-      return true
-    }
-
-    function onChange(val) {
-      let params = {} 
-      if (val === MONTH) {
-        params = { dates: getCurrentMonth()}
-      } else if (val === WEEK) {
-        params = { dates: getCurrentWeek()}
-      } else {
-        params = { dates: [moment().startOf(DAY).format(FILTER_FORMAT)]}
-      }
-      loadActivities(params)
-    }
-
-    function filterByCalendar() {
-      const dates = calendarDate.value.map(cd => {
-        if (typeof cd === 'object') {
-          return getBetweenDays(Object.values(cd))
-        }
-        return cd
-      })
-      const flatted = dates.flat(1)
-      const formattedDates = flatted.map(fd => moment(fd).format(FILTER_FORMAT))
-      loadActivities({ dates: formattedDates })
-    }
-
-    function clear() {
-      calendarDate.value = null;
-    }
-
-    return {
-      calendarDate,
-      TABS,
-      filterByCalendar,
-      clear,
-      optionsFn,
-      onChange
-    }
+  selectedToday: {
+    type: Boolean,
+    default: false
+  },
+  selectedTab: {
+    type: Number,
+    default: 2
   }
 })
+
+const emit = defineEmits(['on-change'])
+
+const { getBetweenDays, getCurrentWeek, getCurrentMonth } = useDate()
+
+const calendarDate = ref(props.selectedToday ? moment().startOf(DAY).format(FILTER_FORMAT) : null)
+const localSelectedTab = ref(props.selectedTab)
+
+function loadActivities(dates = null) {
+  emit('on-change', dates)
+}
+
+function optionsFn(date) {
+  if (props.disablePrevDates) {
+    return date >= moment().startOf(DAY).format(FILTER_FORMAT)
+  }
+  return true
+}
+
+function onChangeTab(val) {
+  let params = {} 
+  if (val === MONTH) {
+    params = { dates: getCurrentMonth()}
+  } else if (val === WEEK) {
+    params = { dates: getCurrentWeek()}
+  } else {
+    params = { dates: [moment().startOf(DAY).format(FILTER_FORMAT)]}
+  }
+  loadActivities(params)
+}
+
+function filterByCalendar() {
+  if (!calendarDate.value) return;
+  const dates = calendarDate.value.map(cd => {
+    if (typeof cd === 'object') {
+      return getBetweenDays(Object.values(cd))
+    }
+    return cd
+  })
+  const flatted = dates.flat(1)
+  const formattedDates = flatted.map(fd => moment(fd).format(FILTER_FORMAT))
+  localSelectedTab.value = null
+  loadActivities({ dates: formattedDates })
+}
+
+function clear() {
+  calendarDate.value = null
+  localSelectedTab.value = props.selectedTab
+}
 </script>

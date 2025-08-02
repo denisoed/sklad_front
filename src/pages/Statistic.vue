@@ -3,7 +3,7 @@
     <div class="container">
       <PageTitle title="Отчеты по всем складам" />
       <div v-permissions="[READ_STATISTIC_FINANCE]" class="q-mb-lg">
-        <h6 class="text-h6 q-mb-md q-mt-none">Сводка</h6>
+        <h6 class="text-h6 q-mb-md q-mt-none">Финансы</h6>
         <div class="statistic-cards q-gap-md">
           <div
             v-for="(c, i) of statisticFinance"
