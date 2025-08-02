@@ -12,7 +12,7 @@
         <div class="dialog-close" id="dialog-close">
           <div class="dialog-close-line" />
         </div>
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
             {{ item ? $t('update') : $t('create') }} {{ title }}
           </p>
@@ -27,14 +27,44 @@
               autofocus
               enterkeyhint="done"
             />
-            <q-input
-              v-model="formData.list"
-              outlined
-              class="full-width"
-              :label="$t('mainSettings.sizesTab.sizesSettings.modal.inputSizesLabel')"
-              :hint="$t('mainSettings.sizesTab.sizesSettings.modal.inputSizesHint')"
-              enterkeyhint="done"
-            />
+            
+            <!-- Dynamic sizes fields -->
+            <div class="full-width">
+              <p class="text-subtitle2 q-mb-sm">{{ $t('mainSettings.sizesTab.sizesSettings.modal.inputSizesLabel') }}</p>
+              <div 
+                v-for="(size, index) in formData.sizes" 
+                :key="index"
+                class="flex q-gap-sm q-mb-sm items-center no-wrap full-width"
+              >
+                <q-input
+                  v-model="formData.sizes[index]"
+                  outlined
+                  dense
+                  class="full-width"
+                  placeholder="Название размера"
+                  enterkeyhint="done"
+                />
+                <q-btn
+                  v-if="formData.sizes.length > 1"
+                  round
+                  size="sm"
+                  push
+                  color="deep-orange"
+                  icon="mdi-trash-can-outline"
+                  @click="removeSize(index)"
+                />
+                <q-btn
+                  v-if="index === formData.sizes.length - 1"
+                  round
+                  size="sm"
+                  push
+                  color="primary"
+                  icon="mdi-plus"
+                  @click="addSize"
+                />
+              </div>
+            </div>
+            
             <q-separator class="full-width" />
             <div class="flex justify-between no-wrap full-width q-gap-md">
               <q-btn
@@ -57,7 +87,7 @@
                 color="primary"
                 icon="mdi-check"
                 push
-                :disabled="!formData.name || !formData.list"
+                :disabled="!formData.name || !hasValidSizes"
                 @click="save"
               />
             </div>
@@ -124,7 +154,7 @@ export default defineComponent({
     } = toRefs(props)
     const formData = reactive({
       name: null,
-      list: null
+      sizes: ['']
     })
 
     const { showSuccess, showError } = useHelpers()
@@ -145,16 +175,34 @@ export default defineComponent({
       updatedLoading.value
     )
 
+    const hasValidSizes = computed(() => {
+      return formData.sizes.some(size => size && size.trim() !== '')
+    })
+
     function close() {
       emit('close')
-      formData.list = null
+      formData.sizes = ['']
       formData.name = null
     }
 
+    function addSize() {
+      formData.sizes.push('')
+    }
+
+    function removeSize(index) {
+      if (formData.sizes.length > 1) {
+        formData.sizes.splice(index, 1)
+      }
+    }
+
     async function createToDB() {
+      const validSizes = formData.sizes
+        .filter(size => size && size.trim() !== '')
+        .map(size => ({ size: size.trim() }))
+
       const { data } = await create({
         data: {
-          list: formData.list.split(',').map(s => ({ size: s?.trim() })),
+          list: validSizes,
           name: formData.name,
           ...extendCreateParams.value 
         }
@@ -168,10 +216,14 @@ export default defineComponent({
     }
     
     async function updateFromDB() {
+      const validSizes = formData.sizes
+        .filter(size => size && size.trim() !== '')
+        .map(size => ({ size: size.trim() }))
+
       await update({
         id: item.value?.id,
         data: {
-          list: formData.list.split(',').map(s => ({ size: s?.trim() })),
+          list: validSizes,
           name: formData.name, 
         }
       })
@@ -183,7 +235,7 @@ export default defineComponent({
     }
 
     async function save() {
-      if (formData.name && formData.list) {
+      if (formData.name && hasValidSizes.value) {
         try {
           if (item.value) {
             await updateFromDB()
@@ -206,15 +258,22 @@ export default defineComponent({
 
     watch(item, (newVal) => {
       formData.name = newVal?.name
-      formData.list = newVal?.list.map(item => item.size).join(', ');
+      if (newVal?.list && newVal.list.length > 0) {
+        formData.sizes = newVal.list.map(item => item.size)
+      } else {
+        formData.sizes = ['']
+      }
     })
 
     return {
       close,
       save,
       remove,
+      addSize,
+      removeSize,
       formData,
       isLoading,
+      hasValidSizes,
     }
   }
 })
