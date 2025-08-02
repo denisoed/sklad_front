@@ -6,7 +6,7 @@
       type="area"
       :options="chartOptions"
       :series="series"
-    ></VueApexCharts>
+    />
   </div>
 </template>
 
@@ -29,15 +29,21 @@ const props = defineProps({
 
 const { categories, series } = toRefs(props)
 
+function getThemeMode() {
+  const isDark = LocalStorage.getItem(IS_DARK_MODE)
+  if (isDark === null) return 'dark'
+  return isDark ? 'dark' : 'light'
+}
+
 const chartOptions = computed(() => ({
   theme: {
-    mode: LocalStorage.getItem(IS_DARK_MODE) ? 'dark' : 'light'
+    mode: getThemeMode()
   },
   colors: ['var(--q-primary)'],
   chart: {
     id: 'line-chart',
     toolbar: {
-      show: false
+      show: false,
     },
     legend: {
       show: false
