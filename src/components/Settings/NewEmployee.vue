@@ -4,8 +4,15 @@
     position="bottom"
     @update:model-value="close"
   >
-    <q-card style="width: 350px" class="new-employee">
-      <q-card-section class="flex no-wrap column row items-center no-wrap q-pa-none q-pb-xl">
+    <SwipeToClose
+      direction="down"
+      @on-close="close"
+    >
+      <q-card class="new-employee">
+        <div class="dialog-close" id="dialog-close">
+          <div class="dialog-close-line" />
+        </div>
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pa-none q-pb-xl">
         <div class="flex justify-center full-width">
           <div class="q-px-md q-pt-md q-pb-sm full-width new-employee_field">
             <q-input
@@ -17,13 +24,13 @@
               placeholder="Введите телеграм ID"
               enterkeyhint="done"
               dense
-              :model-value="formData.telegramId || formData.email"
+              :model-value="formData.telegramId"
               @update:model-value="findUser"
               :readonly="!!user"
               :loading="loadingUsers"
             >
               <template #append v-if="!loadingUsers">
-                <q-icon v-if="isValidEmail" name="check" class="text-green" />
+                <q-icon v-if="hasUser" name="check" class="text-primary" />
                 <q-icon v-else name="search" />
               </template>
       
@@ -37,8 +44,15 @@
             </q-input>
           </div>
           <div class="new-employee_checkboxes q-px-sm q-pb-md">
-            <!-- <q-checkbox v-model="allPermissions" label="Дать все права" />
-            <q-separator /> -->
+            <q-checkbox
+              :model-value="selectedPermissions"
+              @update:model-value="selectAllPermissions"
+            >
+              <span class="text-bold">
+                {{ selectedPermissions ? 'Снять все права' : 'Дать все права' }}
+              </span>
+            </q-checkbox>
+            <q-separator />
             <q-checkbox
               v-for="(p, i) of listPermissions"
               :key="i"
@@ -64,7 +78,7 @@
                 color="primary"
                 icon="mdi-check"
                 push
-                :disabled="!isValidEmail"
+                :disabled="!hasUser"
                 @click="submit"
               />
             </div>
@@ -75,13 +89,13 @@
         <q-spinner-gears size="50px" color="primary" />
       </q-inner-loading>
     </q-card>
+    </SwipeToClose>
   </q-dialog>
 </template>
 
-<script>
+<script setup>
 import {
   computed,
-  defineComponent,
   reactive,
   toRefs,
   watch,
@@ -92,131 +106,121 @@ import {
   USERS
 } from 'src/graphql/types'
 import useSklads from 'src/modules/useSklads'
+import useProfile from 'src/modules/useProfile'
 import { ALL_PERMISSIONS_WITH_DESCRIPTION } from 'src/permissions'
+import SwipeToClose from 'src/components/SwipeToClose.vue'
 
-export default defineComponent({
-  name: 'NewEmployee',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    user: {
-      type: Object,
-      defailt: null
-    }
+const props = defineProps({
+  opened: {
+    type: Boolean,
+    default: false
   },
-  emits: ['close', 'save', 'on-create-new'],
-  setup(props, { emit }) {
-    const {
-      user,
-      opened
-    } = toRefs(props)
-    const { sklad } = useSklads()
-
-    const formData = reactive({
-      id: null,
-      telegramId: null,
-      email: null,
-      permissions: [],
-      oldPermissions: [],
-    })
-    
-    const menu = ref(false)
-    const allPermissions = ref(false)
-    const isValidEmail = ref(false)
-
-    const {
-      load: loadUsers,
-      result: resultUsers,
-      loading: loadingUsers,
-    } = useLazyQuery(USERS)
-
-    function reset() {
-      formData.id = null
-      formData.telegramId = null
-      formData.email = null
-      formData.permissions = []
-      formData.oldPermissions = []
-      isValidEmail.value = false
-    }
-
-    function close() {
-      emit('close')
-    }
-
-    function submit() {
-      const action = user.value ? 'update' : 'create'
-      emit(action, formData)
-      close()
-    }
-
-    function selectUser(user) {
-      isValidEmail.value = true
-      formData.id = user?.id
-      formData.telegramId = user?.telegramId
-      formData.email = user?.email
-      formData.oldPermissions = user?.permissions || []
-      menu.value = false
-    }
-
-    async function findUser(val) {
-      isValidEmail.value = false
-      formData.telegramId = val
-      menu.value = true
-      loadUsers(
-        null,
-        {
-          where: {
-            _or: [
-              { email_contains: val },
-              { telegramId_contains: val },
-            ],
-            id_ne: sklad.value?.owner?.id
-          }
-        },
-        { fetchPolicy: 'network-only' }
-      )
-    }
-
-    watch(user, (newVal) => {
-      if (newVal) {
-        selectUser(newVal)
-        const skladPermissions = newVal.permissions.find(p => p.sklad.id === sklad.value?.id)
-        formData.permissions = skladPermissions?.list || []
-      }
-    })
-
-    watch(opened, (newVal) => {
-      if (!newVal) {
-        findUser()
-      }
-    })
-
-    const listPermissions = computed(() => {
-      return ALL_PERMISSIONS_WITH_DESCRIPTION.map(p => ({
-        val: p.val,
-        label: p.description,
-      }))
-    })
-
-    const users = computed(() => resultUsers.value?.users || [])
-
-    return {
-      close,
-      submit,
-      formData,
-      listPermissions,
-      menu,
-      loadingUsers,
-      users,
-      findUser,
-      selectUser,
-      isValidEmail,
-      allPermissions
-    }
+  user: {
+    type: Object,
+    defailt: null
   }
 })
+const emit = defineEmits(['close', 'save', 'on-create-new'])
+
+const {
+  user,
+  opened
+} = toRefs(props)
+const { sklad } = useSklads()
+const { profile } = useProfile()
+
+const formData = reactive({
+  id: null,
+  telegramId: null,
+  email: null,
+  permissions: [],
+  oldPermissions: [],
+})
+
+const menu = ref(false)
+const selectedPermissions = ref(false)
+const hasUser = ref(false)
+
+const {
+  load: loadUsers,
+  result: resultUsers,
+  loading: loadingUsers,
+} = useLazyQuery(USERS)
+
+function reset() {
+  formData.id = null
+  formData.telegramId = null
+  formData.email = null
+  formData.permissions = []
+  formData.oldPermissions = []
+  hasUser.value = false
+}
+
+function close() {
+  emit('close')
+}
+
+function submit() {
+  const action = user.value ? 'update' : 'create'
+  emit(action, formData)
+  close()
+}
+
+function selectUser(user) {
+  hasUser.value = true
+  formData.id = user?.id
+  formData.telegramId = user?.telegramId
+  formData.email = user?.email
+  formData.oldPermissions = user?.permissions || []
+  menu.value = false
+}
+
+async function findUser(val) {
+  hasUser.value = false
+  formData.telegramId = val
+  menu.value = true
+  loadUsers(
+    null,
+    {
+      where: {
+        _or: [
+          { telegramId_contains: val },
+        ],
+        id_nin: [sklad.value?.owner?.id, profile.value?.id]
+      }
+    },
+    { fetchPolicy: 'network-only' }
+  )
+}
+
+function selectAllPermissions() {
+  selectedPermissions.value = !selectedPermissions.value
+  formData.permissions = selectedPermissions.value ? ALL_PERMISSIONS_WITH_DESCRIPTION.map(p => p.val) : []
+}
+
+watch(user, (newVal) => {
+  if (newVal) {
+    selectUser(newVal)
+    const skladPermissions = newVal.permissions.find(p => p.sklad.id === sklad.value?.id)
+    formData.permissions = skladPermissions?.list || []
+    selectedPermissions.value = formData.permissions.length > 0
+  }
+})
+
+watch(opened, (newVal) => {
+  if (!newVal) {
+    findUser()
+  }
+})
+
+const listPermissions = computed(() => {
+  return ALL_PERMISSIONS_WITH_DESCRIPTION.map(p => ({
+    val: p.val,
+    label: p.description,
+  }))
+})
+
+const users = computed(() => resultUsers.value?.users || [])
 </script>
 
 <style lang="scss" scoped>

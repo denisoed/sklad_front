@@ -7,6 +7,7 @@ export const READ_NET_PRICE = 'read:net.price'
 export const READ_PRODUCTS_WITH_MIN_SIZES = 'read:products.with.min.sizes'
 export const READ_STATISTIC_TABLE_ACTIONS = 'read:statistic.table.actions'
 export const READ_STATISTIC_FINANCE = 'read:statistic.finance'
+export const READ_CATEGORIES = 'read:categories'
 export const CAN_REMOVE_PRODUCT = 'can:remove.product'
 export const CAN_SELL_PRODUCT = 'can:sell.product'
 export const CAN_ADD_PRODUCT = 'can:add.product'
@@ -31,7 +32,8 @@ export const ALL_PERMISSIONS = [
   CAN_UPDATE_PRODUCT,
   CAN_ADD_COST,
   CAN_ADD_CATEGORY,
-  CAN_UPDATE_CATEGORY
+  CAN_UPDATE_CATEGORY,
+  READ_CATEGORIES
 ]
 
 export const ALL_PERMISSIONS_WITH_DESCRIPTION = [
@@ -44,6 +46,7 @@ export const ALL_PERMISSIONS_WITH_DESCRIPTION = [
   { val: READ_NET_PRICE, description: 'Отчеты: блок Чистый доход' },
   { val: READ_STATISTIC_TABLE_ACTIONS, description: 'Отчеты: кнопки управления в таблице' },
   { val: READ_STATISTIC_FINANCE, description: 'Отчеты: блок Финансы' },
+  { val: READ_CATEGORIES, description: 'Видит страницу Категории' },
   { val: CAN_REMOVE_PRODUCT, description: 'Удалять товар' },
   { val: CAN_SELL_PRODUCT, description: 'Продавать товар' },
   { val: CAN_ADD_PRODUCT, description: 'Добавлять товар' },

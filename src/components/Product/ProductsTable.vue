@@ -88,7 +88,6 @@
           <div class="flex flex-row no-wrap q-gutter-md justify-center">
             <!-- View Product -->
             <q-btn
-              v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: props.row?.sklad?.id }"
               round
               push
               size="sm"
@@ -98,27 +97,15 @@
             />
             
             <!-- Add to Basket -->
-            <div v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: props.row?.sklad?.id }">
-              <q-btn
-                v-if="props.row.useNumberOfSizes"
-                push
-                round
-                size="sm"
-                icon="mdi-basket-plus-outline"
-                text-color="deep-orange"
-                @click="$emit('openCountModal', props.row)"
-              />
-              
-              <q-btn
-                v-else
-                round
-                push
-                size="sm"
-                icon="mdi-basket-plus-outline"
-                text-color="deep-orange"
-                @click="$emit('openSizesModal', props.row)"
-              />
-            </div>
+            <q-btn
+              v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: props.row?.sklad?.id }"
+              round
+              push
+              size="sm"
+              icon="mdi-basket-plus-outline"
+              text-color="deep-orange"
+              @click="$emit(props.row.useNumberOfSizes ? 'openCountModal' : 'openSizesModal', props.row)"
+            />
           </div>
         </q-td>
       </q-tr>
