@@ -25,7 +25,7 @@
         :to="productsLink"
         accent-color="rgb(0 0 255 / 20%)"
       />
-      <div class="flex no-wrap full-width q-gap-md">
+      <div v-permissions="[READ_HISTORY, READ_SETTINGS]" class="flex no-wrap full-width q-gap-md">
         <BlockLink
           v-permissions="[READ_HISTORY]"
           title="История"
@@ -52,6 +52,7 @@
         accent-color="rgb(255 255 0 / 20%)"
       />
       <BlockLink
+        v-permissions="[READ_CATEGORIES]"
         title="Категории"
         caption="Категории товаров"
         icon="mdi-folder-outline"
@@ -77,7 +78,8 @@ import {
   CAN_ADD_PRODUCT,
   READ_STATISTIC,
   READ_COST,
-  READ_PRODUCTS_WITH_MIN_SIZES
+  READ_PRODUCTS_WITH_MIN_SIZES,
+  READ_CATEGORIES
 } from 'src/permissions'
 
 defineOptions({

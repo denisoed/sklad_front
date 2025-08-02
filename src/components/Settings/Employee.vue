@@ -26,9 +26,9 @@
           <q-td class="text-left">
             {{ props.row.name }}
           </q-td>
-          <q-td class="text-left">
+          <!-- <q-td class="text-left">
             {{ props.row.email }}
-          </q-td>
+          </q-td> -->
           <q-td class="text-left">
             {{ props.row.telegramId }}
           </q-td>
@@ -111,12 +111,12 @@ export default defineComponent({
           align: 'left',
           field: 'telegramId'
         },
-        {
-          name: 'email',
-          label: 'Почта',
-          align: 'left',
-          field: 'email'
-        },
+        // {
+        //   name: 'email',
+        //   label: 'Почта',
+        //   align: 'left',
+        //   field: 'email'
+        // },
         {
           name: 'action',
           label: 'Действия',

@@ -42,21 +42,6 @@
               round
               size="sm"
             />
-            
-            <q-btn
-              :to="`/sklad/${selectedSkladId}`"
-              class="text-subtitle2"
-              push
-              text-color="primary"
-              round
-              size="sm"
-            >
-              <q-icon
-                name="mdi-open-in-new"
-                size="xs"
-              />
-            </q-btn>
-
             <q-btn
               icon="mdi-plus"
               round
