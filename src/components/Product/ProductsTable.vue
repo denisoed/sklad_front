@@ -18,6 +18,7 @@
         <!-- Checkbox -->
         <q-td key="select" :props="props" @click.stop>
           <q-checkbox
+            v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: props.row?.sklad?.id }"
             :model-value="bulkProducts"
             @update:model-value="$emit('update:bulkProducts', $event)"
             :val="props.row"

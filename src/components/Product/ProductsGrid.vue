@@ -52,6 +52,7 @@
           />
         </div>
         <q-checkbox
+          v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: p?.sklad?.id }"
           :model-value="bulkProducts"
           @update:model-value="$emit('update:bulkProducts', $event)"
           :val="p"

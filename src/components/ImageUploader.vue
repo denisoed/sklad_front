@@ -61,33 +61,10 @@
     </div>
 
     <!-- Dialog -->
-    <q-dialog v-model="dialog" position="bottom">
-      <q-swipe-to-close
-        v-model="dialog"
-        direction="down"
-      >
-        <q-card class="full-width image-uploader_dialog-card">
-          <q-img
-            :src="imagePreview"
-            spinner-size="md"
-            spinner-color="grey"
-          />
-          <q-btn
-            round
-            push
-            color="deep-orange"
-            size="sm"
-            @click="dialog = false"
-            class="absolute-top-right q-mr-md q-mt-md"
-          >
-            <q-icon
-              name="mdi-close"
-              color="white"
-            />
-          </q-btn>
-        </q-card>
-      </q-swipe-to-close>
-    </q-dialog>
+    <ImagePreviewDialog
+      v-model="dialog"
+      :image-src="imagePreview"
+    />
 
     <!-- Loader -->
     <q-inner-loading
@@ -102,6 +79,7 @@
 import useHelpers from 'src/modules/useHelpers'
 import imageCompression from 'browser-image-compression'
 import useImage from 'src/modules/useImage'
+import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
 import {
   defineComponent,
   ref,
@@ -113,6 +91,9 @@ const MAX_SIZE = 4096
 
 export default defineComponent({
   name: 'ImageUploader',
+  components: {
+    ImagePreviewDialog
+  },
   props: {
     image: {
       type: String,
@@ -254,14 +235,7 @@ export default defineComponent({
       }
     }
 
-    &_dialog-card {
-      min-width: 300px;
-      min-height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #fff;
-    }
+
 
     &--sm {
       width: 30px;
