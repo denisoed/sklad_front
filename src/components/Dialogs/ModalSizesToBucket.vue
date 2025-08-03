@@ -387,7 +387,12 @@ function submit() {
 }
 
 function createListSizes(list = []) {
-  listSizes.value = list.map(size => {
+  // Filter only sizes that are actually used in sizes array
+  const usedSizes = list.filter(size => 
+    sizes.value.some(s => s.size === size)
+  )
+  
+  listSizes.value = usedSizes.map(size => {
     const count = getCountSize(size, sizes.value) > 1 ?
       getCountSize(size, sizes.value) : 0
     return {

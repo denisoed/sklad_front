@@ -87,7 +87,6 @@
 
 <script setup>
 import InputPlusMinus from 'src/components/InputPlusMinus'
-import InputPrice from 'src/components/InputPrice'
 import useMoney from 'src/modules/useMoney'
 import PayMethods from 'src/components/Product/PayMethods.vue'
 import PriceList from 'src/components/Product/PriceList.vue'
