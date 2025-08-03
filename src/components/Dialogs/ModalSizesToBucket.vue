@@ -66,14 +66,15 @@
               <q-btn
                 v-for="(s, i) of listSizes"
                 :key="i"
-                :color="!all && !s.has ? 'grey' : 'primary'"
+                :color="!selectedSizes.some(sz => sz.size === s.size) ? 'white' : 'primary'"
+                :text-color="!selectedSizes.some(sz => sz.size === s.size) ? 'white' : 'black'"
                 :outline="!selectedSizes.some(sz => sz.size === s.size)"
                 push
                 class="btn-sizes-btn border-radius-sm"
                 :disable="!all && !s.has"
                 @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
               >
-                <span>{{ s.size }} <sup>{{ getCountSizes(s.count, s.countSelected) > 1 ? `(${getCountSizes(s.count, s.countSelected)} шт)` : '' }}</sup></span>
+                <span>{{ s.size }} <sup v-if="getCountSizes(s.count, s.countSelected) > 1">{{ getCountSizes(s.count, s.countSelected) > 1 ? `(${getCountSizes(s.count, s.countSelected)} шт)` : '' }}</sup></span>
                 <q-badge
                   v-if="s.countSelected"
                   color="red"

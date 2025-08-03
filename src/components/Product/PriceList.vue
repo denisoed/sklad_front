@@ -87,20 +87,10 @@ const props = defineProps({
 
 const emit = defineEmits(['on-change'])
 
-// Initialize selected based on modelValue
-const getInitialSelected = () => {
-  const foundPrice = props.prices.find(price => price.price === props.modelValue);
-  if (foundPrice) {
-    return foundPrice.id;
-  }
-  return DEFAULT_PRICE;
-};
-
-const selected = ref(getInitialSelected());
+// Always default to DEFAULT_PRICE (Розничная цена)
+const selected = ref(DEFAULT_PRICE);
 const formData = reactive({
-  otherPrice: props.modelValue !== props.defaultPrice && 
-              !props.prices.find(price => price.price === props.modelValue) ? 
-              props.modelValue : null,
+  otherPrice: null,
 });
 
 const debouncedWatch = debounce((val) => {
@@ -113,10 +103,8 @@ const debouncedWatch = debounce((val) => {
 
 // Watch for modelValue changes to update selected
 watch(() => props.modelValue, (newValue) => {
-  if (newValue === props.defaultPrice) {
-    selected.value = DEFAULT_PRICE;
-    formData.otherPrice = null;
-  } else {
+  // Only update if modelValue is explicitly set and different from default
+  if (newValue !== null && newValue !== undefined && newValue !== props.defaultPrice) {
     const foundPrice = props.prices.find(price => price.price === newValue);
     if (foundPrice) {
       selected.value = foundPrice.id;
