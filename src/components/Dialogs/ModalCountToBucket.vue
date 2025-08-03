@@ -38,7 +38,7 @@
             />
           </div>
 
-          <div class="full-width flex column q-mt-sm q-gap-sm">
+          <div class="full-width flex column q-gap-sm">
             <AdditionalSettings
               :comment="commentVal"
               :discount-price="localDiscountPrice"

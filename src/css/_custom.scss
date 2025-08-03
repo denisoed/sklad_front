@@ -98,14 +98,6 @@ h6 {
     box-shadow: none;
     border-radius: 16px !important;
     background-color: var(--block-bg);
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  // Block overscroll on all scrollable elements inside dialogs
-  * {
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
   }
 }
 
