@@ -89,7 +89,7 @@
                 :color="!all && !s.has ? 'grey' : 'primary'"
                 :outline="!selectedSizes.some(sz => sz.size === s.size)"
                 push
-                class="full-width btn-sizes-btn border-radius-sm"
+                class="btn-sizes-btn border-radius-sm"
                 :disable="!all && !s.has"
                 @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
               >
@@ -131,7 +131,7 @@
             <InputPlusMinus
               :max="selectedSize.count"
               :model-value="selectedSize.countSelected"
-              :label="`Кол-во шт для размера <b>${selectedSize.size}</b>`"
+              :label="`Кол-во шт для размера: <b>${selectedSize.size}</b>`"
               class="q-my-auto"
               @update:model-value="onChangeCount"
             />
@@ -471,15 +471,20 @@ watch(() => props.modelValue, (val) => {
 
     &_list {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
 
       span {
+        white-space: nowrap;
         line-height: normal;
       }
     }
   }
 
   .btn-sizes-btn {
+    min-width: 0;
+    flex: 0 1 auto;
+    
     .q-btn__content {
       .block {
         overflow: hidden;
