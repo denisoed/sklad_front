@@ -33,8 +33,8 @@
                 color="primary"
                 :text-color="localFilters.sizes.includes(size) ? 'black' : 'white'"
                 size="md"
+                push
                 :label="size"
-                dense
                 @click="toggleSize(size)"
               />
             </div>
@@ -269,16 +269,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .sizes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   width: 100%;
 }
 
 .size-btn {
-  min-height: 35px;
+  min-width: fit-content;
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 </style>
