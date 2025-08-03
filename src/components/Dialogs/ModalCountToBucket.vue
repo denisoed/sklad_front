@@ -12,7 +12,7 @@
         <div class="dialog-close" id="dialog-close">
           <div class="dialog-close-line" />
         </div>
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p
             class="full-width text-left text-bold q-mb-none text-subtitle1"
           >
@@ -39,32 +39,12 @@
           </div>
 
           <div class="full-width flex column q-mt-sm q-gap-sm">
-            <q-input
-              v-model="commentVal"
-              outlined
-              class="full-width"
-              dense
-              label="Комментарий"
-              clearable
-              enterkeyhint="done"
+            <AdditionalSettings
+              :comment="commentVal"
+              :discount-price="localDiscountPrice"
+              :percentage-discount="localPercentageDiscount"
+              @on-change="onAdditionalSettingsChange"
             />
-            <div class="flex no-wrap items-center q-gap-sm">
-              <InputPrice
-                v-model="localDiscountPrice"
-                label="Доп. скидка"
-                clear
-                class="full-width"
-                dense
-                :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
-              />
-              <SwitchTabs
-                :tabs="DISCOUNT_TABS"
-                :selected-tab="localPercentageDiscount"
-                class="discount-tabs"
-                @on-change="localPercentageDiscount = $event"
-              />
-            </div>
-
             <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
               <p class="q-mb-none">Итоговая сумма:</p>
               <span class="text-bold">{{ formatPrice(totalSum) }}</span>
@@ -107,11 +87,10 @@
 
 <script setup>
 import InputPlusMinus from 'src/components/InputPlusMinus'
-import InputPrice from 'src/components/InputPrice'
 import useMoney from 'src/modules/useMoney'
 import PayMethods from 'src/components/Product/PayMethods.vue'
 import PriceList from 'src/components/Product/PriceList.vue'
-import SwitchTabs from 'src/components/SwitchTabs.vue'
+import AdditionalSettings from 'src/components/Product/AdditionalSettings.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
 import {
   ref,
@@ -120,17 +99,6 @@ import {
   reactive,
   computed
 } from 'vue'
-
-const DISCOUNT_TABS = [
-  {
-    icon: 'mdi-cash-multiple',
-    value: false
-  },
-  {
-    icon: 'mdi-percent',
-    value: true
-  },
-]
 
 const emit = defineEmits(['submit'])
 
@@ -239,6 +207,12 @@ function onChangePayMethods(obj) {
   Object.assign(payMethods, obj);
 }
 
+function onAdditionalSettingsChange(settings) {
+  commentVal.value = settings.comment
+  localDiscountPrice.value = settings.discount
+  localPercentageDiscount.value = settings.percentageDiscount
+}
+
 watch(() => props.modelValue, (val) => {
   if (val) {
     localPercentageDiscount.value = props.percentageDiscount
@@ -250,17 +224,6 @@ watch(() => props.modelValue, (val) => {
 </script>
 
 <style lang="scss" scoped>
-.discount-tabs {
-  width: 120px;
-  min-width: 120px;
-  max-width: 120px;
-
-  .tab-slider--trigger {
-    min-width: auto;
-    font-size: 18px;
-  }
-}
-
 .total-sum {
   border-radius: var(--border-radius-xs);
 }

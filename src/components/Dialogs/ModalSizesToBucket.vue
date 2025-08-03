@@ -12,7 +12,7 @@
         <div class="dialog-close" id="dialog-close">
           <div class="dialog-close-line" />
         </div>
-      <q-card-section class="flex no-wrap column row items-center no-wrap q-pt-none q-pb-xl">
+      <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p
           class="full-width text-left text-bold q-mb-none text-subtitle1"
         >
@@ -27,7 +27,7 @@
             v-if="!isStepTwo"
             class="full-width"
           >
-            <div class="full-width flex column q-gap-sm q-mb-md">
+            <div class="full-width flex column q-gap-sm q-mb-sm">
               <p class="q-mb-none">Оплата</p>
               <PriceList
                 :prices="prices"
@@ -46,31 +46,12 @@
             </div>
 
             <div class="full-width flex column q-mb-md q-gap-sm">
-              <q-input
-                v-model="commentVal"
-                outlined
-                class="full-width"
-                dense
-                label="Комментарий"
-                clearable
-                enterkeyhint="done"
+              <AdditionalSettings
+                :comment="commentVal"
+                :discount-price="localDiscountPrice"
+                :percentage-discount="localPercentageDiscount"
+                @on-change="onAdditionalSettingsChange"
               />
-              <div class="flex no-wrap items-center q-gap-sm">
-                <InputPrice
-                  v-model="localDiscountPrice"
-                  label="Доп. скидка"
-                  clear
-                  dense
-                  class="full-width"
-                  :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
-                />
-                <SwitchTabs
-                  :tabs="DISCOUNT_TABS"
-                  class="discount-tabs"
-                  :selected-tab="localPercentageDiscount"
-                  @on-change="localPercentageDiscount = $event"
-                />
-              </div>
 
               <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
                 <p class="q-mb-none">Итоговая сумма:</p>
@@ -163,10 +144,9 @@
 import useHelpers from 'src/modules/useHelpers'
 import useMoney from 'src/modules/useMoney'
 import InputPlusMinus from 'src/components/InputPlusMinus'
-import InputPrice from 'src/components/InputPrice'
 import PayMethods from 'src/components/Product/PayMethods.vue'
 import PriceList from 'src/components/Product/PriceList.vue'
-import SwitchTabs from 'src/components/SwitchTabs.vue'
+import AdditionalSettings from 'src/components/Product/AdditionalSettings.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
 import {
   reactive,
@@ -175,17 +155,6 @@ import {
   watch,
   computed
 } from 'vue'
-
-const DISCOUNT_TABS = [
-  {
-    icon: 'mdi-cash-multiple',
-    value: false
-  },
-  {
-    icon: 'mdi-percent',
-    value: true
-  },
-]
 
 const props = defineProps({
   modelValue: {
@@ -418,7 +387,12 @@ function submit() {
 }
 
 function createListSizes(list = []) {
-  listSizes.value = list.map(size => {
+  // Filter only sizes that are actually used in sizes array
+  const usedSizes = list.filter(size => 
+    sizes.value.some(s => s.size === size)
+  )
+  
+  listSizes.value = usedSizes.map(size => {
     const count = getCountSize(size, sizes.value) > 1 ?
       getCountSize(size, sizes.value) : 0
     return {
@@ -432,6 +406,12 @@ function createListSizes(list = []) {
 
 function onChangePayMethods(obj) {
   Object.assign(payMethods, obj);
+}
+
+function onAdditionalSettingsChange(settings) {
+  commentVal.value = settings.comment
+  localDiscountPrice.value = settings.discount
+  localPercentageDiscount.value = settings.percentageDiscount
 }
 
 function onChangePrice(p) {
@@ -450,17 +430,6 @@ watch(() => props.modelValue, (val) => {
 </script>
 
 <style lang="scss">
-  .discount-tabs {
-    width: 120px;
-    min-width: 120px;
-    max-width: 120px;
-
-    .tab-slider--trigger {
-      min-width: auto;
-      font-size: 18px;
-    }
-  }
-
   .btn-sizes {
     &_menu {
       width: 300px !important;
