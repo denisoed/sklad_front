@@ -122,7 +122,7 @@ watch(() => props.modelValue, (newValue) => {
       selected.value = foundPrice.id;
       formData.otherPrice = null;
     } else {
-      selected.value = DEFAULT_PRICE;
+      selected.value = OTHER_PRICE;
       formData.otherPrice = newValue;
     }
   }
