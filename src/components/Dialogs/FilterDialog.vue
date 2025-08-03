@@ -13,7 +13,7 @@
         <div class="dialog-close" id="dialog-close">
           <div class="dialog-close-line" />
         </div>
-        <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
+        <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl">
           
           <!-- Фильтр по размерам -->
           <div v-if="availableSizes.length" class="full-width">

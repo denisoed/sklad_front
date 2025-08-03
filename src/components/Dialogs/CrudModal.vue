@@ -12,7 +12,7 @@
         <div class="dialog-close" id="dialog-close">
           <div class="dialog-close-line" />
         </div>
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
             {{ item ? 'Обновить' : 'Создать' }} {{ title }}
           </p>

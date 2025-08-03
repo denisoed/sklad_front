@@ -12,7 +12,7 @@
         <div class="dialog-close" id="dialog-close">
           <div class="dialog-close-line" />
         </div>
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pa-none q-pb-xl">
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <div class="flex justify-center full-width">
           <div class="q-px-md q-pt-md q-pb-sm full-width new-employee_field">
             <q-input
