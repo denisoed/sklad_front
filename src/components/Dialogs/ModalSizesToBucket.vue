@@ -85,7 +85,6 @@
               <q-btn
                 v-for="(s, i) of listSizes"
                 :key="i"
-                style="height:50px;"
                 :color="!all && !s.has ? 'grey' : 'primary'"
                 :outline="!selectedSizes.some(sz => sz.size === s.size)"
                 push
