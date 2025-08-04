@@ -33,6 +33,7 @@
           <q-btn
             color="primary"
             style="height: 40px"
+            class="border-radius-sm"
             @click="saveUserInfo"
             :disable="userInfo.fullname === profile?.fullname"
           >
