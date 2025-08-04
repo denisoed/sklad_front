@@ -411,6 +411,9 @@ export default defineComponent({
     function onClear() {
       selectedSkladId.value = ALL_TAB.id
       selectedCategoryId.value = ALL_TAB.id
+      
+      // Обновляем URL при очистке
+      router.push('/products')
     }
 
     async function loadData() {
@@ -450,6 +453,9 @@ export default defineComponent({
       if (hasSearchFilters) {
         selectedCategoryId.value = ALL_TAB.id;
         selectedSkladId.value = ALL_TAB.id;
+        
+        // Обновляем URL при применении фильтров поиска
+        router.push('/products')
       }
       
       loadData();
@@ -458,6 +464,14 @@ export default defineComponent({
     function onChangeSklad(id) {
       selectedSkladId.value = id;
       selectedCategoryId.value = ALL_TAB.id;
+      
+      // Обновляем URL при смене склада
+      if (id !== ALL_TAB.id) {
+        router.push(`/sklad/${id}/products`)
+      } else {
+        router.push('/products')
+      }
+      
       loadData();
     }
 
