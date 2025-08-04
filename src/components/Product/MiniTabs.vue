@@ -33,7 +33,7 @@ export default defineComponent({
       default: () => []
     },
     selectedId: {
-      type: Number,
+      type: [Number, String],
       default: null
     },
   },

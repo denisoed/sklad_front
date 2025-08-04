@@ -102,7 +102,7 @@ const costsLink = computed(() => `/sklad/${params?.skladId}/costs`)
 const settingsLink = computed(() => `/sklad/${params?.skladId}/settings`)
 const productsWithMinSizesLink = computed(() => `/sklad/${params?.skladId}/products-with-min-sizes`)
 const categoriesLink = computed(() => `/sklad/${params?.skladId}/categories`)
-const productsLink = computed(() => `/sklad/${params?.skladId}/products`)
+const productsLink = computed(() => `/products?sklad=${params?.skladId}`)
 </script>
 
 <style lang="scss" scoped>
