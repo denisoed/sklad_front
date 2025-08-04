@@ -220,7 +220,7 @@ export default defineComponent({
     } = useProduct()
 
     const selectedSkladId = ref(
-      params?.skladId || ALL_TAB.id
+      params?.skladId || Number(query?.sklad) || ALL_TAB.id
     )
     const imagePreviewDialog = ref(false)
     const imagePreview = ref(null)
