@@ -31,6 +31,7 @@
             />
           </div>
           <q-btn
+            push
             color="primary"
             style="height: 40px"
             class="border-radius-sm"
