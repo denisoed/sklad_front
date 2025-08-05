@@ -1,5 +1,5 @@
 <template>
-  <div class="mini-tabs">
+  <div class="mini-tabs" ref="containerRef">
     <SmallCard
       v-for="(s) of list"
       :key="s.id"
@@ -46,6 +46,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { selectedId } = toRefs(props);
     const sId = ref(selectedId.value);
+    const containerRef = ref(null);
 
     function changeTab(id) {
       sId.value = id;
@@ -53,13 +54,14 @@ export default defineComponent({
     }
 
     function scrollToActiveTab() {
-      const activeTab = document.querySelector('.mini-tabs_card--active');
-      const container = document.querySelector('.mini-tabs');
-      if (activeTab && container) {
-        const containerRect = container.getBoundingClientRect();
+      if (!containerRef.value) return;
+      
+      const activeTab = containerRef.value.querySelector('.mini-tabs_card--active');
+      if (activeTab) {
+        const containerRect = containerRef.value.getBoundingClientRect();
         const tabRect = activeTab.getBoundingClientRect();
         const scrollLeft = activeTab.offsetLeft - (containerRect.width / 2) + (tabRect.width / 2);
-        container.scrollTo({
+        containerRef.value.scrollTo({
           left: scrollLeft,
           behavior: 'smooth'
         });
@@ -80,7 +82,8 @@ export default defineComponent({
 
     return {
       sId,
-      changeTab
+      changeTab,
+      containerRef
     }
   }
 })
