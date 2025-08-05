@@ -18,7 +18,8 @@ import {
   defineComponent,
   ref,
   watch,
-  toRefs
+  toRefs,
+  onMounted
 } from 'vue'
 import SmallCard from 'src/components/UI/SmallCard.vue'
 
@@ -36,6 +37,10 @@ export default defineComponent({
       type: Number,
       default: null
     },
+    scrollToActiveTab: {
+      type: Boolean,
+      default: false
+    }
   },
   emits: ['on-change'],
   setup(props, { emit }) {
@@ -47,8 +52,30 @@ export default defineComponent({
       emit('on-change', id);
     }
 
+    function scrollToActiveTab() {
+      const activeTab = document.querySelector('.mini-tabs_card--active');
+      const container = document.querySelector('.mini-tabs');
+      if (activeTab && container) {
+        const containerRect = container.getBoundingClientRect();
+        const tabRect = activeTab.getBoundingClientRect();
+        const scrollLeft = activeTab.offsetLeft - (containerRect.width / 2) + (tabRect.width / 2);
+        container.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth'
+        });
+      }
+    }
+
     watch(selectedId, (id) => {
       sId.value = id;
+    })
+
+    onMounted(() => {
+      if (props.scrollToActiveTab) {
+        setTimeout(() => {
+          scrollToActiveTab();
+        }, 1000);
+      }
     })
 
     return {

@@ -95,6 +95,7 @@ function optionsFn(date) {
 }
 
 function onChangeTab(val) {
+  calendarDate.value = null
   let params = {} 
   if (val === MONTH) {
     params = { dates: getCurrentMonth()}
