@@ -12,6 +12,7 @@
       <MiniTabs
         :list="skladsTabs"
         :selected-id="selectedSkladId"
+        scroll-to-active-tab
         class="q-mb-md"
         @on-change="onChangeSklad"
       />
@@ -220,7 +221,7 @@ export default defineComponent({
     } = useProduct()
 
     const selectedSkladId = ref(
-      params?.skladId || Number(query?.sklad) || ALL_TAB.id
+      params?.skladId || query?.sklad || ALL_TAB.id
     )
     const imagePreviewDialog = ref(false)
     const imagePreview = ref(null)
