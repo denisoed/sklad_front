@@ -84,7 +84,7 @@ export default defineComponent({
       justify-content: center;
       width: 50px;
       height: 50px;
-      color: var(--q-primary);
+      color: var(--text-description);
     }
     
     &-info {
