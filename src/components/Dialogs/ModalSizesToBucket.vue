@@ -67,7 +67,7 @@
                 v-for="(s, i) of listSizes"
                 :key="i"
                 :color="!selectedSizes.some(sz => sz.size === s.size) ? 'white' : 'primary'"
-                :text-color="!selectedSizes.some(sz => sz.size === s.size) ? 'white' : 'black'"
+                text-color="white"
                 :outline="!selectedSizes.some(sz => sz.size === s.size)"
                 push
                 class="btn-sizes-btn border-radius-sm"

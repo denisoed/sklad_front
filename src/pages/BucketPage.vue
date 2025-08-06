@@ -3,7 +3,7 @@
     <div class="container">
       <PageTitle title="Товаровы на продажу">
         <div>
-          <q-card-section class="q-pt-none text-primary">
+          <q-card-section class="q-pt-none">
             На этой странице отображаются товары выбранные для продажи.
           </q-card-section>
         </div>
@@ -216,13 +216,21 @@ const modalSizesToBucket = ref(false)
 // View mode toggle (grid/table)
 const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_GRID)
 
+function removeItemOnce(arr, value) {
+  const index = arr.map(s => s.size).indexOf(value.size)
+  if (index > -1) {
+    arr.splice(index, 1)
+  }
+  return arr
+}
+
 async function update(selectedItem, newData) {
   selectedProduct.value = newData
   const allSizes = [...selectedItem.sizes]
   if (newData?.sizes?.length) {
     newData.sizes.forEach(ps => {
       if (allSizes.some(s => s.size === ps.size)) {
-        removeselectedItemOnce(allSizes, ps)
+        removeItemOnce(allSizes, ps)
       }
     });
   }
