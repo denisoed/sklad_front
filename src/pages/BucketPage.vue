@@ -9,10 +9,10 @@
         </div>
       </PageTitle>
 
-      <div v-if="bucketProducts && bucketProducts.length">
-        <div class="flex items-center justify-between q-mb-sm">
+      <template v-if="bucketProducts && bucketProducts.length">
+        <div class="flex items-center justify-between q-mb-sm block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
           <div class="flex items-center q-gap-sm">
-            <p class="q-mb-none text-subtitle2">Заказы</p>
+            <p class="q-mb-none text-subtitle2 ">Заказы</p>
             <q-badge color="primary" :label="bucketProducts.length" />
           </div>
           
@@ -53,7 +53,7 @@
           @open-modal-count-to-bucket="onOpenModalCountToBucket"
           @open-modal-sizes-to-bucket="onOpenModalSizesToBucket"
         />
-      </div>
+      </template>
       <h6
         v-else
         class="full-width text-center text-grey-5"

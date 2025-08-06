@@ -27,7 +27,7 @@
       />
         
       <template v-if="products?.length">
-        <div class="flex items-center justify-between q-mb-sm">
+        <div class="flex items-center justify-between q-mb-sm block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
           <div class="flex items-center q-gap-sm">
             <p class="q-mb-none text-subtitle2">Товары</p>
             <q-badge color="primary" :label="products.length" />
