@@ -22,7 +22,7 @@
     :sklad="b.sklad"
     :use-number-of-sizes="b.product?.useNumberOfSizes"
     class="q-mb-md"
-    @update="b.product?.useNumberOfSizes ? $emit('openModalCountToBucket', b) : $emit('openModalSizesToBucket', b)"
+    @update="openModalToBucket(b)"
     @remove="remove(b.product, $event)"
     @on-checked="onChecked"
   />
@@ -44,9 +44,18 @@ const props = defineProps({
 
 const emit = defineEmits([
   'openModalCountToBucket',
+  'openModalSizesToBucket',
   'remove',
   'on-checked'
 ])
+
+function openModalToBucket(item) {
+  if (item.product?.useNumberOfSizes) {
+    emit('openModalCountToBucket', item)
+  } else {
+    emit('openModalSizesToBucket', item)
+  }
+}
 
 function remove(product, payload) {
   emit('remove', product, payload)
