@@ -5,7 +5,6 @@
     :id="b.id"
     :product-id="b.product?.id"
     :name="b.product?.name"
-    :sum-price="b.cashSum"
     :color="b.product?.color"
     :image="b.product?.image?.url"
     :sizes="b.sizes"
@@ -34,13 +33,13 @@ import BucketCard from 'src/components/BucketCard.vue'
 
 const props = defineProps({
   bucketProducts: {
-      type: Array,
-      default: () => []
-    },
-    selectedProduct: {
-      type: Object,
-      default: null
-    }
+    type: Array,
+    default: () => []
+  },
+  selectedProduct: {
+    type: Object,
+    default: null
+  }
 })
 
 const emit = defineEmits([

@@ -3,7 +3,7 @@
     <div class="container">
       <PageTitle title="Товаровы на продажу">
         <div>
-          <q-card-section class="q-pt-none text-primary">
+          <q-card-section class="q-pt-none">
             На этой странице отображаются товары выбранные для продажи.
           </q-card-section>
         </div>

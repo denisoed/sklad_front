@@ -54,15 +54,7 @@
 
       <div v-else class="bucket-card_sizes full-width flex justify-between">
         <span>Размеры:</span>
-        <div v-if="sizes && sizes.length">
-          <p
-            v-for="(s, i) of sizes"
-            :key="i"
-          >
-            <span>{{ s.size }}</span>
-            <span v-if="sizes.length !== (i + 1)">,</span>
-          </p>
-        </div>
+        <SizeCount v-if="sizes && sizes.length" :sizes="sizes" />
         <p v-else>Не увазаны</p>
       </div>
 
@@ -80,7 +72,7 @@
       <div class="full-width flex justify-between items-center bucket-card_price ">
         <span class="q-mr-xs">Итог:</span>
         <div class="flex row no-wrap">
-          <p><PriceFormatter :value="sumPrice" /></p>
+          <p><PriceFormatter :value="totalSum" /></p>
         </div>
       </div>
 
@@ -128,6 +120,7 @@ import {
 } from 'vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import { formatPrice } from 'src/modules/usePriceFormatter'
+import SizeCount from 'src/components/SizeCount.vue'
 
 const props = defineProps({
   id: {
@@ -148,10 +141,6 @@ const props = defineProps({
   },
   name: {
     type: String,
-    default: null
-  },
-  sumPrice: {
-    type: [String, Number],
     default: null
   },
   sizes: {
@@ -220,7 +209,11 @@ const {
   payCard,
   payCash,
   cardSum,
-  cashSum
+  cashSum,
+  useNumberOfSizes,
+  countSizes,
+  discount,
+  sizes
 } = toRefs(props)
 const checked = ref(true)
 
@@ -230,6 +223,14 @@ const payMethod = computed(() => {
   if (payCash.value) return 'Наличными'
   if (payCard.value) return 'Картой'
   return null
+})
+
+const totalSum = computed(() => {
+  if (useNumberOfSizes.value) {
+    return (cashSum.value * countSizes.value) - discount.value
+  } else {
+    return (cashSum.value * sizes.value.length) - discount.value
+  }
 })
 
 function removeFromBucket(payload) {
@@ -366,24 +367,6 @@ watch(checked, (newValue) => {
 
     > p {
       color: var(--text-description);
-    }
-
-    > div {
-      display: flex;
-      align-items: center;
-      padding: 0 4px;
-      border-radius: var(--border-radius-sm);
-      border: 1px solid var(--q-primary);
-
-      p {
-        color: var(--q-primary-text);
-        font-size: 16px;
-        margin-right: 5px;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
     }
   }
 }
