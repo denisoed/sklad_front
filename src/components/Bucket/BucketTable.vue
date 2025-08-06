@@ -159,6 +159,7 @@ import { useQuasar } from 'quasar'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
+import { getTotalSum } from 'src/components/Bucket/utils'
 
 const props = defineProps({
   bucketProducts: {
@@ -185,14 +186,6 @@ const highlightRowId = ref(null)
 const goToProduct = (bucketProduct) => {
   if (bucketProduct?.product?.id) {
     router.push(`/product/${bucketProduct.product.id}`)
-  }
-}
-
-function getTotalSum(bucketProduct) {
-  if (bucketProduct.product?.useNumberOfSizes) {
-    return (bucketProduct.cashSum * bucketProduct.countSizes) - bucketProduct.discount
-  } else {
-    return (bucketProduct.cashSum * bucketProduct.sizes.length) - bucketProduct.discount
   }
 }
 

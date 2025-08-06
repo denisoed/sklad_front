@@ -15,7 +15,7 @@
     :pay-card="b.payCard"
     :card-sum="b.cardSum"
     :cash-sum="b.cashSum"
-    :new-price="b.product?.newPrice"
+    :total-sum="getTotalSum(b)"
     :comment="b.comment"
     :loading="b.product?.id === selectedProduct?.id"
     :count-sizes="b.countSizes"
@@ -29,7 +29,8 @@
 </template>
 
 <script setup>
-import BucketCard from 'src/components/BucketCard.vue'
+import BucketCard from 'src/components/Bucket/BucketCard.vue'
+import { getTotalSum } from 'src/components/Bucket/utils'
 
 const props = defineProps({
   bucketProducts: {

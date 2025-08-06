@@ -191,7 +191,7 @@ const props = defineProps({
     type: Number,
     default: null
   },
-  newPrice: {
+  totalSum: {
     type: Number,
     default: null
   },
@@ -223,14 +223,6 @@ const payMethod = computed(() => {
   if (payCash.value) return 'Наличными'
   if (payCard.value) return 'Картой'
   return null
-})
-
-const totalSum = computed(() => {
-  if (useNumberOfSizes.value) {
-    return (cashSum.value * countSizes.value) - discount.value
-  } else {
-    return (cashSum.value * sizes.value.length) - discount.value
-  }
 })
 
 function removeFromBucket(payload) {
