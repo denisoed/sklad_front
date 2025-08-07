@@ -4,7 +4,7 @@
       <PageTitle :title="skladName ? skladName : 'Склад'">
         <div>
           <q-card-section class="q-pt-none">
-            Это главная страница склада.
+            Обзор склада: цели, статистика продаж и быстрый доступ к разделам.
           </q-card-section>
         </div>
       </PageTitle>
