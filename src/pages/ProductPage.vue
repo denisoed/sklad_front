@@ -526,6 +526,65 @@ async function uploadImg(file) {
   return response;
 }
 
+// Helper function to prepare product data
+function prepareProductData(uploaded, isDuplicating = false, isEdit = false) {
+  // Prepare prices based on operation type
+  let pricesToClean
+  if (isDuplicating) {
+    pricesToClean = product.prices?.map(price => ({
+      name: price.name,
+      price: price.price,
+    })) || []
+  } else if (isEdit) {
+    pricesToClean = product.prices?.filter(price => !price.id) || []
+  } else {
+    pricesToClean = product.prices || []
+  }
+  
+  const cleanPrices = pricesToClean.map(price => {
+    const { __typename, ...cleanPrice } = price
+    return cleanPrice
+  })
+  
+  const typeSizeId = getTypeSizeId()
+
+  return {
+    name: product.name,
+    sklad: product.sklad?.value,
+    category: product.category?.value,
+    origPrice: Number(product.origPrice),
+    newPrice: Number(product.newPrice),
+    discountPrice: Number(product.discountPrice),
+    discountDays: product.discountDays,
+    withDiscount: product.withDiscount,
+    image: uploaded ? uploaded.data.upload.id : product.imageId,
+    color: product.color,
+    colorName: product.colorName,
+    sizes: isDuplicating || isEdit ? product.sizes.map(s => ({ size: s.size })) : product.sizes,
+    countSizes: product.countSizes,
+    useNumberOfSizes: product.useNumberOfSizes,
+    prices: cleanPrices,
+    meta: generateProductMeta(product),
+    ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {})
+  }
+}
+
+// Helper function to handle image upload
+async function handleImageUpload() {
+  let uploaded = null
+  if (typeof product.image !== 'string') {
+    uploaded = await uploadImg(product.image)
+  }
+  return { uploaded, hasError: uploadImageError.value }
+}
+
+// Helper function to handle image cleanup on error
+async function cleanupImageOnError(uploaded) {
+  if (uploaded) {
+    await removeImage({ id: uploaded.data.upload.id })
+  }
+}
+
 function setColorName(color) {
   product.color = color.color
   product.colorName = color.name
@@ -602,116 +661,63 @@ function getTypeSizeId() {
 }
 
 async function create() {
-  let uploaded = null
-  if (typeof product.image !== 'string') {
-    uploaded = await uploadImg(product.image)
+  const { uploaded, hasError } = await handleImageUpload()
+  
+  if (hasError) {
+    showError('Не удалось загрузить фото. Проблемы на сервере.')
+    return
   }
-  if (!uploadImageError.value) {
-    try {
-      // Remove __typename field from GraphQL response
-      const newPrices = product.prices?.filter(price => !price.id) || []
-      const cleanPrices = [isDuplicating.value ? newPrices : product.prices]?.map(price => {
-        const { __typename, ...cleanPrice } = price
-        return cleanPrice
-      }) || []
-      
-      const typeSizeId = getTypeSizeId()
 
-      const data = {
-        name: product.name,
-        sklad: product.sklad?.value,
-        category: product.category?.value,
-        origPrice: Number(product.origPrice),
-        newPrice: Number(product.newPrice),
-        discountPrice: Number(product.discountPrice),
-        discountDays: product.discountDays,
-        withDiscount: product.withDiscount,
-        image: uploaded ? uploaded.data.upload.id : product.imageId,
-        color: product.color,
-        colorName: product.colorName,
-        sizes: isDuplicating.value ? product.sizes.map(s => ({ size: s.size })) : product.sizes,
-        countSizes: product.countSizes,
-        useNumberOfSizes: product.useNumberOfSizes,
-        prices: cleanPrices,
-        meta: generateProductMeta(product),
-        ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {})
-      }
-      const response = await createProduct({ data })
-      if (!createProductError.value) {
-        showSuccess('Товар успешно создан!')
-        createProductHistory(product, response.data.createProduct.product.id, product.sklad.value)
-        clearDraft()
-        replace(`/products?product=${response.data.createProduct.product.id}`)
-      } else {
-        await removeImage({ id: uploaded.data.upload.id })
-        showError('Не удалось создать продукт. Проблемы на сервере.')
-      }
-    } catch (error) {
+  try {
+    const data = prepareProductData(uploaded, isDuplicating.value, props.isEdit)
+    const response = await createProduct({ data })
+    
+    if (!createProductError.value) {
+      showSuccess('Товар успешно создан!')
+      createProductHistory(product, response.data.createProduct.product.id, product.sklad.value)
+      clearDraft()
+      replace(`/products?product=${response.data.createProduct.product.id}`)
+    } else {
+      await cleanupImageOnError(uploaded)
       showError('Не удалось создать продукт. Проблемы на сервере.')
     }
-  } else {
-    showError('Не удалось загрузить фото. Проблемы на сервере.')
+  } catch (error) {
+    await cleanupImageOnError(uploaded)
+    showError('Не удалось создать продукт. Проблемы на сервере.')
   }
 }
 
 async function update() {
-  let uploaded = null
-  if (typeof product.image !== 'string') {
-    uploaded = await uploadImg(product.image)
+  const { uploaded, hasError } = await handleImageUpload()
+  
+  if (hasError) {
+    showError('Не удалось загрузить фото. Проблемы на сервере.')
+    return
   }
-  if (!uploadImageError.value) {
-    try {
-      // Filter out prices that have IDs (existing prices) and only send new prices
-      // Also remove __typename field from GraphQL response
-      const newPrices = product.prices?.filter(price => !price.id) || []
-      const cleanPrices = newPrices.map(price => {
-        const { __typename, ...cleanPrice } = price
-        return cleanPrice
-      })
-      
-      const typeSizeId = getTypeSizeId()
 
-      const data = {
-        name: product.name,
-        sklad: product.sklad?.value,
-        category: product.category?.value,
-        origPrice: Number(product.origPrice),
-        newPrice: Number(product.newPrice),
-        discountPrice: Number(product.discountPrice),
-        discountDays: product.discountDays,
-        withDiscount: product.withDiscount,
-        image: uploaded ? uploaded.data.upload.id : product.imageId,
-        color: product.color,
-        colorName: product.colorName,
-        sizes: product.sizes.map(s => ({ size: s.size })),
-        countSizes: product.countSizes,
-        useNumberOfSizes: product.useNumberOfSizes,
-        prices: cleanPrices,
-        meta: generateProductMeta(product),
-        ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {})
+  try {
+    const data = prepareProductData(uploaded, false, true)
+    await updateProductById(params?.productId, data)
+    
+    if (!updateProductError.value) {
+      if (typeof product.image !== 'string' && product.imageId) {
+        removeImage({ id: product.imageId })
+        product.imageId = null
       }
-      await updateProductById(params?.productId, data)
-      if (!updateProductError.value) {
-        if (typeof product.image !== 'string' && product.imageId) {
-          removeImage({ id: product.imageId })
-          product.imageId = null
-        }
-        createUpdateHistory(editProduct.value?.product, product, product.id, product.sklad.value)
-        // Создаем глубокую копию для корректного отслеживания изменений
-        Object.assign(copiedProductForDirty, {
-          ...product,
-          prices: [...(product.prices || [])]
-        })
-        showSuccess('Продукт успешно обновлён!')
-      } else {
-        removeImage({ id: uploaded.data.upload.id })
-        showError('Не удалось обновить продукт. Проблемы на сервере.')
-      }
-    } catch (error) {
+      createUpdateHistory(editProduct.value?.product, product, product.id, product.sklad.value)
+      // Создаем глубокую копию для корректного отслеживания изменений
+      Object.assign(copiedProductForDirty, {
+        ...product,
+        prices: [...(product.prices || [])]
+      })
+      showSuccess('Продукт успешно обновлён!')
+    } else {
+      await cleanupImageOnError(uploaded)
       showError('Не удалось обновить продукт. Проблемы на сервере.')
     }
-  } else {
-    showError('Не удалось загрузить фото. Проблемы на сервере.')
+  } catch (error) {
+    await cleanupImageOnError(uploaded)
+    showError('Не удалось обновить продукт. Проблемы на сервере.')
   }
 }
 
