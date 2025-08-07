@@ -29,6 +29,7 @@ export default function useProductDuplication() {
       countSizes: product.countSizes,
       useNumberOfSizes: product.useNumberOfSizes,
       image: product.image,
+      imageId: product.imageId,
       typeSize: {
         id: product.typeSize?.id,
       },

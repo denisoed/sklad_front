@@ -326,7 +326,7 @@
             <q-btn
               v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad?.value }"
               type="submit"
-              :label="isEdit ? 'Обновить' : 'Создать'"
+              :label="submitBtnLabel"
               push
               color="primary"
               class="q-ml-auto"
@@ -432,6 +432,13 @@ const DEFAULT_DATA = {
   imageId: null,
   prices: [],
 }
+
+const props = defineProps({
+  isEdit: {
+    type: Boolean,
+    default: true
+  }
+})
 
 const TODAY = Date.now()
 const $q = useQuasar()
@@ -587,16 +594,29 @@ async function handleCost() {
   }
 }
 
+function getTypeSizeId() {
+  if (isDuplicating.value) {
+    return product.typeSize?.id
+  }
+  return product.typeSizeId
+}
+
 async function create() {
-  const uploaded = await uploadImg(product.image)
+  let uploaded = null
+  if (typeof product.image !== 'string') {
+    uploaded = await uploadImg(product.image)
+  }
   if (!uploadImageError.value) {
     try {
       // Remove __typename field from GraphQL response
-      const cleanPrices = product.prices?.map(price => {
+      const newPrices = product.prices?.filter(price => !price.id) || []
+      const cleanPrices = [isDuplicating.value ? newPrices : product.prices]?.map(price => {
         const { __typename, ...cleanPrice } = price
         return cleanPrice
       }) || []
       
+      const typeSizeId = getTypeSizeId()
+
       const data = {
         name: product.name,
         sklad: product.sklad?.value,
@@ -606,15 +626,15 @@ async function create() {
         discountPrice: Number(product.discountPrice),
         discountDays: product.discountDays,
         withDiscount: product.withDiscount,
-        image: uploaded.data.upload.id,
+        image: uploaded ? uploaded.data.upload.id : product.imageId,
         color: product.color,
         colorName: product.colorName,
-        sizes: product.sizes,
+        sizes: isDuplicating.value ? product.sizes.map(s => ({ size: s.size })) : product.sizes,
         countSizes: product.countSizes,
         useNumberOfSizes: product.useNumberOfSizes,
         prices: cleanPrices,
         meta: generateProductMeta(product),
-        ...( product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+        ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {})
       }
       const response = await createProduct({ data })
       if (!createProductError.value) {
@@ -649,24 +669,26 @@ async function update() {
         return cleanPrice
       })
       
+      const typeSizeId = getTypeSizeId()
+
       const data = {
+        name: product.name,
         sklad: product.sklad?.value,
         category: product.category?.value,
         origPrice: Number(product.origPrice),
-        image: uploaded ? uploaded.data.upload.id : product.imageId,
         newPrice: Number(product.newPrice),
         discountPrice: Number(product.discountPrice),
+        discountDays: product.discountDays,
+        withDiscount: product.withDiscount,
+        image: uploaded ? uploaded.data.upload.id : product.imageId,
+        color: product.color,
+        colorName: product.colorName,
         sizes: product.sizes.map(s => ({ size: s.size })),
         countSizes: product.countSizes,
         useNumberOfSizes: product.useNumberOfSizes,
-        discountDays: product.discountDays,
-        withDiscount: product.withDiscount,
-        name: product.name,
-        color: product.color,
-        colorName: product.colorName,
         prices: cleanPrices,
         meta: generateProductMeta(product),
-        ...(product.typeSizeId ? { typeSize: Number(product.typeSizeId) } : {})
+        ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {})
       }
       await updateProductById(params?.productId, data)
       if (!updateProductError.value) {
@@ -793,7 +815,6 @@ const categoriesOptions = computed(() => {
     value: c.id
   }))
 })
-const isEdit = computed(() => !!params?.productId)
 const historyLink = computed(
   () => product?.sklad?.value ?
     `/sklad/${product.sklad.value}/history/${params?.productId}?product=${product?.name}` :
@@ -806,10 +827,18 @@ const isDirty = computed(() => isEqual(product, copiedProductForDirty))
 const pageTitle = computed(() => {
   if (isDuplicating.value) {
     return 'Дублирование товара'
-  } else if (isEdit.value) {
+  } else if (props.isEdit) {
     return 'Редактирование товара'
   }
   return 'Создание товара'
+})
+const submitBtnLabel = computed(() => {
+  if (isDuplicating.value) {
+    return 'Дублировать'
+  } else if (props.isEdit) {
+    return 'Обновить'
+  }
+  return 'Сохранить'
 })
 
 watch(categoriesResult, (newValue) => {
