@@ -6,7 +6,7 @@
         <q-btn
           v-for="(s, i) of listSizes.sort((a, b) => a.size - b.size)"
           :key="i"
-          color="primary"
+          :color="s.selected ? 'primary' : 'white'"
           :label="s.size"
           class="border-radius-sm"
           v-touch-hold.mouse="onHold"

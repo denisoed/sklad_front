@@ -25,7 +25,7 @@ export const MAIN_ROUTES = [
   { path: '/product/:productId', component: () => import('pages/ProductPage.vue') },
   {
     path: '/create-product',
-    component: () => import('pages/ProductPage.vue'),
+    component: () => import('pages/CreateProduct.vue'),
   },
 ]
 
