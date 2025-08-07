@@ -194,7 +194,7 @@ onBeforeUnmount(() => {
   width: 100vw;
   height: 100vh;
   background: transparent;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
   display: flex;
   flex-direction: column;
   align-items: center;
