@@ -16,31 +16,33 @@
         color="primary"
         icon="mdi-check"
         push
-        :disable="isDisabled"
+        :loading="loading"
+        :disable="loading"
         @click="submit"
       />
     </div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script setup>
+defineOptions({
+  name: 'StepTwo',
+})
 
-export default defineComponent({
-  name: 'BulkRemoveStep2',
-  emits: ['on-prev', 'on-submit'],
-  setup(props, { emit }) {
-    function submit() {
-      emit('on-submit')
-    }
-    function prev() {
-      emit('on-prev')
-    }
+const emit = defineEmits(['on-prev', 'on-submit'])
 
-    return {
-      prev,
-      submit,
-    }
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
-</script>
+
+function submit() {
+  emit('on-submit')
+}
+
+function prev() {
+  emit('on-prev')
+}
+</script> 

@@ -8,22 +8,21 @@
     <div class="full-width flex justify-center q-pb-lg q-pt-xs">
       <div class="product-controls_wrap">
         <BulkRemoveDialog
-          title="Удаление"
+          v-model="removeDialog"
           v-permissions="[CAN_REMOVE_PRODUCT]"
           @on-finish="onFinishRemove"
+        />
+        <q-btn
+          round
+          push
+          size="md"
+          color="deep-orange"
+          @click="openRemoveDialog"
         >
-          <q-btn
-            round
-            push
-            size="md"
-            color="deep-orange"
-            @click="onDelete"
-          >
-            <q-icon
-              name="mdi-trash-can-outline"
-            />
-          </q-btn>
-        </BulkRemoveDialog>
+          <q-icon
+            name="mdi-trash-can-outline"
+          />
+        </q-btn>
         <q-btn
           round
           push
@@ -82,7 +81,7 @@
 <script setup>
 import { ref } from 'vue'
 import BulkUpdateDialog from 'src/components/Dialogs/BulkUpdateDialog/TheIndex.vue'
-import BulkRemoveDialog from 'src/components/Dialogs/BulkRemoveDialog/index.vue'
+import BulkRemoveDialog from 'src/components/Dialogs/BulkRemoveDialog/TheIndex.vue'
 import BulkPrintDialog from 'src/components/Dialogs/BulkPrintDialog/index.vue'
 import { CAN_UPDATE_PRODUCT, CAN_REMOVE_PRODUCT } from 'src/permissions'
 
@@ -100,6 +99,7 @@ const props = defineProps({
 })
 
 const updateDialog = ref(false)
+const removeDialog = ref(false)
 
 function onFinishUpdate() {
   emit('on-finish-update')
@@ -119,6 +119,10 @@ function close() {
 
 function openEditDialog() {
   updateDialog.value = true
+}
+
+function openRemoveDialog() {
+  removeDialog.value = true
 }
 </script>
 
