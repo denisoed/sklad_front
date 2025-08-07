@@ -8,40 +8,33 @@
     <div class="full-width flex justify-center q-pb-lg q-pt-xs">
       <div class="product-controls_wrap">
         <BulkRemoveDialog
-          title="Удаление"
+          v-model="removeDialog"
           v-permissions="[CAN_REMOVE_PRODUCT]"
           @on-finish="onFinishRemove"
+        />
+        <q-btn
+          round
+          push
+          size="md"
+          color="deep-orange"
+          @click="openRemoveDialog"
         >
-          <q-btn
-            round
-            push
-            size="md"
-            color="deep-orange"
-            @click="onDelete"
-          >
-            <q-icon
-              name="mdi-trash-can-outline"
-            />
-          </q-btn>
-        </BulkRemoveDialog>
-        <BulkUpdateDialog
-          v-permissions="[CAN_UPDATE_PRODUCT]"
-          title="Редактирование"
-          @on-finish="onFinishUpdate"
+          <q-icon
+            name="mdi-trash-can-outline"
+          />
+        </q-btn>
+        <q-btn
+          round
+          push
+          size="md"
+          class="q-ml-md"
+          color="primary"
+          @click="openEditDialog"
         >
-          <q-btn
-            round
-            push
-            size="md"
-            class="q-ml-md"
-            color="primary"
-            @click="onEdit"
-          >
-            <q-icon
-              name="mdi-pencil"
-            />
-          </q-btn>
-        </BulkUpdateDialog>
+          <q-icon
+            name="mdi-pencil"
+          />
+        </q-btn>
         <BulkPrintDialog
           title="Печать ценников"
           @on-finish="onFinishPrint"
@@ -76,63 +69,61 @@
         </q-btn>
       </div>
     </div>
+
+    <BulkUpdateDialog
+      v-model="updateDialog"
+      v-permissions="[CAN_UPDATE_PRODUCT]"
+      @on-finish="onFinishUpdate"
+    />
   </div>
 </template>
 
-<script>
-import {
-  defineComponent,
-} from 'vue'
-import BulkUpdateDialog from 'src/components/Dialogs/BulkUpdateDialog/index.vue'
-import BulkRemoveDialog from 'src/components/Dialogs/BulkRemoveDialog/index.vue'
+<script setup>
+import { ref } from 'vue'
+import BulkUpdateDialog from 'src/components/Dialogs/BulkUpdateDialog/TheIndex.vue'
+import BulkRemoveDialog from 'src/components/Dialogs/BulkRemoveDialog/TheIndex.vue'
 import BulkPrintDialog from 'src/components/Dialogs/BulkPrintDialog/index.vue'
 import { CAN_UPDATE_PRODUCT, CAN_REMOVE_PRODUCT } from 'src/permissions'
 
-export default defineComponent({
-  name: 'ProductControls',
-  components: {
-    BulkUpdateDialog,
-    BulkRemoveDialog,
-    BulkPrintDialog
+const emit = defineEmits(['on-finish-update', 'on-finish-remove', 'on-finish-print', 'on-close'])
+
+const props = defineProps({
+  show: {
+    type: Boolean,
+    default: false
   },
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    title: {
-      type: String,
-      default: 'Панель управления'
-    },
+  title: {
+    type: String,
+    default: 'Панель управления'
   },
-  emits: ['on-finish-update', 'on-finish-remove', 'on-finish-print', 'on-close'],
-  setup(_, { emit }) {
-    function onFinishUpdate() {
-      emit('on-finish-update')
-    }
-
-    function onFinishRemove() {
-      emit('on-finish-remove')
-    }
-
-    function onFinishPrint() {
-      emit('on-finish-print')
-    }
-
-    function close() {
-      emit('on-close')
-    }
-
-    return {
-      onFinishUpdate,
-      onFinishRemove,
-      onFinishPrint,
-      close,
-      CAN_UPDATE_PRODUCT,
-      CAN_REMOVE_PRODUCT
-    }
-  }
 })
+
+const updateDialog = ref(false)
+const removeDialog = ref(false)
+
+function onFinishUpdate() {
+  emit('on-finish-update')
+}
+
+function onFinishRemove() {
+  emit('on-finish-remove')
+}
+
+function onFinishPrint() {
+  emit('on-finish-print')
+}
+
+function close() {
+  emit('on-close')
+}
+
+function openEditDialog() {
+  updateDialog.value = true
+}
+
+function openRemoveDialog() {
+  removeDialog.value = true
+}
 </script>
 
 <style lang="scss" scoped>

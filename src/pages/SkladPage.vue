@@ -19,6 +19,14 @@
         </q-badge>
       </BlockLink>
       <BlockLink
+        v-permissions="[READ_CATEGORIES]"
+        title="Категории"
+        caption="Категории товаров"
+        icon="mdi-folder-outline"
+        :to="categoriesLink"
+        accent-color="rgb(255 0 255 / 20%)"
+      />
+      <BlockLink
         title="Товары"
         caption="Товары на складе"
         icon="mdi-cube-outline"
@@ -50,14 +58,6 @@
         icon="mdi-cash"
         :to="costsLink"
         accent-color="rgb(255 255 0 / 20%)"
-      />
-      <BlockLink
-        v-permissions="[READ_CATEGORIES]"
-        title="Категории"
-        caption="Категории товаров"
-        icon="mdi-folder-outline"
-        :to="categoriesLink"
-        accent-color="rgb(255 0 255 / 20%)"
       />
     </div>
     <QRModal :opened="qrModalOpened" @close="qrModalOpened = false" />

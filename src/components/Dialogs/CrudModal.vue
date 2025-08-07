@@ -54,15 +54,13 @@
                 color="primary"
                 icon="mdi-check"
                 push
-                :disabled="!formData.name || !formData.color"
+                :loading="isLoading"
+                :disabled="!formData.name || !formData.color || isLoading"
                 @click="save"
               />
             </div>
           </div>
         </q-card-section>
-        <q-inner-loading :showing="isLoading">
-          <q-spinner size="40px" color="primary" />
-        </q-inner-loading>
       </q-card>
     </SwipeToClose>
   </q-dialog>
