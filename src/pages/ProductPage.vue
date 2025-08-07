@@ -530,10 +530,10 @@ async function uploadImg(file) {
 function prepareProductData(uploaded, isDuplicating = false, isEdit = false) {
   // Remove __typename field from GraphQL response
   const newPrices = product.prices?.filter(price => !price.id) || []
-  const forDuplicatingPrices = product.prices.map(price => ({
+  const forDuplicatingPrices = product.prices?.map(price => ({
     name: price.name,
     price: price.price,
-  }))
+  })) || []
   const pricesToClean = isDuplicating ? forDuplicatingPrices : isEdit ? newPrices : product.prices
   const cleanPrices = pricesToClean?.map(price => {
     const { __typename, ...cleanPrice } = price
