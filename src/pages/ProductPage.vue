@@ -528,17 +528,23 @@ async function uploadImg(file) {
 
 // Helper function to prepare product data
 function prepareProductData(uploaded, isDuplicating = false, isEdit = false) {
-  // Remove __typename field from GraphQL response
-  const newPrices = product.prices?.filter(price => !price.id) || []
-  const forDuplicatingPrices = product.prices?.map(price => ({
-    name: price.name,
-    price: price.price,
-  })) || []
-  const pricesToClean = isDuplicating ? forDuplicatingPrices : isEdit ? newPrices : product.prices
-  const cleanPrices = pricesToClean?.map(price => {
+  // Prepare prices based on operation type
+  let pricesToClean
+  if (isDuplicating) {
+    pricesToClean = product.prices?.map(price => ({
+      name: price.name,
+      price: price.price,
+    })) || []
+  } else if (isEdit) {
+    pricesToClean = product.prices?.filter(price => !price.id) || []
+  } else {
+    pricesToClean = product.prices || []
+  }
+  
+  const cleanPrices = pricesToClean.map(price => {
     const { __typename, ...cleanPrice } = price
     return cleanPrice
-  }) || []
+  })
   
   const typeSizeId = getTypeSizeId()
 
