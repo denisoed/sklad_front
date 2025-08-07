@@ -2,6 +2,15 @@
   <transition name="fade">
     <teleport to="body">
       <div v-if="modelValue" class="voice-overlay flex flex-center flex-col">
+        <q-btn
+          color="negative"
+          push
+          round
+          icon="mdi-close"
+          @click="handleCancel"
+          class="absolute-top-right q-mt-md q-mr-md"
+        />
+
         <div class="voice-indicator q-mb-md">
           <q-icon 
             :name="isRecording ? 'mic' : 'mic_off'" 
@@ -13,26 +22,43 @@
           <span v-if="!isApiAvailable" class="text-red q-mb-md">
             Распознавание речи недоступно в вашем браузере
           </span>
+          <span v-else-if="!hasStartedRecording" class="text-bold">
+            Зажмите кнопку ниже, чтобы начать запись
+          </span>
           <span v-else-if="!recognizedText && !isRecording" class="text-bold text-red">
             Не удалось распознать речь. Попробуйте сказать еще раз...
           </span>
           <span v-else-if="!recognizedText" class="text-bold">Говорите...</span>
           <span v-else>{{ recognizedText }}</span>
         </div>
+        
+        <!-- Кнопка записи -->
+        <div v-if="!hasStartedRecording || isRecording" class="record-button-container q-mb-md">
+          <q-btn
+            v-if="isApiAvailable"
+            :color="isRecording ? 'negative' : 'primary'"
+            :icon="isRecording ? 'stop' : 'mic'"
+            size="lg"
+            round
+            class="record-button"
+            @mousedown="handleRecordStart"
+            @mouseup="handleRecordStop"
+            @mouseleave="handleRecordStop"
+            @touchstart="handleRecordStart"
+            @touchend="handleRecordStop"
+            @touchcancel="handleRecordStop"
+            @contextmenu.prevent
+          />
+        </div>
+
         <q-btn
-          v-if="recognizedText || isRecording"
-          color="negative"
-          push
-          label="Отмена"
-          @click="handleCancel"
-        />
-        <q-btn
-          v-else
+          v-if="hasStartedRecording && !isRecording"
           color="primary"
           push
           label="Заново"
           @click="handleRetry"
         />
+        
         <canvas ref="canvasRef" class="voice-canvas" width="480" height="240"></canvas>
       </div>
     </teleport>
@@ -51,6 +77,7 @@ const emit = defineEmits(['cancel', 'update:modelValue', 'result', 'colorResult'
 const canvasRef = ref(null)
 const recognizedText = ref('')
 const isRetrying = ref(false)
+const hasStartedRecording = ref(false)
 
 let audioContext = null
 let analyser = null
@@ -59,7 +86,7 @@ let source = null
 let animationId = null
 let stream = null
 
-const { isRecording, isApiAvailable, toggleRecord, onFinish, transcript } = useSpeechRecognition()
+const { isRecording, isApiAvailable, startRecord, stopRecord, onFinish, transcript } = useSpeechRecognition()
 
 onFinish((finalText) => {
   if (isRetrying.value) {
@@ -75,8 +102,9 @@ onFinish((finalText) => {
 
 function handleCancel() {
   recognizedText.value = ''
+  hasStartedRecording.value = false
   if (isRecording.value) {
-    toggleRecord()
+    stopRecord()
   }
   emit('cancel')
 }
@@ -84,15 +112,40 @@ function handleCancel() {
 function handleRetry() {
   isRetrying.value = true
   recognizedText.value = ''
+  hasStartedRecording.value = false
   if (isRecording.value) {
-    toggleRecord()
+    stopRecord()
   }
   setTimeout(() => {
-    toggleRecord()
-    setTimeout(() => {
-      isRetrying.value = false
-    }, 300)
+    isRetrying.value = false
   }, 100)
+}
+
+function handleRecordStart(event) {
+  if (!isApiAvailable || isRetrying.value) return
+  
+  // Prevent default behavior to avoid context menu
+  if (event) {
+    event.preventDefault()
+  }
+  
+  hasStartedRecording.value = true
+  if (!isRecording.value) {
+    startRecord()
+  }
+}
+
+function handleRecordStop(event) {
+  if (!isApiAvailable || isRetrying.value) return
+  
+  // Prevent default behavior
+  if (event) {
+    event.preventDefault()
+  }
+  
+  if (isRecording.value) {
+    stopRecord()
+  }
 }
 
 function drawBars() {
@@ -142,10 +195,6 @@ async function startAudio() {
     source = audioContext.createMediaStreamSource(stream)
     source.connect(analyser)
     drawBars()
-    
-    if (isApiAvailable) {
-      toggleRecord()
-    }
   } catch (e) {
     console.error('Ошибка доступа к микрофону:', e)
     emit('update:modelValue', false)
@@ -174,9 +223,14 @@ watch(transcript, (newText) => {
 watch(() => props.modelValue, (val) => {
   if (val) {
     recognizedText.value = ''
+    hasStartedRecording.value = false
     startAudio()
   } else {
     stopAudio()
+    // Останавливаем запись при закрытии оверлея
+    if (isRecording.value) {
+      stopRecord()
+    }
   }
 })
 
@@ -210,6 +264,23 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.record-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.record-button {
+  width: 80px;
+  height: 80px;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.95);
+  }
 }
 .voice-canvas {
   position: absolute;

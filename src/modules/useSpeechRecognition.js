@@ -11,15 +11,23 @@ const useSpeechRecognition = () => {
     finishCallback = callback
   }
 
-  function toggleRecord() {
+  function startRecord() {
     try {
-      if (isRecording.value) {
-        recognition.stop()
-      } else {
+      if (!isRecording.value) {
         recognition.start()
       }
     } catch (error) {
-      console.error('Ошибка переключения записи:', error)
+      console.error('Ошибка начала записи:', error)
+    }
+  }
+
+  function stopRecord() {
+    try {
+      if (isRecording.value) {
+        recognition.stop()
+      }
+    } catch (error) {
+      console.error('Ошибка остановки записи:', error)
     }
   }
 
@@ -30,7 +38,7 @@ const useSpeechRecognition = () => {
 
   function onEnd() {
     isRecording.value = false
-    // Вызываем callback с финальным текстом
+    // Вызываем callback с финальным текстом только если есть результат
     if (finishCallback && transcript.value.trim()) {
       finishCallback(transcript.value)
     }
@@ -47,7 +55,7 @@ const useSpeechRecognition = () => {
   if (isApiAvailable) {
     recognition.lang = 'ru-RU'
     recognition.interimResults = true
-    recognition.continuous = false // Изменяем на false для автоматического завершения
+    recognition.continuous = true // Изменяем на true для непрерывной записи
     recognition.onstart = onStart
     recognition.onend = onEnd
     recognition.onresult = onResult
@@ -56,7 +64,8 @@ const useSpeechRecognition = () => {
   return {
     isRecording,
     isApiAvailable,
-    toggleRecord,
+    startRecord,
+    stopRecord,
     onFinish,
     transcript
   }
