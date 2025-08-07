@@ -1,7 +1,7 @@
 <template>
   <div class="flex column q-gap-md">
     <q-separator />
-    <div class="flex column">
+    <div class="flex column q-gap-md">
       <!-- Sklads -->
       <Selector
         v-model="product.sklad"
@@ -12,10 +12,20 @@
         @on-create-new="onCreateNew"
         @on-refetch="refetchSklads"
         outlined
-        class="q-mb-sm"
         label="Склад"
         tabindex="1"
         clearable
+      />
+
+      <!-- Name -->
+      <q-input
+        v-model="product.name"
+        outlined
+        label="Название товара"
+        tabindex="4"
+        class="full-width"
+        data-scroller="name"
+        enterkeyhint="done"
       />
 
       <!-- Categories -->
@@ -28,13 +38,12 @@
         :options="categoriesOptions"
         @on-refetch="refetchCategories"
         outlined
-        class="q-mb-sm"
         label="Категория товара"
         tabindex="2"
         clearable
       />
 
-      <div v-permissions="[READ_ORIGINAL_PRICE]" class="col-12 q-mb-md">
+      <div v-permissions="[READ_ORIGINAL_PRICE]" class="col-12">
         <InputPrice
           v-model="product.origPrice"
           label="Оптовая цена за 1 шт"
@@ -65,16 +74,16 @@
         color="primary"
         icon="mdi-check"
         push
-        :disable="isDisabled"
+        :loading="loading"
+        :disable="isDisabled || loading"
         @click="submit"
       />
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   reactive,
   computed,
   watch
@@ -96,84 +105,73 @@ import useProfile from 'src/modules/useProfile';
 import Selector from 'src/components/UI/Selector.vue';
 import InputPrice from 'src/components/InputPrice.vue';
 
-export default defineComponent({
-  name: 'BulkUpdateStep2',
-  components: {
-    InputPrice,
-    Selector,
-  },
-  emits: ['on-prev', 'on-submit'],
-  setup(props, { emit }) {
-    const {
-      refetch: refetchCategories,
-      result: categoriesResult,
-      load: loadCategories
-    } = useLazyQuery(CATEGORIES)
-    const { sklads, fetchSklads, onCreateNew } = useSklads();
-    const { profile } = useProfile();
+defineOptions({
+  name: 'StepTwo',
+})
 
-    const product = reactive({
-      sklad: null,
-      category: null,
-      origPrice: null,
-      newPrice: null,
-    })
+const emit = defineEmits(['on-prev', 'on-submit'])
 
-    const isDisabled = computed(() => Object.values(product).every(p => !p))
-
-    const categoriesOptions = computed(() => {
-      return categoriesResult.value?.categories.map(c => ({
-        label: c.name,
-        value: c.id
-      }))
-    })
-
-    const skladsOptions = computed(() => {
-      return sklads.value?.map(c => ({
-        label: c.name,
-        value: c.id
-      }))
-    })
-
-    function submit() {
-      const result = Object.entries(product).reduce(
-        (acc, [k, v]) => v ? { ...acc, [k]: v } : acc, {}
-      )
-      emit('on-submit', result)
-    }
-
-    function prev() {
-      emit('on-prev')
-    }
-
-    function refetchSklads() {
-      fetchSklads(profile.value.id)
-    }
-
-    watch(product, () => {
-      if (product.sklad) {
-        loadCategories(
-          null,
-          { where: { sklad: product.sklad.value } },
-          { fetchPolicy: 'network-only' }
-        )
-      }
-    });
-
-    return {
-      prev,
-      submit,
-      product,
-      READ_ORIGINAL_PRICE,
-      categoriesOptions,
-      refetchCategories,
-      isDisabled,
-      skladsOptions,
-      refetchSklads,
-      onCreateNew,
-      CREATE_CATEGORY,
-      CREATE_SKLAD
-    }
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
+
+const {
+  refetch: refetchCategories,
+  result: categoriesResult,
+  load: loadCategories
+} = useLazyQuery(CATEGORIES)
+const { sklads, fetchSklads, onCreateNew } = useSklads();
+const { profile } = useProfile();
+
+const product = reactive({
+  sklad: null,
+  name: null,
+  category: null,
+  origPrice: null,
+  newPrice: null,
+})
+
+const isDisabled = computed(() => Object.values(product).every(p => !p))
+
+const categoriesOptions = computed(() => {
+  return categoriesResult.value?.categories.map(c => ({
+    label: c.name,
+    value: c.id
+  }))
+})
+
+const skladsOptions = computed(() => {
+  return sklads.value?.map(c => ({
+    label: c.name,
+    value: c.id
+  }))
+})
+
+function submit() {
+  const result = Object.entries(product).reduce(
+    (acc, [k, v]) => v ? { ...acc, [k]: v } : acc, {}
+  )
+  emit('on-submit', result)
+}
+
+function prev() {
+  emit('on-prev')
+}
+
+function refetchSklads() {
+  fetchSklads(profile.value.id)
+}
+
+watch(product, () => {
+  if (product.sklad) {
+    loadCategories(
+      null,
+      { where: { sklad: product.sklad.value } },
+      { fetchPolicy: 'network-only' }
+    )
+  }
+});
 </script>
