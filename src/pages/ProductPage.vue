@@ -1,11 +1,11 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle :title="isEdit ? 'Редактировать товар' : 'Добавить новый товар'">
+      <PageTitle :title="pageTitle">
         <template #custom>
           <q-btn
             v-if="isEdit"
-            v-permissions="{ permissions: [READ_HISTORY, CAN_REMOVE_PRODUCT], skladId: product?.sklad?.value }"
+            v-permissions="{ permissions: [READ_HISTORY, CAN_REMOVE_PRODUCT, CAN_ADD_PRODUCT], skladId: product?.sklad?.value }"
             icon="mdi-cog-outline"
             push
             round
@@ -14,6 +14,21 @@
           >
             <q-menu style="width: 200px;">
               <q-list>
+                <q-item
+                  v-permissions="{ permissions: [CAN_ADD_PRODUCT], skladId: product?.sklad?.value }"
+                  clickable
+                  v-close-popup
+                  py="10px"
+                >
+                  <q-item-section
+                    @click="duplicateProduct"
+                  >
+                    <div class="flex items-center">
+                      <q-icon name="mdi-content-duplicate" class="q-mr-sm" size="xs" />
+                      <span>Дублировать</span>
+                    </div>
+                  </q-item-section>
+                </q-item>
                 <q-item
                   v-if="historyLink"
                   v-permissions="{ permissions: [READ_HISTORY], skladId: product?.sklad?.value }"
@@ -72,8 +87,16 @@
         <div class="row">
           <div class="col-12 q-mb-md">
             <div
+              v-if="isDuplicating"
+              class="flex items-center border-radius-sm q-pa-sm q-mb-md q-px-md"
+              style="background-color: rgb(33 150 243 / 8%);"
+            >
+              <span>Дублируется товар: <strong>#{{ duplicatedFromID }}</strong></span>
+              <q-icon name="mdi-content-duplicate" class="q-ml-auto" color="primary" size="sm" />
+            </div>
+            <div
               v-if="product.withDiscount"
-              class="flex items-center q-pa-sm q-mb-md q-px-md"
+              class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
               style="background-color: rgb(255 0 0 / 8%);border-radius: 3px;"
             >
               <span class="q-mr-sm">На этот товар действует акция</span>
@@ -344,7 +367,6 @@ import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import useProduct from 'src/modules/useProduct'
 import useHelpers from 'src/modules/useHelpers'
 import useSklads from 'src/modules/useSklads'
-import useHistory from 'src/modules/useHistory'
 import useCosts from 'src/modules/useCosts'
 import FilterDates from 'src/components/FilterDates.vue'
 import InputPlusMinus from 'src/components/InputPlusMinus.vue'
@@ -374,11 +396,7 @@ import PageTitle from 'src/components/PageTitle.vue'
 import { useRoute, useRouter } from 'vue-router'
 import useSizes from 'src/modules/useSizes'
 import {
-  SKLAD_DRAFT_KEY,
   FILTER_FORMAT,
-  HISTORY_DELETE,
-  HISTORY_UPDATE,
-  HISTORY_CREATE,
 } from 'src/config'
 import {
   READ_ORIGINAL_PRICE,
@@ -390,6 +408,9 @@ import {
 } from 'src/permissions'
 import isEqual from 'lodash.isequal'
 import useProfile from 'src/modules/useProfile'
+import useProductDuplication from 'src/modules/useProductDuplication'
+import useDraft from 'src/modules/useDraft'
+import useProductHistory from 'src/modules/useProductHistory'
 
 const DEFAULT_DATA = {
   id: null,
@@ -429,10 +450,6 @@ const {
   generateProductMeta,
 } = useProduct()
 const {
-  createHistory,
-  history
-} = useHistory()
-const {
   createCost,
   errorCost
 } = useCosts()
@@ -440,6 +457,23 @@ const { sklad, sklads, onCreateNew, fetchSklads } = useSklads()
 
 const modalCountToBucket = ref(false)
 const modalSizesToBucket = ref(false)
+
+const {
+  isDuplicating,
+  duplicatedFromID,
+  loadDuplicateData,
+  clearDuplicateData,
+  duplicateProduct: duplicateProductAction,
+  applyDuplicateData
+} = useProductDuplication()
+
+const { clearDraft: clearDraftAction } = useDraft()
+
+const {
+  createProductHistory,
+  createUpdateHistory,
+  createDeleteHistory
+} = useProductHistory()
 
 const {
   mutate: uploadImage,
@@ -493,6 +527,7 @@ function setColorName(color) {
 function resetAll() {
   Object.assign(product, DEFAULT_DATA)
   clearDraft()
+  clearDuplicateData()
 }
 
 async function onAddCountToBucket(product, payload) {
@@ -516,7 +551,8 @@ async function onAddSizesToBucket(product, payload) {
 }
 
 function clearDraft() {
-  localStorage.removeItem(SKLAD_DRAFT_KEY);
+  clearDraftAction();
+  clearDuplicateData();
 }
 
 async function saveCost(sum, isAdd) {
@@ -548,80 +584,6 @@ async function handleCost() {
     const sizesLength = cL - pL
     const sum = 0 - (((copiedProductForDirty.countSizes - product.countSizes) || sizesLength) * product.origPrice)
     saveCost(sum, false)
-  }
-}
-
-function generateHistoryForUpdate(oldData, newData) {
-  let fields = []
-  if (oldData.name !== newData.name) {        
-    fields.push({
-      name: oldData.name,
-      old: oldData.name,
-      new: newData.name,
-      type: 'name'
-    });
-  }
-  if (oldData.color !== newData.color) {     
-    fields.push({
-      name: oldData.name,
-      old: oldData.color,
-      new: newData.color,
-      type: 'color'
-    });
-  }
-  if (oldData.origPrice !== newData.origPrice) {
-    fields.push({
-      name: oldData.name,
-      old: oldData.origPrice,
-      new: newData.origPrice,
-      type: 'origPrice'
-    });
-  }
-  if (oldData.newPrice !== newData.newPrice) {
-    fields.push({
-      name: oldData.name,
-      old: oldData.newPrice,
-      new: newData.newPrice,
-      type: 'newPrice'
-    });
-  }
-  if (oldData.countSizes !== newData.countSizes) {
-    fields.push({
-      name: oldData.name,
-      old: oldData.countSizes,
-      new: newData.countSizes,
-      type: 'countSizes'
-    });
-  }
-  if (JSON.stringify(oldData.sizes.map(s => s.size)) !== JSON.stringify(newData.sizes)) {
-    const started = oldData.sizes.map(s => s.size)
-    const updated = newData.sizes.map(s => s.size)
-    if (started.length > updated.length) {
-      const filtered = difference(started, updated)          
-      fields.push({
-        name: oldData.name,
-        sizes: filtered,
-        type: 'removedSizes'
-      });
-    }
-    if (started.length < updated.length) {
-      const filtered = difference(updated, started)
-      fields.push({
-        name: oldData.name,
-        sizes: filtered,
-        type: 'addedSizes'
-      });
-    }
-  }
-  for (let field of fields) {
-    createHistory({
-      action: HISTORY_UPDATE,
-      productId: product.id,
-      skladId: product.sklad.value,
-      json: {
-        ...field
-      }
-    })
   }
 }
 
@@ -657,18 +619,7 @@ async function create() {
       const response = await createProduct({ data })
       if (!createProductError.value) {
         showSuccess('Товар успешно создан!')
-        createHistory({
-          action: HISTORY_CREATE,
-          productId: response.data.createProduct.product.id,
-          skladId: product.sklad.value,
-          json: {
-            name: product.name,
-            origPrice: product.origPrice,
-            newPrice: product.newPrice,
-            sizes: product.sizes.map(s => s.size),
-            countSizes: product.countSizes
-          }
-        })
+        createProductHistory(product, response.data.createProduct.product.id, product.sklad.value)
         clearDraft()
         replace(`/products?product=${response.data.createProduct.product.id}`)
       } else {
@@ -723,7 +674,7 @@ async function update() {
           removeImage({ id: product.imageId })
           product.imageId = null
         }
-        generateHistoryForUpdate(editProduct.value?.product, product)
+        createUpdateHistory(editProduct.value?.product, product, product.id, product.sklad.value)
         // Создаем глубокую копию для корректного отслеживания изменений
         Object.assign(copiedProductForDirty, {
           ...product,
@@ -757,6 +708,10 @@ async function submit(type) {
   }
 }
 
+function duplicateProduct() {
+  duplicateProductAction(product)
+}
+
 function cancel(type) {
   $q.dialog({
     title: type === 'remove' ? 'Удалить этот товар?' : 'Сбосить введенные значения?',
@@ -779,6 +734,7 @@ function cancel(type) {
       resetAll()
     } else {
       await removeProduct(params?.productId, product)
+      createDeleteHistory(product, product.sklad.value)
       showSuccess('Товар успешно удалён!')
       push('/products')
     }
@@ -802,9 +758,14 @@ function setDiscount({ dates }) {
 }
 
 function loadData() {
-  resetAll();
   fetchSizes(profile.value.id)
-  if (params?.productId) {
+  
+  if (!params?.productId) {
+    const duplicateData = loadDuplicateData()
+    if (duplicateData) {
+      applyDuplicateData(product, duplicateData)
+    }
+  } else {
     getEditProduct(
       null,
       { id: params?.productId },
@@ -842,6 +803,14 @@ const isDiscountToday = computed(() => {
   return product?.discountDays?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
 })
 const isDirty = computed(() => isEqual(product, copiedProductForDirty))
+const pageTitle = computed(() => {
+  if (isDuplicating.value) {
+    return 'Дублирование товара'
+  } else if (isEdit.value) {
+    return 'Редактирование товара'
+  }
+  return 'Создание товара'
+})
 
 watch(categoriesResult, (newValue) => {
   if (newValue?.categories?.length) {
@@ -874,7 +843,6 @@ watch(editProduct, (newValue) => {
 
 watch(sklads, (val) => {
   if (val?.length) {
-    resetAll();
     loadData();
   }
 }, {
