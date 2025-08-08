@@ -492,9 +492,11 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      setTimeout(() => {
-        onScrollToCard()
-      }, 300);
+      if (viewMode.value === VIEW_GRID) {
+        setTimeout(() => {
+          onScrollToCard()
+        }, 300);
+      }
     })
 
     watch(viewMode, (newValue) => {

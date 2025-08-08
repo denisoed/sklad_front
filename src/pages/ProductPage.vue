@@ -89,7 +89,7 @@
             <div
               v-if="isDuplicating"
               class="flex items-center border-radius-sm q-pa-sm q-mb-md q-px-md"
-              style="background-color: rgb(33 150 243 / 8%);"
+              style="background-color: rgb(255 255 0 / 8%);"
             >
               <span>Дублируется товар: <strong>#{{ duplicatedFromID }}</strong></span>
               <q-icon name="mdi-content-duplicate" class="q-ml-auto" color="primary" size="sm" />
