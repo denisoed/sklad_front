@@ -3,17 +3,27 @@
     <q-separator />
     <div class="flex column q-gap-md">
       <!-- Sklads -->
-      <Selector
+      <TheSelector
         v-model="product.sklad"
         title-postfix="склад"
-        :modal-params="{ users: profile?.id }"
-        :modal-create-gql="CREATE_SKLAD"
         :options="skladsOptions"
-        @on-create-new="onCreateNew"
-        @on-refetch="refetchSklads"
+        @on-create-new="onCreateNewSklad"
         outlined
         label="Склад"
         tabindex="1"
+        clearable
+      />
+
+      <!-- Categories -->
+      <TheSelector
+        v-if="product.sklad"
+        v-model="product.category"
+        title-postfix="категорию"
+        :options="categoriesOptions"
+        @on-create-new="onCreateNewCategory"
+        outlined
+        label="Категория товара"
+        tabindex="2"
         clearable
       />
 
@@ -26,21 +36,6 @@
         class="full-width"
         data-scroller="name"
         enterkeyhint="done"
-      />
-
-      <!-- Categories -->
-      <Selector
-        v-if="product.sklad"
-        v-model="product.category"
-        title-postfix="категорию"
-        :modal-params="{ sklad: product.sklad }"
-        :modal-create-gql="CREATE_CATEGORY"
-        :options="categoriesOptions"
-        @on-refetch="refetchCategories"
-        outlined
-        label="Категория товара"
-        tabindex="2"
-        clearable
       />
 
       <div v-permissions="[READ_ORIGINAL_PRICE]" class="col-12">
@@ -88,22 +83,15 @@ import {
   computed,
   watch
 } from 'vue';
-import { useLazyQuery } from '@vue/apollo-composable';
-import {
-  CATEGORIES,
-  CREATE_CATEGORY
-} from 'src/graphql/category';
-import {
-  CREATE_SKLAD
-} from 'src/graphql/sklads';
 import {
   READ_ORIGINAL_PRICE,
 } from 'src/permissions';
 import useSklads from 'src/modules/useSklads';
-import useProfile from 'src/modules/useProfile';
-
-import Selector from 'src/components/UI/TheSelector.vue';
+import useDialog from 'src/modules/useDialog'
+import TheSelector from 'src/components/UI/TheSelector.vue';
 import InputPrice from 'src/components/InputPrice.vue';
+import { MANAGE_CATEGORY_DIALOG, MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
+import useCategories from 'src/modules/useCategories'
 
 defineOptions({
   name: 'StepTwo',
@@ -118,13 +106,10 @@ defineProps({
   }
 })
 
-const {
-  refetch: refetchCategories,
-  result: categoriesResult,
-  load: loadCategories
-} = useLazyQuery(CATEGORIES)
-const { sklads, fetchSklads, onCreateNew } = useSklads();
-const { profile } = useProfile();
+const { openDialog } = useDialog()
+
+const { categories: categoriesResult, fetchCategories } = useCategories()
+const { sklads } = useSklads();
 
 const product = reactive({
   sklad: null,
@@ -137,7 +122,7 @@ const product = reactive({
 const isDisabled = computed(() => Object.values(product).every(p => !p))
 
 const categoriesOptions = computed(() => {
-  return categoriesResult.value?.categories.map(c => ({
+  return categoriesResult.value?.map(c => ({
     label: c.name,
     value: c.id
   }))
@@ -161,17 +146,19 @@ function prev() {
   emit('on-prev')
 }
 
-function refetchSklads() {
-  fetchSklads(profile.value.id)
+function onCreateNewSklad() {
+  openDialog(MANAGE_SKLAD_DIALOG)
+}
+
+function onCreateNewCategory() {
+  openDialog(MANAGE_CATEGORY_DIALOG, {
+    skladId: product.sklad.value
+  })
 }
 
 watch(product, () => {
   if (product.sklad) {
-    loadCategories(
-      null,
-      { where: { sklad: product.sklad.value } },
-      { fetchPolicy: 'network-only' }
-    )
+    fetchCategories({ sklad: product.sklad.value })
   }
 });
 </script>

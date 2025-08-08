@@ -517,7 +517,9 @@ function onCreateNewSklad() {
 }
 
 function onCreateNewCategory() {
-  openDialog(MANAGE_CATEGORY_DIALOG)
+  openDialog(MANAGE_CATEGORY_DIALOG, {
+    skladId: product.sklad.value
+  })
 }
 
 // Helper function to prepare product data

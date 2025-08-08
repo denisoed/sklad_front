@@ -116,7 +116,8 @@ const selectedCategory = ref(null)
 
 function onHold() {
   openDialog(MANAGE_CATEGORY_DIALOG, {
-    category: selectedCategory.value
+    category: selectedCategory.value,
+    skladId: params?.skladId
   })
 }
 
@@ -125,7 +126,9 @@ function onMouseDown(category) {
 }
 
 function openManageCategoryDialog() {
-  openDialog(MANAGE_CATEGORY_DIALOG)
+  openDialog(MANAGE_CATEGORY_DIALOG, {
+    skladId: params?.skladId
+  })
 }
 
 onBeforeMount(() => {

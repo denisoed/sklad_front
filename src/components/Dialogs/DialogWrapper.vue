@@ -63,4 +63,9 @@ onUnmounted(() => {
   offBus(BUS_EVENTS.OPEN_DIALOG);
   offBus(BUS_EVENTS.CLOSE_DIALOG);
 });
+
+// Экспортируем slotData для доступа из родительского компонента
+defineExpose({
+  slotData
+});
 </script>

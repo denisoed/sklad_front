@@ -1,14 +1,16 @@
 <template>
   <DialogWrapper
     :id="MANAGE_CATEGORY_DIALOG"
+    ref="dialogRef"
     position="bottom"
+    @before-show="onBeforeShow"
   >
     <template v-slot="{ data }">
       <CrudModal
         :item="data?.category"
         :create-gql="CREATE_CATEGORY"
         :update-gql="UPDATE_CATEGORY"
-        :extend-create-params="{ sklad: route.params?.skladId }"
+        :extend-create-params="{ sklad: data?.skladId }"
         @close="onCloseModal"
         @remove="onRemove"
         @finished="onFinished"
@@ -31,14 +33,16 @@ import { MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
 import useHelpers from 'src/modules/useHelpers'
 import { useMutation } from '@vue/apollo-composable'
 import useDialog from 'src/modules/useDialog'
-import { useRoute } from 'vue-router'
 import useCategories from 'src/modules/useCategories'
+import { ref } from 'vue'
 
 const { fetchCategories } = useCategories()
 const { closeDialog } = useDialog()
 const { showSuccess, showError } = useHelpers()
-const route = useRoute()
 const $q = useQuasar()
+
+const skladId = ref(null)
+const dialogRef = ref()
 
 const {
   mutate: deleteCategory,
@@ -50,7 +54,11 @@ function onCloseModal() {
 }
 
 function onFinished() {
-  fetchCategories(route.params?.skladId)
+  fetchCategories({ sklad: skladId.value })
+}
+
+function onBeforeShow() {
+  skladId.value = dialogRef.value.slotData?.skladId
 }
 
 function onRemove(category) {
@@ -73,7 +81,7 @@ function onRemove(category) {
   }).onOk(async () => {
     await deleteCategory({ id: category.id })
     if (!deleteCategoryError.value) {
-      fetchCategories(route.params?.skladId)
+      fetchCategories({ sklad: skladId.value })
       // NOTE: add to history
       showSuccess('Категория успешно удалёна!')
     } else {
