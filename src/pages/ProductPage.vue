@@ -691,7 +691,7 @@ async function update() {
 
   try {
     const data = prepareProductData(uploaded, false, true)
-    await updateProductById(params?.productId, data)
+    await updateProductById(params?.productId, data, editProduct.value?.product)
     
     if (!updateProductError.value) {
       if (typeof product.image !== 'string' && product.imageId) {

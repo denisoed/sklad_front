@@ -16,12 +16,18 @@ import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import { useProductsStore } from 'src/stores/products'
 import { useBucketStore } from 'src/stores/bucket'
+import useProductHistory from 'src/modules/useProductHistory'
 
 const useProduct = () => {
   const { showError, showSuccess } = useHelpers()
   const { params } = useRoute()
   const productsStore = useProductsStore()
   const bucketStore = useBucketStore()
+  const {
+    createProductHistory,
+    createUpdateHistory,
+    createDeleteHistory
+  } = useProductHistory()
   const {
     createHistory,
   } = useHistory()
@@ -169,27 +175,19 @@ const useProduct = () => {
       createHistory({
         action: HISTORY_CREATE,
         productId: response.createProduct.product.id,
-        skladId: params?.skladId,
+        skladId: data?.sklad,
         json: data
       })
     }
   }
 
-  async function updateProductById(id, data) {
+  async function updateProductById(id, newData, oldData) {
     await updateProduct({
       id,
-      data: {
-        sklad: params?.skladId,
-        ...data,
-      }
+      data: newData
     })
-    if (!updateProductError.value) {
-      createHistory({
-        action: HISTORY_UPDATE,
-        productId: id,
-        skladId: params?.skladId,
-        json: data
-      })
+    if (!updateProductError.value && oldData) {
+      createUpdateHistory(oldData, newData, id, oldData?.sklad?.id)
     }
   }
 
