@@ -44,28 +44,39 @@ export default defineComponent({
     const isClosing = ref(false);
     const threshold = 100; // Minimum distance to trigger close
     const windowHeight = ref(window.innerHeight);
+    
+    // Store references for cleanup
+    let mutationObserver = null;
+    let resizeListener = null;
+    let lastTouchMoveTime = 0;
+    const THROTTLE_DELAY = 16; // ~60fps
+
+    // Memoized direction check
+    const isVertical = computed(() => props.direction === 'up' || props.direction === 'down');
+    const isHorizontal = computed(() => props.direction === 'left' || props.direction === 'right');
 
     const containerStyle = computed(() => {
-      const isVertical = props.direction === 'up' || props.direction === 'down';
-      const isHorizontal = props.direction === 'left' || props.direction === 'right';
-      
-      if (isVertical) {
-        return {
-          transform: `translateY(${currentY.value}px)`,
-          opacity: isClosing.value ? 0 : 1
-        };
-      } else if (isHorizontal) {
-        return {
-          transform: `translateX(${currentY.value}px)`,
-          opacity: isClosing.value ? 0 : 1
-        };
-      }
+      const transformValue = isVertical.value 
+        ? `translateY(${currentY.value}px)`
+        : `translateX(${currentY.value}px)`;
       
       return {
-        transform: `translateY(${currentY.value}px)`,
+        transform: transformValue,
         opacity: isClosing.value ? 0 : 1
       };
     });
+
+    // Throttle function for performance
+    function throttle(func, delay) {
+      let lastCall = 0;
+      return function(...args) {
+        const now = Date.now();
+        if (now - lastCall >= delay) {
+          lastCall = now;
+          return func.apply(this, args);
+        }
+      };
+    }
 
     // Block body scroll when swiping
     function blockBodyScroll() {
@@ -81,45 +92,68 @@ export default defineComponent({
       document.body.style.overscrollBehavior = '';
     }
 
+    // Optimized function to find scrollable elements
+    function findScrollableElements(container) {
+      if (!container) return [];
+      
+      const scrollableElements = [];
+      const walker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_ELEMENT,
+        {
+          acceptNode: (node) => {
+            const style = window.getComputedStyle(node);
+            const isScrollable = style.overflow === 'auto' || 
+                               style.overflow === 'scroll' || 
+                               style.overflowY === 'auto' || 
+                               style.overflowY === 'scroll';
+            return isScrollable ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+          }
+        }
+      );
+      
+      let node;
+      while (node = walker.nextNode()) {
+        scrollableElements.push(node);
+      }
+      
+      return scrollableElements;
+    }
+
     // Set overscroll behavior for the component and its children
     function setOverscrollBehavior() {
-      if (SwipeToCloseRef.value) {
-        // Set overscroll behavior on the component itself
-        SwipeToCloseRef.value.style.overscrollBehavior = 'contain';
-        
-        // Set overscroll behavior on all scrollable children
-        const scrollableElements = SwipeToCloseRef.value.querySelectorAll('*');
-        scrollableElements.forEach(element => {
-          const computedStyle = window.getComputedStyle(element);
-          if (computedStyle.overflow === 'auto' || computedStyle.overflow === 'scroll' || 
-              computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll') {
-            element.style.overscrollBehavior = 'contain';
-            element.style.webkitOverflowScrolling = 'touch';
-          }
-        });
-      }
+      if (!SwipeToCloseRef.value) return;
+      
+      // Set overscroll behavior on the component itself
+      SwipeToCloseRef.value.style.overscrollBehavior = 'contain';
+      
+      // Only process scrollable elements instead of all elements
+      const scrollableElements = findScrollableElements(SwipeToCloseRef.value);
+      scrollableElements.forEach(element => {
+        element.style.overscrollBehavior = 'contain';
+        element.style.webkitOverflowScrolling = 'touch';
+      });
     }
 
     // Setup MutationObserver to watch for DOM changes
     function setupMutationObserver() {
-      if (SwipeToCloseRef.value) {
-        const observer = new MutationObserver(() => {
-          setOverscrollBehavior();
-        });
-        
-        observer.observe(SwipeToCloseRef.value, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ['style', 'class']
-        });
-        
-        return observer;
-      }
-      return null;
+      if (!SwipeToCloseRef.value) return null;
+      
+      const observer = new MutationObserver(() => {
+        setOverscrollBehavior();
+      });
+      
+      observer.observe(SwipeToCloseRef.value, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class']
+      });
+      
+      return observer;
     }
 
-    // Check if any element inside can be scrolled up
+    // Optimized scroll check - only check immediate children and current element
     function canScrollContent(element) {
       if (!element) return false;
       
@@ -128,9 +162,9 @@ export default defineComponent({
         return true;
       }
       
-      // Check all child elements recursively
+      // Only check immediate children, not all descendants
       for (let child of element.children) {
-        if (canScrollContent(child)) {
+        if (child.scrollHeight > child.clientHeight && child.scrollTop > 0) {
           return true;
         }
       }
@@ -159,7 +193,7 @@ export default defineComponent({
       
       isSwiping.value = true;
       
-      if (props.direction === 'up' || props.direction === 'down') {
+      if (isVertical.value) {
         startY.value = event.touches[0].clientY;
       } else {
         startY.value = event.touches[0].clientX;
@@ -171,11 +205,12 @@ export default defineComponent({
       blockBodyScroll();
     }
 
-    function handleTouchMove(event) {
+    // Throttled touch move handler
+    const throttledTouchMove = throttle((event) => {
       if (!isSwiping.value || isClosing.value) return;
       
       let delta;
-      if (props.direction === 'up' || props.direction === 'down') {
+      if (isVertical.value) {
         delta = event.touches[0].clientY - startY.value;
       } else {
         delta = event.touches[0].clientX - startY.value;
@@ -193,6 +228,10 @@ export default defineComponent({
         // Prevent default to block page scroll
         event.preventDefault();
       }
+    }, THROTTLE_DELAY);
+
+    function handleTouchMove(event) {
+      throttledTouchMove(event);
     }
 
     function handleTouchEnd() {
@@ -233,20 +272,36 @@ export default defineComponent({
       }
     }
 
-    // Update window height on resize
-    window.addEventListener('resize', () => {
+    // Throttled resize handler
+    const throttledResize = throttle(() => {
       windowHeight.value = window.innerHeight;
-    });
+    }, 100);
 
     // Set overscroll behavior when component mounts
     onMounted(() => {
       setOverscrollBehavior();
-      setupMutationObserver(); // Initialize MutationObserver
+      mutationObserver = setupMutationObserver();
+      
+      // Add throttled resize listener
+      resizeListener = throttledResize;
+      window.addEventListener('resize', resizeListener);
     });
 
     // Cleanup on component unmount
     onUnmounted(() => {
       unblockBodyScroll();
+      
+      // Cleanup MutationObserver
+      if (mutationObserver) {
+        mutationObserver.disconnect();
+        mutationObserver = null;
+      }
+      
+      // Cleanup resize listener
+      if (resizeListener) {
+        window.removeEventListener('resize', resizeListener);
+        resizeListener = null;
+      }
     });
 
     return {

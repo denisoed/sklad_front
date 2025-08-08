@@ -5,87 +5,102 @@
       <div v-if="hasNewHistory" class="notify-list_alert" />
     </q-btn>
     <q-dialog v-model="dialog" position="right" full-height>
-      <q-swipe-to-close v-model="dialog" direction="right">
+      <SwipeToClose direction="right" @on-close="dialog = false">
         <q-card class="notify-list_wrap" style="width: 300px;">
           <q-card-section class="flex items-center q-pb-none">
             <div class="text-subtitle1">Уведомления</div>
             <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup />
           </q-card-section>
           <q-card-section v-if="historyRows?.length" class="notify-list_items">
-            <div class="flex column q-gap-md">
-              <router-link
-                v-for="(h, i) of historyRows"
-                :key="i"
-                class="notify-list_item block-bg q-pa-md"
-                :style="`border-color: ${h.actionColor}2A`"
-                :class="{ 'notify-list_item--old': !h.isNew }"
-                :to="`/product/${h.productId}`"
-              >
-                <div v-if="h.isNew" class="notify-list_alert" />
-                <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>
-                <div class="notify-list_item-sklad text-grey q-mb-xs">Товар: {{ h.productId ? `#${h.productId}` : 'n/a' }}</div>
-                <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
-                <div class="flex justify-between items-center">
-                  <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
-                  <div class="notify-list_item-date text-grey-5 q-ml-auto">{{ formatTimeAgo(h.created_at) }}</div>
-                </div>
-              </router-link>
-            </div>
+            <q-virtual-scroll
+              v-bind="virtualScrollProps"
+              class="notify-list_virtual-scroll"
+            >
+              <template v-slot="{ item: h }">
+                <router-link
+                  :key="h.virtualKey"
+                  class="notify-list_item block-bg q-pa-md"
+                  :style="getItemStyle(h)"
+                  :class="{ 'notify-list_item--old': !h.isNew }"
+                  :to="`/product/${h.productId}`"
+                >
+                  <div v-if="h.isNew" class="notify-list_alert" />
+                  <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>
+                  <div class="notify-list_item-sklad text-grey q-mb-xs">Товар: {{ h.productId ? `#${h.productId}` : 'n/a' }}</div>
+                  <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
+                  <div class="flex justify-between items-center">
+                    <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
+                    <div class="notify-list_item-date text-grey-5 q-ml-auto">{{ h.formattedTime }}</div>
+                  </div>
+                </router-link>
+              </template>
+            </q-virtual-scroll>
           </q-card-section>
           <q-card-section v-else class="flex column items-center q-pt-xl">
             <q-icon name="mdi-history" size="md" color="grey" />
             <div class="text-grey q-mt-sm">Новых уведомлений нет</div>
           </q-card-section>
         </q-card>
-      </q-swipe-to-close>
+      </SwipeToClose>
     </q-dialog>
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   ref,
-  defineComponent,
   watch,
-  computed
+  computed,
 } from 'vue'
 import useHistory from 'src/modules/useHistory'
 import useDate from 'src/modules/useDate'
+import SwipeToClose from 'src/components/SwipeToClose.vue'
 
-export default defineComponent({
-  name: 'NotifyList',
-  props: {
-    history: {
-      type: Array,
-      default: () => []
-    },
+const props = defineProps({
+  history: {
+    type: Array,
+    default: () => []
   },
-  setup(props) {
-    const { setViewedHistory, getDescription } = useHistory()
-    const { formatTimeAgo } = useDate()
-    const dialog = ref(false)
+})
 
-    const historyRows = computed(() => {
-      return props.history.map(h => ({
-        ...h,
-        description: getDescription(h.action, h.json)
-      }));
-    })
+const { setViewedHistory, getDescription } = useHistory()
+const { formatTimeAgo } = useDate()
+const dialog = ref(false)
 
-    const hasNewHistory = computed(() => historyRows.value.some(h => h.isNew))
+// Memoized history processing with pre-computed values for virtual scroll
+const historyRows = computed(() => {
+  return props.history.map(h => ({
+    ...h,
+    description: getDescription(h.action, h.json),
+    formattedTime: formatTimeAgo(h.created_at),
+    // Pre-compute style to avoid inline style calculations during render
+    styleKey: `${h.actionColor}2A`,
+    // Ensure unique key for virtual scroll
+    virtualKey: `${h.id || h.created_at || Math.random()}`
+  }));
+})
 
-    watch(dialog, (val) => {
-      if (val) {
-        setViewedHistory()
-      }
-    })
+const hasNewHistory = computed(() => historyRows.value.some(h => h.isNew))
 
-    return {
-      dialog,
-      formatTimeAgo,
-      historyRows,
-      hasNewHistory
-    }
+// Memoized style function to avoid repeated calculations
+const getItemStyle = (item) => {
+  return {
+    borderColor: item.styleKey
+  }
+}
+
+// Optimize virtual scroll performance
+const virtualScrollProps = computed(() => ({
+  items: historyRows.value,
+  itemSize: 120,
+  virtualScrollItemSize: 120,
+  virtualScrollStickySizeStart: 0,
+  virtualScrollStickySizeEnd: 0
+}))
+
+watch(dialog, (val) => {
+  if (val) {
+    setViewedHistory()
   }
 })
 </script>
@@ -95,6 +110,9 @@ export default defineComponent({
   &_wrap {
     min-height: 100%;
     background: var(--main-bg);
+    // Optimize for hardware acceleration
+    will-change: transform;
+    transform: translateZ(0);
   }
 
   &_alert {
@@ -105,12 +123,30 @@ export default defineComponent({
     position: absolute;
     right: 10px;
     top: 8px;
-    transition: all 0.2s ease;
+    // Optimize transition for better performance
+    transition: opacity 0.2s ease;
+    will-change: opacity;
   }
 
   &_items {
     height: 85vh;
-    overflow: auto;
+    overflow: hidden; // Changed from auto to hidden for virtual scroll
+    // Optimize scrolling performance
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    // Hardware acceleration for smooth scrolling
+    transform: translateZ(0);
+    will-change: scroll-position;
+    // Optimize for virtual scrolling
+    contain: layout style paint;
+  }
+
+  &_virtual-scroll {
+    height: 100%;
+    // Ensure proper height for virtual scroll container
+    .q-virtual-scroll__content {
+      padding: 8px 0; // Add some padding for better visual spacing
+    }
   }
 
   &_item {
@@ -120,6 +156,12 @@ export default defineComponent({
     border-radius: var(--border-radius);
     border-right: 5px solid;
     position: relative;
+    margin-bottom: 8px; // Add margin between items
+    // Optimize for hardware acceleration
+    transform: translateZ(0);
+    will-change: transform;
+    // Optimize rendering
+    contain: layout style;
 
     > .notify-list_alert {
       top: 5px;
@@ -142,6 +184,22 @@ export default defineComponent({
     &--old {
       opacity: 0.6;
     }
+  }
+}
+
+// Optimize transitions during swipe
+.swipe-to-close--swiping {
+  .notify-list_item {
+    transition: none !important;
+  }
+  
+  .notify-list_alert {
+    transition: none !important;
+  }
+  
+  .notify-list_items {
+    // Disable scrolling during swipe to prevent conflicts
+    overflow: hidden !important;
   }
 }
 </style>
