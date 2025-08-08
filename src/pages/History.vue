@@ -49,7 +49,7 @@
               {{ props.row.fullname }}
             </q-td>
             <q-td key="productId" :props="props">
-              #{{ props.row.productId }}
+              {{ props.row.productId ? `#${props.row.productId}` : '-' }}
             </q-td>
             <q-td key="description" :props="props">
               {{ props.row.description }}

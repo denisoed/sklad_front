@@ -1,8 +1,8 @@
 export const HISTORY_ACTIONS = {
-  create: 'Создание',
-  update: 'Обновление',
-  delete: 'Удаление',
-  sold: 'Продажа',
+  create: 'Создан',
+  update: 'Обновлен',
+  delete: 'Удален',
+  sold: 'Продан',
   return: 'Возврат',
 }
 export const HISTORY_ACTIONS_COLORS = {
