@@ -33,7 +33,15 @@
         </div>
       </template>
       <template #after-options>
-        <div class="q-pa-md">
+        <q-separator />
+        <div class="flex no-wrap q-gap-md q-pa-md">
+          <q-btn
+            push
+            color="grey-6"
+            class="border-radius-sm"
+            icon="mdi-close"
+            v-close-popup
+          />
           <q-btn
             push
             color="primary"

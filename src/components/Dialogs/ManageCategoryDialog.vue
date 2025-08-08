@@ -87,12 +87,11 @@ import {
   UPDATE_CATEGORY
 } from 'src/graphql/category'
 import DialogWrapper from 'src/components/Dialogs/DialogWrapper.vue'
-import { MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
+import { MANAGE_CATEGORY_DIALOG, MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
 import useHelpers from 'src/modules/useHelpers'
 import useDialog from 'src/modules/useDialog'
 import useCategories from 'src/modules/useCategories'
 import useSklads from 'src/modules/useSklads'
-import useProfile from 'src/modules/useProfile'
 import {
   computed,
   reactive,
@@ -101,15 +100,19 @@ import {
 import ColorPicker from 'src/components/ColorPicker.vue'
 import TheSelector from 'src/components/UI/TheSelector.vue'
 import { useMutation } from '@vue/apollo-composable'
+import { useRoute } from 'vue-router'
 
 const { fetchCategories } = useCategories()
-const { closeDialog } = useDialog()
+const { closeDialog, openDialog } = useDialog()
 const { showSuccess, showError } = useHelpers()
 const { sklads } = useSklads()
 const $q = useQuasar()
 
+const route = useRoute()
+
 const selectedCategory = ref(null)
 const dialogRef = ref()
+const skladId = ref(null)
 
 const {
   mutate: deleteCategory,
@@ -150,8 +153,7 @@ function onColorChange(data) {
 }
 
 function onCreateNewSklad() {
-  // Здесь можно добавить логику для создания нового склада
-  showError('Создание складов через этот диалог не поддерживается')
+  openDialog(MANAGE_SKLAD_DIALOG)
 }
 
 function close() {
@@ -166,7 +168,7 @@ async function createToDB() {
     data: {
       color: formData.color,
       name: formData.name,
-      sklad: formData.sklad.value
+      sklad: formData.sklad
     }
   })
   if (!createError.value) {
@@ -182,7 +184,7 @@ async function updateFromDB() {
     data: {
       name: formData.name,
       color: formData.color,
-      sklad: formData.sklad.value
+      sklad: formData.sklad
     }
   })
   if (!updateError.value) {
@@ -203,7 +205,7 @@ async function save() {
     } catch (error) {
       showError('Неизвестная ошибка. Проблемы на сервере.')
     } finally {
-      await fetchCategories({ sklad: formData.sklad.value })
+      await fetchCategories({ sklad: skladId.value })
       close()
     }
   }
@@ -229,9 +231,10 @@ function remove() {
   }).onOk(async () => {
     await deleteCategory({ id: selectedCategory.value.id })
     if (!deleteCategoryError.value) {
-      fetchCategories({ sklad: formData.sklad.value })
-      // NOTE: add to history
+      await fetchCategories({ sklad: skladId.value })
       showSuccess('Категория успешно удалёна!')
+      close()
+      // NOTE: add to history
     } else {
       showError('Произошла ошибка. Попробуйте позже.')
     }
@@ -239,6 +242,7 @@ function remove() {
 }
 
 function onBeforeShow() {
+  skladId.value = route.params?.skladId
   selectedCategory.value = dialogRef.value.slotData?.category
 
   if (selectedCategory.value) {

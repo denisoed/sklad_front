@@ -74,8 +74,7 @@ import { MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
 import {
   computed,
   reactive,
-  ref,
-  watch
+  ref
 } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import ColorPicker from 'src/components/ColorPicker.vue'
@@ -165,8 +164,8 @@ async function save() {
     } catch (error) {
       showError('Неизвестная ошибка. Проблемы на сервере.')
     } finally {
+      await fetchSklads(profile.value.id)
       close()
-      fetchSklads(profile.value.id)
     }
   }
 }
@@ -191,7 +190,7 @@ function remove() {
   }).onOk(async () => {
     await removeSklad({ id: selectedSklad.value.id })
     if (!removeSkladError.value) {
-      fetchSklads(profile.value.id)
+      await fetchSklads(profile.value.id)
       showSuccess('Склад успешно удалён!')
       close()
       // NOTE: add to history
@@ -203,12 +202,7 @@ function remove() {
 
 function onBeforeShow() {
   selectedSklad.value = dialogRef.value?.slotData?.sklad
+  formData.name = selectedSklad.value?.name
+  formData.color = selectedSklad.value?.color || '#000000'
 }
-
-watch(selectedSklad, (newVal) => {
-  formData.name = newVal?.name
-  formData.color = newVal?.color
-}, {
-  immediate: true
-})
 </script>

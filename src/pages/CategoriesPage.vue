@@ -74,7 +74,7 @@
             Список пуст
           </span>
           <p class="q-mt-md text-subtitle2">
-            Категории помогут разделять товары по группам
+            Категории помогут разделять <br> товары по группам
           </p>
         </div>
       </h6>
@@ -96,7 +96,6 @@
 
 <script setup>
 import {
-  computed,
   ref,
   onBeforeMount,
   onBeforeUnmount
