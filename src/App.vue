@@ -11,81 +11,67 @@
       @on-install="onInstallPwa"
     />
     <pwa-install ref="pwaInstallerRef" />
+    <GlobalDialogs />
   </div>
 </template>
 
-<script>
+<script setup>
 import { LocalStorage } from 'quasar'
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { SKLAD_PWA_INSTALLED } from 'src/config'
 import '@khmyznikov/pwa-install'
 
 import InstallPwaDialog from 'src/components/Dialogs/InstallPwaDialog.vue'
 import useKeyboardHandler from 'src/modules/useKeyboardHandler'
+import GlobalDialogs from 'src/components/Dialogs/GlobalDialogs.vue'
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    InstallPwaDialog,
-  },
-  setup() {
-    const telegram = window?.Telegram?.WebApp;
-    const offline = ref(false);
-    const pwaInstallerRef = ref();
-    const instalTgPwaDialog = ref(false);
+const telegram = window?.Telegram?.WebApp;
+const offline = ref(false);
+const pwaInstallerRef = ref();
+const instalTgPwaDialog = ref(false);
 
-    useKeyboardHandler();
+useKeyboardHandler();
 
-    function openInstallPwaOnlyTelegram() {
-      if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED) && telegram?.initData) {
-        instalTgPwaDialog.value = true;
-      }
-    }
-
-    function onCloseInstallPwaDialog() {
-      instalTgPwaDialog.value = false;
-      LocalStorage.set(SKLAD_PWA_INSTALLED, true);
-    }
-
-    function onInstallPwa() {
-      window.open('https://sklad.work/', '_blank');
-      onCloseInstallPwaDialog();
-    }
-
-    function vibrate() {
-      if (telegram) {
-        telegram.HapticFeedback.selectionChanged();
-      }
-    }
-
-    onMounted(() => {
-      window.addEventListener('online', () => {
-        offline.value = false;
-      });
-      
-      window.addEventListener('offline', () => {
-        offline.value = true;
-      });
-
-      document.addEventListener('click', vibrate);
-
-      // TODO: temporary disable
-      // openInstallPwaOnlyTelegram();
-    });
-
-    onUnmounted(() => {
-      document.removeEventListener('click', vibrate);
-    });
-
-    return {
-      offline,
-      instalTgPwaDialog,
-      onCloseInstallPwaDialog,
-      onInstallPwa,
-      pwaInstallerRef,
-    }
+function openInstallPwaOnlyTelegram() {
+  if (!LocalStorage.getItem(SKLAD_PWA_INSTALLED) && telegram?.initData) {
+    instalTgPwaDialog.value = true;
   }
-})
+}
+
+function onCloseInstallPwaDialog() {
+  instalTgPwaDialog.value = false;
+  LocalStorage.set(SKLAD_PWA_INSTALLED, true);
+}
+
+function onInstallPwa() {
+  window.open('https://sklad.work/', '_blank');
+  onCloseInstallPwaDialog();
+}
+
+function vibrate() {
+  if (telegram) {
+    telegram.HapticFeedback.selectionChanged();
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('online', () => {
+    offline.value = false;
+  });
+  
+  window.addEventListener('offline', () => {
+    offline.value = true;
+  });
+
+  document.addEventListener('click', vibrate);
+
+  // TODO: temporary disable
+  // openInstallPwaOnlyTelegram();
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', vibrate);
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,4 +1,4 @@
-# useBus Module
+# useEventBus Module
 
 Глобальный модуль для рассылки событий между компонентами Vue.js.
 
@@ -6,9 +6,9 @@
 
 ### Подписка на события
 ```javascript
-import useBus from 'src/modules/useBus'
+import useEventBus from 'src/modules/useEventBus'
 
-const { on } = useBus()
+const { on } = useEventBus()
 
 // Подписка на событие
 const unsubscribe = on('event-name', (data) => {
@@ -21,9 +21,9 @@ unsubscribe()
 
 ### Отправка событий
 ```javascript
-import useBus from 'src/modules/useBus'
+import useEventBus from 'src/modules/useEventBus'
 
-const { emit } = useBus()
+const { emit } = useEventBus()
 
 // Отправка события с данными
 emit('event-name', { message: 'Hello World' })

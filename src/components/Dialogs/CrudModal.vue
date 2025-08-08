@@ -1,69 +1,58 @@
 <template>
-  <q-dialog
-    :model-value="opened"
-    position="bottom"
-    @update:model-value="close"
-  >
-    <SwipeToClose
-      direction="down"
-      @on-close="close"
-    >
-      <q-card class="full-width">
-        <div class="dialog-close" id="dialog-close">
-          <div class="dialog-close-line" />
+  <q-card class="full-width">
+    <div class="dialog-close" id="dialog-close">
+      <div class="dialog-close-line" />
+    </div>
+    <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
+      <p class="full-width text-left text-bold q-mb-none text-subtitle1">
+        {{ item ? 'Обновить' : 'Создать' }} {{ title }}
+      </p>
+      <div class="flex justify-center q-gap-md full-width q-mt-md">
+        <q-input
+          v-model="formData.name"
+          outlined
+          label="Введите название"
+          class="full-width"
+          autofocus
+          enterkeyhint="done"
+        />
+        <div class="flex full-width flex-start">
+          <p class="full-width text-left q-mb-sm">Выберите цвет для визуального отличия</p>
+          <ColorPicker
+            :selected="formData.color"
+            @on-change="onColorChange"
+          />
         </div>
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
-          <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            {{ item ? 'Обновить' : 'Создать' }} {{ title }}
-          </p>
-          <div class="flex justify-center q-gap-md full-width q-mt-md">
-            <q-input
-              v-model="formData.name"
-              outlined
-              label="Введите название"
-              class="full-width"
-              autofocus
-              enterkeyhint="done"
-            />
-            <div class="flex full-width flex-start">
-              <p class="full-width text-left q-mb-sm">Выберите цвет для визуального отличия</p>
-              <ColorPicker
-                :selected="formData.color"
-                @on-change="onColorChange"
-              />
-            </div>
-            <q-separator class="full-width" />
-            <div class="flex justify-between no-wrap full-width q-gap-md">
-              <q-btn
-                v-if="item"
-                style="height:40px;"
-                color="deep-orange"
-                icon="mdi-trash-can-outline"
-                push
-                @click="remove"
-              />
-              <q-btn
-                class="button-size q-mr-auto"
-                color="grey"
-                icon="mdi-close"
-                push
-                @click="close"
-              />
-              <q-btn
-                class="button-size"
-                color="primary"
-                icon="mdi-check"
-                push
-                :loading="isLoading"
-                :disabled="!formData.name || !formData.color || isLoading"
-                @click="save"
-              />
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
-    </SwipeToClose>
-  </q-dialog>
+        <q-separator class="full-width" />
+        <div class="flex justify-between no-wrap full-width q-gap-md">
+          <q-btn
+            v-if="item"
+            style="height:40px;"
+            color="deep-orange"
+            icon="mdi-trash-can-outline"
+            push
+            @click="remove"
+          />
+          <q-btn
+            class="button-size q-mr-auto"
+            color="grey"
+            icon="mdi-close"
+            push
+            @click="close"
+          />
+          <q-btn
+            class="button-size"
+            color="primary"
+            icon="mdi-check"
+            push
+            :loading="isLoading"
+            :disabled="!formData.name || !formData.color || isLoading"
+            @click="save"
+          />
+        </div>
+      </div>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script setup>
@@ -75,14 +64,9 @@ import {
 } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import ColorPicker from 'src/components/ColorPicker.vue'
-import SwipeToClose from 'src/components/SwipeToClose.vue'
 import { useMutation } from '@vue/apollo-composable'
 
 const props = defineProps({
-  opened: {
-    type: Boolean,
-    default: false
-  },
   createGql: {
     type: String,
     default: null
@@ -143,7 +127,7 @@ function onColorChange(data) {
 function close() {
   emit('close')
   formData.color = null
-  formData.name = null
+  formData.name = null  
 }
 
 async function createToDB() {
@@ -202,5 +186,7 @@ function remove() {
 watch(item, (newVal) => {
   formData.name = newVal?.name
   formData.color = newVal?.color
+}, {
+  immediate: true
 })
 </script>

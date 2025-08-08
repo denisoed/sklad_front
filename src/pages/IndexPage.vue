@@ -42,9 +42,9 @@
           </Draggable>
           <div
             v-ripple
-            @click="openedNewSkladModal = true"
             class="sklads_add flex column items-center justify-center cursor-pointer text-grey"
             :class="{ 'sklads_add--active full-width text-bold': !sklads?.length }"
+            @click="openManageSkladDialog"
           >
             <q-icon name="mdi-plus" size="sm" :class="{ 'text-primary': !sklads?.length }" />
             <span :class="{ 'text-primary': !sklads?.length }">Создать склад</span>
@@ -61,17 +61,6 @@
     />
 
     <SkladsStatistics :ids="skladsIDs" />
-
-    <CrudModal
-      :opened="openedNewSkladModal"
-      :create-gql="CREATE_SKLAD"
-      :update-gql="UPDATE_SKLAD"
-      :extend-create-params="{ users: profile?.id, owner: profile?.id }"
-      @close="onCloseModal"
-      @finished="refetchSklads"
-      @on-create-new="onCreateNew"
-      title="склад"
-    />
   </q-page>
 </template>
 
@@ -81,37 +70,28 @@ import {
   ref,
   watch
 } from 'vue'
-import CrudModal from 'src/components/Dialogs/CrudModal.vue'
 import { useRouter } from 'vue-router'
-import {
-  CREATE_SKLAD,
-  UPDATE_SKLAD
-} from 'src/graphql/sklads'
 import useSklads from 'src/modules/useSklads'
-import useProfile from 'src/modules/useProfile'
 import useBucket from 'src/modules/useBucket'
 import SkladsStatistics from 'src/components/Sklads/Statistics.vue'
 import BucketCardHome from 'src/components/BucketCardHome.vue'
 import Draggable from 'vuedraggable'
+import useDialog from 'src/modules/useDialog'
+import { MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
 
 const { push } = useRouter()
 
-const { profile } = useProfile()
-const { fetchSklads, sklads, onCreateNew } = useSklads()
+const { sklads } = useSklads()
 const { bucketProductsCount, loadBucketProducts } = useBucket()
-const openedNewSkladModal = ref(false)
 const loadingSklads = ref(true)
+const { openDialog } = useDialog()
 
 const skladsIDs = computed(
   () => sklads.value.map(s => s.id) || []
 );
 
-function onCloseModal() {
-  openedNewSkladModal.value = false
-}
-
-function refetchSklads() {
-  fetchSklads(profile.value.id)
+function openManageSkladDialog() {
+  openDialog(MANAGE_SKLAD_DIALOG)
 }
 
 // Load bucket data when sklads change

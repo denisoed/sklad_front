@@ -13,17 +13,17 @@
           </q-card-section>
         </div>
       </PageTitle> 
-      <div v-if="list && list?.length" class="categories_cards full-width q-mb-md q-mt-sm">
+      <div v-if="categories && categories?.length" class="categories_cards full-width q-mb-md q-mt-sm">
         <h6
           class="full-width text-center text-grey-5"
-          v-if="!list.length"
+          v-if="!categories.length"
         >
           <span>
             Категории не найдены!
           </span>
         </h6>
         <router-link
-          v-for="(category, i) of list"
+          v-for="(category, i) of categories"
           :key="i"
           :to="`categories/${category.id}`"
           class="categories_card block-bg"
@@ -31,6 +31,7 @@
           @mousedown="onMouseDown(category)"
           @touchstart="onMouseDown(category)"
           v-ripple
+          @contextmenu.prevent
         >
           <div
             class="categories_card-color"
@@ -58,7 +59,7 @@
         class="full-width text-center text-grey-5"
       >
         <span
-          v-if="loading"
+          v-if="categoriesLoading"
         >
           <q-icon
             size="sm"
@@ -72,7 +73,7 @@
             <q-icon size="sm" name="mdi-cart-outline" class="q-mr-sm text-grey-5" />
             Список пуст
           </span>
-          <p class="q-mt-md text-subtitle2 ">
+          <p class="q-mt-md text-subtitle2">
             Категории помогут разделять товары по группам
           </p>
         </div>
@@ -82,147 +83,57 @@
           v-permissions="[CAN_ADD_CATEGORY]"
           color="primary"
           push
-          :loading="deleteCategoryLoading"
-          @click="openedNewCategoryModal = true"
+          :loading="categoriesLoading"
+          @click="openManageCategoryDialog"
           style="z-index: 2;"
         >
           Добавить категорию
         </q-btn>
       </div>
     </div>
-
-    <CrudModal
-      :item="selectedCategory"
-      :opened="openedNewCategoryModal"
-      :create-gql="CREATE_CATEGORY"
-      :update-gql="UPDATE_CATEGORY"
-      :extend-create-params="{ sklad: params?.skladId }"
-      @close="onCloseModal"
-      @remove="onRemove"
-      @finished="refetch"
-      title="категорию"
-    />
   </q-page>
 </template>
 
-<script>
-import { useQuasar } from 'quasar'
+<script setup>
 import {
-  defineComponent,
   computed,
   ref,
-  onBeforeMount
+  onBeforeMount,
+  onBeforeUnmount
 } from 'vue'
-import useHelpers from 'src/modules/useHelpers'
 import PageTitle from 'src/components/PageTitle.vue'
-import CrudModal from 'src/components/Dialogs/CrudModal.vue'
-import { useLazyQuery, useMutation } from '@vue/apollo-composable'
-import {
-  CATEGORIES,
-  CREATE_CATEGORY,
-  UPDATE_CATEGORY,
-  DELETE_CATEGORY
-} from 'src/graphql/category'
 import { useRoute } from 'vue-router'
 import { CAN_ADD_CATEGORY } from 'src/permissions'
+import useDialog from 'src/modules/useDialog'
+import { MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
+import useCategories from 'src/modules/useCategories'
 
-export default defineComponent({
-  name: 'CategoriesPage',
-  components: {
-    PageTitle,
-    CrudModal,
-  },
-  setup() {
-    const $q = useQuasar()
-    const { params } = useRoute()
-    const { showSuccess, showError } = useHelpers()
-    const {
-      result,
-      loading,
-      load,
-      refetch
-    } = useLazyQuery(CATEGORIES)
+const { categories, categoriesLoading, fetchCategories } = useCategories()
+const { params } = useRoute()
+const { openDialog } = useDialog()
 
-    const {
-      mutate: deleteCategory,
-      loading: deleteCategoryLoading,
-      error: deleteCategoryError,
-    } = useMutation(DELETE_CATEGORY)
+const selectedCategory = ref(null)
 
-    const selectedCategory = ref(null)
-    const openedNewCategoryModal = ref(false)
+function onHold() {
+  openDialog(MANAGE_CATEGORY_DIALOG, {
+    category: selectedCategory.value
+  })
+}
 
-    const list = computed(
-      () => result.value?.categories || []
-    );
+function onMouseDown(category) {
+  selectedCategory.value = category
+}
 
-    function onHold() {
-      openedNewCategoryModal.value = true
-    }
+function openManageCategoryDialog() {
+  openDialog(MANAGE_CATEGORY_DIALOG)
+}
 
-    function onMouseDown(category) {
-      selectedCategory.value = category
-    }
+onBeforeMount(() => {
+  fetchCategories({ sklad: params?.skladId })
+})
 
-    function onCloseModal() {
-      openedNewCategoryModal.value = false
-      selectedCategory.value = null
-    }
-
-    function onRemove(category) {
-      $q.dialog({
-        title: 'Удалить категорию',
-        message: 'Вы уверены, что хотите удалить эту категорию?',
-        cancel: true,
-        persistent: true,
-        ok: {
-          color: 'deep-orange',
-          label: 'Удалить',
-          push: true
-        },
-        cancel: {
-          color: 'white',
-          textColor: 'black',
-          label: 'Отмена',
-          push: true
-        }
-      }).onOk(async () => {
-        await deleteCategory({ id: category.id })
-        if (!deleteCategoryError.value) {
-          refetch()
-          // NOTE: add to history
-          showSuccess('Категория успешно удалёна!')
-        } else {
-          showError('Произошла ошибка. Попробуйте позже.')
-        }
-      })
-    }
-
-    onBeforeMount(() => {
-      load(
-        null,
-        { where: { sklad: params?.skladId }},
-        { fetchPolicy: 'network-only' }
-      )
-    })
-
-    return {
-      list,
-      loading,
-      openedNewCategoryModal,
-      onHold,
-      onRemove,
-      refetch,
-      onCloseModal,
-      deleteCategoryLoading,
-      onMouseDown,
-      selectedCategory,
-      CREATE_CATEGORY,
-      UPDATE_CATEGORY,
-      params,
-      CAN_ADD_CATEGORY
-    }
-  }
+onBeforeUnmount(() => {
+  selectedCategory.value = null
 })
 </script>
 

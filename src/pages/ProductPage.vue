@@ -410,7 +410,7 @@ import isEqual from 'lodash.isequal'
 import useProfile from 'src/modules/useProfile'
 import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
-import useBus from 'src/modules/useBus'
+import useEventBus from 'src/modules/useEventBus'
 
 const DEFAULT_DATA = {
   id: null,
@@ -480,7 +480,7 @@ const {
 const { clearDraft: clearDraftAction } = useDraft()
 
 // Event bus for global communication
-const { on, off, EVENTS } = useBus()
+const { onBus, offBus, BUS_EVENTS } = useEventBus()
 
 const {
   mutate: uploadImage,
@@ -878,20 +878,16 @@ watch(sklads, (val) => {
 });
 
 // Subscribe to global duplicate event
-on(EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
 
 watch(product, () => {
   if (product.sklad) {
-    loadCategories(
-      null,
-      { where: { sklad: product.sklad.value } },
-      { fetchPolicy: 'network-only' }
-    )
+    fetchCategories(product.sklad.value)
   }
 });
 
 onBeforeUnmount(() => {
-  off(EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+  offBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
 })
 </script>
 

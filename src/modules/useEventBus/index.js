@@ -1,17 +1,17 @@
 import { ref } from 'vue'
-import EVENTS from './events'
+import BUS_EVENTS from './events'
 
 // Global event bus for cross-component communication
 const eventBus = ref(new Map())
 
-export default function useBus() {
+export default function useEventBus() {
   /**
    * Subscribe to an event
    * @param {string} event - Event name
    * @param {Function} callback - Callback function
    * @returns {Function} Unsubscribe function
    */
-  function on(event, callback) {
+  function onBus(event, callback) {
     if (!eventBus.value.has(event)) {
       eventBus.value.set(event, [])
     }
@@ -33,7 +33,7 @@ export default function useBus() {
    * @param {string} event - Event name
    * @param {*} data - Event data
    */
-  function emit(event, data) {
+  function emitBus(event, data) {
     const callbacks = eventBus.value.get(event)
     if (callbacks) {
       callbacks.forEach(callback => {
@@ -50,22 +50,22 @@ export default function useBus() {
    * Remove all listeners for an event
    * @param {string} event - Event name
    */
-  function off(event) {
+  function offBus(event) {
     eventBus.value.delete(event)
   }
 
   /**
    * Remove all event listeners
    */
-  function clear() {
+  function clearAllBus() {
     eventBus.value.clear()
   }
 
   return {
-    on,
-    emit,
-    off,
-    clear,
-    EVENTS
+    onBus,
+    emitBus,
+    offBus,
+    clearAllBus,
+    BUS_EVENTS
   }
 } 

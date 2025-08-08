@@ -76,7 +76,7 @@ import { useRoute, useRouter } from 'vue-router'
 import useBucket from 'src/modules/useBucket'
 import useSklads from 'src/modules/useSklads'
 import { useBucketStore } from 'src/stores/bucket'
-import useBus from 'src/modules/useBus'
+import useEventBus from 'src/modules/useEventBus'
 
 defineOptions({
   name: 'TheFooter'
@@ -87,7 +87,7 @@ const router = useRouter()
 const { sklads } = useSklads()
 const { loadBucketProducts } = useBucket()
 const bucketStore = useBucketStore()
-const { emit } = useBus()
+const { emitBus, BUS_EVENTS } = useEventBus()
 
 // Menu state
 const isMenuOpen = ref(false)
@@ -156,7 +156,7 @@ function handleActionClick(action) {
   
   if (action.id === 'duplicate-product') {
     // Emit global event for product duplication
-    emit('duplicate-product')
+    emitBus(BUS_EVENTS.DUPLICATE_PRODUCT)
   } else {
     router.push(action.route)
   }
