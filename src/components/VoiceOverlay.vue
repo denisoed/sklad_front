@@ -66,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { ref, watch, onBeforeUnmount, nextTick } from 'vue'
 import useSpeechRecognition from '../modules/useSpeechRecognition'
 
 const props = defineProps({
@@ -79,14 +79,18 @@ const recognizedText = ref('')
 const isRetrying = ref(false)
 const hasStartedRecording = ref(false)
 
+// Аудио контекст и связанные переменные
 let audioContext = null
 let analyser = null
 let dataArray = null
 let source = null
 let animationId = null
 let stream = null
+let isAudioInitialized = false
 
-const { isRecording, isApiAvailable, startRecord, stopRecord, onFinish, transcript } = useSpeechRecognition()
+// Создаем экземпляр распознавания речи
+const speechRecognition = useSpeechRecognition()
+const { isRecording, isApiAvailable, startRecord, stopRecord, onFinish, transcript, cleanup } = speechRecognition
 
 onFinish((finalText) => {
   if (isRetrying.value) {
@@ -116,9 +120,11 @@ function handleRetry() {
   if (isRecording.value) {
     stopRecord()
   }
+  
+  // Даем время на остановку перед новой попыткой
   setTimeout(() => {
     isRetrying.value = false
-  }, 100)
+  }, 300)
 }
 
 function handleRecordStart(event) {
@@ -150,68 +156,131 @@ function handleRecordStop(event) {
 
 function drawBars() {
   const canvas = canvasRef.value
-  if (!canvas || !analyser) return
-  const ctx = canvas.getContext('2d')
-  ctx.setTransform(2, 0, 0, 2, 0, 0)
-  const WIDTH = canvas.width / 2
-  const HEIGHT = canvas.height / 2
-  ctx.clearRect(0, 0, WIDTH, HEIGHT)
-  analyser.getByteFrequencyData(dataArray)
-  ctx.save()
-  const accent = getComputedStyle(document.documentElement).getPropertyValue('--q-primary') || '#1976d2'
-  const barCount = 32
-  const barWidth = WIDTH / barCount
-  for (let i = 0; i < barCount; i++) {
-    const dataIdx = Math.floor(i * dataArray.length / barCount)
-    const value = dataArray[dataIdx]
-    const barHeight = (value / 255) * (HEIGHT / 2)
-    const x = i * barWidth
-    ctx.beginPath()
-    ctx.roundRect(x + 2, HEIGHT / 2 - barHeight, barWidth - 4, barHeight, 4)
-    ctx.fillStyle = accent
-    ctx.globalAlpha = 0.85
-    ctx.shadowColor = accent
-    ctx.shadowBlur = 8
-    ctx.fill()
-    ctx.beginPath()
-    ctx.roundRect(x + 2, HEIGHT / 2, barWidth - 4, barHeight, 4)
-    ctx.fillStyle = accent
-    ctx.globalAlpha = 0.7
-    ctx.shadowColor = accent
-    ctx.shadowBlur = 8
-    ctx.fill()
+  if (!canvas || !analyser || !audioContext || audioContext.state === 'closed') {
+    return
   }
-  ctx.restore()
-  animationId = requestAnimationFrame(drawBars)
+  
+  try {
+    const ctx = canvas.getContext('2d')
+    ctx.setTransform(2, 0, 0, 2, 0, 0)
+    const WIDTH = canvas.width / 2
+    const HEIGHT = canvas.height / 2
+    ctx.clearRect(0, 0, WIDTH, HEIGHT)
+    
+    analyser.getByteFrequencyData(dataArray)
+    ctx.save()
+    
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--q-primary') || '#1976d2'
+    const barCount = 32
+    const barWidth = WIDTH / barCount
+    
+    for (let i = 0; i < barCount; i++) {
+      const dataIdx = Math.floor(i * dataArray.length / barCount)
+      const value = dataArray[dataIdx]
+      const barHeight = (value / 255) * (HEIGHT / 2)
+      const x = i * barWidth
+      
+      ctx.beginPath()
+      ctx.roundRect(x + 2, HEIGHT / 2 - barHeight, barWidth - 4, barHeight, 4)
+      ctx.fillStyle = accent
+      ctx.globalAlpha = 0.85
+      ctx.shadowColor = accent
+      ctx.shadowBlur = 8
+      ctx.fill()
+      
+      ctx.beginPath()
+      ctx.roundRect(x + 2, HEIGHT / 2, barWidth - 4, barHeight, 4)
+      ctx.fillStyle = accent
+      ctx.globalAlpha = 0.7
+      ctx.shadowColor = accent
+      ctx.shadowBlur = 8
+      ctx.fill()
+    }
+    
+    ctx.restore()
+    animationId = requestAnimationFrame(drawBars)
+  } catch (error) {
+    console.error('Ошибка при отрисовке визуализации:', error)
+  }
 }
 
 async function startAudio() {
+  // Предотвращаем множественную инициализацию
+  if (isAudioInitialized) {
+    return
+  }
+
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    // Запрашиваем доступ к микрофону
+    stream = await navigator.mediaDevices.getUserMedia({ 
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      } 
+    })
+    
+    // Создаем новый AudioContext
     audioContext = new (window.AudioContext || window.webkitAudioContext)()
+    
+    // Проверяем состояние контекста
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume()
+    }
+    
     analyser = audioContext.createAnalyser()
     analyser.fftSize = 64
+    analyser.smoothingTimeConstant = 0.8
     dataArray = new Uint8Array(analyser.frequencyBinCount)
+    
     source = audioContext.createMediaStreamSource(stream)
     source.connect(analyser)
+    
+    isAudioInitialized = true
+    
+    // Ждем следующий тик для начала анимации
+    await nextTick()
     drawBars()
+    
   } catch (e) {
     console.error('Ошибка доступа к микрофону:', e)
+    stopAudio()
     emit('update:modelValue', false)
   }
 }
 
 function stopAudio() {
-  if (animationId) cancelAnimationFrame(animationId)
-  if (audioContext) audioContext.close()
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop())
+  try {
+    // Останавливаем анимацию
+    if (animationId) {
+      cancelAnimationFrame(animationId)
+      animationId = null
+    }
+    
+    // Закрываем аудио контекст
+    if (audioContext && audioContext.state !== 'closed') {
+      audioContext.close().catch(e => console.error('Ошибка закрытия AudioContext:', e))
+    }
+    
+    // Останавливаем поток медиа
+    if (stream) {
+      stream.getTracks().forEach(track => {
+        track.stop()
+        track.enabled = false
+      })
+    }
+    
+    // Очищаем ссылки
+    audioContext = null
+    analyser = null
+    dataArray = null
+    source = null
+    stream = null
+    isAudioInitialized = false
+    
+  } catch (error) {
+    console.error('Ошибка при остановке аудио:', error)
   }
-  audioContext = null
-  analyser = null
-  dataArray = null
-  source = null
-  stream = null
 }
 
 watch(transcript, (newText) => {
@@ -220,22 +289,31 @@ watch(transcript, (newText) => {
   }
 })
 
-watch(() => props.modelValue, (val) => {
+watch(() => props.modelValue, async (val) => {
   if (val) {
     recognizedText.value = ''
     hasStartedRecording.value = false
-    startAudio()
+    isRetrying.value = false
+    await startAudio()
   } else {
-    stopAudio()
     // Останавливаем запись при закрытии оверлея
     if (isRecording.value) {
       stopRecord()
     }
+    stopAudio()
+    // Даем время на корректное закрытие
+    setTimeout(() => {
+      cleanup()
+    }, 100)
   }
 })
 
 onBeforeUnmount(() => {
   stopAudio()
+  if (isRecording.value) {
+    stopRecord()
+  }
+  cleanup()
 })
 </script>
 

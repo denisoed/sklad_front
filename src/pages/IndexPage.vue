@@ -15,6 +15,7 @@
             v-model="sklads"
             item-key="id"
             :drag="false"
+            @contextmenu.prevent
           >
             <template #item="{ element }">
               <div
