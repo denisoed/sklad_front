@@ -134,8 +134,15 @@ const useProduct = () => {
   async function removeProduct(id, product) {
     const { data } = await deleteProduct({ id })
     if (!deleteProductError.value) {
-      const imageId = data?.deleteProduct?.product?.image?.id
-      if (imageId) removeImage({ id: imageId })
+      const deletedProduct = data?.deleteProduct?.product
+      const imageId = deletedProduct?.image?.id
+      
+      // Check if this is a duplicate product (has duplicateFrom field)
+      // If it's a duplicate, don't delete the image as it's shared with the original product
+      if (imageId && !deletedProduct?.duplicateFrom?.id) {
+        removeImage({ id: imageId })
+      }
+      
       createDeleteHistory(product, id, product.sklad.id)
     } else {
       showError('Не удалось удалить продукт. Проблемы на сервере.')
