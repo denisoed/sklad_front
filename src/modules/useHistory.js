@@ -111,7 +111,7 @@ const useHistory = () => {
       [HISTORY_RETURN]: json?.sizes?.length ?
         `Размеры: ${json?.sizes.join(', ')} - вернули обратно в товар` :
         `${json?.countSizes || 0}шт - вернули обратно в товар`,
-      [HISTORY_DELETE]: `${json?.name} - цена: ${json?.origPrice || 0}/${json?.newPrice || 0}, ${json?.sizes?.length ? `размеры: ${json?.sizes.join(', ')}` : `кол-во: ${json?.countSizes}шт`}`,
+      [HISTORY_DELETE]: `Удален товар: ${json?.name}`,
       [HISTORY_CREATE]: `${json?.name} - цена: ${json?.origPrice || 0}/${json?.newPrice || 0}, ${json?.sizes?.length ? `размеры: ${json?.sizes.join(', ')}` : `кол-во: ${json?.countSizes}шт`}`,
       [HISTORY_UPDATE]: (() => {
         const texts = {

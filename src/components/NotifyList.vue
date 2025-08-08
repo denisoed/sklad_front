@@ -25,8 +25,12 @@
                   :to="`/product/${h.productId}`"
                 >
                   <div v-if="h.isNew" class="notify-list_alert" />
+                  <div
+                    class="notify-list_item-type absolute-top-right q-ma-sm text-black border-radius-sm q-px-xs q-py-none"
+                    :style="{ backgroundColor: h.actionColor }"
+                  >{{ types[h.action] }}</div>
                   <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>
-                  <div class="notify-list_item-sklad text-grey q-mb-xs">Товар: {{ h.productId ? `#${h.productId}` : 'n/a' }}</div>
+                  <div class="notify-list_item-sklad text-grey q-mb-xs">ID: {{ h.productId ? `#${h.productId}` : 'n/a' }}</div>
                   <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
                   <div class="flex justify-between items-center">
                     <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
@@ -55,6 +59,13 @@ import {
 import useHistory from 'src/modules/useHistory'
 import useDate from 'src/modules/useDate'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
+import {
+  HISTORY_SOLD,
+  HISTORY_RETURN,
+  HISTORY_DELETE,
+  HISTORY_CREATE,
+  HISTORY_UPDATE,
+} from 'src/config'
 
 const props = defineProps({
   history: {
@@ -62,6 +73,14 @@ const props = defineProps({
     default: () => []
   },
 })
+
+const types = {
+  [HISTORY_SOLD]: 'Продано',
+  [HISTORY_RETURN]: 'Возврат',
+  [HISTORY_DELETE]: 'Удалено',
+  [HISTORY_CREATE]: 'Создано',
+  [HISTORY_UPDATE]: 'Обновлено',
+}
 
 const { setViewedHistory, getDescription } = useHistory()
 const { formatTimeAgo } = useDate()
@@ -183,6 +202,10 @@ watch(dialog, (val) => {
 
     &--old {
       opacity: 0.6;
+    }
+
+    &-type {
+      font-size: 10px;
     }
   }
 }
