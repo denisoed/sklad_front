@@ -30,34 +30,44 @@
   </nav>
 
   <!-- Blur backdrop -->
-  <div 
-    v-if="isMenuOpen" 
-    class="blur-backdrop"
-    @click="closeMenu"
-  ></div>
-
-  <!-- Floating action buttons -->
-  <div v-if="isMenuOpen" class="floating-menu">
+  <template v-if="isMenuOpen">
     <div 
-      v-for="(action, index) in actions" 
-      :key="action.id"
-      class="floating-btn"
-      :style="{ 
-        '--delay': `${(actions.length - 1 - index) * 0.03}s`,
-        '--index': actions.length - 1 - index
-      }"
-      @click="handleActionClick(action)"
+      class="blur-backdrop"
+      @click="closeMenu"
     >
-      <span class="action-label">{{ action.label }}</span>
       <q-btn
-        color="primary"
-        :icon="action.icon"
+        color="negative"
+        icon="mdi-close"
         round
-        size="md"
-        class="action-btn"
+        dense
+        class="absolute-top-right q-ma-md"
+        @click="closeMenu"
       />
     </div>
-  </div>
+  
+    <!-- Floating action buttons -->
+    <div class="floating-menu">
+      <div 
+        v-for="(action, index) in actions" 
+        :key="action.id"
+        class="floating-btn"
+        :style="{ 
+          '--delay': `${(actions.length - 1 - index) * 0.03}s`,
+          '--index': actions.length - 1 - index
+        }"
+        @click="handleActionClick(action)"
+      >
+        <span class="action-label">{{ action.label }}</span>
+        <q-btn
+          color="primary"
+          :icon="action.icon"
+          round
+          size="md"
+          class="action-btn"
+        />
+      </div>
+    </div>
+  </template>
 </template>
 
 <script setup>
@@ -272,7 +282,7 @@ onMounted(() => {
 // Floating menu
 .floating-menu {
   position: fixed;
-  right: 20px;
+  right: 16px;
   bottom: 110px;
   z-index: 15;
   display: flex;
