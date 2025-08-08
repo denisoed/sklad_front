@@ -136,10 +136,16 @@ const useProduct = () => {
     if (!deleteProductError.value) {
       const deletedProduct = data?.deleteProduct?.product
       const imageId = deletedProduct?.image?.id
+      const duplicateFromImageId = deletedProduct?.duplicateFrom?.image?.id
       
       // Check if this is a duplicate product (has duplicateFrom field)
       // If it's a duplicate, don't delete the image as it's shared with the original product
-      if (imageId && !deletedProduct?.duplicateFrom?.id) {
+      // But if the duplicate has a different image than the original, delete it
+      if (imageId && !duplicateFromImageId) {
+        // Not a duplicate - delete the image
+        removeImage({ id: imageId })
+      } else if (imageId && duplicateFromImageId && duplicateFromImageId !== imageId) {
+        // This is a duplicate with a modified image - delete the modified image
         removeImage({ id: imageId })
       }
       

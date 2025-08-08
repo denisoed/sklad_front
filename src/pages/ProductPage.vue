@@ -523,10 +523,10 @@ function onCreateNewCategory() {
 }
 
 // Helper function to prepare product data
-function prepareProductData(uploaded, isDuplicating = false, isEdit = false) {
+function prepareProductData(uploaded, isDuplicate = false, isEdit = false) {
   // Prepare prices based on operation type
   let pricesToClean
-  if (isDuplicating) {
+  if (isDuplicate) {
     pricesToClean = product.prices?.map(price => ({
       name: price.name,
       price: price.price,
@@ -556,13 +556,13 @@ function prepareProductData(uploaded, isDuplicating = false, isEdit = false) {
     image: uploaded ? uploaded.data.upload.id : product.imageId,
     color: product.color,
     colorName: product.colorName,
-    sizes: isDuplicating || isEdit ? product.sizes.map(s => ({ size: s.size })) : product.sizes,
+    sizes: isDuplicate || isEdit ? product.sizes.map(s => ({ size: s.size })) : product.sizes,
     countSizes: product.countSizes,
     useNumberOfSizes: product.useNumberOfSizes,
     prices: cleanPrices,
     meta: generateProductMeta(product),
     ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {}),
-    ...(isDuplicating && duplicatedFromID.value ? { duplicateFrom: duplicatedFromID.value } : {})
+    ...(isDuplicate && duplicatedFromID.value ? { duplicateFrom: duplicatedFromID.value } : {})
   }
 }
 
