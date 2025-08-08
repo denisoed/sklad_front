@@ -375,7 +375,6 @@ import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ProductSizes from 'src/components/Product/ProductSizes.vue'
 import {
   UPLOAD,
-  CREATE_PRODUCT,
   DELETE_FILE,
   GET_PRODUCT,
 } from 'src/graphql/types'
@@ -411,7 +410,6 @@ import isEqual from 'lodash.isequal'
 import useProfile from 'src/modules/useProfile'
 import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
-import useProductHistory from 'src/modules/useProductHistory'
 import useBus from 'src/modules/useBus'
 
 const DEFAULT_DATA = {
@@ -446,7 +444,7 @@ const TODAY = Date.now()
 const $q = useQuasar()
 const { params, query } = useRoute()
 const { replace, push } = useRouter()
-const { showSuccess, showError, difference } = useHelpers()
+const { showSuccess, showError } = useHelpers()
 const { profile } = useProfile()
 const { sizes, fetchSizes } = useSizes()
 const {
@@ -457,6 +455,9 @@ const {
   updateProductError,
   updateProductLoading,
   generateProductMeta,
+  createProduct,
+  createProductError,
+  createProductLoading
 } = useProduct()
 const {
   createCost,
@@ -482,12 +483,6 @@ const { clearDraft: clearDraftAction } = useDraft()
 const { on, off, EVENTS } = useBus()
 
 const {
-  createProductHistory,
-  createUpdateHistory,
-  createDeleteHistory
-} = useProductHistory()
-
-const {
   mutate: uploadImage,
   error: uploadImageError,
   loading: uploadImageLoading
@@ -496,11 +491,6 @@ const {
   mutate: removeImage,
   loading: removeImageLoading,
 } = useMutation(DELETE_FILE)
-const {
-  mutate: createProduct,
-  error: createProductError,
-  loading: createProductLoading
-} = useMutation(CREATE_PRODUCT)
 const {
   load: getEditProduct,
   result: editProduct,
@@ -675,11 +665,10 @@ async function create() {
 
   try {
     const data = prepareProductData(uploaded, isDuplicating.value, props.isEdit)
-    const response = await createProduct({ data })
+    const response = await createNewProduct({ data })
     
     if (!createProductError.value) {
       showSuccess('Товар успешно создан!')
-      createProductHistory(product, response.data.createProduct.product.id, product.sklad.value)
       clearDraft()
       replace(`/products?product=${response.data.createProduct.product.id}`)
     } else {
@@ -709,7 +698,6 @@ async function update() {
         removeImage({ id: product.imageId })
         product.imageId = null
       }
-      createUpdateHistory(editProduct.value?.product, product, product.id, product.sklad.value)
       // Создаем глубокую копию для корректного отслеживания изменений
       Object.assign(copiedProductForDirty, {
         ...product,
@@ -721,6 +709,7 @@ async function update() {
       showError('Не удалось обновить продукт. Проблемы на сервере.')
     }
   } catch (error) {
+    console.log(error)
     await cleanupImageOnError(uploaded)
     showError('Не удалось обновить продукт. Проблемы на сервере.')
   }
@@ -767,7 +756,6 @@ function cancel(type) {
       resetAll()
     } else {
       await removeProduct(params?.productId, product)
-      createDeleteHistory(product, product.sklad.value)
       showSuccess('Товар успешно удалён!')
       push('/products')
     }

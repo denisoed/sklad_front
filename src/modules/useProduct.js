@@ -6,10 +6,11 @@ import {
   UPDATE_PRODUCT,
   ADD_PRODUCT_SIZES_TO_SALE,
   PRODUCTS_WITH_MIN_SIZES,
-  SEARCH_PRODUCTS
+  SEARCH_PRODUCTS,
+  CREATE_PRODUCT
 } from 'src/graphql/types'
 import { apolloClient } from 'src/boot/apollo'
-import { HISTORY_DELETE } from 'src/config'
+import { HISTORY_DELETE, HISTORY_UPDATE, HISTORY_CREATE } from 'src/config'
 import { useRoute } from 'vue-router'
 import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
@@ -29,6 +30,11 @@ const useProduct = () => {
     load: loadProductsWithMinSizes,
     refetch: refetchProductsWithMinSizes
   } = useLazyQuery(PRODUCTS_WITH_MIN_SIZES)
+  const {
+  mutate: createProduct,
+  error: createProductError,
+  loading: createProductLoading
+} = useMutation(CREATE_PRODUCT)
   const {
     error: updateProductError,
     loading: updateProductLoading,
@@ -155,6 +161,20 @@ const useProduct = () => {
     `.trim()
   }
 
+  async function createNewProduct(data) {
+    const { data: response } = await createProduct({
+      data
+    })
+    if (!createProductError.value) {
+      createHistory({
+        action: HISTORY_CREATE,
+        productId: response.createProduct.product.id,
+        skladId: params?.skladId,
+        json: data
+      })
+    }
+  }
+
   async function updateProductById(id, data) {
     await updateProduct({
       id,
@@ -162,7 +182,15 @@ const useProduct = () => {
         sklad: params?.skladId,
         ...data,
       }
-    })  
+    })
+    if (!updateProductError.value) {
+      createHistory({
+        action: HISTORY_UPDATE,
+        productId: id,
+        skladId: params?.skladId,
+        json: data
+      })
+    }
   }
 
   async function searchProducts({ q = null, where = {}, sizes = null }) {
@@ -215,7 +243,10 @@ const useProduct = () => {
     refetchProductsWithMinSizes,
     searchProducts,
     products,
-    searchLoading
+    searchLoading,
+    createNewProduct,
+    createProductError,
+    createProductLoading
   }
 }
 
