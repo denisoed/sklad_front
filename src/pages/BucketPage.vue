@@ -353,7 +353,11 @@ function toSell() {
         createHistory({
           skladId: saleProduct.sklad.id,
           productId: saleProduct.product.id,
-          json: { sizes, countSizes: saleProduct.countSizes },
+          json: {
+            sizes,
+            countSizes: saleProduct.countSizes,
+            name: saleProduct.product.name,
+          },
           action: HISTORY_SOLD,
         })
         createActivity({

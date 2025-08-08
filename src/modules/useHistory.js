@@ -106,8 +106,8 @@ const useHistory = () => {
     
     const descrs = {
       [HISTORY_SOLD]: json?.sizes?.length ?
-        `Проданы размеры: ${json?.sizes.join(', ')}` :
-        `Продано: ${json?.countSizes || 0}шт`,
+        `${json.name ? `Товар: ${json.name}. ` : ''}Проданы размеры: ${json?.sizes.join(', ')}` :
+        `${json.name ? `Товар: ${json.name}. ` : ''}Продано: ${json?.countSizes || 0}шт`,
       [HISTORY_RETURN]: json?.sizes?.length ?
         `Размеры: ${json?.sizes.join(', ')} - вернули обратно в товар` :
         `${json?.countSizes || 0}шт - вернули обратно в товар`,
