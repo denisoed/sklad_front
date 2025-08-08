@@ -104,15 +104,11 @@
             </div>
 
             <!-- Sklads -->
-            <Selector
+            <TheSelector
               v-model="product.sklad"
               title-postfix="склад"
-              :modal-params="{ users: profile?.id }"
-              :modal-create-gql="CREATE_SKLAD"
               :options="skladsOptions"
-              @on-create-new="onCreateNew"
-              @on-refetch="refetchSklads"
-              @clear="product.category = null"
+              @on-create-new="onCreateNewSklad"
               outlined
               class="q-mb-md"
               label="Склад *"
@@ -123,14 +119,11 @@
             />
 
             <!-- Categories -->
-            <Selector
+            <TheSelector
               v-if="product.sklad"
               v-model="product.category"
-              title-postfix="категорию"
-              :modal-params="{ sklad: product.sklad?.value }"
-              :modal-create-gql="CREATE_CATEGORY"
               :options="categoriesOptions"
-              @on-refetch="refetchCategories"
+              @on-create-new="onCreateNewCategory"
               outlined
               class="q-mb-md"
               label="Категория товара"
@@ -378,8 +371,6 @@ import {
   DELETE_FILE,
   GET_PRODUCT,
 } from 'src/graphql/types'
-import { CATEGORIES, CREATE_CATEGORY } from 'src/graphql/category'
-import { CREATE_SKLAD } from 'src/graphql/sklads'
 import {
   computed,
   ref,
@@ -388,13 +379,15 @@ import {
   onBeforeUnmount,
 } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
-import Selector from 'src/components/UI/Selector.vue'
+import TheSelector from 'src/components/UI/TheSelector.vue'
 import ImageUploader from 'src/components/ImageUploader.vue'
 import InputPrice from 'src/components/InputPrice.vue'
 import NewPriceInput from 'src/components/Product/NewPriceInput.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { useRoute, useRouter } from 'vue-router'
 import useSizes from 'src/modules/useSizes'
+import useDialog from 'src/modules/useDialog'
+import { MANAGE_CATEGORY_DIALOG, MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
 import {
   FILTER_FORMAT,
 } from 'src/config'
@@ -410,6 +403,7 @@ import isEqual from 'lodash.isequal'
 import useProfile from 'src/modules/useProfile'
 import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
+import useCategories from 'src/modules/useCategories'
 import useEventBus from 'src/modules/useEventBus'
 
 const DEFAULT_DATA = {
@@ -446,6 +440,7 @@ const { params, query } = useRoute()
 const { replace, push } = useRouter()
 const { showSuccess, showError } = useHelpers()
 const { profile } = useProfile()
+const { openDialog } = useDialog()
 const { sizes, fetchSizes } = useSizes()
 const {
   addSizesToBucket,
@@ -463,7 +458,7 @@ const {
   createCost,
   errorCost
 } = useCosts()
-const { sklad, sklads, onCreateNew, fetchSklads } = useSklads()
+const { sklads, fetchSklads } = useSklads()
 
 const modalCountToBucket = ref(false)
 const modalSizesToBucket = ref(false)
@@ -497,11 +492,7 @@ const {
   loading: loadingProduct,
   refetch: refetchEditProduct
 } = useLazyQuery(GET_PRODUCT)
-const {
-  result: categoriesResult,
-  load: loadCategories,
-  refetch: refetchCategories
-} = useLazyQuery(CATEGORIES)
+const { categories: categoriesResult, fetchCategories } = useCategories()
 
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
@@ -519,6 +510,14 @@ function onPriceChange(priceData) {
 async function uploadImg(file) {
   const response = await uploadImage({ file });
   return response;
+}
+
+function onCreateNewSklad() {
+  openDialog(MANAGE_SKLAD_DIALOG)
+}
+
+function onCreateNewCategory() {
+  openDialog(MANAGE_CATEGORY_DIALOG)
 }
 
 // Helper function to prepare product data
@@ -764,7 +763,7 @@ function cancel(type) {
 
 function setCategoryFromParams() {
   if (query?.category) {
-    const category = categoriesResult.value?.categories.find(c => c.id === query?.category)
+    const category = categoriesResult.value.find(c => c.id === query?.category)
     if (category) {
       product.category = {
         label: category.name,
@@ -809,7 +808,7 @@ const skladsOptions = computed(() => {
 })
 
 const categoriesOptions = computed(() => {
-  return categoriesResult.value?.categories.map(c => ({
+  return categoriesResult.value?.map(c => ({
     label: c.name,
     value: c.id
   }))
@@ -841,7 +840,7 @@ const submitBtnLabel = computed(() => {
 })
 
 watch(categoriesResult, (newValue) => {
-  if (newValue?.categories?.length) {
+  if (newValue?.length) {
     setCategoryFromParams()
   }
 })
@@ -882,7 +881,7 @@ onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
 
 watch(product, () => {
   if (product.sklad) {
-    fetchCategories(product.sklad.value)
+    fetchCategories({ sklad: product.sklad.value })
   }
 });
 

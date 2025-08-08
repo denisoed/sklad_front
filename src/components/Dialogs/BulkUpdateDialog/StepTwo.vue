@@ -102,7 +102,7 @@ import {
 import useSklads from 'src/modules/useSklads';
 import useProfile from 'src/modules/useProfile';
 
-import Selector from 'src/components/UI/Selector.vue';
+import Selector from 'src/components/UI/TheSelector.vue';
 import InputPrice from 'src/components/InputPrice.vue';
 
 defineOptions({
