@@ -397,10 +397,11 @@ export default defineComponent({
       const id = query.product;
       const element = document.getElementById(id)
       if (element) {
+        // Scroll only vertically to the row, do not scroll horizontally
         element.scrollIntoView({
           behavior: 'smooth',
           block: 'center',
-          inline: 'center',
+          inline: viewMode.value === VIEW_TABLE ? 'nearest' : 'center',
         })
         element.classList.add('highlight')
         setTimeout(() => {
@@ -492,11 +493,9 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      if (viewMode.value === VIEW_GRID) {
-        setTimeout(() => {
-          onScrollToCard()
-        }, 300);
-      }
+      setTimeout(() => {
+        onScrollToCard()
+      }, 300);
     })
 
     watch(viewMode, (newValue) => {

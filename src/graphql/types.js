@@ -24,6 +24,9 @@ export const DELETE_PRODUCT = gql`
   mutation DeleteProduct($id: ID!) {
     deleteProduct(input: { where: { id: $id }}) {
       product {
+        duplicateFrom {
+          id
+        }
         image {
           id
         }

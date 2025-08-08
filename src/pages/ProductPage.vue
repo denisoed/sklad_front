@@ -561,7 +561,8 @@ function prepareProductData(uploaded, isDuplicating = false, isEdit = false) {
     useNumberOfSizes: product.useNumberOfSizes,
     prices: cleanPrices,
     meta: generateProductMeta(product),
-    ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {})
+    ...(typeSizeId ? { typeSize: Number(typeSizeId) } : {}),
+    ...(isDuplicating && duplicatedFromID.value ? { duplicateFrom: duplicatedFromID.value } : {})
   }
 }
 
