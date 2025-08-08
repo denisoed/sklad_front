@@ -263,6 +263,7 @@ const useSklads = () => {
     bulkUpdateSklads,
     removeSkladLoading,
     removeSklad,
+    removeSkladError,
     clearSklad,
     addNewUserToSklad,
     removeUserFromSklad,
