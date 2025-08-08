@@ -35,7 +35,6 @@ export default function useProductHistory() {
    * @param {string} skladId - ID склада
    */
   function createUpdateHistory(oldData, newData, productId, skladId) {
-    console.log(oldData, newData, productId, skladId)
     const fields = []
 
     // Проверяем изменения в названии
@@ -128,11 +127,19 @@ export default function useProductHistory() {
    * @param {Object} product - удаленный товар
    * @param {string} skladId - ID склада
    */
-  function createDeleteHistory(product, skladId) {
-    history(
-      HISTORY_DELETE,
-      `Удален товар: ${product.name}. Сумма: ${product.origPrice * (product.countSizes || product.sizes.length)}`
-    )
+  function createDeleteHistory(product, productId, skladId) {
+    createHistory({
+      action: HISTORY_DELETE,
+      productId,
+      skladId,
+      json: {
+        name: product.name,
+        origPrice: product.origPrice,
+        newPrice: product.newPrice,
+        sizes: product.sizes.map(s => s.size),
+        countSizes: product.countSizes
+      },
+    })
   }
 
   return {

@@ -52,7 +52,7 @@ const useHistory = () => {
     productId,
     skladId,
     action,
-    json
+    json,
   }) {
     await apolloClient.mutate({
       mutation: CREATE_HISTORY,

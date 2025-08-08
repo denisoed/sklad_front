@@ -136,18 +136,7 @@ const useProduct = () => {
     if (!deleteProductError.value) {
       const imageId = data?.deleteProduct?.product?.image?.id
       if (imageId) removeImage({ id: imageId })
-      createHistory({
-        action: HISTORY_DELETE,
-        productId: product.id,
-        skladId: product.sklad.value,
-        json: {
-          name: product.name,
-          origPrice: product.origPrice,
-          newPrice: product.newPrice,
-          sizes: product.sizes.map(s => s.size),
-          countSizes: product.countSizes
-        }
-      })
+      createDeleteHistory(product, id, product.sklad.id)
     } else {
       showError('Не удалось удалить продукт. Проблемы на сервере.')
     }
@@ -172,13 +161,9 @@ const useProduct = () => {
       data
     })
     if (!createProductError.value) {
-      createHistory({
-        action: HISTORY_CREATE,
-        productId: response.createProduct.product.id,
-        skladId: data?.sklad,
-        json: data
-      })
+      createProductHistory(data, response.createProduct.product.id, data?.sklad)
     }
+    return response?.createProduct?.product
   }
 
   async function updateProductById(id, newData, oldData) {

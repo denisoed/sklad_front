@@ -455,7 +455,7 @@ const {
   updateProductError,
   updateProductLoading,
   generateProductMeta,
-  createProduct,
+  createNewProduct,
   createProductError,
   createProductLoading
 } = useProduct()
@@ -665,17 +665,17 @@ async function create() {
 
   try {
     const data = prepareProductData(uploaded, isDuplicating.value, props.isEdit)
-    const response = await createNewProduct({ data })
-    
+    const newProduct = await createNewProduct(data)
     if (!createProductError.value) {
       showSuccess('Товар успешно создан!')
       clearDraft()
-      replace(`/products?product=${response.data.createProduct.product.id}`)
+      replace(`/products?product=${newProduct.id}`)
     } else {
       await cleanupImageOnError(uploaded)
       showError('Не удалось создать продукт. Проблемы на сервере.')
     }
   } catch (error) {
+    console.error(error)
     await cleanupImageOnError(uploaded)
     showError('Не удалось создать продукт. Проблемы на сервере.')
   }
