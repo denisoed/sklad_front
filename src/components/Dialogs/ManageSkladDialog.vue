@@ -11,7 +11,7 @@
       </div>
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          {{ item ? 'Обновить' : 'Создать' }} склад
+          {{ selectedSklad ? 'Обновить' : 'Создать' }} склад
         </p>
         <div class="flex justify-center q-gap-md full-width q-mt-md">
           <q-input
@@ -32,7 +32,7 @@
           <q-separator class="full-width" />
           <div class="flex justify-between no-wrap full-width q-gap-md">
             <q-btn
-              v-if="item"
+              v-if="selectedSklad"
               style="height:40px;"
               color="deep-orange"
               icon="mdi-trash-can-outline"
