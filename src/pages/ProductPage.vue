@@ -386,6 +386,7 @@ import {
   ref,
   reactive,
   watch,
+  onBeforeUnmount,
 } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import Selector from 'src/components/UI/Selector.vue'
@@ -411,6 +412,7 @@ import useProfile from 'src/modules/useProfile'
 import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
 import useProductHistory from 'src/modules/useProductHistory'
+import useBus from 'src/modules/useBus'
 
 const DEFAULT_DATA = {
   id: null,
@@ -475,6 +477,9 @@ const {
 } = useProductDuplication()
 
 const { clearDraft: clearDraftAction } = useDraft()
+
+// Event bus for global communication
+const { on, off, EVENTS } = useBus()
 
 const {
   createProductHistory,
@@ -884,6 +889,9 @@ watch(sklads, (val) => {
   immediate: true
 });
 
+// Subscribe to global duplicate event
+on(EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+
 watch(product, () => {
   if (product.sklad) {
     loadCategories(
@@ -893,6 +901,10 @@ watch(product, () => {
     )
   }
 });
+
+onBeforeUnmount(() => {
+  off(EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+})
 </script>
 
 <style lang="scss" scoped>

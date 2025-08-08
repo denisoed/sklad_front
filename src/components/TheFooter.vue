@@ -66,6 +66,7 @@ import { useRoute, useRouter } from 'vue-router'
 import useBucket from 'src/modules/useBucket'
 import useSklads from 'src/modules/useSklads'
 import { useBucketStore } from 'src/stores/bucket'
+import useBus from 'src/modules/useBus'
 
 defineOptions({
   name: 'TheFooter'
@@ -76,6 +77,7 @@ const router = useRouter()
 const { sklads } = useSklads()
 const { loadBucketProducts } = useBucket()
 const bucketStore = useBucketStore()
+const { emit } = useBus()
 
 // Menu state
 const isMenuOpen = ref(false)
@@ -84,7 +86,7 @@ const isMenuOpen = ref(false)
 const isOnProductPage = computed(() => {
   return route.name === 'ProductPage' || 
           route.path.includes('/product/') ||
-          route.path.includes('/products/') && route.params.id
+          (route.path.includes('/products/') && route.params.id)
 })
 
 // Base actions
@@ -141,7 +143,13 @@ function closeMenu() {
 
 function handleActionClick(action) {
   closeMenu()
-  router.push(action.route)
+  
+  if (action.id === 'duplicate-product') {
+    // Emit global event for product duplication
+    emit('duplicate-product')
+  } else {
+    router.push(action.route)
+  }
 }
 
 function loadBucketData() {
