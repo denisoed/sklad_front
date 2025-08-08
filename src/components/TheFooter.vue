@@ -55,7 +55,6 @@
           '--delay': `${(actions.length - 1 - index) * 0.03}s`,
           '--index': actions.length - 1 - index
         }"
-        @click="handleActionClick(action)"
       >
         <span class="action-label">{{ action.label }}</span>
         <q-btn
@@ -64,6 +63,8 @@
           round
           size="md"
           class="action-btn"
+          :disabled="action.disabled"
+          @click="handleActionClick(action)"
         />
       </div>
     </div>
@@ -112,24 +113,28 @@ const baseActions = [
   {
     id: CREATE_SKLAD_ID,
     icon: 'mdi-warehouse',
-    label: 'Создать склад'
+    label: 'Создать склад',
+    disabled: false
   },
   {
     id: CREATE_CATEGORY_ID,
     icon: 'mdi-folder-outline',
-    label: 'Создать категорию'
+    label: 'Создать категорию',
+    disabled: true
   },
   {
     id: CREATE_PRODUCT_ID,
     icon: 'mdi-cube-outline',
-    label: 'Создать товар'
+    label: 'Создать товар',
+    disabled: false
   }
 ]
 
 const duplicateAction = {
   id: DUPLICATE_PRODUCT_ID,
   icon: 'mdi-content-duplicate',
-  label: 'Дублировать товар'
+  label: 'Дублировать товар',
+  disabled: false
 }
 
 // Actions for floating menu - computed to reactively include/exclude duplicate button

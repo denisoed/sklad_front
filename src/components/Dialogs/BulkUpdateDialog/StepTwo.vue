@@ -12,6 +12,8 @@
         label="Склад"
         tabindex="1"
         clearable
+        emit-value
+        map-options
       />
 
       <!-- Categories -->
@@ -25,6 +27,8 @@
         label="Категория товара"
         tabindex="2"
         clearable
+        emit-value
+        map-options
       />
 
       <!-- Name -->
