@@ -77,6 +77,8 @@ import useBucket from 'src/modules/useBucket'
 import useSklads from 'src/modules/useSklads'
 import { useBucketStore } from 'src/stores/bucket'
 import useEventBus from 'src/modules/useEventBus'
+import { MANAGE_SKLAD_DIALOG, MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
+import useDialog from 'src/modules/useDialog'
 
 defineOptions({
   name: 'TheFooter'
@@ -88,6 +90,7 @@ const { sklads } = useSklads()
 const { loadBucketProducts } = useBucket()
 const bucketStore = useBucketStore()
 const { emitBus, BUS_EVENTS } = useEventBus()
+const { openDialog } = useDialog()
 
 // Menu state
 const isMenuOpen = ref(false)
@@ -99,33 +102,34 @@ const isOnProductPage = computed(() => {
           (route.path.includes('/products/') && route.params.id)
 })
 
+const CREATE_SKLAD_ID = 'create-sklad'
+const CREATE_CATEGORY_ID = 'create-category'
+const CREATE_PRODUCT_ID = 'create-product'
+const DUPLICATE_PRODUCT_ID = 'duplicate-product'
+
 // Base actions
 const baseActions = [
   {
-    id: 'create-sklad',
+    id: CREATE_SKLAD_ID,
     icon: 'mdi-warehouse',
-    label: 'Создать склад',
-    route: '/sklads/create'
+    label: 'Создать склад'
   },
   {
-    id: 'create-category',
+    id: CREATE_CATEGORY_ID,
     icon: 'mdi-folder-outline',
-    label: 'Создать категорию',
-    route: '/categories/create'
+    label: 'Создать категорию'
   },
   {
-    id: 'create-product',
+    id: CREATE_PRODUCT_ID,
     icon: 'mdi-cube-outline',
-    label: 'Создать товар',
-    route: '/create-product'
+    label: 'Создать товар'
   }
 ]
 
 const duplicateAction = {
-  id: 'duplicate-product',
+  id: DUPLICATE_PRODUCT_ID,
   icon: 'mdi-content-duplicate',
-  label: 'Дублировать товар',
-  route: '/products?duplicate=true'
+  label: 'Дублировать товар'
 }
 
 // Actions for floating menu - computed to reactively include/exclude duplicate button
@@ -152,14 +156,22 @@ function closeMenu() {
 }
 
 function handleActionClick(action) {
-  closeMenu()
-  
-  if (action.id === 'duplicate-product') {
-    // Emit global event for product duplication
+  if (action.id === DUPLICATE_PRODUCT_ID) {
     emitBus(BUS_EVENTS.DUPLICATE_PRODUCT)
-  } else {
-    router.push(action.route)
   }
+
+  if (action.id === CREATE_SKLAD_ID) {
+    openDialog(MANAGE_SKLAD_DIALOG)
+  }
+
+  if (action.id === CREATE_CATEGORY_ID) {
+    openDialog(MANAGE_CATEGORY_DIALOG)
+  }
+
+  if (action.id === CREATE_PRODUCT_ID) {
+    router.push('/create-product')
+  }
+  closeMenu()
 }
 
 function loadBucketData() {
