@@ -26,6 +26,9 @@ export const DELETE_PRODUCT = gql`
       product {
         duplicateFrom {
           id
+          image {
+            id
+          }
         }
         image {
           id
