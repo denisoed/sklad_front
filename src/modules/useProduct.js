@@ -6,21 +6,28 @@ import {
   UPDATE_PRODUCT,
   ADD_PRODUCT_SIZES_TO_SALE,
   PRODUCTS_WITH_MIN_SIZES,
-  SEARCH_PRODUCTS
+  SEARCH_PRODUCTS,
+  CREATE_PRODUCT
 } from 'src/graphql/types'
 import { apolloClient } from 'src/boot/apollo'
-import { HISTORY_DELETE } from 'src/config'
+import { HISTORY_DELETE, HISTORY_UPDATE, HISTORY_CREATE } from 'src/config'
 import { useRoute } from 'vue-router'
 import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import { useProductsStore } from 'src/stores/products'
 import { useBucketStore } from 'src/stores/bucket'
+import useProductHistory from 'src/modules/useProductHistory'
 
 const useProduct = () => {
   const { showError, showSuccess } = useHelpers()
   const { params } = useRoute()
   const productsStore = useProductsStore()
   const bucketStore = useBucketStore()
+  const {
+    createProductHistory,
+    createUpdateHistory,
+    createDeleteHistory
+  } = useProductHistory()
   const {
     createHistory,
   } = useHistory()
@@ -29,6 +36,11 @@ const useProduct = () => {
     load: loadProductsWithMinSizes,
     refetch: refetchProductsWithMinSizes
   } = useLazyQuery(PRODUCTS_WITH_MIN_SIZES)
+  const {
+  mutate: createProduct,
+  error: createProductError,
+  loading: createProductLoading
+} = useMutation(CREATE_PRODUCT)
   const {
     error: updateProductError,
     loading: updateProductLoading,
@@ -124,18 +136,7 @@ const useProduct = () => {
     if (!deleteProductError.value) {
       const imageId = data?.deleteProduct?.product?.image?.id
       if (imageId) removeImage({ id: imageId })
-      createHistory({
-        action: HISTORY_DELETE,
-        productId: product.id,
-        skladId: product.sklad.value,
-        json: {
-          name: product.name,
-          origPrice: product.origPrice,
-          newPrice: product.newPrice,
-          sizes: product.sizes.map(s => s.size),
-          countSizes: product.countSizes
-        }
-      })
+      createDeleteHistory(product, id, product.sklad.id)
     } else {
       showError('Не удалось удалить продукт. Проблемы на сервере.')
     }
@@ -155,14 +156,24 @@ const useProduct = () => {
     `.trim()
   }
 
-  async function updateProductById(id, data) {
+  async function createNewProduct(data) {
+    const { data: response } = await createProduct({
+      data
+    })
+    if (!createProductError.value) {
+      createProductHistory(data, response.createProduct.product.id, data?.sklad)
+    }
+    return response?.createProduct?.product
+  }
+
+  async function updateProductById(id, newData, oldData) {
     await updateProduct({
       id,
-      data: {
-        sklad: params?.skladId,
-        ...data,
-      }
-    })  
+      data: newData
+    })
+    if (!updateProductError.value && oldData) {
+      createUpdateHistory(oldData, newData, id, oldData?.sklad?.id)
+    }
   }
 
   async function searchProducts({ q = null, where = {}, sizes = null }) {
@@ -215,7 +226,10 @@ const useProduct = () => {
     refetchProductsWithMinSizes,
     searchProducts,
     products,
-    searchLoading
+    searchLoading,
+    createNewProduct,
+    createProductError,
+    createProductLoading
   }
 }
 

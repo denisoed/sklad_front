@@ -11,45 +11,33 @@
       </transition>
     </q-page-container>
     <q-footer>
-      <Footer />
+      <TheFooter />
     </q-footer>
   </q-layout>
 </template>
 
-<script>
-import { defineComponent, onBeforeMount, watch } from 'vue'
+<script setup>
+import { onBeforeMount, watch } from 'vue'
 import useProfile from 'src/modules/useProfile'
 import useSklads from 'src/modules/useSklads'
-import Footer from 'src/components/Footer'
+import TheFooter from 'src/components/TheFooter'
 import useBluetooth from 'src/modules/ble/useBluetooth'
 
-export default defineComponent({
-  name: 'MainLayout',
-  components: {
-    Footer,
-  },
-  setup() {
-    const {
-      profile,
-    } = useProfile()
-    const { bluetoothAutoConnect } = useBluetooth()
-    const { fetchSklads } = useSklads()
+const {
+  profile,
+} = useProfile()
+const { bluetoothAutoConnect } = useBluetooth()
+const { fetchSklads } = useSklads()
 
-    watch(profile, (val) => {
-      if (val) {
-        fetchSklads(val.id)
-      } 
-    }, {
-      immediate: true
-    })
+watch(profile, (val) => {
+  if (val) {
+    fetchSklads(val.id)
+  } 
+}, {
+  immediate: true
+})
 
-    onBeforeMount(() => {
-      bluetoothAutoConnect()
-    })
-
-    return {
-      profile
-    }
-  }
+onBeforeMount(() => {
+  bluetoothAutoConnect()
 })
 </script>

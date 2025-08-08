@@ -23,6 +23,9 @@ import { useHistoriesStore } from 'src/stores/histories'
 
 const VIEWED_HISTORY = 'sklad_viewed_history'
 
+// Cache for getDescription results
+const descriptionCache = new Map()
+
 const useHistory = () => {
   const historiesStore = useHistoriesStore()
   const { params } = useRoute()
@@ -52,7 +55,7 @@ const useHistory = () => {
     productId,
     skladId,
     action,
-    json
+    json,
   }) {
     await apolloClient.mutate({
       mutation: CREATE_HISTORY,
@@ -88,15 +91,27 @@ const useHistory = () => {
     localStorage.setItem(VIEWED_HISTORY, moment.utc().format(DATE_TIME_FORMAT))
   }
 
+  // Optimized getDescription with caching
   function getDescription(action, json) {
+    // Create cache key from action and json
+    const cacheKey = `${action}_${JSON.stringify(json)}`
+    
+    // Check cache first
+    if (descriptionCache.has(cacheKey)) {
+      return descriptionCache.get(cacheKey)
+    }
+    
+    // Generate description
+    let description = ''
+    
     const descrs = {
       [HISTORY_SOLD]: json?.sizes?.length ?
-        `Проданы размеры: ${json?.sizes.join(', ')}` :
-        `Продано: ${json?.countSizes || 0}шт`,
+        `${json.name ? `Товар: ${json.name}. ` : ''}Проданы размеры: ${json?.sizes.join(', ')}` :
+        `${json.name ? `Товар: ${json.name}. ` : ''}Продано: ${json?.countSizes || 0}шт`,
       [HISTORY_RETURN]: json?.sizes?.length ?
         `Размеры: ${json?.sizes.join(', ')} - вернули обратно в товар` :
         `${json?.countSizes || 0}шт - вернули обратно в товар`,
-      [HISTORY_DELETE]: `${json?.name} - цена: ${json?.origPrice || 0}/${json?.newPrice || 0}, ${json?.sizes?.length ? `размеры: ${json?.sizes.join(', ')}` : `кол-во: ${json?.countSizes}шт`}`,
+      [HISTORY_DELETE]: `Удален товар: ${json?.name}`,
       [HISTORY_CREATE]: `${json?.name} - цена: ${json?.origPrice || 0}/${json?.newPrice || 0}, ${json?.sizes?.length ? `размеры: ${json?.sizes.join(', ')}` : `кол-во: ${json?.countSizes}шт`}`,
       [HISTORY_UPDATE]: (() => {
         const texts = {
@@ -132,7 +147,19 @@ const useHistory = () => {
         return `${texts[json?.type]?.label}: ${texts[json?.type]?.value}`
       })(),
     }
-    return descrs[action]
+    
+    description = descrs[action] || ''
+    
+    // Cache the result
+    descriptionCache.set(cacheKey, description)
+    
+    // Limit cache size to prevent memory leaks
+    if (descriptionCache.size > 1000) {
+      const firstKey = descriptionCache.keys().next().value
+      descriptionCache.delete(firstKey)
+    }
+    
+    return description
   }
 
   const historyResult = computed(() => {

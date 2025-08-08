@@ -31,7 +31,7 @@ export const MAIN_ROUTES = [
 
 export const SKLAD_ROUTES = [
   { path: '/sklad/:skladId', component: () => import('src/pages/SkladPage.vue') },
-  { path: '/sklad/:skladId/categories', component: () => import('pages/Categories.vue') },
+  { path: '/sklad/:skladId/categories', component: () => import('src/pages/CategoriesPage.vue') },
   { path: '/sklad/:skladId/categories/:categoryId', component: () => import('pages/Products.vue') },
   { path: '/sklad/:skladId/product/:productId', component: () => import('pages/ProductPage.vue') },
   { path: '/sklad/:skladId/bucket', component: () => import('pages/BucketPage.vue') },
@@ -97,7 +97,6 @@ export const FORGOT_ROUTE = '/forgot-password'
 export const RESET_PASSWORD_ROUTE = '/reset-password'
 export const CONFIRM_ROUTE = '/confirm'
 export const CONFIRM_REG_ROUTE = '/confirm-register'
-export const ONBOARD_ROUTE = '/onboard'
 export const BLOCKED_ROUTE = '/blocked'
 export const CONNECT_GOOGLE_ROUTE = '/connect/google'
 export const POST_ROUTE = '/post/:postId'
@@ -113,7 +112,6 @@ export const AUTH_ROUTES = [
   { path: CONFIRM_REG_ROUTE, component: () => import('pages/ConfirmReg.vue') },
   { path: BLOCKED_ROUTE, component: () => import('pages/Blocked.vue') },
   { path: CONNECT_GOOGLE_ROUTE, component: () => import('pages/connect/google.vue') },
-  { path: ONBOARD_ROUTE, component: () => import('pages/onBoard/register.vue') },
   { path: POST_ROUTE, component: () => import('pages/Post.vue') },
   { path: POSTS_ROUTE, component: () => import('pages/Posts.vue') },
 ]

@@ -209,8 +209,8 @@ export default defineComponent({
     } = useSklads()
     const { forceRefreshBucket } = useBucket()
     const {
-      categoriesResult,
-      loadCategories,
+      categories: categoriesResult,
+      fetchCategories,
     } = useCategories()
     const {
       addSizesToBucket,
@@ -350,7 +350,7 @@ export default defineComponent({
 
     const categories = computed(
       () => {
-        const categories = categoriesResult.value?.categories || []
+        const categories = categoriesResult.value || []
         const skladCategories =
           categories.filter(c => c?.sklad?.id === selectedSkladId.value)
         
@@ -503,11 +503,7 @@ export default defineComponent({
 
     watch(sklads, (val) => {
       if (val.length) {
-        loadCategories(
-          null,
-          { where: { sklad: sklads.value.map(s => s.id) }},
-          { fetchPolicy: 'network-only' }
-        )
+        fetchCategories({ sklad: sklads.value.map(s => s.id) })
       }
     }, { immediate: true })
 

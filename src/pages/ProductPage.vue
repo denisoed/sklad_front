@@ -104,15 +104,11 @@
             </div>
 
             <!-- Sklads -->
-            <Selector
+            <TheSelector
               v-model="product.sklad"
               title-postfix="склад"
-              :modal-params="{ users: profile?.id }"
-              :modal-create-gql="CREATE_SKLAD"
               :options="skladsOptions"
-              @on-create-new="onCreateNew"
-              @on-refetch="refetchSklads"
-              @clear="product.category = null"
+              @on-create-new="onCreateNewSklad"
               outlined
               class="q-mb-md"
               label="Склад *"
@@ -123,14 +119,11 @@
             />
 
             <!-- Categories -->
-            <Selector
+            <TheSelector
               v-if="product.sklad"
               v-model="product.category"
-              title-postfix="категорию"
-              :modal-params="{ sklad: product.sklad?.value }"
-              :modal-create-gql="CREATE_CATEGORY"
               :options="categoriesOptions"
-              @on-refetch="refetchCategories"
+              @on-create-new="onCreateNewCategory"
               outlined
               class="q-mb-md"
               label="Категория товара"
@@ -375,26 +368,26 @@ import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ProductSizes from 'src/components/Product/ProductSizes.vue'
 import {
   UPLOAD,
-  CREATE_PRODUCT,
   DELETE_FILE,
   GET_PRODUCT,
 } from 'src/graphql/types'
-import { CATEGORIES, CREATE_CATEGORY } from 'src/graphql/category'
-import { CREATE_SKLAD } from 'src/graphql/sklads'
 import {
   computed,
   ref,
   reactive,
   watch,
+  onBeforeUnmount,
 } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
-import Selector from 'src/components/UI/Selector.vue'
+import TheSelector from 'src/components/UI/TheSelector.vue'
 import ImageUploader from 'src/components/ImageUploader.vue'
 import InputPrice from 'src/components/InputPrice.vue'
 import NewPriceInput from 'src/components/Product/NewPriceInput.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { useRoute, useRouter } from 'vue-router'
 import useSizes from 'src/modules/useSizes'
+import useDialog from 'src/modules/useDialog'
+import { MANAGE_CATEGORY_DIALOG, MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
 import {
   FILTER_FORMAT,
 } from 'src/config'
@@ -410,7 +403,8 @@ import isEqual from 'lodash.isequal'
 import useProfile from 'src/modules/useProfile'
 import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
-import useProductHistory from 'src/modules/useProductHistory'
+import useCategories from 'src/modules/useCategories'
+import useEventBus from 'src/modules/useEventBus'
 
 const DEFAULT_DATA = {
   id: null,
@@ -444,8 +438,9 @@ const TODAY = Date.now()
 const $q = useQuasar()
 const { params, query } = useRoute()
 const { replace, push } = useRouter()
-const { showSuccess, showError, difference } = useHelpers()
+const { showSuccess, showError } = useHelpers()
 const { profile } = useProfile()
+const { openDialog } = useDialog()
 const { sizes, fetchSizes } = useSizes()
 const {
   addSizesToBucket,
@@ -455,12 +450,15 @@ const {
   updateProductError,
   updateProductLoading,
   generateProductMeta,
+  createNewProduct,
+  createProductError,
+  createProductLoading
 } = useProduct()
 const {
   createCost,
   errorCost
 } = useCosts()
-const { sklad, sklads, onCreateNew, fetchSklads } = useSklads()
+const { sklads, fetchSklads } = useSklads()
 
 const modalCountToBucket = ref(false)
 const modalSizesToBucket = ref(false)
@@ -476,11 +474,8 @@ const {
 
 const { clearDraft: clearDraftAction } = useDraft()
 
-const {
-  createProductHistory,
-  createUpdateHistory,
-  createDeleteHistory
-} = useProductHistory()
+// Event bus for global communication
+const { onBus, offBus, BUS_EVENTS } = useEventBus()
 
 const {
   mutate: uploadImage,
@@ -492,21 +487,12 @@ const {
   loading: removeImageLoading,
 } = useMutation(DELETE_FILE)
 const {
-  mutate: createProduct,
-  error: createProductError,
-  loading: createProductLoading
-} = useMutation(CREATE_PRODUCT)
-const {
   load: getEditProduct,
   result: editProduct,
   loading: loadingProduct,
   refetch: refetchEditProduct
 } = useLazyQuery(GET_PRODUCT)
-const {
-  result: categoriesResult,
-  load: loadCategories,
-  refetch: refetchCategories
-} = useLazyQuery(CATEGORIES)
+const { categories: categoriesResult, fetchCategories } = useCategories()
 
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
@@ -524,6 +510,16 @@ function onPriceChange(priceData) {
 async function uploadImg(file) {
   const response = await uploadImage({ file });
   return response;
+}
+
+function onCreateNewSklad() {
+  openDialog(MANAGE_SKLAD_DIALOG)
+}
+
+function onCreateNewCategory() {
+  openDialog(MANAGE_CATEGORY_DIALOG, {
+    skladId: product.sklad.value
+  })
 }
 
 // Helper function to prepare product data
@@ -670,18 +666,17 @@ async function create() {
 
   try {
     const data = prepareProductData(uploaded, isDuplicating.value, props.isEdit)
-    const response = await createProduct({ data })
-    
+    const newProduct = await createNewProduct(data)
     if (!createProductError.value) {
       showSuccess('Товар успешно создан!')
-      createProductHistory(product, response.data.createProduct.product.id, product.sklad.value)
       clearDraft()
-      replace(`/products?product=${response.data.createProduct.product.id}`)
+      replace(`/products?product=${newProduct.id}`)
     } else {
       await cleanupImageOnError(uploaded)
       showError('Не удалось создать продукт. Проблемы на сервере.')
     }
   } catch (error) {
+    console.error(error)
     await cleanupImageOnError(uploaded)
     showError('Не удалось создать продукт. Проблемы на сервере.')
   }
@@ -697,14 +692,13 @@ async function update() {
 
   try {
     const data = prepareProductData(uploaded, false, true)
-    await updateProductById(params?.productId, data)
+    await updateProductById(params?.productId, data, editProduct.value?.product)
     
     if (!updateProductError.value) {
       if (typeof product.image !== 'string' && product.imageId) {
         removeImage({ id: product.imageId })
         product.imageId = null
       }
-      createUpdateHistory(editProduct.value?.product, product, product.id, product.sklad.value)
       // Создаем глубокую копию для корректного отслеживания изменений
       Object.assign(copiedProductForDirty, {
         ...product,
@@ -716,6 +710,7 @@ async function update() {
       showError('Не удалось обновить продукт. Проблемы на сервере.')
     }
   } catch (error) {
+    console.log(error)
     await cleanupImageOnError(uploaded)
     showError('Не удалось обновить продукт. Проблемы на сервере.')
   }
@@ -762,7 +757,6 @@ function cancel(type) {
       resetAll()
     } else {
       await removeProduct(params?.productId, product)
-      createDeleteHistory(product, product.sklad.value)
       showSuccess('Товар успешно удалён!')
       push('/products')
     }
@@ -771,7 +765,7 @@ function cancel(type) {
 
 function setCategoryFromParams() {
   if (query?.category) {
-    const category = categoriesResult.value?.categories.find(c => c.id === query?.category)
+    const category = categoriesResult.value.find(c => c.id === query?.category)
     if (category) {
       product.category = {
         label: category.name,
@@ -816,7 +810,7 @@ const skladsOptions = computed(() => {
 })
 
 const categoriesOptions = computed(() => {
-  return categoriesResult.value?.categories.map(c => ({
+  return categoriesResult.value?.map(c => ({
     label: c.name,
     value: c.id
   }))
@@ -848,7 +842,7 @@ const submitBtnLabel = computed(() => {
 })
 
 watch(categoriesResult, (newValue) => {
-  if (newValue?.categories?.length) {
+  if (newValue?.length) {
     setCategoryFromParams()
   }
 })
@@ -884,15 +878,18 @@ watch(sklads, (val) => {
   immediate: true
 });
 
+// Subscribe to global duplicate event
+onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+
 watch(product, () => {
   if (product.sklad) {
-    loadCategories(
-      null,
-      { where: { sklad: product.sklad.value } },
-      { fetchPolicy: 'network-only' }
-    )
+    fetchCategories({ sklad: product.sklad.value })
   }
 });
+
+onBeforeUnmount(() => {
+  offBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+})
 </script>
 
 <style lang="scss" scoped>
