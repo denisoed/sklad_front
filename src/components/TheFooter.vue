@@ -120,7 +120,7 @@ const baseActions = [
     id: CREATE_CATEGORY_ID,
     icon: 'mdi-folder-outline',
     label: 'Создать категорию',
-    disabled: true
+    disabled: false
   },
   {
     id: CREATE_PRODUCT_ID,

@@ -4,6 +4,7 @@
     ref="dialogRef"
     position="bottom"
     @before-show="onBeforeShow"
+    @before-hide="close"
   >
     <q-card class="full-width">
       <div class="dialog-close" id="dialog-close">
@@ -14,12 +15,28 @@
           {{ selectedCategory ? 'Обновить' : 'Создать' }} категорию
         </p>
         <div class="flex justify-center q-gap-md full-width q-mt-md">
+          <!-- Sklads -->
+          <TheSelector
+            v-model="formData.sklad"
+            title-postfix="склад"
+            :options="skladsOptions"
+            @on-create-new="onCreateNewSklad"
+            outlined
+            class="full-width"
+            label="Склад *"
+            hint="Выберите склад для категории"
+            tabindex="1"
+            clearable
+            :rules="[() => !!formData.sklad || 'Обязательное поле']"
+            emit-value
+            map-options
+          />
+          
           <q-input
             v-model="formData.name"
             outlined
             label="Введите название"
             class="full-width"
-            autofocus
             enterkeyhint="done"
           />
           <div class="flex full-width flex-start">
@@ -52,7 +69,7 @@
               icon="mdi-check"
               push
               :loading="isLoading"
-              :disabled="!formData.name || !formData.color || isLoading"
+              :disabled="!formData.name || !formData.color || !formData.sklad || isLoading"
               @click="save"
             />
           </div>
@@ -74,21 +91,23 @@ import { MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
 import useHelpers from 'src/modules/useHelpers'
 import useDialog from 'src/modules/useDialog'
 import useCategories from 'src/modules/useCategories'
+import useSklads from 'src/modules/useSklads'
+import useProfile from 'src/modules/useProfile'
 import {
   computed,
   reactive,
-  watch,
   ref
 } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
+import TheSelector from 'src/components/UI/TheSelector.vue'
 import { useMutation } from '@vue/apollo-composable'
 
 const { fetchCategories } = useCategories()
 const { closeDialog } = useDialog()
 const { showSuccess, showError } = useHelpers()
+const { sklads } = useSklads()
 const $q = useQuasar()
 
-const skladId = ref(null)
 const selectedCategory = ref(null)
 const dialogRef = ref()
 
@@ -96,17 +115,6 @@ const {
   mutate: deleteCategory,
   error: deleteCategoryError,
 } = useMutation(DELETE_CATEGORY)
-
-function onBeforeShow() {
-  skladId.value = dialogRef.value.slotData?.skladId
-  selectedCategory.value = dialogRef.value.slotData?.category
-}
-
-const formData = reactive({
-  name: null,
-  color: null
-})
-
 const {
   mutate: create,
   error: createError,
@@ -118,19 +126,39 @@ const {
   loading: updatedLoading,
 } = useMutation(UPDATE_CATEGORY)
 
+const formData = reactive({
+  name: null,
+  color: '#000000',
+  sklad: null
+})
+
 const isLoading = computed(() =>
   createLoading.value ||
   updatedLoading.value
 )
 
+// Опции для селекта складов
+const skladsOptions = computed(() => {
+  return sklads.value?.map(c => ({
+    label: c.name,
+    value: c.id
+  }))
+})
+
 function onColorChange(data) {
   formData.color = data.color
 }
 
+function onCreateNewSklad() {
+  // Здесь можно добавить логику для создания нового склада
+  showError('Создание складов через этот диалог не поддерживается')
+}
+
 function close() {
-  closeDialog(MANAGE_CATEGORY_DIALOG)
   formData.color = null
-  formData.name = null  
+  formData.name = null
+  formData.sklad = null
+  closeDialog(MANAGE_CATEGORY_DIALOG)
 }
 
 async function createToDB() {
@@ -138,7 +166,7 @@ async function createToDB() {
     data: {
       color: formData.color,
       name: formData.name,
-      sklad: skladId.value
+      sklad: formData.sklad.value
     }
   })
   if (!createError.value) {
@@ -154,6 +182,7 @@ async function updateFromDB() {
     data: {
       name: formData.name,
       color: formData.color,
+      sklad: formData.sklad.value
     }
   })
   if (!updateError.value) {
@@ -164,7 +193,7 @@ async function updateFromDB() {
 }
 
 async function save() {
-  if (formData.name && formData.color) {
+  if (formData.name && formData.color && formData.sklad) {
     try {
       if (selectedCategory.value) {
         await updateFromDB()
@@ -174,8 +203,8 @@ async function save() {
     } catch (error) {
       showError('Неизвестная ошибка. Проблемы на сервере.')
     } finally {
+      await fetchCategories({ sklad: formData.sklad.value })
       close()
-      fetchCategories({ sklad: skladId.value })
     }
   }
 }
@@ -200,7 +229,7 @@ function remove() {
   }).onOk(async () => {
     await deleteCategory({ id: selectedCategory.value.id })
     if (!deleteCategoryError.value) {
-      fetchCategories({ sklad: skladId.value })
+      fetchCategories({ sklad: formData.sklad.value })
       // NOTE: add to history
       showSuccess('Категория успешно удалёна!')
     } else {
@@ -209,10 +238,13 @@ function remove() {
   })
 }
 
-watch(selectedCategory, (newVal) => {
-  formData.name = newVal?.name
-  formData.color = newVal?.color
-}, {
-  immediate: true
-})
+function onBeforeShow() {
+  selectedCategory.value = dialogRef.value.slotData?.category
+
+  if (selectedCategory.value) {
+    formData.name = selectedCategory.value?.name
+    formData.color = selectedCategory.value?.color
+    formData.sklad = selectedCategory.value?.sklad?.id || dialogRef.value.slotData?.skladId
+  }
+}
 </script>
