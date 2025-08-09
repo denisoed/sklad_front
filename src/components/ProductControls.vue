@@ -2,7 +2,7 @@
   <div class="product-controls block-bg" :class="{ 'product-controls--shown': show }">
     <div class="product-controls_title full-width flex justify-center">
       <div class="product-controls_wrap">
-        {{ title }}
+        {{ title || $t('product.controlPanel') }}
       </div>
     </div>
     <div class="full-width flex justify-center q-pb-lg q-pt-xs">
@@ -36,7 +36,7 @@
           />
         </q-btn>
         <BulkPrintDialog
-          title="Печать ценников"
+          :title="$t('product.printPriceLabels')"
           @on-finish="onFinishPrint"
           class="hidden"
         >
@@ -80,12 +80,15 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BulkUpdateDialog from 'src/components/Dialogs/BulkUpdateDialog/TheIndex.vue'
 import BulkRemoveDialog from 'src/components/Dialogs/BulkRemoveDialog/TheIndex.vue'
 import BulkPrintDialog from 'src/components/Dialogs/BulkPrintDialog/index.vue'
 import { CAN_UPDATE_PRODUCT, CAN_REMOVE_PRODUCT } from 'src/permissions'
 
 const emit = defineEmits(['on-finish-update', 'on-finish-remove', 'on-finish-print', 'on-close'])
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   show: {
@@ -94,7 +97,7 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: 'Панель управления'
+    default: null
   },
 })
 
