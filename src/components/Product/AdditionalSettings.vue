@@ -1,36 +1,22 @@
 <template>
-  <Dropdown title="Дополнительно" outline>
-    <template #icon>
-      <q-icon name="mdi-cog-outline" size="sm" class="q-mr-sm" />
-    </template>
+  <Dropdown :title="$t('product.additionalSettings')" outline>
     <template #body>
-      <div class="additional-settings flex column q-gap-sm">
-        <q-input
-          v-model="localComment"
-          outlined
-          class="full-width"
-          dense
-          label="Комментарий"
-          clearable
-          enterkeyhint="done"
-        />
-        <div class="flex no-wrap items-center q-gap-sm">
-          <InputPrice
-            v-model="localDiscountPrice"
-            label="Доп. скидка"
-            clear
-            class="full-width"
-            dense
-            :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
-          />
-          <SwitchTabs
-            :tabs="DISCOUNT_TABS"
-            :selected-tab="localPercentageDiscount"
-            class="discount-tabs"
-            @on-change="localPercentageDiscount = $event"
-          />
-        </div>
-      </div>
+      <q-input
+        v-model="comment"
+        outlined
+        :label="$t('product.additionalComment')"
+        class="q-mb-md"
+        @update:model-value="$emit('update:comment', $event)"
+      />
+      
+      <InputPrice
+        v-model="discountPercent"
+        outlined
+        :label="$t('product.additionalDiscount')"
+        suffix="%"
+        class="q-mb-md"
+        @update:model-value="$emit('update:discount-percent', $event)"
+      />
     </template>
   </Dropdown>
 </template>
@@ -41,9 +27,16 @@ import {
   watch,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import InputPrice from 'src/components/InputPrice'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
 import Dropdown from 'src/components/Dropdown/index.vue'
+
+defineOptions({
+  name: 'AdditionalSettings'
+})
+
+const { t: $t } = useI18n()
 
 const DISCOUNT_TABS = [
   {

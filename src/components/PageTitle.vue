@@ -9,7 +9,9 @@
         class="q-mr-md"
         :link="link"
       />
-      <h6 v-html="title" class="text-h6 q-my-none q-mr-sm" />
+      <h1 class="page-title_title text-h5 text-weight-bold q-ma-none">
+        {{ displayTitle }}
+      </h1>
       <slot name="custom" />
       <div v-if="hasSlot" class="q-ml-auto">
         <q-btn
@@ -59,25 +61,35 @@ import {
   ref
 } from 'vue'
 import BtnBack from 'src/components/BtnBack.vue'
+import { useI18n } from 'vue-i18n'
+
+defineOptions({
+  name: 'PageTitle'
+})
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: null
+  },
+  hideBackBtn: {
+    type: Boolean,
+    default: false
+  },
+  link: {
+    type: String,
+    default: null,
+  },
+})
+
+const { t: $t } = useI18n()
+
+const displayTitle = computed(() => props.title || $t('common.title'))
 
 export default defineComponent({
   name: 'PageTitle',
   components: {
     BtnBack
-  },
-  props: {
-    title: {
-      type: String,
-      default: 'Заголовок'
-    },
-    hideBackBtn: {
-      type: Boolean,
-      default: false
-    },
-    link: {
-      type: String,
-      default: null,
-    },
   },
   setup(props, { slots }) {
     const dialog = ref(false)

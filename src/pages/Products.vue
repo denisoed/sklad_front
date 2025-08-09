@@ -148,6 +148,7 @@ import {
   onMounted,
   watch
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
 import useCategories from 'src/modules/useCategories'
@@ -165,12 +166,6 @@ import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
 import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
 
-const ALL_TAB = {
-  id: 0,
-  name: 'Все',
-  color: '#fff'
-}
-
 const VIEW_TABLE = 'table'
 const VIEW_GRID = 'grid'
 
@@ -178,6 +173,23 @@ import {
   CAN_SELL_PRODUCT,
   CAN_UPDATE_PRODUCT
 } from 'src/permissions'
+
+defineOptions({
+  name: 'Products'
+})
+
+const { t: $t } = useI18n()
+
+const filterOptions = computed(() => [
+  { label: $t('products.all'), value: 'all' },
+  { label: $t('products.lowStock'), value: 'lowStock' }
+])
+
+const filterLabels = computed(() => ({
+  color_in: $t('products.colors'),
+  sizes_contains: $t('products.sizes'),
+  lowStock: $t('products.lowStock')
+}))
 
 export default defineComponent({
   name: 'ProductsPage',
@@ -198,10 +210,19 @@ export default defineComponent({
     }
   },
   setup() {
+    const { t: $t } = useI18n()
     const bulkStore = useBulkStore();
     const { bulkProducts } = storeToRefs(bulkStore);
-    const { params, query } = useRoute()
+    
+    const ALL_TAB = computed(() => ({
+      id: 0,
+      name: $t('products.all'),
+      color: '#fff'
+    }))
+
+    const route = useRoute()
     const router = useRouter()
+    const { query, params } = route
     const {
       sklad,
       sklads,
@@ -221,11 +242,11 @@ export default defineComponent({
     } = useProduct()
 
     const selectedSkladId = ref(
-      params?.skladId || query?.sklad || ALL_TAB.id
+      params?.skladId || query?.sklad || ALL_TAB.value.id
     )
     const imagePreviewDialog = ref(false)
     const imagePreview = ref(null)
-    const selectedCategoryId = ref(params?.categoryId || ALL_TAB.id)
+    const selectedCategoryId = ref(params?.categoryId || ALL_TAB.value.id)
     const selectedFilters = reactive({})
     const showFiltersInfo = ref(false)
     
@@ -345,7 +366,7 @@ export default defineComponent({
     }
 
     const skladsTabs = computed(() => {
-      return [ALL_TAB, ...sklads.value]
+      return [ALL_TAB.value, ...sklads.value]
     })
 
     const categories = computed(
@@ -355,8 +376,8 @@ export default defineComponent({
           categories.filter(c => c?.sklad?.id === selectedSkladId.value)
         
         return [
-          ALL_TAB,
-          ...(selectedSkladId.value === ALL_TAB.id ? categories : skladCategories)
+          ALL_TAB.value,
+          ...(selectedSkladId.value === ALL_TAB.value.id ? categories : skladCategories)
         ]
       }
     );
@@ -411,8 +432,8 @@ export default defineComponent({
     }
 
     function onClear() {
-      selectedSkladId.value = ALL_TAB.id
-      selectedCategoryId.value = ALL_TAB.id
+      selectedSkladId.value = ALL_TAB.value.id
+      selectedCategoryId.value = ALL_TAB.value.id
     }
 
     async function loadData() {
@@ -450,8 +471,8 @@ export default defineComponent({
       );
       
       if (hasSearchFilters) {
-        selectedCategoryId.value = ALL_TAB.id;
-        selectedSkladId.value = ALL_TAB.id;
+        selectedCategoryId.value = ALL_TAB.value.id;
+        selectedSkladId.value = ALL_TAB.value.id;
       }
       
       loadData();
@@ -459,7 +480,7 @@ export default defineComponent({
     
     function onChangeSklad(id) {
       selectedSkladId.value = id;
-      selectedCategoryId.value = ALL_TAB.id;
+      selectedCategoryId.value = ALL_TAB.value.id;
       loadData();
     }
 

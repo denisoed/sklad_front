@@ -90,8 +90,11 @@ import {
   computed,
   defineComponent,
   onBeforeMount,
-  ref
+  ref,
+  watch,
+  onMounted
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FilterHistory from 'src/components/FilterHistory.vue'
 import useSklads from 'src/modules/useSklads'
 import useHistory from 'src/modules/useHistory'
@@ -105,38 +108,27 @@ import {
   FILTER_FORMAT
 } from 'src/config'
 
-const columns = [
-  {
-    name: 'action',
-    label: 'Событие',
-    align: 'left',
-    field: 'action',
-  },
-  {
-    name: 'fullname',
-    label: 'Автор',
-    field: 'fullname',
-    align: 'left',
-  },
-  {
-    name: 'productId',
-    label: 'Товар',
-    field: 'productId',
-    align: 'left',
-  },
-  {
-    name: 'description',
-    label: 'Описание',
-    field: 'description',
-    align: 'left',
-  },
-  {
-    name: 'created_at',
-    label: 'Дата',
-    field: 'created_at',
-    align: 'left',
-  },
-]
+defineOptions({
+  name: 'History'
+})
+
+const { t: $t } = useI18n()
+const route = useRoute()
+const { params, query } = route
+
+const title = computed(() => 
+  query?.product ? 
+  `${$t('history.productHistory')} ${query.product}` : 
+  $t('history.title')
+)
+
+const columns = computed(() => [
+  { name: 'event', label: $t('history.event'), field: 'event', sortable: true },
+  { name: 'author', label: $t('history.author'), field: 'author', sortable: true },
+  { name: 'product', label: $t('history.product'), field: 'product', sortable: true },
+  { name: 'description', label: $t('history.description'), field: 'description', sortable: false },
+  { name: 'date', label: $t('history.date'), field: 'date', sortable: true }
+])
 
 export default defineComponent({
   name: 'HistoryPage',
@@ -146,8 +138,10 @@ export default defineComponent({
     PageTitle,
   },
   setup() {
+    const { t: $t } = useI18n()
+    const route = useRoute()
+    const { params, query } = route
     const { push } = useRouter()
-    const { params, query } = useRoute()
     const { formatTimeAgo } = useDate()
     const TODAY = Date.now()
     const {
@@ -169,8 +163,6 @@ export default defineComponent({
     }
 
     const skladUsers = computed(() => sklad.value?.users || [])
-    const title = computed(() => query?.product ? `История по товару ${query?.product}` : 'История')
-
     const historyRows = computed(() => {
       return historyResult.value.map(h => ({
         ...h,

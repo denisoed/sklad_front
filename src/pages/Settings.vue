@@ -39,10 +39,10 @@
         indicator-color="primary"
         narrow-indicator
       >
-        <q-tab name="main" label="Основное" />
-        <q-tab name="sizes" label="Размеры" />
-        <q-tab name="accesses" label="Доступы" />
-        <q-tab name="goal" label="Цели" />
+        <q-tab name="main" :label="$t('settings.tabs.main')" />
+        <q-tab name="sizes" :label="$t('settings.tabs.sizes')" />
+        <q-tab name="accesses" :label="$t('settings.tabs.accesses')" />
+        <q-tab name="goal" :label="$t('settings.tabs.goals')" />
       </q-tabs>
 
       <q-separator />
@@ -51,7 +51,7 @@
         <q-tab-panel class="q-px-sm" name="main">
           <Dropdown
             class="q-mt-md"
-            title="Название склада"
+            :title="$t('settings.warehouseName')"
             opened
           >
             <template #body>
@@ -59,7 +59,7 @@
                 v-model="formData.name"
                 outlined
                 dense
-                placeholder="Название"
+                :placeholder="$t('common.name')"
                 class="q-mt-sm"
                 enterkeyhint="done"
               />
@@ -68,14 +68,19 @@
           
           <Dropdown
             class="q-mt-md"
-            title="Цвет склада"
+            :title="$t('settings.minStock')"
             opened
           >
             <template #body>
-              <ColorPicker
-                :selected="formData.color"
-                @on-change="onChangeColor"
-              />
+              <div class="flex items-center q-mt-sm">
+                <InputNumber
+                  v-model="formData.minSizesCount"
+                  :min="0"
+                />
+              </div>
+              <p class="text-body2 text-grey-7 q-mt-sm q-mb-none">
+                {{ $t('settings.minStockDescription') }}
+              </p>
             </template>
           </Dropdown>
         </q-tab-panel>
@@ -199,6 +204,13 @@ import {
   HOME_ROUTE,
   MAIN_SETTINGS_ROUTE
 } from 'src/router/routes'
+import { useI18n } from 'vue-i18n'
+
+defineOptions({
+  name: 'Settings'
+})
+
+const { t: $t } = useI18n()
 
 export default defineComponent({
   name: 'SettingsPage',
@@ -211,10 +223,9 @@ export default defineComponent({
     Dropdown
   },
   setup() {
-    const { query, params } = useRoute()
-    const { push, replace } = useRouter()
-    const tab = ref(query?.tab || 'main')
-    const { showError, showSuccess } = useHelpers()
+    const { t: $t } = useI18n()
+    const route = useRoute()
+    const router = useRouter()
     const { profile } = useProfile()
     const {
       error: updateSkladError,

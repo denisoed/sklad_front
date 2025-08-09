@@ -45,6 +45,7 @@ export default ({
     noData: 'Берилиштер жок',
     listEmpty: 'Тизме бош',
     update: 'Жаңыртуу',
+    title: 'Баш сөз',
     
     // Errors and success messages
     success: 'Ийгиликтүү',
@@ -161,6 +162,9 @@ export default ({
     saleDate: 'Сатуу күнү',
     productName: 'Товардын аталышы',
     writeEverything: 'Ойлогонуңуздун баарын жазыңыз',
+    priceName: 'Аталышы',
+    create: 'Товар түзүү',
+    duplicate: 'Товарды көчүрүү',
   },
 
   warehouse: {
@@ -195,6 +199,15 @@ export default ({
 
   // Settings
   settings: {
+    tabs: {
+      main: 'Негизги',
+      sizes: 'Өлчөмдөр',
+      accesses: 'Кирүү укуктары',
+      goals: 'Максаттар',
+    },
+    warehouseName: 'Кампанын аталышы',
+    minStock: 'Калдыктар',
+    minStockDescription: 'Эгер товардагы өлчөмдөр көрсөтүлгөн маанидан аз же барабар болсо, ал кампанын башкы барагындагы "Калдыктар" бөлүмүнө кирет',
     employee: {
       noPeopleAdded: 'Адамдар кошулган жок',
       removeEmployee: 'Кызматкерди өчүрүү',
@@ -205,6 +218,35 @@ export default ({
       amount: 'Сумма',
       displayOnMainPage: 'Кампанын башкы барагында көрсөтүлөт',
     },
+  },
+
+  // Products
+  products: {
+    all: 'Баардык',
+    lowStock: 'Бүтүп калууда',
+    colors: 'Түстөр',
+    sizes: 'Өлчөмдөр',
+  },
+
+  // History
+  history: {
+    title: 'Тарых',
+    productHistory: 'Товар боюнча тарых',
+    event: 'Окуя',
+    author: 'Автор',
+    product: 'Товар',
+    description: 'Сүрөттөмө',
+    date: 'Дата',
+  },
+
+  // Costs
+  costs: {
+    author: 'Автор',
+    description: 'Сүрөттөмө',
+    amount: 'Сумма',
+    date: 'Дата',
+    removeCost: 'Чыгымды өчүрүү',
+    removeConfirm: 'Бул чыгымды өчүргүңүз келээби?',
   },
 
   // Printing

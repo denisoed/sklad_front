@@ -1,11 +1,13 @@
 <template>
   <div class="dropdown block-bg" :class="{ 'dropdown--outline': outline }">
-    <div @click="toggle" class="dropdown_header flex items-center q-pa-md cursor-pointer">
+    <div class="dropdown_head flex items-center" @click="show = !show">
       <slot name="icon" />
-      <span v-html="title" class="text-bold" />
-      <div class="dropdown_header-arrow q-ml-auto">
-        <q-icon name="mdi-chevron-down" :class="{ 'mdi-rotate-180': isOpen }" size="sm" />
-      </div>
+      <h6 class="text-bold dropdown_title q-ma-none">{{ displayTitle }}</h6>
+      <q-icon
+        :name="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+        size="sm"
+        class="q-ml-auto"
+      />
     </div>
     <div v-if="isOpen" class="dropdown_body q-px-md q-pb-md q-pt-none">
       <slot name="body" />
@@ -14,9 +16,33 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-export default defineComponent({
+defineOptions({
+  name: 'Dropdown'
+})
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: null
+  },
+  opened: {
+    type: Boolean,
+    default: false
+  },
+  outline: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const { t: $t } = useI18n()
+
+const displayTitle = computed(() => props.title || $t('common.title'))
+
+export default {
   name: 'DropDown',
   props: {
     title: {
@@ -49,7 +75,7 @@ export default defineComponent({
       toggle
     }
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>

@@ -148,39 +148,44 @@ import TableComp from 'src/components/TableComp.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { DISPLAY_FORMAT, HISTORY_CREATE } from 'src/config'
 import { CAN_ADD_COST } from 'src/permissions'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
-const columns = [
-  {
-    name: 'fullname',
-    label: 'Автор',
-    field: 'fullname',
-    align: 'left',
-  },
-  {
-    name: 'description',
-    label: 'Описание',
-    field: 'description',
-    align: 'left',
-  },
-  {
-    name: 'sum',
-    label: 'Сумма',
-    align: 'left',
-    field: 'sum',
-  },
-  {
-    name: 'created_at',
-    label: 'Дата',
-    field: 'created_at',
-    align: 'left',
-  },
-  {
-    name: 'actions',
-    label: '',
-    field: 'actions',
-    align: 'right',
-  },
-]
+defineOptions({
+  name: 'Costs'
+})
+
+const { t: $t } = useI18n()
+const $q = useQuasar()
+
+const columns = computed(() => [
+  { name: 'author', label: $t('costs.author'), field: 'author', sortable: true },
+  { name: 'description', label: $t('costs.description'), field: 'description', sortable: false },
+  { name: 'amount', label: $t('costs.amount'), field: 'amount', sortable: true },
+  { name: 'date', label: $t('costs.date'), field: 'date', sortable: true }
+])
+
+function confirmRemoveCost(cost) {
+  $q.dialog({
+    title: $t('costs.removeCost'),
+    message: $t('costs.removeConfirm'),
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'deep-orange',
+      label: $t('common.delete'),
+      push: true
+    },
+    cancel: {
+      color: 'white',
+      textColor: 'black',
+      label: $t('common.cancel'),
+      push: true
+    }
+  }).onOk(() => {
+    // handle remove
+  })
+}
 
 export default defineComponent({
   name: 'CostsPage',
@@ -189,6 +194,9 @@ export default defineComponent({
     PageTitle,
   },
   setup() {
+    const { t: $t } = useI18n()
+    const route = useRoute()
+    const { params } = route
     const { showSuccess, showError } = useHelpers()
     const { formatPrice } = useMoney()
     const {
@@ -205,7 +213,6 @@ export default defineComponent({
     } = useCosts()
     const { history } = useHistory()
 
-    const $q = useQuasar()
     const dialog = ref(false)
     const description = ref(null)
     const sum = ref(null)
@@ -241,19 +248,19 @@ export default defineComponent({
     
     function remove(cost) {
       $q.dialog({
-        title: 'Удалить расход',
-        message: 'Вы уверены, что хотите удалить этот расход?',
+        title: $t('costs.removeCost'),
+        message: $t('costs.removeConfirm'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('common.delete'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('common.cancel'),
           push: true
         }
       }).onOk(async () => {

@@ -36,18 +36,17 @@
             <q-input
               v-model="price.name"
               outlined
-              label="Название"
-              class="full-width"
-              enterkeyhint="done"
-              @update:model-value="(value) => onAdditionalPriceNameChange(index, value)"
+              dense
+              :label="$t('product.priceName')"
+              class="q-mr-sm"
+              style="flex: 1;"
             />
             <InputPrice
-              v-model="price.price"
-              label="Цена"
-              clear
-              :icon="false"
-              class="full-width"
-              @update:model-value="(value) => onAdditionalPriceValueChange(index, value)"
+              v-model="price.value"
+              outlined
+              dense
+              :label="$t('common.price')"
+              style="flex: 1;"
             />
             <q-btn
               v-if="localAdditionalPrices.length > 1"
@@ -115,9 +114,15 @@
 import {
   ref,
   watch,
-  toRefs
+  toRefs,
+  computed
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import InputPrice from 'src/components/InputPrice.vue'
+
+defineOptions({
+  name: 'NewPriceInput'
+})
 
 const props = defineProps({
   retailPrice: {
@@ -133,6 +138,8 @@ const props = defineProps({
 const { retailPrice, additionalPrices: propAdditionalPrices } = toRefs(props)
 
 const emit = defineEmits(['on-change'])
+
+const { t: $t } = useI18n()
 
 const localRetailPrice = ref(retailPrice.value)
 const localAdditionalPrices = ref(propAdditionalPrices.value.length > 0 

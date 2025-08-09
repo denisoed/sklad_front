@@ -45,6 +45,7 @@ export default ({
     noData: 'Нет данных',
     listEmpty: 'Список пуст',
     update: 'Обновить',
+    title: 'Заголовок',
     
     // Errors and success messages
     success: 'Успешно',
@@ -161,6 +162,9 @@ export default ({
     saleDate: 'Дата продажи',
     productName: 'Название товара',
     writeEverything: 'Пишите всё, что думаете',
+    priceName: 'Название',
+    create: 'Создать товар',
+    duplicate: 'Дублировать товар',
   },
 
   warehouse: {
@@ -195,6 +199,15 @@ export default ({
 
   // Settings
   settings: {
+    tabs: {
+      main: 'Основное',
+      sizes: 'Размеры',
+      accesses: 'Доступы',
+      goals: 'Цели',
+    },
+    warehouseName: 'Название склада',
+    minStock: 'Остатки',
+    minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
     employee: {
       noPeopleAdded: 'Люди не добавлены',
       removeEmployee: 'Удалить сотрудника',
@@ -205,6 +218,35 @@ export default ({
       amount: 'Сумма',
       displayOnMainPage: 'Отображается на главной странице склада',
     },
+  },
+
+  // Products
+  products: {
+    all: 'Все',
+    lowStock: 'Заканчивается',
+    colors: 'Цвета',
+    sizes: 'Размеры',
+  },
+
+  // History
+  history: {
+    title: 'История',
+    productHistory: 'История по товару',
+    event: 'Событие',
+    author: 'Автор',
+    product: 'Товар',
+    description: 'Описание',
+    date: 'Дата',
+  },
+
+  // Costs
+  costs: {
+    author: 'Автор',
+    description: 'Описание',
+    amount: 'Сумма',
+    date: 'Дата',
+    removeCost: 'Удалить расход',
+    removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
   },
 
   // Printing
