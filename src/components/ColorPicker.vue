@@ -28,7 +28,10 @@
         :key="color.color"
         :class="[
           'color-picker--selected',
-          { 'color-picker--selected-white': color.color === '#FFFFFF' }
+          {
+            'color-picker--selected-white': color.color === '#FFFFFF',
+            'full-width': selectedColors.length === 1
+          }
         ]"
         :style="{ background: color.color }"
       >

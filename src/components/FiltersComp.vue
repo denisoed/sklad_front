@@ -104,6 +104,7 @@ const selectedFilters = reactive({
 
 const hasFilters = computed(() => {
   return Object.keys(selectedFilters).some(key => {
+    if (key === 'search') return false
     const value = selectedFilters[key]
     if (Array.isArray(value)) return value.length > 0
     if (typeof value === 'boolean') return value
@@ -141,7 +142,7 @@ function search() {
   if (selectedFilters.inStock) {
     filters.countSizes_gt = 0
   }
-  emit('on-search', hasFilters.value ? { ...filters } : {})
+  emit('on-search', { ...filters })
 }
 
 function applyFilters(newFilters) {
