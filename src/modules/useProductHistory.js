@@ -1,22 +1,29 @@
 import { HISTORY_UPDATE, HISTORY_CREATE, HISTORY_DELETE } from 'src/config'
 import useHistory from './useHistory'
 import useHelpers from './useHelpers'
+import useProfile from './useProfile'
 
 export default function useProductHistory() {
-  const { createHistory, history } = useHistory()
+  const { profile } = useProfile()
+  const { createHistory } = useHistory()
   const { difference } = useHelpers()
 
   /**
    * Создает запись в истории для создания товара
    * @param {Object} product - созданный товар
    * @param {string} productId - ID товара
-   * @param {string} skladId - ID склада
+   * @param {Object} sklad - склад
    */
-  function createProductHistory(product, productId, skladId) {
+  function createProductHistory(product, productId, sklad) {
     createHistory({
+      productId: +productId || null,
+      userId: +profile.value?.id || null,
+      skladId: +sklad?.id || null,
+      telegramId: +profile.value?.telegramId || null,
       action: HISTORY_CREATE,
-      productId,
-      skladId,
+      skladName: sklad?.name,
+      fullname: profile.value?.fullname,
+      email: profile.value?.email,
       json: {
         name: product.name,
         origPrice: product.origPrice,
@@ -32,9 +39,9 @@ export default function useProductHistory() {
    * @param {Object} oldData - старые данные товара
    * @param {Object} newData - новые данные товара
    * @param {string} productId - ID товара
-   * @param {string} skladId - ID склада
+   * @param {Object} sklad - склад
    */
-  function createUpdateHistory(oldData, newData, productId, skladId) {
+  function createUpdateHistory(oldData, newData, productId, sklad) {
     const fields = []
 
     // Проверяем изменения в названии
@@ -114,9 +121,14 @@ export default function useProductHistory() {
     // Создаем записи в истории для каждого изменения
     fields.forEach(field => {
       createHistory({
+        productId: +productId || null,
+        skladId: +sklad?.id || null,
+        userId: +profile.value?.id || null,
+        telegramId: +profile.value?.telegramId || null,
+        skladName: sklad?.name,
         action: HISTORY_UPDATE,
-        productId,
-        skladId,
+        fullname: profile.value?.fullname,
+        email: profile.value?.email,
         json: field
       })
     })
@@ -125,13 +137,19 @@ export default function useProductHistory() {
   /**
    * Создает запись в истории для удаления товара
    * @param {Object} product - удаленный товар
-   * @param {string} skladId - ID склада
+   * @param {string} productId - ID товара
+   * @param {Object} sklad - склад
    */
-  function createDeleteHistory(product, productId, skladId) {
+  function createDeleteHistory(product, productId, sklad) {
     createHistory({
+      productId: +productId || null,
+      skladId: +sklad?.id || null,
+      userId: +profile.value?.id || null,
+      telegramId: +profile.value?.telegramId || null,
       action: HISTORY_DELETE,
-      productId,
-      skladId,
+      skladName: sklad?.name,
+      fullname: profile.value?.fullname,
+      email: profile.value?.email,
       json: {
         name: product.name,
         origPrice: product.origPrice,

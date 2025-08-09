@@ -5,7 +5,7 @@
         <template #custom>
           <q-btn
             v-if="isEdit"
-            v-permissions="{ permissions: [READ_HISTORY, CAN_REMOVE_PRODUCT, CAN_ADD_PRODUCT], skladId: product?.sklad?.value }"
+            v-permissions="{ permissions: [READ_HISTORY, CAN_REMOVE_PRODUCT, CAN_ADD_PRODUCT], skladId: product?.sklad }"
             icon="mdi-cog-outline"
             push
             round
@@ -15,7 +15,7 @@
             <q-menu style="width: 200px;">
               <q-list>
                 <q-item
-                  v-permissions="{ permissions: [CAN_ADD_PRODUCT], skladId: product?.sklad?.value }"
+                  v-permissions="{ permissions: [CAN_ADD_PRODUCT], skladId: product?.sklad }"
                   clickable
                   v-close-popup
                   py="10px"
@@ -31,7 +31,7 @@
                 </q-item>
                 <q-item
                   v-if="historyLink"
-                  v-permissions="{ permissions: [READ_HISTORY], skladId: product?.sklad?.value }"
+                  v-permissions="{ permissions: [READ_HISTORY], skladId: product?.sklad }"
                   :to="historyLink"
                   clickable
                   v-close-popup
@@ -44,7 +44,7 @@
                   </q-item-section>
                 </q-item>
                 <q-item
-                  v-permissions="{ permissions: [CAN_REMOVE_PRODUCT], skladId: product?.sklad?.value }"
+                  v-permissions="{ permissions: [CAN_REMOVE_PRODUCT], skladId: product?.sklad }"
                   clickable
                   v-close-popup
                   py="10px"
@@ -115,7 +115,9 @@
               hint="Привязать товар к складу"
               tabindex="1"
               clearable
-              :rules="[() => product.sklad || 'Обязательное поле']"
+              emit-value
+              map-options
+              :rules="[() => !!product.sklad || 'Обязательное поле']"
             />
 
             <!-- Categories -->
@@ -130,6 +132,8 @@
               hint="Привязать товар к категории"
               tabindex="2"
               clearable
+              emit-value
+              map-options
             />
 
             <ImageUploader
@@ -168,7 +172,7 @@
             </div>
           </div>
           <div
-            v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: product?.sklad?.value }"
+            v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: product?.sklad }"
             class="col-12 q-mb-md"
           >
             <InputPrice
@@ -306,7 +310,7 @@
 
         <div class="row q-mt-md">
           <div class="col-12 flex">
-            <div v-if="isEdit" v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: product?.sklad?.value }">
+            <div v-if="isEdit" v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: product?.sklad }">
               <q-btn
                 icon="mdi-basket-plus-outline"
                 push
@@ -317,7 +321,7 @@
               />
             </div>
             <q-btn
-              v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad?.value }"
+              v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
               type="submit"
               :label="submitBtnLabel"
               push
@@ -458,7 +462,7 @@ const {
   createCost,
   errorCost
 } = useCosts()
-const { sklads, fetchSklads } = useSklads()
+const { sklads } = useSklads()
 
 const modalCountToBucket = ref(false)
 const modalSizesToBucket = ref(false)
@@ -518,7 +522,7 @@ function onCreateNewSklad() {
 
 function onCreateNewCategory() {
   openDialog(MANAGE_CATEGORY_DIALOG, {
-    skladId: product.sklad.value
+    skladId: product.sklad
   })
 }
 
@@ -546,8 +550,8 @@ function prepareProductData(uploaded, isDuplicate = false, isEdit = false) {
 
   return {
     name: product.name,
-    sklad: product.sklad?.value,
-    category: product.category?.value,
+    sklad: product.sklad,
+    category: product.category,
     origPrice: Number(product.origPrice),
     newPrice: Number(product.newPrice),
     discountPrice: Number(product.discountPrice),
@@ -582,9 +586,9 @@ async function cleanupImageOnError(uploaded) {
   }
 }
 
-function setColorName(color) {
-  product.color = color.color
-  product.colorName = color.name
+function setColorName(item) {
+  product.color = item.color
+  product.colorName = item.name
 }
 
 function resetAll() {
@@ -593,21 +597,21 @@ function resetAll() {
   clearDuplicateData()
 }
 
-async function onAddCountToBucket(product, payload) {
+async function onAddCountToBucket(item, payload) {
   await addCountToBucket({
-    ...product,
+    ...item,
     sklad: {
-      id: product.sklad.value
+      id: item.sklad
     }
   }, payload)
   refetchEditProduct()
 }
 
-async function onAddSizesToBucket(product, payload) {
+async function onAddSizesToBucket(item, payload) {
   await addSizesToBucket({
-    ...product,
+    ...item,
     sklad: {
-      id: product.sklad.value
+      id: item.sklad
     }
   }, payload)
   refetchEditProduct()
@@ -768,10 +772,7 @@ function setCategoryFromParams() {
   if (query?.category) {
     const category = categoriesResult.value.find(c => c.id === query?.category)
     if (category) {
-      product.category = {
-        label: category.name,
-        value: category.id,
-      }
+      product.category = category.id
     }
   }
 }
@@ -799,10 +800,6 @@ function loadData() {
   }
 }
 
-function refetchSklads() {
-  fetchSklads(profile.value.id)
-}
-
 const skladsOptions = computed(() => {
   return sklads.value?.map(c => ({
     label: c.name,
@@ -816,9 +813,10 @@ const categoriesOptions = computed(() => {
     value: c.id
   }))
 })
+
 const historyLink = computed(
-  () => product?.sklad?.value ?
-    `/sklad/${product.sklad.value}/history/${params?.productId}?product=${product?.name}` :
+  () => product?.sklad ?
+    `/sklad/${product.sklad}/history/${params?.productId}?product=${product?.name}` :
       null
 )
 const isDiscountToday = computed(() => {
@@ -842,6 +840,12 @@ const submitBtnLabel = computed(() => {
   return 'Сохранить'
 })
 
+async function hanleProductCategotyBySklad(skladId) {
+  product.category = null
+  await fetchCategories({ sklad: skladId })
+  product.category = editProduct.value?.product?.category?.id
+}
+
 watch(categoriesResult, (newValue) => {
   if (newValue?.length) {
     setCategoryFromParams()
@@ -852,14 +856,8 @@ watch(editProduct, (newValue) => {
   if (newValue?.product) {
     Object.assign(product, {
       ...newValue.product,
-      sklad: {
-        label: newValue.product.sklad?.name,
-        value: newValue.product.sklad?.id,
-      },
-      category: {
-        label: newValue.product.category?.name,
-        value: newValue.product.category?.id,
-      },
+      sklad: newValue.product.sklad?.id,
+      category: newValue.product.category?.id,
       image: newValue.product.image?.url,
       imageId: newValue.product.image?.id
     })
@@ -882,10 +880,8 @@ watch(sklads, (val) => {
 // Subscribe to global duplicate event
 onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
 
-watch(product, () => {
-  if (product.sklad) {
-    fetchCategories({ sklad: product.sklad.value })
-  }
+watch(() => product.sklad, (skladId) => {
+  hanleProductCategotyBySklad(skladId)
 });
 
 onBeforeUnmount(() => {

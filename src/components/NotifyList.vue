@@ -29,7 +29,7 @@
                     class="notify-list_item-type absolute-top-right q-ma-sm text-black border-radius-sm q-px-xs q-py-none"
                     :style="{ backgroundColor: h.actionColor }"
                   >{{ HISTORY_ACTIONS[h.action] }}</div>
-                  <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.sklad }}</b></div>
+                  <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.skladName }}</b></div>
                   <div class="notify-list_item-sklad text-grey q-mb-xs">ID: {{ h.productId ? `#${h.productId}` : '-' }}</div>
                   <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
                   <div class="flex justify-between items-center">

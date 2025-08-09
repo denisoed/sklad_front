@@ -6,17 +6,12 @@ export const LIST_HISTORIES = gql`
       action
       json
       created_at
-      sklad {
-        name
-      }
-      product {
-        id
-      }
-      users_permissions_user {
-        fullname
-        email
-        telegramId
-      }
+      skladName
+      productId
+      fullname
+      userId
+      telegramId
+      email
     }
   }
 `

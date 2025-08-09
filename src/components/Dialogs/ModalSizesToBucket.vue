@@ -80,7 +80,7 @@
                   color="red"
                   floating
                 >
-                  Выбрано: {{ s.countSelected }}
+                  {{ s.countSelected }}
                 </q-badge>
               </q-btn>
             </div>

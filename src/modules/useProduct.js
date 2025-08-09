@@ -10,17 +10,13 @@ import {
   CREATE_PRODUCT
 } from 'src/graphql/types'
 import { apolloClient } from 'src/boot/apollo'
-import { HISTORY_DELETE, HISTORY_UPDATE, HISTORY_CREATE } from 'src/config'
-import { useRoute } from 'vue-router'
 import useHelpers from 'src/modules/useHelpers'
-import useHistory from 'src/modules/useHistory'
 import { useProductsStore } from 'src/stores/products'
 import { useBucketStore } from 'src/stores/bucket'
 import useProductHistory from 'src/modules/useProductHistory'
 
 const useProduct = () => {
   const { showError, showSuccess } = useHelpers()
-  const { params } = useRoute()
   const productsStore = useProductsStore()
   const bucketStore = useBucketStore()
   const {
@@ -28,9 +24,6 @@ const useProduct = () => {
     createUpdateHistory,
     createDeleteHistory
   } = useProductHistory()
-  const {
-    createHistory,
-  } = useHistory()
   const {
     result: productsWithMinSizes,
     load: loadProductsWithMinSizes,
@@ -132,8 +125,8 @@ const useProduct = () => {
   }
 
   async function removeProduct(id, product) {
-    const { data } = await deleteProduct({ id })
     try {
+      const { data } = await deleteProduct({ id })
       if (!deleteProductError.value) {
         const deletedProduct = data?.deleteProduct?.product
         const imageId = deletedProduct?.image?.id
@@ -149,8 +142,7 @@ const useProduct = () => {
           // This is a duplicate with a modified image - delete the modified image
           removeImage({ id: imageId })
         }
-        
-        createDeleteHistory(product, id, product.sklad.id)
+        createDeleteHistory(product, id, product.sklad)
       } else {
         console.error(deleteProductError.value);
         showError('Не удалось удалить продукт. Проблемы на сервере.')
@@ -163,8 +155,8 @@ const useProduct = () => {
 
   function generateProductMeta(product) {
     return `
-      ${`Склад=${product.sklad?.label}`},
-      ${`Категория=${product.category?.label}`},
+      ${`Склад=${product.sklad}`},
+      ${`Категория=${product.category}`},
       ${`Название=${product.name}`},
       ${`Цвет=${product.colorName}`},
       ${product.sizes.length ? `Размеры=${product.sizes.map(s => s.size).join(', ')},` : ''}
@@ -179,10 +171,12 @@ const useProduct = () => {
     const { data: response } = await createProduct({
       data
     })
-    if (!createProductError.value) {
-      createProductHistory(data, response.createProduct.product.id, data?.sklad)
+    const product = response?.createProduct?.product
+    console.log(product);
+    if (!createProductError.value && product) {
+      createProductHistory(data, product?.id, product?.sklad)
     }
-    return response?.createProduct?.product
+    return product
   }
 
   async function updateProductById(id, newData, oldData) {
@@ -191,7 +185,7 @@ const useProduct = () => {
       data: newData
     })
     if (!updateProductError.value && oldData) {
-      createUpdateHistory(oldData, newData, id, oldData?.sklad?.id)
+      createUpdateHistory(oldData, newData, id, oldData?.sklad)
     }
   }
 

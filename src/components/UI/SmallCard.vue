@@ -60,7 +60,7 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     font-size: 14px;
-    padding: 4px;
+    padding: 4px 8px;
     box-sizing: border-box;
     text-align: center;
     user-select: none;

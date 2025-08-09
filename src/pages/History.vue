@@ -180,7 +180,6 @@ export default defineComponent({
 
     function loadHistories(filters = {}) {
       fetchHistory({
-        sklad: params?.skladId,
         dates: selectedDates.value,
         ...(params?.productId && { product: params.productId }),
         ...selectedFilters.value,
