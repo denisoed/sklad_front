@@ -22,7 +22,7 @@ const useHelpers = () => {
       textColor: 'white',
       icon: 'mdi-check',
       message,
-      position: 'top',
+      position: 'bottom',
       timeout: 4000,
       progress: true,
       actions: [
@@ -46,7 +46,7 @@ const useHelpers = () => {
       textColor: 'white',
       icon: 'mdi-alert',
       message,
-      position: 'top',
+      position: 'bottom',
       timeout: 4000,
       progress: true,
       actions: [
