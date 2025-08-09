@@ -1,5 +1,5 @@
 <template>
-  <div class="voice-overlay flex flex-center flex-col">
+  <div v-if="isShowVoiceOverlay" class="voice-overlay flex flex-center flex-col">
     <q-btn
       color="negative"
       push
@@ -76,6 +76,7 @@ const hasStartedRecording = ref(false)
 const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
 const isUserPressingButton = ref(false)
 const isProcessing = ref(false)
+const isShowVoiceOverlay = ref(true)
 
 // Guard to prevent duplicate close event emission
 let hasEmittedClose = false
@@ -149,7 +150,8 @@ async function handleClose() {
   if (hasEmittedClose) {
     return
   }
-  
+
+  isShowVoiceOverlay.value = false
   hasEmittedClose = true
   
   try {
@@ -538,6 +540,7 @@ function handleVisibilityChange() {
 onMounted(async () => {
   // Reset close flag for component reuse scenarios
   hasEmittedClose = false
+  isShowVoiceOverlay.value = true
   
   // Устанавливаем обработчики событий
   window.addEventListener('beforeunload', handleBeforeUnload)
