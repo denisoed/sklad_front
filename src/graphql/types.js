@@ -245,6 +245,7 @@ export const LIST_ACTIVITIES = gql`
         }
         sklad {
           id
+          name
         }
         countSizes
       }

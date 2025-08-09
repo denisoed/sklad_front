@@ -10,7 +10,7 @@
       </PageTitle>
 
       <template v-if="bucketProducts && bucketProducts.length">
-        <div class="flex items-center justify-between q-mb-sm block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
+        <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
           <div class="flex items-center q-gap-sm">
             <p class="q-mb-none text-subtitle2 ">Заказы</p>
             <q-badge color="primary" :label="bucketProducts.length" />
@@ -146,6 +146,7 @@ import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import useSklads from 'src/modules/useSklads'
 import useBucket from 'src/modules/useBucket'
+import useProfile from 'src/modules/useProfile'
 import {
   ref,
   watch
@@ -179,6 +180,7 @@ const TODAY = Date.now()
 const $q = useQuasar()
 const { showSuccess, showError } = useHelpers()
 const { sklads } = useSklads()
+const { profile } = useProfile()
 const {
   loadBucketProducts,
   forceRefreshBucket,
@@ -351,8 +353,13 @@ function toSell() {
       for (const saleProduct of checkedSaleProducts.value) {
         const sizes = saleProduct.sizes?.map(s => s.size)
         createHistory({
-          skladId: saleProduct.sklad.id,
-          productId: saleProduct.product.id,
+          userId: +profile.value?.id || null,
+          skladId: +saleProduct?.sklad?.id || null,
+          productId: +saleProduct?.product?.id || null,
+          skladName: saleProduct?.sklad?.name || null,
+          telegramId: +profile.value?.telegramId || null,
+          fullname: profile.value?.fullname,
+          email: profile.value?.email,
           json: {
             sizes,
             countSizes: saleProduct.countSizes,

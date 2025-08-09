@@ -97,6 +97,7 @@ import FilterDates from 'src/components/FilterDates.vue'
 import StatisticTable from 'src/components/StatisticTable.vue'
 import { useLazyQuery, useMutation } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
+import useProfile from 'src/modules/useProfile'
 import {
   STATISTIC_FINANCE,
   LIST_COSTS_SUM,
@@ -123,6 +124,7 @@ export default defineComponent({
   setup() {
     const $q = useQuasar()
     const { params } = useRoute()
+    const { profile } = useProfile()
     const {
       result: statisticFinanceResult,
       loading: statisticFinanceLoading,
@@ -231,8 +233,13 @@ export default defineComponent({
             refetchActivities()
             refetchStatisticFinance()
             createHistory({
-              productId: activity.product.id,
-              skladId: activity.product.sklad.id,
+              userId: +profile.value?.id || null,
+              productId: +activity?.product?.id || null,
+              skladId: +activity?.product?.sklad?.id || null,
+              telegramId: +profile.value?.telegramId || null,
+              skladName: activity?.product?.sklad?.name || null,
+              fullname: profile.value?.fullname,
+              email: profile.value?.email,
               json: {
                 sizes: activity.size?.length ? [activity.size] : [],
                 countSizes: activity.countSizes
