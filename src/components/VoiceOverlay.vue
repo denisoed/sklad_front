@@ -122,6 +122,8 @@ async function handleCancel() {
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
+  // Ensure recognition won't auto-restart during teardown
+  setShouldContinueCallback(() => false)
   if (isRecording.value) {
     stopRecord()
   }
@@ -374,13 +376,19 @@ watch(() => props.modelValue, async (val) => {
     onFinish(finishHandler)
     resetAccumulatedText()
     
+    // Bind should-continue callback immediately to avoid gaps on iOS
+    setShouldContinueCallback(() => isUserPressingButton.value)
+    
     if (isIOS.value) {
       await new Promise(resolve => setTimeout(resolve, 100))
     }
     
-    setShouldContinueCallback(() => isUserPressingButton.value)
     await startAudio()
   } else {
+    // Immediately disable continuation to prevent unintended restart
+    isUserPressingButton.value = false
+    setShouldContinueCallback(() => false)
+
     if (isRecording.value) {
       stopRecord()
     }
