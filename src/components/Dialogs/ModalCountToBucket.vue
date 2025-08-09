@@ -56,7 +56,7 @@
               v-model="selectedCount"
               :max="max"
               :min="1"
-              label="Кол-во товара для продажи"
+              :label="$t('bucket.quantityForSale')"
               :tooltip-plus-text="`Минимальное количество: ${min}`"
               class="q-my-auto"
             />
@@ -99,6 +99,7 @@ import {
   reactive,
   computed
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits(['submit'])
 

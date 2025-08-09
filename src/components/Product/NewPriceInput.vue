@@ -3,8 +3,8 @@
     <div class="q-mb-md">
       <InputPrice
         :model-value="retailPrice"
-        label="Розничная цена за 1 шт"
-        hint="Можно указать позже"
+        :label="$t('product.retailPricePerPiece')"
+        :hint="$t('product.canSpecifyLater')"
         clear
         @update:model-value="onRetailPriceChange"
       />
@@ -16,7 +16,7 @@
       <div class="flex items-center justify-between no-wrap q-pr-sm">
         <q-checkbox
           v-model="showAdditionalPrices"
-          label="Доп. розничные цены"
+          :label="$t('product.additionalRetailPrice')"
           class="full-width"
           @update:model-value="onShowAdditionalPricesChange"
         />
@@ -62,7 +62,7 @@
         <!-- Кнопка добавления новой цены -->
         <q-btn
           icon="mdi-plus"
-          label="Добавить цену"
+          :label="$t('product.addPrice')"
           color="primary"
           push
           class="full-width"

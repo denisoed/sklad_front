@@ -1,5 +1,5 @@
 <template>
-  <Dropdown title="Способы оплаты" outline>
+  <Dropdown :title="$t('product.paymentMethods')" outline>
     <template #icon>
       <q-icon name="mdi-format-list-checks" size="sm" class="q-mr-sm" />
     </template>
@@ -72,6 +72,7 @@ import {
 import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
 import Dropdown from 'src/components/Dropdown'
+import { useI18n } from 'vue-i18n'
 
 const PAY_CASH = 'PAY_CASH';
 const PAY_CARD = 'PAY_CARD';
@@ -101,6 +102,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['on-change'])
+const { t: $t } = useI18n()
 
 const selected = ref(
   props.payCard && props.payCash ?

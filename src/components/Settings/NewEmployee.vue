@@ -20,8 +20,8 @@
               color="primary"
               class="full-width"
               debounce="500"
-              hint="Сотрудник, к которому будут присвоины полномочия"
-              placeholder="Введите телеграм ID"
+              :hint="$t('settings.employee.hint')"
+              :placeholder="$t('settings.employee.placeholder')"
               enterkeyhint="done"
               dense
               :model-value="formData.telegramId"
@@ -99,9 +99,11 @@ import {
   reactive,
   toRefs,
   watch,
-  ref
+  ref,
+  defineComponent
 } from 'vue'
 import { useLazyQuery } from '@vue/apollo-composable'
+import { useI18n } from 'vue-i18n'
 import {
   USERS
 } from 'src/graphql/types'
@@ -128,6 +130,7 @@ const {
 } = toRefs(props)
 const { sklad } = useSklads()
 const { profile } = useProfile()
+const { t: $t } = useI18n()
 
 const formData = reactive({
   id: null,

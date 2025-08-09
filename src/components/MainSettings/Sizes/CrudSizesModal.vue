@@ -41,7 +41,7 @@
                   outlined
                   dense
                   class="full-width"
-                  placeholder="Название размера"
+                  :placeholder="$t('sizes.sizeName')"
                   enterkeyhint="done"
                 />
                 <q-btn
@@ -112,6 +112,7 @@ import {
 import useHelpers from 'src/modules/useHelpers'
 import { useMutation } from '@vue/apollo-composable'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'CrubSizesModal',
@@ -158,6 +159,7 @@ export default defineComponent({
     })
 
     const { showSuccess, showError } = useHelpers()
+    const { t: $t } = useI18n()
 
     const {
       mutate: create,

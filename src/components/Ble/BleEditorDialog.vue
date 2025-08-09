@@ -15,9 +15,9 @@
               v-model="formData.dpi"
               outlined
               clearable
-              label="Кол-во точек на дюйм(DPI) *"
+              :label="$t('printer.dpi') + ' *'"
+              :hint="$t('printer.dpiHint')"
               class="full-width"
-              hint="Указано в документации принтера"
               enterkeyhint="done"
               :rules="[
                 (val) => !!val || 'Поле обязательно для заполнения',
@@ -27,19 +27,17 @@
               v-model="formData.width"
               outlined
               clearable
-              label="Ширина *"
-              hint="Ширина рабочей зоны в mm"
+              :label="$t('printer.width') + ' *'"
+              :hint="$t('printer.widthHint')"
               class="full-width"
               enterkeyhint="done"
               :rules="[
                 (val) => !!val || 'Поле обязательно для заполнения',
               ]"
             />
-            <q-expansion-item
-              dense
-              dense-toggle
-              expand-separator
-              label="Дополнительные настройки"
+            <Dropdown
+              :title="$t('printer.additionalSettings')"
+              opened
             >
               <q-input
                 v-model="data.height"
@@ -52,12 +50,12 @@
                 v-model="formData.offset"
                 outlined
                 clearable
-                label="Отступ от края бумаги в mm"
+                :label="$t('printer.marginFromEdge')"
+                :hint="$t('printer.marginHint')"
                 class="full-width"
-                hint="Для колибровки отступа от края бумаги"
                 enterkeyhint="done"
               />
-            </q-expansion-item>
+            </Dropdown>
           </div>
           <q-separator class="full-width q-my-md" />
           <div class="flex justify-between no-wrap q-gap-md full-width">

@@ -6,7 +6,7 @@
         v-if="useMinSizes && countProductsWithMinSizes"
         v-permissions="[READ_PRODUCTS_WITH_MIN_SIZES]"
         :title="$t('pages.remainingStock')"
-        caption="Товары, которых мало"
+        :caption="$t('warehouse.lowStockProducts')"
         icon="mdi-cart-arrow-up"
         :to="productsWithMinSizesLink"
         accent-color="rgb(255 0 0 / 30%)"
@@ -21,14 +21,14 @@
       <BlockLink
         v-permissions="[READ_CATEGORIES]"
         :title="$t('category.title')"
-        caption="Категории товаров"
+        :caption="$t('category.productCategories')"
         icon="mdi-folder-outline"
         :to="categoriesLink"
         accent-color="rgb(255 0 255 / 20%)"
       />
       <BlockLink
         :title="$t('product.title')"
-        caption="Товары на складе"
+        :caption="$t('warehouse.warehouseProducts')"
         icon="mdi-cube-outline"
         :to="productsLink"
         accent-color="rgb(0 0 255 / 20%)"
@@ -37,7 +37,7 @@
         <BlockLink
           v-permissions="[READ_HISTORY]"
           :title="$t('history.title')"
-          caption="Активность на складе"
+          :caption="$t('warehouse.warehouseActivity')"
           icon="mdi-history"
           :to="historyLink"
           accent-color="rgb(38 236 227 / 20%)"
@@ -45,7 +45,7 @@
         <BlockLink
           v-permissions="[READ_SETTINGS]"
           :title="$t('common.settings')"
-          caption="Настройки склада"
+          :caption="$t('warehouse.warehouseSettings')"
           icon="mdi-cog-outline"
           :to="settingsLink"
           accent-color="rgb(255 95 95 / 20%)"
@@ -54,7 +54,7 @@
       <BlockLink
         v-permissions="[READ_COST]"
         :title="$t('costs.title')"
-        caption="Траты по складу"
+        :caption="$t('warehouse.warehouseCosts')"
         icon="mdi-cash"
         :to="costsLink"
         accent-color="rgb(255 255 0 / 20%)"
@@ -89,7 +89,7 @@ defineOptions({
 
 const { t: $t } = useI18n()
 
-const { sklad } = useSklads()
+const { sklad, formattedLinkTo } = useSklads()
 const { params } = useRoute()
 
 const qrModalOpened = ref(false)

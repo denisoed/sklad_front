@@ -21,7 +21,7 @@
         outlined
         :model-value="count"
         @update:model-value="onInput"
-        placeholder="Кол-во"
+        :placeholder="$t('common.quantity')"
         dense
         height="50px"
         :min="min"
@@ -54,6 +54,11 @@ import {
   ref,
   toRefs,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+defineOptions({
+  name: 'InputPlusMinus'
+})
 
 export default defineComponent({
   name: 'InputPlusMinus',
@@ -79,6 +84,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { modelValue, min } = toRefs(props)
     const count = ref(modelValue.value)
+    const { t: $t } = useI18n()
 
     function plus() {
       count.value += 1

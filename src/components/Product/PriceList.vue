@@ -1,5 +1,5 @@
 <template>
-  <Dropdown title="Цены на товар" outline opened>
+  <Dropdown :title="$t('product.pricesForProduct')" outline opened>
     <template #icon>
       <q-icon name="mdi-cash" size="sm" class="q-mr-sm" />
     </template>
@@ -7,7 +7,7 @@
       <div class="pay-methods flex column q-gap-md">
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === DEFAULT_PRICE }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title q-mr-auto">Розничная цена</div>
+            <div class="pay-methods_title q-mr-auto">{{ $t('product.retailPrice') }}</div>
             <div class="flex items-center q-gap-sm">
               <div class="pay-methods_value">
                 <PriceFormatter :value="defaultPrice" />
@@ -66,6 +66,7 @@ import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
 import Dropdown from 'src/components/Dropdown'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
+import { useI18n } from 'vue-i18n'
 
 const DEFAULT_PRICE = 'DEFAULT_PRICE';
 const OTHER_PRICE = 'OTHER_PRICE';
@@ -86,6 +87,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['on-change'])
+const { t: $t } = useI18n()
 
 // Always default to DEFAULT_PRICE (Розничная цена)
 const selected = ref(DEFAULT_PRICE);

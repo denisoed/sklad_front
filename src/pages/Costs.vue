@@ -1,21 +1,10 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Финансовые расходы">
+      <PageTitle :title="$t('costs.financialExpenses')">
         <div>
           <q-card-section class="q-pt-none text-primary">
-            <b>Финансовые расходы</b> - помогут отследить какое кол-во финансов было потрачено за выбранный промежуток времени.
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            <ul>
-              <li>Расходы записываются автоматически при добавлении товара.</li>
-              <li>Расходы можно записать вручную, через кнопку
-                "<q-icon color="primary" size="sm" name="mdi-cash-plus" />"
-              </li>
-              <li>Удалить расход можно в последней ячейке таблицы, через кнопку
-                "<q-icon color="deep-orange" size="sm" name="mdi-trash-can-outline" />"
-              </li>
-            </ul>
+            Раздел поможет отслеживать расходы
           </q-card-section>
           <q-card-section class="q-pt-none text-grey-8">
             Старайтесь записывать все расходы, чтобы итоговый финансовый отчёт был максимально достоверным.
@@ -76,7 +65,7 @@
               <q-input
                 v-model="description"
                 outlined
-                placeholder="Например: На рекламу"
+                :placeholder="$t('costs.exampleDescription')"
                 class="q-mb-md full-width"
                 enterkeyhint="done"
               />
@@ -85,7 +74,7 @@
                 ref="inputRef"
                 v-model="sum"
                 outlined
-                placeholder="Например: 250"
+                :placeholder="$t('costs.exampleAmount')"
                 class="q-mb-md full-width"
                 enterkeyhint="done"
               />

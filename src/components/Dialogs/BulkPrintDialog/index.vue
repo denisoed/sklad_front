@@ -42,7 +42,7 @@
         />
         <q-inner-loading
           :showing="loading"
-          label="Ожидайте..."
+          label={$t('common.waiting')}
           color="primary"
         />
       </div>

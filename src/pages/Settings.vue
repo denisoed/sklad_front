@@ -1,36 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Настройки склада">
-        <template #custom>
-          <q-btn
-            icon="mdi-cog-outline"
-            push
-            round
-            text-color="primary"
-            class="q-ml-auto"
-          >
-            <q-menu style="width: 200px;">
-              <q-list>
-                <q-item
-                  clickable
-                  v-close-popup
-                  py="10px"
-                >
-                  <q-item-section
-                    @click="onRemoveSklad"
-                  >
-                    <div class="flex items-center no-wrap">
-                      <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
-                      <span class="text-deep-orange whitespace-nowrap">Удалить склад</span>
-                    </div>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-        </template>
-      </PageTitle> 
+      <PageTitle :title="$t('settings.warehouseSettings')" />
       <q-tabs
         v-model="tab"
         dense
@@ -116,7 +87,7 @@
                 <h6
                   class="q-ma-none q-mb-sm text-subtitle2 text-grey-2"
                 >
-                  Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада
+                  {{ $t('settings.minStockDescription') }}
                 </h6>
                 <q-input
                   v-model="formData.minSizes"

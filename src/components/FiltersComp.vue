@@ -14,7 +14,7 @@
         v-model="selectedFilters.search"
         outlined
         debounce="800"
-        label="Поиск по названию"
+        :label="$t('filter.searchByName')"
         class="full-width block-bg border-radius-sm"
         dense
         :autofocus="autofocus"
@@ -30,7 +30,7 @@
             icon="mic"
             size="sm"
             @click="showVoiceOverlay = true"
-            aria-label="Голосовой поиск"
+            :aria-label="$t('voice.search')"
           />
         </template>
       </q-input>
@@ -81,6 +81,7 @@ import {
 import BtnBack from 'src/components/BtnBack.vue'
 import FilterDialog from 'src/components/Dialogs/FilterDialog.vue'
 import VoiceOverlay from './VoiceOverlay.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   autofocus: {
@@ -90,6 +91,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['on-search', 'clear'])
+const { t: $t } = useI18n()
 
 const leftDrawerOpen = ref(false)
 const showVoiceOverlay = ref(false)

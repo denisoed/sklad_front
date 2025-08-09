@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Отчеты по всем складам" />
+      <PageTitle :title="$t('statistics.reportsAllWarehouses')" />
       <div v-permissions="[READ_STATISTIC_FINANCE]" class="q-mb-lg">
         <h6 class="text-h6 q-mb-md q-mt-none">Финансы</h6>
         <div class="statistic-cards q-gap-md">

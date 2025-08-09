@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Основные Настройки" /> 
+      <PageTitle :title="$t('mainSettings.title')" /> 
       <q-tabs
         v-model="tab"
         dense
@@ -46,6 +46,7 @@ import SizesTab from 'src/components/MainSettings/Sizes/SizesTab.vue'
 import UserTab from 'src/components/MainSettings/UserTab.vue'
 import AppearanceTab from 'src/components/MainSettings/AppearanceTab.vue'
 import BleIndex from 'src/components/Ble/index.vue'
+import { useI18n } from 'vue-i18n'
 
 const TAB_USER = 'user'
 const TAB_SIZES = 'sizes'
@@ -91,6 +92,7 @@ export default defineComponent({
   setup() {
     const { query } = useRoute()
     const { replace } = useRouter()
+    const { t: $t } = useI18n()
 
     const tab = ref(query?.tab || TAB_USER)
 

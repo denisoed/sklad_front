@@ -6,7 +6,7 @@
       </div>
 
       <div class="text-h4" style="opacity:.4">
-        Страница не найдена...
+        {{ $t('error.pageNotFound') }}
       </div>
 
       <q-btn
@@ -14,7 +14,7 @@
         @click="onBack"
         unelevated
         to="/"
-        label="Вернуться на главную"
+        :label="$t('common.backToHome')"
         no-caps
       />
     </div>
@@ -23,8 +23,14 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
-  name: 'ErrorNotFound'
+  name: 'ErrorNotFound',
+  setup() {
+    const { t: $t } = useI18n()
+
+    return { $t }
+  }
 })
 </script>

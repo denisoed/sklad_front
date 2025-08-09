@@ -47,7 +47,7 @@
             @click="openManageSkladDialog"
           >
             <q-icon name="mdi-plus" size="sm" :class="{ 'text-primary': !sklads?.length }" />
-            <span :class="{ 'text-primary': !sklads?.length }">Создать склад</span>
+            <span :class="{ 'text-primary': !sklads?.length }">{{ $t('warehouse.create') }}</span>
           </div>
         </template>
       </div>
@@ -78,6 +78,7 @@ import BucketCardHome from 'src/components/BucketCardHome.vue'
 import Draggable from 'vuedraggable'
 import useDialog from 'src/modules/useDialog'
 import { MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
+import { useI18n } from 'vue-i18n'
 
 const { push } = useRouter()
 
@@ -85,6 +86,7 @@ const { sklads } = useSklads()
 const { bucketProductsCount, loadBucketProducts } = useBucket()
 const loadingSklads = ref(true)
 const { openDialog } = useDialog()
+const { $t } = useI18n()
 
 const skladsIDs = computed(
   () => sklads.value.map(s => s.id) || []

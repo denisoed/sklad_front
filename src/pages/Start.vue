@@ -12,11 +12,11 @@
 
       <div class="start-page_content flex column q-pa-lg q-gap-md q-mb-md">
         <div class="start-page_title flex column">
-          Добро пожаловать
-          <span>на Sklad</span>
+          {{ $t('start.welcome') }}
+          <span>{{ $t('start.toSklad') }}</span>
         </div>
         <div class="start-page_descr">
-          Мы рады, что вы присоединились к нам. Теперь управление вашими товарами и продажами станет проще и удобнее.
+          {{ $t('start.description') }}
         </div>
         <div class="start-page_buttons q-mt-md flex justify-center no-wrap q-gap-md">
           <TgAuthVue
@@ -29,7 +29,7 @@
         <q-inner-loading :showing="loading">
           <div class="flex column items-center q-gap-sm">
             <q-spinner size="md" color="primary" />
-            <span>Подождите...</span>
+            <span>{{ $t('start.loading') }}</span>
           </div>
         </q-inner-loading>
       </div>
@@ -75,7 +75,7 @@ export default defineComponent({
         showSuccess($t('auth.success'))
         push(HOME_ROUTE)
       } catch {
-        showError('Упс. Попробуйте позже.')
+        showError($t('start.error'))
       } finally {
         loading.value = false
       }

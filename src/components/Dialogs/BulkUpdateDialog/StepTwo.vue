@@ -9,7 +9,7 @@
         :options="skladsOptions"
         @on-create-new="onCreateNewSklad"
         outlined
-        label="$t('common.warehouse')"
+        :label="$t('common.warehouse')"
         tabindex="1"
         clearable
         emit-value
@@ -24,7 +24,7 @@
         :options="categoriesOptions"
         @on-create-new="onCreateNewCategory"
         outlined
-        label="$t('category.title')"
+        :label="$t('category.title')"
         tabindex="2"
         clearable
         emit-value
@@ -35,7 +35,7 @@
       <q-input
         v-model="product.name"
         outlined
-        label="$t('product.productName')"
+        :label="$t('product.productName')"
         tabindex="4"
         class="full-width"
         data-scroller="name"
@@ -45,7 +45,7 @@
       <div v-permissions="[READ_ORIGINAL_PRICE]" class="col-12">
         <InputPrice
           v-model="product.origPrice"
-          label="Оптовая цена за 1 шт"
+          :label="$t('product.originalPrice')"
           clear
           tabindex="3"
         />
@@ -53,7 +53,7 @@
       <div class="col-12">
         <InputPrice
           v-model="product.newPrice"
-          label="Розничная цена за 1 шт"
+          :label="$t('product.retailPrice')"
           clear
           tabindex="4"
         />

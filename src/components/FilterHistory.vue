@@ -18,7 +18,7 @@
               clearable
               use-chips
               :options="actions"
-              label="Поиск по событию"
+              :label="$t('filter.searchByEvent')"
               behavior="menu"
             >
               <template v-slot:prepend>
@@ -48,7 +48,7 @@
               clearable
               use-chips
               :options="skladUsers"
-              label="Поиск по людям"
+              :label="$t('filter.searchByPeople')"
               behavior="menu"
             >
               <template v-slot:prepend>
@@ -74,7 +74,7 @@
               v-model="formData.description"
               outlined
               clearable
-              label="Поиск по описанию"
+              :label="$t('filter.searchByDescription')"
               class="full-width"
               enterkeyhint="done"
             />
@@ -116,6 +116,7 @@ import {
   reactive,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   HISTORY_ACTIONS,
   HISTORY_CREATE,
@@ -124,6 +125,10 @@ import {
   HISTORY_SOLD,
   HISTORY_ACTIONS_COLORS
 } from 'src/config'
+
+defineOptions({
+  name: 'FilterHistory'
+})
 
 export default defineComponent({
   name: 'FilterHistory',
@@ -143,6 +148,7 @@ export default defineComponent({
   },
   emits: ['close', 'save', 'on-search'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const { users } = toRefs(props)
     const formData = reactive({
       description: null,

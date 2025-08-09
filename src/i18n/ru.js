@@ -46,6 +46,7 @@ export default ({
     listEmpty: 'Список пуст',
     update: 'Обновить',
     title: 'Заголовок',
+    backToHome: 'Вернуться на главную',
     
     // Errors and success messages
     success: 'Успешно',
@@ -56,6 +57,25 @@ export default ({
     reloadApp: 'Перегрузите приложение',
     reloadPage: 'Перезагрузите страницу, попробуйте еще раз',
     noAccess: 'Нет доступа',
+  },
+
+  // Voice
+  voice: {
+    search: 'Голосовой поиск',
+  },
+
+  // Costs additions
+  costs: {
+    title: 'Расходы',
+    financialExpenses: 'Финансовые расходы',
+    author: 'Автор',
+    description: 'Описание',
+    amount: 'Сумма',
+    date: 'Дата',
+    removeCost: 'Удалить расход',
+    removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
+    exampleDescription: 'Например: На рекламу',
+    exampleAmount: 'Например: 250',
   },
   
   footer: {
@@ -167,34 +187,29 @@ export default ({
     duplicate: 'Дублировать товар',
   },
 
+  // Warehouse
   warehouse: {
     title: 'Склад',
     create: 'Создать склад',
-    update: 'Обновить',
-    delete: 'Удалить склад',
-    deleteConfirm: 'Вы уверены, что хотите удалить этот склад?',
-    deleteWarning: 'При удалении склада, вся информация о нём будет удалена навсегда. Вы уверены?',
-    deletedSuccessfully: 'Склад успешно удалён!',
-    requestSuccess: 'Запрос успешно выполнен!',
-    selectColor: 'Выберите цвет для визуального отличия',
-    selectWarehouse: 'Выберите склад для категории',
-    warehouseHint: 'Выберите склад для категории',
-    participant: 'Участники склада',
-    participantsUpdated: 'Список участников обновлен!',
-    permissionsUpdated: 'Полномочия обновлены!',
-    peopleNotAdded: 'Люди не добавлены',
+    lowStockProducts: 'Товары, которых мало',
+    warehouseProducts: 'Товары на складе',
+    warehouseActivity: 'Активность на складе',
+    warehouseSettings: 'Настройки склада',
+    warehouseCosts: 'Траты по складу',
   },
 
+  // Category additions
   category: {
     title: 'Категории',
-    create: 'Создать',
-    selectWarehouse: 'Выберите склад для категории',
-    deleteCategory: 'Удалить категорию',
-    confirmDeleteCategory: 'Вы уверены, что хотите удалить эту категорию?',
-    delete: 'Удалить',
-    categorySuccessfullyDeleted: 'Категория успешно удалёна!',
-    allCategories: 'Все категории',
-    deleteWarning: 'При удалении категории, вся информация о ней будет удалена навсегда. Вы уверены?',
+    productCategories: 'Категории товаров',
+    create: 'Создать категорию',
+    update: 'Обновить категорию',
+    selectColor: 'Выберите цвет для визуального отличия',
+    notFound: 'Категории не найдены!',
+    helpText: 'Категории помогут разделять <br> товары по группам',
+    addCategory: 'Добавить категорию',
+    pageDescription: 'На этой странице находятся товары разбитые по категориям. Категории обеспечивают более удобный визуальный поиск.',
+    deleteHint: 'Чтобы удалить или отредактировать категорию, удерживайте её несколько секунд.',
   },
 
   // Settings
@@ -307,9 +322,18 @@ export default ({
     changeSettings: 'Поменять настройки',
     listIsEmpty: 'Список пуст',
     selected: 'Выбрано',
+    loading: 'Загрузка...',
+    emptyBasket: 'Корзина пуста',
+    noProductsFound: 'Не удалось найти товары',
+    lowStockWarning: 'На этой странице отображаются товары, количество которых менее',
+    warehousesLabel: 'Склады',
+    categoriesLabel: 'Категории',
+    productsLabel: 'Товары',
   },
 
+  // Main settings
   mainSettings: {
+    title: 'Основные Настройки',
     userTab: {
       autoRefill: 'Автопополнение',
       lang: 'Язык',
@@ -323,9 +347,9 @@ export default ({
       },
     },
     sizesTab: {
-      sizesSettings: {
-        deleteConfirm: 'Вы уверены, что хотите удалить эти размеры?',
-      },
+      sizes: 'размеры',
+      deleteSize: 'Удалить размер',
+      deleteConfirm: 'Вы уверены, что хотите удалить эти размеры?',
     },
   },
 
@@ -360,53 +384,58 @@ export default ({
     templateDeleted: 'Шаблон успешно удалён!',
   },
 
-  // Costs title
-  costs: {
-    title: 'Расходы',
-    author: 'Автор',
-    description: 'Описание',
-    amount: 'Сумма',
-    date: 'Дата',
-    removeCost: 'Удалить расход',
-    removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
-  },
-
-  // Filter
+  // Filter and search
   filter: {
-    title: 'Фильтр',
-    searchByName: 'Поиск по названию',
     searchByEvent: 'Поиск по событию',
-    searchByPeople: 'Поиск по людям',
+    searchByPeople: 'Поиск по людям', 
     searchByDescription: 'Поиск по описанию',
+    searchByName: 'Поиск по названию',
+    withDiscount: 'Со скидкой',
     from: 'От',
     to: 'До',
     currency: 'сом',
-    withDiscount: 'Со скидкой',
-    clear: 'Очистить',
-    loadingSizes: 'Загрузка размеров...',
-    errorLoadingSizes: 'Ошибка загрузки размеров:',
-    doubleClickHint: 'Двойное нажатие по дате вернёт результат за один день.',
-    sizesLoadingError: 'Ошибка загрузки размеров:',
   },
 
-  // Main settings additions
-  mainSettings: {
-    userTab: {
-      autoRefill: 'Автопополнение',
-      lang: 'Язык',
-      logout: 'Выйти',
-      languages: {
-        russian: 'Русский',
-        kyrgyz: 'Кыргызча',
-      },
-      user: {
-        noNameSpecified: 'Имя не указано',
-      },
+  // Scanner
+  scanner: {
+    qrPrompt: 'Поместите qr-code в область сканирования',
+  },
+
+  // Printer settings
+  printer: {
+    dpi: 'Кол-во точек на дюйм(DPI)',
+    dpiHint: 'Указано в документации принтера',
+    width: 'Ширина',
+    widthHint: 'Ширина рабочей зоны в mm',
+    height: 'Высота',
+    additionalSettings: 'Дополнительные настройки',
+    marginFromEdge: 'Отступ от края бумаги в mm',
+    marginHint: 'Для колибровки отступа от края бумаги',
+  },
+
+  // Settings additions
+  settings: {
+    tabs: {
+      main: 'Основное',
+      sizes: 'Размеры',
+      accesses: 'Доступы',
+      goals: 'Цели',
     },
-    sizesTab: {
-      sizes: 'размеры',
-      deleteSize: 'Удалить размер',
-      deleteConfirm: 'Вы уверены, что хотите удалить эти размеры?',
+    warehouseName: 'Название склада',
+    warehouseSettings: 'Настройки склада',
+    minStock: 'Остатки',
+    minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
+    employee: {
+      noPeopleAdded: 'Люди не добавлены',
+      removeEmployee: 'Удалить сотрудника',
+      removeDescription: 'После удаления человека из склада, он больше не будет иметь доступ к складу.',
+      hint: 'Сотрудник, к которому будут присвоины полномочия',
+      placeholder: 'Введите телеграм ID',
+    },
+    goal: {
+      yearGoal: 'Цель на год',
+      amount: 'Сумма',
+      displayOnMainPage: 'Отображается на главной странице склада',
     },
   },
 
@@ -450,6 +479,47 @@ export default ({
     duplicate: 'Дублировать товар',
     reset: 'Сбросить',
     information: 'Информация',
+    paymentMethods: 'Способы оплаты',
+    wholesalePrice: 'Оптовая цена за 1 шт',
+    retailPricePerPiece: 'Розничная цена за 1 шт',
+    additionalRetailPrice: 'Доп. розничные цены',
+    canSpecifyLater: 'Можно указать позже',
+    addPrice: 'Добавить цену',
+    pricesForProduct: 'Цены на товар',
+  },
+
+  // Sizes
+  sizes: {
+    readySizes: 'Готовые размеры',
+    childrenShoes: 'Размеры детской обуви',
+    womenShoes: 'Размеры женской обуви',
+    menShoes: 'Размеры мужской обуви',
+    sizeName: 'Название размера',
+    configureSizes: 'Настроить размеры',
+  },
+
+  // Statistics additions
+  statistics: {
+    title: 'Отчеты',
+    finance: 'Финансы',
+    reports: 'Отчеты',
+    reportsAllWarehouses: 'Отчеты по всем складам',
+    earned: 'Заработано',
+    sold: 'Продано',
+    cash: 'Касса',
+    day: 'День',
+    week: 'Неделя',
+    month: 'Месяц',
+    sizesReturned: 'Размеры возвращены!',
+    errorReturn: 'Не удалось вернуть. Попробуйте позже.',
+    recordsPerPage: 'Записей на странице',
+    photo: 'Фото',
+    name: 'Название',
+    actions: 'Действия',
+    goToProduct: 'Перейти в товар',
+    returnToWarehouse: 'Возврат товара на склад',
+    returnConfirm: 'При возврате товара, отчеты будет пересчитаны',
+    return: 'Вернуть',
   },
 
   // Bucket additions
@@ -475,29 +545,13 @@ export default ({
     returnDescription: 'Товар будет возвращен на склад. Вы сможете добавить его в корзину позже.',
     return: 'Вернуть',
     sell: 'Продать',
+    quantityForSale: 'Кол-во товара для продажи',
+    salesProducts: 'Товары на продажу',
+    salesPageDescription: 'На этой странице отображаются товары выбранные для продажи.',
   },
 
-  // Statistics additions
-  statistics: {
-    title: 'Отчеты',
-    finance: 'Финансы',
-    reports: 'Отчеты',
-    reportsAllWarehouses: 'Отчеты по всем складам',
-    earned: 'Заработано',
-    sold: 'Продано',
-    cash: 'Касса',
-    day: 'День',
-    week: 'Неделя',
-    month: 'Месяц',
-    sizesReturned: 'Размеры возвращены!',
-    errorReturn: 'Не удалось вернуть. Попробуйте позже.',
-    recordsPerPage: 'Записей на странице',
-    photo: 'Фото',
-    name: 'Название',
-    actions: 'Действия',
-    goToProduct: 'Перейти в товар',
-    returnToWarehouse: 'Возврат товара на склад',
-    returnConfirm: 'При возврате товара, отчеты будет пересчитаны',
-    return: 'Вернуть',
+  // Error messages
+  error: {
+    pageNotFound: 'Страница не найдена...',
   },
 })

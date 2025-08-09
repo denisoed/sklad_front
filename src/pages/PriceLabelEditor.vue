@@ -116,13 +116,13 @@
       </div>
       <div class="flex full-width q-pt-lg q-mt-auto">
         <q-btn
-          label="Удалить"
+          :label="$t('common.delete')"
           color="deep-orange"
           outline
           class="q-mr-auto"
         />
         <q-btn
-          label="Сохранить"
+          :label="$t('common.save')"
           push
           color="primary"
           class="q-ml-auto"
@@ -138,6 +138,7 @@ import { ref, reactive, onMounted, defineComponent, computed } from 'vue';
 import PageTitle from 'src/components/PageTitle.vue';
 import PriceLabelControls from 'src/components/PriceLabels/PriceLabelControls.vue';
 import BasicDialog from 'src/components/Dialogs/BasicDialog.vue';
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'PriceLabelEditor',
@@ -159,6 +160,8 @@ export default defineComponent({
       dragOffsetX: 0,
       dragOffsetY: 0
     });
+
+    const { t: $t } = useI18n()
 
     const addText = () => {
       const textElement = {

@@ -1,10 +1,10 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Товаровы на продажу">
+      <PageTitle :title="$t('bucket.salesProducts')">
         <div>
           <q-card-section class="q-pt-none">
-            На этой странице отображаются товары выбранные для продажи.
+            {{ $t('bucket.salesPageDescription') }}
           </q-card-section>
         </div>
       </PageTitle>
@@ -58,26 +58,7 @@
         v-else
         class="full-width text-center text-grey-5"
       >
-        <span
-          v-if="bucketProductsLoading"
-        >
-          <q-icon
-            size="sm"
-            name="mdi-loading"
-            class="mdi-spin q-mr-sm "
-          />
-          Загрузка...
-        </span>
-        <span
-          v-else
-        >
-          <q-icon
-            size="sm"
-            name="mdi-cart-outline"
-            class="q-mr-sm text-grey-5"
-          />
-          Корзина пуста
-        </span>
+        {{ $t('pages.loading') }}
       </h6>
       <div class="flex flex-center q-mt-lg">
         <q-btn
