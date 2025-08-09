@@ -79,6 +79,9 @@ const hasStartedRecording = ref(false)
 const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
 const isUserPressingButton = ref(false)
 
+// Sequence guard to avoid async race between close and open
+let lifecycleSeq = 0
+
 // Аудио контекст и связанные переменные
 let audioContext = null
 let analyser = null
@@ -100,24 +103,30 @@ const {
   cleanup,
   setShouldContinueCallback,
   resetAccumulatedText,
-  destroy
+  destroy,
+  restore
 } = speechRecognition
 
 // Устанавливаем callback для проверки, нужно ли продолжать запись
 setShouldContinueCallback(() => isUserPressingButton.value)
 
-onFinish((finalText) => {
+// Create a reusable finish handler to rebind after restore()
+const finishHandler = (finalText) => {
   if (isRetrying.value) {
     return
   }
-  // Показываем результат, но отправку делаем только при отпускании кнопки
   recognizedText.value = finalText
-})
+}
+
+// Register finish handler initially
+onFinish(finishHandler)
 
 async function handleCancel() {
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
+  // Ensure recognition won't auto-restart during teardown
+  setShouldContinueCallback(() => false)
   if (isRecording.value) {
     stopRecord()
   }
@@ -358,28 +367,49 @@ watch(transcript, (newText) => {
 })
 
 watch(() => props.modelValue, async (val) => {
+  const seq = ++lifecycleSeq
   if (val) {
     recognizedText.value = ''
     hasStartedRecording.value = false
     isRetrying.value = false
     isUserPressingButton.value = false
+    
+    // Restore after full teardown (relevant for iOS fresh instance)
+    restore()
+    // Rebind finish handler after restore
+    onFinish(finishHandler)
     resetAccumulatedText()
+    
+    // Bind should-continue callback immediately to avoid gaps on iOS
+    setShouldContinueCallback(() => isUserPressingButton.value)
     
     if (isIOS.value) {
       await new Promise(resolve => setTimeout(resolve, 100))
     }
     
-    // Start mic visualization immediately on open
-    setShouldContinueCallback(() => isUserPressingButton.value)
+    // If state changed while awaiting, abort this open flow
+    if (seq !== lifecycleSeq || !props.modelValue) {
+      return
+    }
+    
     await startAudio()
   } else {
+    // Immediately disable continuation to prevent unintended restart
+    isUserPressingButton.value = false
+    setShouldContinueCallback(() => false)
+
     if (isRecording.value) {
       stopRecord()
     }
     await stopAudio()
     
-    setShouldContinueCallback(() => false)
-    cleanup()
+    // If state changed while awaiting, abort this close flow
+    if (seq !== lifecycleSeq || props.modelValue) {
+      return
+    }
+    
+    // Ensure full cleanup on all platforms
+    destroy()
   }
 })
 
