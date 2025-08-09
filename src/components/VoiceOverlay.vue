@@ -79,6 +79,9 @@ const hasStartedRecording = ref(false)
 const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
 const isUserPressingButton = ref(false)
 
+// Sequence guard to avoid async race between close and open
+let lifecycleSeq = 0
+
 // Аудио контекст и связанные переменные
 let audioContext = null
 let analyser = null
@@ -364,6 +367,7 @@ watch(transcript, (newText) => {
 })
 
 watch(() => props.modelValue, async (val) => {
+  const seq = ++lifecycleSeq
   if (val) {
     recognizedText.value = ''
     hasStartedRecording.value = false
@@ -383,6 +387,11 @@ watch(() => props.modelValue, async (val) => {
       await new Promise(resolve => setTimeout(resolve, 100))
     }
     
+    // If state changed while awaiting, abort this open flow
+    if (seq !== lifecycleSeq || !props.modelValue) {
+      return
+    }
+    
     await startAudio()
   } else {
     // Immediately disable continuation to prevent unintended restart
@@ -393,6 +402,11 @@ watch(() => props.modelValue, async (val) => {
       stopRecord()
     }
     await stopAudio()
+    
+    // If state changed while awaiting, abort this close flow
+    if (seq !== lifecycleSeq || props.modelValue) {
+      return
+    }
     
     // Ensure full cleanup on all platforms
     destroy()
