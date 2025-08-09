@@ -1,71 +1,82 @@
 <template>
-  <transition name="fade">
-    <teleport to="body">
-      <div v-if="modelValue" class="voice-overlay flex flex-center flex-col">
-        <q-btn
-          color="negative"
-          push
-          round
-          icon="mdi-close"
-          @click="handleCancel"
-          class="absolute-top-right q-mt-md q-mr-md"
-        />
+  <div class="voice-overlay flex flex-center flex-col">
+    <q-btn
+      color="negative"
+      push
+      round
+      icon="mdi-close"
+      @click="handleClose"
+      class="absolute-top-right q-mt-md q-mr-md"
+    />
 
-        <div class="voice-placeholder q-mb-md">
-          <span v-if="!isApiAvailable" class="text-red q-mb-md">
-            Распознавание речи недоступно в вашем браузере
-          </span>
-          <span v-else-if="!hasStartedRecording" class="text-bold">
-            Зажмите кнопку ниже, чтобы начать запись
-          </span>
-          <span v-else-if="!recognizedText && !isRecording && !isUserPressingButton" class="text-bold text-red">
-            Не удалось распознать речь. Попробуйте сказать еще раз...
-          </span>
-          <span v-else-if="!recognizedText" class="text-bold">Говорите...</span>
-          <span v-else>{{ recognizedText }}</span>
-        </div>
-        
-        <!-- Кнопка записи -->
-        <div class="record-button-container">
-          <q-btn
-            v-if="isApiAvailable"
-            :color="isUserPressingButton ? 'negative' : 'primary'"
-            :icon="isUserPressingButton ? 'stop' : 'mic'"
-            :loading="isProcessing"
-            :disable="isProcessing"
-            size="lg"
-            round
-            class="record-button"
-            @pointerdown="handlePointerDown"
-            @pointerup="handlePointerUp"
-            @pointercancel="handlePointerCancel"
-            @pointerleave="handlePointerLeave"
-            @contextmenu.prevent
-          />
-        </div>
+    <div class="voice-placeholder q-mb-md">
+      <span v-if="!isApiAvailable" class="text-red q-mb-md">
+        Распознавание речи недоступно в вашем браузере
+      </span>
+      <span v-else-if="!hasStartedRecording" class="text-bold">
+        Зажмите кнопку ниже, чтобы начать запись
+      </span>
+      <span v-else-if="shouldShowErrorMessage" class="text-bold text-red">
+        Не удалось распознать речь. Попробуйте сказать еще раз...
+      </span>
+      <span v-else-if="!recognizedText" class="text-bold">Говорите...</span>
+      <span v-else>{{ recognizedText }}</span>
+    </div>
+    
+    <!-- Кнопка записи -->
+    <div class="record-button-container">
+      <q-btn
+        v-if="isApiAvailable"
+        :color="isUserPressingButton ? 'negative' : 'primary'"
+        :icon="isUserPressingButton ? 'stop' : 'mic'"
+        :loading="isProcessing"
+        :disable="isProcessing"
+        size="lg"
+        round
+        class="record-button"
+        @pointerdown="handlePointerDown"
+        @pointerup="handlePointerUp"
+        @pointercancel="handlePointerCancel"
+        @pointerleave="handlePointerLeave"
+        @contextmenu.prevent
+      />
+    </div>
 
-        <q-btn
-          v-if="hasStartedRecording && !recognizedText && !isRecording && !isUserPressingButton"
-          color="primary"
-          push
-          label="Заново"
-          @click="handleRetry"
-        />
-        
-        <canvas ref="canvasRef" class="voice-canvas" width="480" height="240"></canvas>
-      </div>
-    </teleport>
-  </transition>
+    <q-btn
+      v-if="shouldShowRetryButton"
+      color="primary"
+      push
+      label="Заново"
+      @click="handleRetry"
+    />
+    
+    <canvas ref="canvasRef" class="voice-canvas" width="480" height="240"></canvas>
+  </div>
 </template>
 
 <script setup>
-import { ref, watch, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import useSpeechRecognition from '../modules/useSpeechRecognition'
 
-const props = defineProps({
-  modelValue: Boolean
-})
-const emit = defineEmits(['cancel', 'update:modelValue', 'result', 'colorResult'])
+const emit = defineEmits(['close', 'result'])
+
+// Константы
+const TIMEOUTS = {
+  RETRY_DELAY: 300,
+  RESULT_DELAY: 150,
+  IOS_STOP_DELAY: 150,
+  ANDROID_STOP_DELAY: 100,
+  MOUNT_DELAY: 100,
+  UNMOUNT_DELAY: 150
+}
+
+const AUDIO_CONFIG = {
+  SAMPLE_RATE: 44100,
+  CHANNEL_COUNT: 1,
+  FFT_SIZE: 64,
+  SMOOTHING: 0.8,
+  BAR_COUNT: 32
+}
 
 const canvasRef = ref(null)
 const recognizedText = ref('')
@@ -96,12 +107,20 @@ const {
   stopRecord,
   onFinish,
   transcript,
-  cleanup,
   setShouldContinueCallback,
   resetAccumulatedText,
   destroy,
   restore
 } = speechRecognition
+
+// Computed свойства для сложных условий в template
+const shouldShowErrorMessage = computed(() => 
+  !recognizedText.value && !isRecording.value && !isUserPressingButton.value
+)
+
+const shouldShowRetryButton = computed(() => 
+  hasStartedRecording.value && !recognizedText.value && !isRecording.value && !isUserPressingButton.value
+)
 
 // Устанавливаем callback для проверки, нужно ли продолжать запись
 setShouldContinueCallback(() => isUserPressingButton.value)
@@ -118,7 +137,7 @@ const finishHandler = (finalText) => {
 // Register finish handler initially
 onFinish(finishHandler)
 
-async function handleCancel() {
+async function handleClose() {
   // Блокируем все колбэки для предотвращения перезапуска
   setShouldContinueCallback(() => false)
   
@@ -146,8 +165,7 @@ async function handleCancel() {
   // Инкрементируем счетчик жизненного цикла для отмены async операций
   lifecycleSeq++
   
-  emit('cancel')
-  emit('update:modelValue', false)
+  emit('close')
 }
 
 function handleRetry() {
@@ -173,7 +191,7 @@ function handleRetry() {
     isRetrying.value = false
     // Восстанавливаем callback после сброса
     setShouldContinueCallback(() => isUserPressingButton.value)
-  }, 300)
+  }, TIMEOUTS.RETRY_DELAY)
 }
 
 async function handlePointerDown(event) {
@@ -201,65 +219,67 @@ async function handlePointerDown(event) {
   }
 }
 
+// Проверка наличия результата
+function hasResult() {
+  return !!(recognizedText.value || transcript.value)
+}
+
+// Получение результата для отправки
+function getResult() {
+  return (transcript.value || recognizedText.value || '').trim()
+}
+
 function submitIfNeededAndClose() {
-  const resultToSend = (transcript.value || recognizedText.value || '').trim()
+  const resultToSend = getResult()
   if (resultToSend) {
     emit('result', resultToSend)
+    handleClose()
   }
-  emit('update:modelValue', false)
   recognizedText.value = ''
+}
+
+// Общая логика завершения записи
+async function finishRecording(isCancel = false) {
+  isUserPressingButton.value = false
+  isProcessing.value = true
+
+  if (isCancel) {
+    // Блокируем продолжение записи при отмене
+    setShouldContinueCallback(() => false)
+  }
+
+  if (isRecording.value) {
+    stopRecord()
+  }
+
+  // Ждем завершения для iOS при отмене
+  if (isCancel) {
+    await new Promise(resolve => setTimeout(resolve, isIOS.value ? TIMEOUTS.IOS_STOP_DELAY : TIMEOUTS.ANDROID_STOP_DELAY))
+  }
+
+  await stopAudio()
+
+    // Небольшая задержка, чтобы дать доехать финальным результатам
+  setTimeout(() => {
+    // Проверяем, есть ли результат, если нет - убираем loading (это означает ошибку)
+    if (!hasResult()) {
+      isProcessing.value = false
+    }
+    submitIfNeededAndClose()
+  }, TIMEOUTS.RESULT_DELAY)
 }
 
 async function handlePointerUp(event) {
   if (!isApiAvailable || isRetrying.value) return
   if (event) event.preventDefault()
 
-  isUserPressingButton.value = false
-  isProcessing.value = true
-
-  if (isRecording.value) {
-    stopRecord()
-  }
-
-  // Останавливаем аудио сразу после отпускания
-  await stopAudio()
-
-  // Небольшая задержка, чтобы дать доехать финальным результатам
-  setTimeout(() => {
-    // Проверяем, есть ли результат, если нет - убираем loading (это означает ошибку)
-    if (!recognizedText.value && !transcript.value) {
-      isProcessing.value = false
-    }
-    submitIfNeededAndClose()
-  }, 150)
+  await finishRecording(false)
 }
 
 async function handlePointerCancel(event) {
   if (event) event.preventDefault()
   
-  // Принудительно сбрасываем состояния
-  isUserPressingButton.value = false
-  isProcessing.value = true
-  
-  // Блокируем продолжение записи
-  setShouldContinueCallback(() => false)
-  
-  if (isRecording.value) {
-    stopRecord()
-  }
-  
-  // Ждем завершения для iOS
-  await new Promise(resolve => setTimeout(resolve, isIOS.value ? 150 : 100))
-  
-  await stopAudio()
-  
-  setTimeout(() => {
-    // Проверяем, есть ли результат, если нет - убираем loading (это означает ошибку)
-    if (!recognizedText.value && !transcript.value) {
-      isProcessing.value = false
-    }
-    submitIfNeededAndClose()
-  }, 150)
+  await finishRecording(true)
 }
 
 async function handlePointerLeave(event) {
@@ -287,11 +307,10 @@ function drawBars() {
     ctx.save()
     
     const accent = getComputedStyle(document.documentElement).getPropertyValue('--q-primary') || '#1976d2'
-    const barCount = 32
-    const barWidth = WIDTH / barCount
+    const barWidth = WIDTH / AUDIO_CONFIG.BAR_COUNT
     
-    for (let i = 0; i < barCount; i++) {
-      const dataIdx = Math.floor(i * dataArray.length / barCount)
+    for (let i = 0; i < AUDIO_CONFIG.BAR_COUNT; i++) {
+      const dataIdx = Math.floor(i * dataArray.length / AUDIO_CONFIG.BAR_COUNT)
       const value = dataArray[dataIdx]
       const barHeight = (value / 255) * (HEIGHT / 2)
       const x = i * barWidth
@@ -312,6 +331,37 @@ function drawBars() {
   }
 }
 
+// Получение аудио constraints для разных платформ
+function getAudioConstraints() {
+  return {
+    audio: {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+      ...(isIOS.value && {
+        sampleRate: AUDIO_CONFIG.SAMPLE_RATE,
+        channelCount: AUDIO_CONFIG.CHANNEL_COUNT
+      })
+    }
+  }
+}
+
+// Создание и настройка AudioContext
+function createAudioContext() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext
+  return new AudioContextClass({
+    sampleRate: isIOS.value ? AUDIO_CONFIG.SAMPLE_RATE : undefined
+  })
+}
+
+// Настройка анализатора аудио
+function setupAnalyser(audioContext) {
+  const analyser = audioContext.createAnalyser()
+  analyser.fftSize = AUDIO_CONFIG.FFT_SIZE
+  analyser.smoothingTimeConstant = AUDIO_CONFIG.SMOOTHING
+  return analyser
+}
+
 async function startAudio() {
   // Полная очистка перед новой инициализацией
   if (isAudioInitialized) {
@@ -319,36 +369,21 @@ async function startAudio() {
   }
 
   try {
-    // Запрашиваем доступ к микрофону с iOS-оптимизированными настройками
-    const audioConstraints = {
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-        ...(isIOS.value && {
-          sampleRate: 44100,
-          channelCount: 1
-        })
-      }
-    }
-    
-    stream = await navigator.mediaDevices.getUserMedia(audioConstraints)
+    // Запрашиваем доступ к микрофону
+    stream = await navigator.mediaDevices.getUserMedia(getAudioConstraints())
     
     // Создаем новый AudioContext для каждой сессии
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext
-    audioContext = new AudioContextClass({
-      sampleRate: isIOS.value ? 44100 : undefined
-    })
+    audioContext = createAudioContext()
     
     if (audioContext.state === 'suspended') {
       await audioContext.resume()
     }
     
-    analyser = audioContext.createAnalyser()
-    analyser.fftSize = 64
-    analyser.smoothingTimeConstant = 0.8
+    // Настраиваем анализатор
+    analyser = setupAnalyser(audioContext)
     dataArray = new Uint8Array(analyser.frequencyBinCount)
     
+    // Подключаем источник
     source = audioContext.createMediaStreamSource(stream)
     source.connect(analyser)
     
@@ -360,7 +395,6 @@ async function startAudio() {
   } catch (e) {
     console.error('Ошибка доступа к микрофону:', e)
     await stopAudio()
-    emit('update:modelValue', false)
   }
 }
 
@@ -456,127 +490,55 @@ function handleBeforeUnload() {
 
 // Обработчик смены видимости вкладки
 function handleVisibilityChange() {
-  if (document.hidden && props.modelValue) {
+  if (document.hidden) {
     // Если вкладка скрылась и overlay открыт - принудительно закрываем
-    handleCancel()
+    handleClose()
   }
 }
 
-// Устанавливаем обработчики при открытии overlay
-watch(() => props.modelValue, (val) => {
-  if (val) {
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-  } else {
-    window.removeEventListener('beforeunload', handleBeforeUnload)
-    document.removeEventListener('visibilitychange', handleVisibilityChange)
-  }
-})
-
-watch(() => props.modelValue, async (val) => {
+// Инициализация компонента при монтировании
+onMounted(async () => {
   const seq = ++lifecycleSeq
-  if (val) {
-    recognizedText.value = ''
-    hasStartedRecording.value = false
-    isRetrying.value = false
-    isUserPressingButton.value = false
-    isProcessing.value = false
-    
-    // Restore after full teardown (relevant for iOS fresh instance)
-    restore()
-    // Rebind finish handler after restore
-    onFinish(finishHandler)
-    resetAccumulatedText()
-    
-    // Bind should-continue callback immediately to avoid gaps on iOS
-    setShouldContinueCallback(() => isUserPressingButton.value)
-    
-    if (isIOS.value) {
-      await new Promise(resolve => setTimeout(resolve, 100))
-    }
-    
-    // If state changed while awaiting, abort this open flow
-    if (seq !== lifecycleSeq || !props.modelValue) {
-      return
-    }
-    
-    await startAudio()
-  } else {
-    // КРИТИЧЕСКАЯ ОЧИСТКА ПРИ ЗАКРЫТИИ
-    
-    // Immediately disable continuation to prevent unintended restart
-    setShouldContinueCallback(() => false)
-    
-    // Сбрасываем все состояния принудительно
-    isUserPressingButton.value = false
-    isProcessing.value = false
-    hasStartedRecording.value = false
-    recognizedText.value = ''
-    isRetrying.value = false
-
-    // Принудительно останавливаем запись
-    if (isRecording.value) {
-      stopRecord()
-    }
-    
-    // Ждем завершения операций записи для iOS
-    if (isIOS.value) {
-      await new Promise(resolve => setTimeout(resolve, 200))
-    } else {
-      await new Promise(resolve => setTimeout(resolve, 100))
-    }
-    
-    // Полная очистка аудио ресурсов
-    await stopAudio()
-    
-    // If state changed while awaiting, abort this close flow
-    if (seq !== lifecycleSeq || props.modelValue) {
-      return
-    }
-    
-    // Ensure full cleanup on all platforms - ПРИНУДИТЕЛЬНО
-    destroy()
-    
-    // Дополнительная очистка состояний после destroy
-    recognizedText.value = ''
-    hasStartedRecording.value = false
-    isUserPressingButton.value = false
-    isProcessing.value = false
-    isRetrying.value = false
+  
+  // Устанавливаем обработчики событий
+  window.addEventListener('beforeunload', handleBeforeUnload)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  
+  // Инициализируем состояние
+  recognizedText.value = ''
+  hasStartedRecording.value = false
+  isRetrying.value = false
+  isUserPressingButton.value = false
+  isProcessing.value = false
+  
+  // Restore after full teardown (relevant for iOS fresh instance)
+  restore()
+  // Rebind finish handler after restore
+  onFinish(finishHandler)
+  resetAccumulatedText()
+  
+  // Bind should-continue callback immediately to avoid gaps on iOS
+  setShouldContinueCallback(() => isUserPressingButton.value)
+  
+  if (isIOS.value) {
+    await new Promise(resolve => setTimeout(resolve, TIMEOUTS.MOUNT_DELAY))
   }
+  
+  // If component was unmounted while awaiting, abort this initialization flow
+  if (seq !== lifecycleSeq) {
+    return
+  }
+  
+  await startAudio()
 })
 
 onBeforeUnmount(async () => {
-  // Инкрементируем счетчик для отмены всех async операций
-  lifecycleSeq++
-  
   // Очищаем обработчики событий
   window.removeEventListener('beforeunload', handleBeforeUnload)
   document.removeEventListener('visibilitychange', handleVisibilityChange)
   
-  // Блокируем все колбэки
-  setShouldContinueCallback(() => false)
-  
-  // Сбрасываем все состояния
-  isUserPressingButton.value = false
-  isProcessing.value = false
-  isRetrying.value = false
-  hasStartedRecording.value = false
-  recognizedText.value = ''
-  
-  // Принудительно останавливаем запись
-  if (isRecording.value) {
-    stopRecord()
-  }
-  
-  // Ждем завершения операций записи
-  await new Promise(resolve => setTimeout(resolve, 150))
-  
-  // Полная очистка аудио ресурсов
-  await stopAudio()
-  
-  // Уничтожаем экземпляр распознавания речи
-  destroy()
+  // Используем handleClose для правильной очистки всех ресурсов
+  await handleClose()
 })
 </script>
 
