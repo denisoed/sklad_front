@@ -57,33 +57,18 @@
 import { defineComponent, computed } from 'vue';
 import TableComp from 'src/components/TableComp.vue'
 import { useBulkStore } from 'src/stores/bulk';
+import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia';
 
-const COLUMNS = [
-  {
-    name: 'image',
-    label: 'Фото',
-    field: 'image',
-    align: 'left',
-  },
-  {
-    name: 'name',
-    label: 'Название',
-    field: 'name',
-    align: 'left',
-  },
-  {
-    name: 'color',
-    label: 'Цвет',
-    field: 'color',
-    align: 'left',
-  },
-  {
-    name: 'actions',
-    label: '',
-    field: 'actions',
-    align: 'right',
-  },
-]
+defineOptions({
+  name: 'BulkPreview'
+})
+
+const COLUMNS = computed(() => [
+  { name: 'image', label: $t('statistics.photo'), field: 'image', sortable: false },
+  { name: 'name', label: $t('statistics.name'), field: 'name', sortable: false },
+  { name: 'color', label: $t('common.color'), field: 'color', sortable: false }
+])
 
 export default defineComponent({
   name: 'BulkPreview',
@@ -97,8 +82,10 @@ export default defineComponent({
     }
   },
   emits: ['on-next'],
-  setup(props, { emit }) {
-    const bulkStore = useBulkStore();
+  setup() {
+    const { t: $t } = useI18n()
+    const bulkStore = useBulkStore()
+    const { bulkProducts } = storeToRefs(bulkStore)
 
     const rows = computed(() => {
       return bulkStore.getBulkProducts.map(s => ({

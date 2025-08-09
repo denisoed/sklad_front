@@ -313,6 +313,7 @@ export default ({
     changesSaved: 'Өзгөртүүлөр сакталды',
   },
 
+  // Filter
   filter: {
     title: 'Чыпка',
     searchByName: 'Аталышы боюнча издөө',
@@ -321,11 +322,12 @@ export default ({
     searchByDescription: 'Сүрөттөмө боюнча издөө',
     from: 'Башынан',
     to: 'Чейин',
+    currency: 'сом',
     withDiscount: 'Арзандатуу менен',
     clear: 'Тазалоо',
     loadingSizes: 'Өлчөмдөр жүктөлүүдө...',
-    errorLoadingSizes: 'Өлчөмдөрдү жүктөөдө ката:',
-    doubleClickHint: 'Күнгө эки жолу чертүү бир күн үчүн натыйжа берет.',
+    errorLoadingSizes: 'Өлчөмдөрдү жүктөө катасы:',
+    doubleClickHint: 'Датага эки жолу басуу бир күндүк жыйынтыкты берет.',
     sizesLoadingError: 'Өлчөмдөрдү жүктөө катасы:',
   },
 
@@ -377,42 +379,21 @@ export default ({
     installDescription: 'Эгер сизге Sklad\'ды Telegram аркылуу колдонуу ыңгайсыз болсо, аны иш столуна толук колдонмо катары орнотсоңуз болот. Бул ар бир жолу Telegram\'ды ачпастан, кампага тез жана ыңгайлуу кирүүгө мүмкүндүк берет.',
   },
 
-  blocked: {
-    trialExpired: 'Сыноо мөөнөтү бүттү!',
-    unlockAccount: 'Аккаунтту бөшөтүү үчүн, жазылууну түзүңүз.',
-    subscriptionExpired: 'Жазылуу мөөнөтү бүттү',
-    extend: 'Узартуу',
-    subscriptionIssued: 'Жазылуу түзүлдү!',
-  },
-
+  // Pages
   pages: {
-    posts: 'Макалалардын тизмеси',
-    info: 'Маалымат',
-    goal: 'Максат',
-    earnPerYear: 'жылына тапуу',
-    earnedPerYear: 'жылына тапты',
-    createWarehouse: 'Склад түзүү',
-    deleteWarehouse: 'Складты өчүрүү',
-    notifyLowStock: 'Аз калган товарлар жөнүндө эскертүү',
-    returnToMain: 'Башкы барагына кайтуу',
-    duplicateProduct: 'Товарды көчүрүү',
+    remainingStock: 'Калдыктар',
     cashAndCard: 'Нак:',
     cardPayment: 'Карт:',
-    sum: 'сом',
-    amount: 'Сумма',
     contactsCopied: 'Почта көчүрүлдү',
     telegramCopied: 'Telegram ID көчүрүлдү',
-    logout: 'Чыгуу',
-    main: 'Негизги',
-    access: 'Кирүү укуктары',
-    goals: 'Максаттар',
-    configSizes: 'Өлчөмдөрдү тууралоо',
-    saveChanges: 'Өзгөртүүлөрдү сактоо',
-    sizesNotSpecified: 'Өлчөмдөр көрсөтүлгөн эмес',
-    selectMultiple: 'Бир нече бирдикти тандоо үчүн, керектүү өлчөмдү бир нече секунд кармаңыз.',
-    sizesCountSpecified: 'Көрсөтүлгөн өлчөмдөр:',
-    deleteSize: 'Өлчөмдү өчүрүү үчүн, аны бир нече секунд кармаңыз.',
-    remainingStock: 'Калдыктар',
+    changeSettings: 'Тууралоолорду өзгөртүү',
+    listIsEmpty: 'Тизме бош',
+    selected: 'Тандалды',
+  },
+
+  // Blocked page
+  blocked: {
+    checkout: 'Расмийлештирүү',
   },
 
   mainSettings: {

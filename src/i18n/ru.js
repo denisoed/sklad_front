@@ -273,6 +273,7 @@ export default ({
     subscriptionExpired: 'Подписка истекла',
     extend: 'Продлить',
     subscriptionIssued: 'Подписка оформлена!',
+    checkout: 'Оформить',
   },
 
   pages: {
@@ -303,6 +304,9 @@ export default ({
     sizesCountSpecified: 'Указано размеров:',
     deleteSize: 'Чтобы удалить размер, удерживайте его несколько секунд.',
     remainingStock: 'Остатки',
+    changeSettings: 'Поменять настройки',
+    listIsEmpty: 'Список пуст',
+    selected: 'Выбрано',
   },
 
   mainSettings: {
@@ -365,5 +369,23 @@ export default ({
     date: 'Дата',
     removeCost: 'Удалить расход',
     removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
+  },
+
+  // Filter
+  filter: {
+    title: 'Фильтр',
+    searchByName: 'Поиск по названию',
+    searchByEvent: 'Поиск по событию',
+    searchByPeople: 'Поиск по людям',
+    searchByDescription: 'Поиск по описанию',
+    from: 'От',
+    to: 'До',
+    currency: 'сом',
+    withDiscount: 'Со скидкой',
+    clear: 'Очистить',
+    loadingSizes: 'Загрузка размеров...',
+    errorLoadingSizes: 'Ошибка загрузки размеров:',
+    doubleClickHint: 'Двойное нажатие по дате вернёт результат за один день.',
+    sizesLoadingError: 'Ошибка загрузки размеров:',
   },
 })

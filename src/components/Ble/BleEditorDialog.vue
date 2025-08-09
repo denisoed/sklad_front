@@ -42,13 +42,11 @@
               label="Дополнительные настройки"
             >
               <q-input
-                v-model="formData.height"
+                v-model="data.height"
                 outlined
-                clearable
-                label="Высота"
-                hint="Высота рабочей зоны в mm"
-                class="full-width"
-                enterkeyhint="done"
+                type="number"
+                :label="$t('printing.height')"
+                class="q-mb-md"
               />
               <q-input
                 v-model="formData.offset"
@@ -94,6 +92,7 @@ import {
   computed
 } from 'vue'
 import { LocalStorage } from 'quasar'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'BleEditorDialog',
@@ -108,12 +107,14 @@ export default defineComponent({
     },
   },
   emits: ['on-close', 'on-save'],
-  setup(props, { emit }) {
-    const { opened } = toRefs(props)
-    const formData = reactive({
-      dpi: null,
-      width: null,
+  setup() {
+    const { t: $t } = useI18n()
+    const data = reactive({
+      name: null,
+      address: null,
       height: null,
+      width: null,
+      dpi: null,
       offset: null
     })
 

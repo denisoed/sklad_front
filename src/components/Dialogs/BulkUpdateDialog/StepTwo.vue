@@ -5,11 +5,11 @@
       <!-- Sklads -->
       <TheSelector
         v-model="product.sklad"
-        title-postfix="склад"
+        :title-postfix="$t('common.warehouse').toLowerCase()"
         :options="skladsOptions"
         @on-create-new="onCreateNewSklad"
         outlined
-        label="Склад"
+        label="$t('common.warehouse')"
         tabindex="1"
         clearable
         emit-value
@@ -20,11 +20,11 @@
       <TheSelector
         v-if="product.sklad"
         v-model="product.category"
-        title-postfix="категорию"
+        :title-postfix="$t('common.category').toLowerCase()"
         :options="categoriesOptions"
         @on-create-new="onCreateNewCategory"
         outlined
-        label="Категория товара"
+        label="$t('category.title')"
         tabindex="2"
         clearable
         emit-value
@@ -35,7 +35,7 @@
       <q-input
         v-model="product.name"
         outlined
-        label="Название товара"
+        label="$t('product.productName')"
         tabindex="4"
         class="full-width"
         data-scroller="name"
@@ -96,10 +96,13 @@ import TheSelector from 'src/components/UI/TheSelector.vue';
 import InputPrice from 'src/components/InputPrice.vue';
 import { MANAGE_CATEGORY_DIALOG, MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
 import useCategories from 'src/modules/useCategories'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
-  name: 'StepTwo',
+  name: 'BulkUpdateStepTwo'
 })
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['on-prev', 'on-submit'])
 

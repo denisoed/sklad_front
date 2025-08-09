@@ -5,14 +5,14 @@
     <div class="flex full-width no-wrap q-gap-md q-my-md">
       <ChartCard
         class="full-width"
-        title="Заработано"
+        :title="$t('statistics.earned')"
         :body="formatPrice(priceTotal)"
         :descr="`за ${selected.label}`"
         :loading="loadingActivities"
       />
       <ChartCard
         class="full-width"
-        title="Продано"
+        :title="$t('statistics.sold')"
         :body="`${soldCount} шт`"
         :descr="`за ${selected.label}`"
         :loading="loadingActivities"
@@ -32,21 +32,28 @@ import { FILTER_FORMAT, DAY, WEEK, MONTH, YEAR } from 'src/config'
 import useStatistics from 'src/modules/useStatistics'
 import useDate from 'src/modules/useDate'
 import useMoney from 'src/modules/useMoney'
+import { useI18n } from 'vue-i18n'
 
-const TABS = [
+defineOptions({
+  name: 'SkladsStatistics'
+})
+
+const { t: $t } = useI18n()
+
+const TABS = computed(() => [
   {
-    label: 'День',
+    label: $t('statistics.day'),
     value: DAY
   },
   {
-    label: 'Неделя',
+    label: $t('statistics.week'),
     value: WEEK
   },
   {
-    label: 'Месяц',
+    label: $t('statistics.month'),
     value: MONTH
   }
-]
+])
 
 export default defineComponent({
   name: 'SkladsStatistics',
@@ -63,7 +70,7 @@ export default defineComponent({
   },
   setup(props) {
     const { ids } = toRefs(props)
-    const selected = ref(TABS[2])
+    const selected = ref(TABS.value[2])
     const {
       loadActivities,
       soldCount,
@@ -86,7 +93,7 @@ export default defineComponent({
     }
 
     function onChange(val) {
-      selected.value = TABS.find(t => t.value === val)
+      selected.value = TABS.value.find(t => t.value === val)
       let p = {}
       if (val === MONTH) {
         p = { dates: getCurrentMonth() }
@@ -106,7 +113,7 @@ export default defineComponent({
     const lineChartSeries = computed(() => {
       return [
         {
-          name: 'Касса',
+          name: $t('businessGoal.cash'),
           data: lineChartCategories.map(d => {
             const values = listActivities.value.filter(a => moment(a.created_at).format(FILTER_FORMAT) === d)
             const total = values.reduce((prev, next) => {

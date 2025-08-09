@@ -31,16 +31,24 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import { useRouter } from 'vue-router'
 import { HOME_ROUTE } from 'src/router/routes'
+import { useI18n } from 'vue-i18n'
+
+defineOptions({
+  name: 'Blocked'
+})
+
+const { t: $t } = useI18n()
+
+const btnLabel = computed(() => $t('blocked.checkout'))
 
 export default defineComponent({
   name: 'BlockedPage',
   setup() {
     const title = 'Аккаунт заблокирован'
-    const btnLabel = 'Оформить'
     const isLoading = ref(false)
 
     const { push } = useRouter()

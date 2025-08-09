@@ -50,27 +50,20 @@
               Ценовой диапазон (розничная цена)
             </p>
             <div class="flex q-gap-sm">
-              <q-input
-                v-model.number="localFilters.priceFrom"
-                type="number"
+              <InputPrice
+                v-model="localFilters.priceFrom"
                 outlined
                 dense
-                label="От"
-                suffix="сом"
-                style="flex: 1"
-                clearable
-                enterkeyhint="done"
+                :label="$t('filter.from')"
+                :suffix="$t('filter.currency')"
+                class="q-mr-sm"
               />
-              <q-input
-                v-model.number="localFilters.priceTo"
-                type="number"
+              <InputPrice
+                v-model="localFilters.priceTo"
                 outlined
                 dense
-                label="До"
-                suffix="сом"
-                style="flex: 1"
-                clearable
-                enterkeyhint="done"
+                :label="$t('filter.to')"
+                :suffix="$t('filter.currency')"
               />
             </div>
           </div>
