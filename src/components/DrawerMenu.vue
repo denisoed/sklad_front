@@ -83,8 +83,10 @@
 <script>
 import {
   defineComponent,
+  computed,
 } from 'vue'
 import { copyToClipboard } from 'quasar';
+import { useI18n } from 'vue-i18n'
 import UserInfo from 'src/components/UserInfo.vue'
 import FeedbackDialog from 'src/components/FeedbackDialog/index.vue'
 import useProfile from 'src/modules/useProfile'
@@ -116,6 +118,7 @@ export default defineComponent({
     FeedbackDialog,
   },
   setup() {
+    const { t: $t } = useI18n()
     const { profile } = useProfile()
     const { logout, revokeToken } = useJwtMethods()
     const { showSuccess } = useHelpers()
@@ -125,10 +128,10 @@ export default defineComponent({
       logout()
     }
 
-    const MENU_LIST_BOTTOM = [
+    const MENU_LIST_BOTTOM = computed(() => [
       {
         icon: 'settings',
-        label: 'Настройки',
+        label: $t('common.settings'),
         separator: false,
         disable: false,
         to: '/main-settings',
@@ -137,18 +140,18 @@ export default defineComponent({
       {
         icon: 'mdi-logout',
         color: 'deep-orange',
-        label: 'Выйти',
+        label: $t('mainSettings.userTab.logout'),
         separator: false,
         disable: false,
         visible: !window?.Telegram?.WebApp?.initData,
         action: changeAccount
       }
-    ]
+    ])
 
     function copyTgId() {
       if (!profile.value.email && !profile.value.telegramId) return
       copyToClipboard(profile.value.email || profile.value.telegramId)
-      showSuccess(profile.value.email ? 'Почта скопирована' : 'Telegram ID скопирован')
+      showSuccess(profile.value.email ? $t('pages.contactsCopied') : $t('pages.telegramCopied'))
     }
 
     return {

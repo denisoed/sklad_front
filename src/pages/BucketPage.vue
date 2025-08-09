@@ -12,7 +12,7 @@
       <template v-if="bucketProducts && bucketProducts.length">
         <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
           <div class="flex items-center q-gap-sm">
-            <p class="q-mb-none text-subtitle2 ">Заказы</p>
+            <p class="q-mb-none text-subtitle2 ">{{ $t('bucket.orders') }}</p>
             <q-badge color="primary" :label="bucketProducts.length" />
           </div>
           
@@ -82,7 +82,7 @@
       <div class="flex flex-center q-mt-lg">
         <q-btn
           v-if="bucketProducts?.length"
-          label="Продать товары"
+          :label="$t('bucket.sellProducts')"
           push
           color="primary"
           @click="toSell"
@@ -91,7 +91,7 @@
         />
         <q-btn
           v-else
-          label="Добавить товары в корзину"
+          :label="$t('bucket.addToBasket')"
           push
           color="primary"
           to="/products"
@@ -142,6 +142,7 @@
 <script setup>
 import moment from 'moment'
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import useSklads from 'src/modules/useSklads'
@@ -178,6 +179,7 @@ const VIEW_GRID = 'grid'
 
 const TODAY = Date.now()
 const $q = useQuasar()
+const { t: $t } = useI18n()
 const { showSuccess, showError } = useHelpers()
 const { sklads } = useSklads()
 const { profile } = useProfile()
@@ -262,9 +264,9 @@ async function update(selectedItem, newData) {
       }
     })
     await forceRefreshBucket()
-    showSuccess('Корзина обновлена')
+    showSuccess($t('bucket.updateBasket'))
   } else {
-    showError('Не удалось обновить продукт. Попробуйте позже.')
+          showError($t('bucket.errorUpdate'))
   }
   selectedProduct.value = null
 }
@@ -284,9 +286,9 @@ async function remove(product, payload) {
   })
   if (!deleteSaleProductError.value) {
     await forceRefreshBucket()
-    showSuccess('Товар возвращен на склад')
+    showSuccess($t('bucket.returnToWarehouse'))
   } else {
-    showError('Не удалось вернуть товар на склад. Попробуйте позже.')
+          showError($t('bucket.errorReturn'))
   }
   isLoading.value = false
 }
@@ -386,9 +388,9 @@ function toSell() {
       }
       if (!updateProductError.value) {
         await forceRefreshBucket()
-        showSuccess('Товары успешно проданы!')
+        showSuccess($t('bucket.soldSuccessfully'))
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+                  showError($t('bucket.errorSell'))
       }
     } finally {
       isLoading.value = false

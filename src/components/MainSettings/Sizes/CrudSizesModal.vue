@@ -211,7 +211,7 @@ export default defineComponent({
         emit('on-create-new', data)
         showSuccess('Новые размеры созданы!')
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
     }
     
@@ -230,7 +230,7 @@ export default defineComponent({
       if (!updateError.value) {
         showSuccess('Размеры обновлены!')
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
     }
 
@@ -243,7 +243,7 @@ export default defineComponent({
             await createToDB()
           }
         } catch (error) {
-          showError('Неизвестная ошибка. Проблемы на сервере.')
+          showError($t('common.unknownError') + '. ' + $t('common.serverError'))
         } finally {
           close()
           emit('finished')

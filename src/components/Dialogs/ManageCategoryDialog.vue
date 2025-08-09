@@ -172,9 +172,9 @@ async function createToDB() {
     }
   })
   if (!createError.value) {
-    showSuccess('Запрос успешно выполнен!')
+    showSuccess($t('warehouse.requestSuccess'))
   } else {
-    showError('Неизвестная ошибка. Проблемы на сервере.')
+    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
   }
 }
 
@@ -188,9 +188,9 @@ async function updateFromDB() {
     }
   })
   if (!updateError.value) {
-    showSuccess('Запрос успешно выполнен!')
+    showSuccess($t('warehouse.requestSuccess'))
   } else {
-    showError('Неизвестная ошибка. Проблемы на сервере.')
+    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
   }
 }
 
@@ -203,7 +203,7 @@ async function save() {
         await createToDB()
       }
     } catch (error) {
-      showError('Неизвестная ошибка. Проблемы на сервере.')
+      showError($t('common.unknownError') + '. ' + $t('common.serverError'))
     } finally {
       await fetchCategories({ sklad: skladId.value })
       close()
@@ -236,7 +236,7 @@ function remove() {
       close()
       // NOTE: add to history
     } else {
-      showError('Произошла ошибка. Попробуйте позже.')
+      showError($t('common.error') + '. ' + $t('common.tryLater'))
     }
   })
 }

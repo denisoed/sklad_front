@@ -409,6 +409,8 @@ import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
 import useCategories from 'src/modules/useCategories'
 import useEventBus from 'src/modules/useEventBus'
+import { useI18n } from 'vue-i18n'
+import { ref, watch, nextTick, computed, onMounted } from 'vue'
 
 const DEFAULT_DATA = {
   id: null,
@@ -439,6 +441,7 @@ const props = defineProps({
 })
 
 const TODAY = Date.now()
+const { t: $t } = useI18n()
 const $q = useQuasar()
 const { params, query } = useRoute()
 const { replace, push } = useRouter()
@@ -631,7 +634,7 @@ async function saveCost(sum, isAdd) {
       `${isAdd ? 'Добавлены размеры в товар' : 'Убраны размеры из товара'}: ${product.name}. Сумма: ${sum}`
     )
   } else {
-    showError('Произошла ошибка. Попробуйте позже.')
+    showError($t('common.error') + '. ' + $t('common.tryLater'))
   }
 }
 
@@ -673,9 +676,12 @@ async function create() {
     const data = prepareProductData(uploaded, isDuplicating.value, props.isEdit)
     const newProduct = await createNewProduct(data)
     if (!createProductError.value) {
-      showSuccess('Товар успешно создан!')
+      showSuccess($t('product.createdSuccessfully'))
+      const productId = newProduct?.id
       clearDraft()
-      replace(`/products?product=${newProduct.id}`)
+      if (productId) {
+        await replace(`/product/${productId}?edit=true`)
+      }
     } else {
       await cleanupImageOnError(uploaded)
       showError('Не удалось создать продукт. Проблемы на сервере.')

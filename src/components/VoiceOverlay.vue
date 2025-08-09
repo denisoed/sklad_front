@@ -11,12 +11,12 @@
 
     <div class="voice-placeholder q-mb-md">
       <span v-if="!isApiAvailable" class="text-red q-mb-md">
-        Распознавание речи недоступно в вашем браузере
+        {{ t('voiceOverlay.recognitionUnavailable') }}
       </span>
       <span v-else-if="!hasStartedRecording" class="text-bold">
-        Зажмите кнопку ниже, чтобы начать запись
+        {{ t('voiceOverlay.pressButtonToStart') }}
       </span>
-      <span v-else-if="!recognizedText" class="text-bold">Говорите...</span>
+      <span v-else-if="!recognizedText" class="text-bold">{{ t('voiceOverlay.speakNow') }}</span>
       <span v-else>{{ recognizedText }}</span>
     </div>
     
@@ -45,10 +45,20 @@
 
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useSpeechRecognition from '../modules/useSpeechRecognition'
 import useHelpers from '../modules/useHelpers'
 
-const emit = defineEmits(['close', 'result'])
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits(['update:modelValue', 'submit', 'close'])
+
+const { t: $t } = useI18n()
 const { showError } = useHelpers()
 
 // Константы
@@ -367,32 +377,31 @@ function handleMicrophoneError(error) {
   
   switch (errorName) {
     case 'NotAllowedError':
-    case 'PermissionDeniedError':
-      showError('Доступ к микрофону запрещен. Разрешите доступ к микрофону в настройках браузера.')
+      showError($t('voice.microphoneError'))
       break
-    case 'PermissionDismissedError':
-      showError('Диалог разрешений закрыт. Попробуйте снова и разрешите доступ к микрофону.')
+    case 'PermissionDeniedError':
+      showError($t('voice.dialogClosed'))
       break
     case 'NotFoundError':
     case 'DevicesNotFoundError':
-      showError('Микрофон не найден. Подключите микрофон или проверьте настройки устройства.')
+      showError($t('voice.micNotFound'))
       break
     case 'NotReadableError':
     case 'TrackStartError':
-      showError('Микрофон используется другим приложением. Закройте другие приложения, использующие микрофон.')
+      showError($t('voice.micInUse'))
       break
     case 'OverconstrainedError':
     case 'ConstraintNotSatisfiedError':
-      showError('Микрофон не поддерживает требуемые параметры записи.')
+      showError($t('voice.micNotSupported'))
       break
     case 'SecurityError':
-      showError('Запись голоса недоступна в небезопасном контексте. Используйте HTTPS.')
+      showError($t('voice.micInUse'))
       break
     case 'TypeError':
-      showError('Ошибка конфигурации микрофона. Обратитесь в техподдержку.')
+      showError($t('voice.configError'))
       break
     default:
-      showError('Не удалось получить доступ к микрофону. Проверьте подключение и настройки.')
+      showError($t('voice.accessError'))
   }
 }
 

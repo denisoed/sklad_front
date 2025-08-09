@@ -235,7 +235,7 @@ export default defineComponent({
         description.value = null
         sum.value = null
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('common.error') + '. ' + $t('common.tryLater'))
       }
     }
     
@@ -263,7 +263,7 @@ export default defineComponent({
           // NOTE: add to history
           showSuccess('Расход успешно удалён!')
         } else {
-          showError('Произошла ошибка. Попробуйте позже.')
+          showError($t('common.error') + '. ' + $t('common.tryLater'))
         }
       })
     }

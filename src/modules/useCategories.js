@@ -27,7 +27,7 @@ const useCategories = () => {
       categoriesStore.setCategories(data?.categories)
     } catch (error) {
       console.log(error);
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
     } finally {
       categoriesLoading.value = false;
     }

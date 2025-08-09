@@ -11,19 +11,19 @@
       </div>
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          {{ selectedSklad ? 'Обновить' : 'Создать' }} склад
+          {{ selectedSklad ? $t('common.update') : $t('warehouse.create') }}
         </p>
         <div class="flex justify-center q-gap-md full-width q-mt-md">
           <q-input
             v-model="formData.name"
             outlined
-            label="Введите название"
+            :label="$t('common.enterName')"
             class="full-width"
             autofocus
             enterkeyhint="done"
           />
           <div class="flex full-width flex-start">
-            <p class="full-width text-left q-mb-sm">Выберите цвет для визуального отличия</p>
+            <p class="full-width text-left q-mb-sm">{{ $t('warehouse.selectColor') }}</p>
             <ColorPicker
               :selected="formData.color"
               @on-change="onColorChange"
@@ -76,11 +76,15 @@ import {
   reactive,
   ref
 } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useQuasar } from 'quasar'
 import useHelpers from 'src/modules/useHelpers'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import { useMutation } from '@vue/apollo-composable'
 import useDialog from 'src/modules/useDialog'
 
+const { t: $t } = useI18n()
+const $q = useQuasar()
 const { profile } = useProfile()
 const { fetchSklads, onCreateNew, removeSklad, removeSkladError } = useSklads()
 const { closeDialog } = useDialog()
@@ -132,9 +136,9 @@ async function createToDB() {
   })
   if (!createError.value) {
     onCreateNew(data)
-    showSuccess('Запрос успешно выполнен!')
+    showSuccess($t('warehouse.requestSuccess'))
   } else {
-    showError('Неизвестная ошибка. Проблемы на сервере.')
+    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
   }
 }
 
@@ -147,9 +151,9 @@ async function updateFromDB() {
     }
   })
   if (!updateError.value) {
-    showSuccess('Запрос успешно выполнен!')
+    showSuccess($t('warehouse.requestSuccess'))
   } else {
-    showError('Неизвестная ошибка. Проблемы на сервере.')
+    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
   }
 }
 
@@ -162,7 +166,7 @@ async function save() {
         await createToDB()
       }
     } catch (error) {
-      showError('Неизвестная ошибка. Проблемы на сервере.')
+      showError($t('common.unknownError') + '. ' + $t('common.serverError'))
     } finally {
       await fetchSklads(profile.value.id)
       close()
@@ -172,30 +176,30 @@ async function save() {
 
 function remove() {
   $q.dialog({
-    title: 'Удалить склад',
-    message: 'Вы уверены, что хотите удалить этот склад?',
+    title: $t('warehouse.delete'),
+    message: $t('warehouse.deleteConfirm'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: 'Удалить',
+      label: $t('common.delete'),
       push: true
     },
     cancel: {
       color: 'white',
       textColor: 'black',
-      label: 'Отмена',
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(async () => {
     await removeSklad({ id: selectedSklad.value.id })
     if (!removeSkladError.value) {
       await fetchSklads(profile.value.id)
-      showSuccess('Склад успешно удалён!')
+      showSuccess($t('warehouse.deletedSuccessfully'))
       close()
       // NOTE: add to history
     } else {
-      showError('Произошла ошибка. Попробуйте позже.')
+      showError($t('common.error') + '. ' + $t('common.tryLater'))
     }
   })
 }

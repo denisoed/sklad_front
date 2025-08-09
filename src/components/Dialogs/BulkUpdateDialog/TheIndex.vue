@@ -36,7 +36,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import BulkPreview from 'src/components/Dialogs/Bulk/Preview.vue';
 import StepTwo from 'src/components/Dialogs/BulkUpdateDialog/StepTwo.vue';
 import SwipeToClose from 'src/components/SwipeToClose.vue';
@@ -55,18 +56,16 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['on-finish', 'on-error'])
+const emit = defineEmits(['on-finish'])
 
-const bulkStore = useBulkStore()
+const { t: $t } = useI18n()
+const { updateProducts } = useBulk()
 const { showSuccess, showError } = useHelpers()
-const {
-  updateProductById,
-} = useProduct()
 
-const step = ref(1);
-const loading = ref(false);
+const step = ref(1)
+const isLoading = ref(false)
 
-const title = computed(() => step.value === 1 ? 'Выбранные товары' : 'Редактирование')
+const title = computed(() => step.value === 1 ? $t('bulk.selectedProducts') : $t('bulk.editing'))
 
 function remove() {}
 
@@ -83,21 +82,17 @@ function onHide() {
   emit('update:modelValue', false)
 }
 
-async function submit(data) {
+async function update(ids, formData) {
+  isLoading.value = true
   try {
-    loading.value = true;
-    const ids = bulkStore.getBulkProducts.map(p => p.id)
-    for (const id of ids) {
-      await updateProductById(id, data)
-    }
-    showSuccess('Товары успешно обновлены!')
+    await updateProducts(ids, formData)
+    showSuccess($t('bulk.productsUpdated'))
     emit('on-finish')
   } catch (error) {
-    showError('Произошла ошибка, попробуйте еще раз...')
-    emit('on-error')
+    showError($t('common.error') + ', ' + $t('common.tryLater'))
   } finally {
     onHide()
-    loading.value = false;
+    isLoading.value = false
   }
 }
 </script>

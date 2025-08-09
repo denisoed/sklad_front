@@ -2,7 +2,7 @@
   <div class="user_info flex items-center">
     <div v-html="avatar" class="user_info-avatar block-bg q-pa-xs" />
     <div class="flex column q-ml-sm">
-      <div class="user_info-name text-bold text-subtitle1 q-mb-xs truncate">{{ fullname || 'Имя не указано' }}</div>
+      <div class="user_info-name text-bold text-subtitle1 q-mb-xs truncate">{{ fullname || $t('mainSettings.userTab.user.noNameSpecified') }}</div>
       <div v-if="telegramId" class="user_info-telegram-id text-grey truncate">ID: {{ telegramId }}</div>
       <div v-else class="user_info-telegram-id text-grey truncate">{{ email }}</div>
     </div>
@@ -15,6 +15,7 @@ import {
   defineComponent,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { identicon } from 'minidenticons'
 
 export default defineComponent({
@@ -34,10 +35,12 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const { t: $t } = useI18n()
     const { telegramId, email } = toRefs(props)
     const avatar = computed(() => identicon(String(telegramId.value || email.value) || ''))
 
     return {
+      $t,
       avatar
     }
   }

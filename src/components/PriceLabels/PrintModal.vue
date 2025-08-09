@@ -67,7 +67,7 @@ export default defineComponent({
       try {
         // Print
       } catch (error) {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       } finally {
         close()
         emit('finished')

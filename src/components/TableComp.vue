@@ -9,8 +9,8 @@
       row-key="name"
       separator="cell"
       class="table full-width block-bg border-radius-sm"
-      no-data-label="Нет данных"
-      rows-per-page-label="Записей на странице"
+      :no-data-label="$t('common.noData')"
+      :rows-per-page-label="$t('statistics.recordsPerPage')"
     >
       <template #top-row="props">
         <slot v-bind="props" name="top-row" />
@@ -30,6 +30,7 @@ import {
   defineComponent,
   onBeforeMount,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FilterDates from 'src/components/FilterDates.vue'
 
 export default defineComponent({
@@ -57,6 +58,8 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
+    
     const pagination = {
       rowsPerPage: 10,
     }
@@ -70,6 +73,7 @@ export default defineComponent({
     });
 
     return {
+      $t,
       pagination,
       onChange,
     }

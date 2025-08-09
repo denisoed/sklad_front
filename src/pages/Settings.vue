@@ -264,9 +264,9 @@ export default defineComponent({
           { where: { skladId: sklad.value?.id } },
           { fetchPolicy: 'network-only' }
         )
-        showSuccess('Запрос успешно выполнен!')
+        showSuccess($t('warehouse.requestSuccess'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
     }
 

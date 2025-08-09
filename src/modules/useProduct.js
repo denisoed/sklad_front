@@ -10,12 +10,14 @@ import {
   CREATE_PRODUCT
 } from 'src/graphql/types'
 import { apolloClient } from 'src/boot/apollo'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import { useProductsStore } from 'src/stores/products'
 import { useBucketStore } from 'src/stores/bucket'
 import useProductHistory from 'src/modules/useProductHistory'
 
 const useProduct = () => {
+  const { t: $t } = useI18n()
   const { showError, showSuccess } = useHelpers()
   const productsStore = useProductsStore()
   const bucketStore = useBucketStore()
@@ -80,12 +82,12 @@ const useProduct = () => {
         }
       })
       if (!saleProductError.value) {
-        showSuccess('Товар добавлен в корзину!')
+        showSuccess($t('product.addToBasket'))
         // Update bucket count in store immediately
         bucketStore.setBucketProductsCount(bucketStore.getBucketProductsCount + 1)
       }
     } else {
-      showError('Не удалось добавить в корзину. Попробуйте позже.')
+      showError($t('product.errorAddToBasket'))
     }
   }
 
@@ -115,12 +117,12 @@ const useProduct = () => {
         }
       })
       if (!saleProductError.value) {
-        showSuccess('Товар добавлен в корзину!')
+        showSuccess($t('product.addToBasket'))
         // Update bucket count in store immediately
         bucketStore.setBucketProductsCount(bucketStore.getBucketProductsCount + 1)
       }
     } else {
-      showError('Не удалось добавить в корзину. Попробуйте позже.')
+      showError($t('product.errorAddToBasket'))
     }
   }
 
@@ -145,11 +147,11 @@ const useProduct = () => {
         createDeleteHistory(product, id, product.sklad)
       } else {
         console.error(deleteProductError.value);
-        showError('Не удалось удалить продукт. Проблемы на сервере.')
+        showError($t('product.errorRemoveProduct'))
       }
     } catch (error) {
       console.error(error);
-      showError('Не удалось удалить продукт. Проблемы на сервере.')
+      showError($t('product.errorRemoveProduct'))
     }
   }
 
@@ -204,7 +206,7 @@ const useProduct = () => {
       return data?.search;
     } catch (error) {
       console.log(error);
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
     } finally {
       searchLoading.value = false
     }

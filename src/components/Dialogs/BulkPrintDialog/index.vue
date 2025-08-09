@@ -4,33 +4,33 @@
     <template #content>
       <div class="relative">
         <div v-if="!bluetoothConnected" class="flex column items-center">
-          <p><b class="text-deep-orange">Принтер не подключен.</b> Чтобы продолжить печать, пожалуйста перейдите на страницу настроек.</p>
+          <p><b class="text-deep-orange">{{ $t('printing.printerNotConnected') }}</b> {{ $t('printing.setupRequired') }}</p>
           <div class="flex justify-between full-width q-gap-md">
             <q-btn
               push
-              label="Позже"
+              :label="$t('common.later')"
               @click="close"
             />
             <q-btn
               push
               color="primary"
-              label="Настройки"
+              :label="$t('common.settings')"
               to="/main-settings"
             />
           </div>
         </div>
         <div v-else-if="notConfigured" class="flex column items-center">
-          <p><b class="text-deep-orange">Подключенный принтер не настроин.</b> Чтобы продолжить печать, нужно добавить настройки для DPI, ширины и высоты рабочей зоны.</p>
+          <p><b class="text-deep-orange">{{ $t('printing.printerNotConfigured') }}</b> {{ $t('printing.dpiSettingsRequired') }}</p>
           <div class="flex justify-between full-width q-gap-md">
             <q-btn
               push
-              label="Позже"
+              :label="$t('common.later')"
               @click="close"
             />
             <q-btn
               push
               color="primary"
-              label="Настройки"
+              :label="$t('common.settings')"
               to="/main-settings"
             />
           </div>
@@ -61,6 +61,7 @@ import useHelpers from 'src/modules/useHelpers'
 import { useBulkStore } from 'src/stores/bulk'
 import { useRoute } from 'vue-router'
 import { formatPrice } from 'src/modules/usePriceFormatter'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'BulkPrintDialog',
@@ -70,6 +71,7 @@ export default defineComponent({
   },
   emits: ['on-finish', 'on-error'],
   setup(_, { emit }) {
+    const { t: $t } = useI18n()
     const savedDevice = LocalStorage.getItem('sklad-ble-device')
     const { params } = useRoute()
     const bulkStore = useBulkStore()
@@ -129,10 +131,10 @@ export default defineComponent({
         for (const product of bulkStore.getBulkProducts) {
           await print(product);
         }
-        showSuccess('Ценники распечатаны!')
+        showSuccess($t('printing.printedSuccessfully'))
         emit('on-finish')
       } catch (error) {
-        showError('Произошла ошибка, попробуйте позже...')
+        showError($t('common.error') + ', ' + $t('common.tryLater'))
         emit('on-error')
       } finally {
         close()

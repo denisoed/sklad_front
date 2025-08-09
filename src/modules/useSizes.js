@@ -6,8 +6,10 @@ import useHelpers from 'src/modules/useHelpers'
 import useProfile from 'src/modules/useProfile'
 import { useSizesStore } from 'src/stores/sizes'
 import { useMutation } from '@vue/apollo-composable'
+import { useI18n } from 'vue-i18n'
 
 const useSizes = () => {
+  const { t: $t } = useI18n()
   const {
     mutate: deleteSizes,
     loading: deleteSizesLoading,
@@ -33,7 +35,7 @@ const useSizes = () => {
       })
       sizesStore.setSizes(data?.sizes)
     } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
     } finally {
       isLoading.value = false;
     }
@@ -41,19 +43,19 @@ const useSizes = () => {
 
   function removeSizes(size) {
     $q.dialog({
-      title: `Удалить "${size.name}"?`,
-      message: 'Вы уверены, что хотите удалить эти размеры?',
+      title: `${$t('common.delete')} "${size.name}"?`,
+      message: $t('mainSettings.sizesTab.sizesSettings.deleteConfirm'),
       cancel: true,
       persistent: true,
       ok: {
         color: 'deep-orange',
-        label: 'Удалить',
+        label: $t('common.delete'),
         push: true
       },
       cancel: {
         color: 'white',
         textColor: 'black',
-        label: 'Отмена',
+        label: $t('common.cancel'),
         push: true
       }
     }).onOk(async () => {
@@ -61,9 +63,9 @@ const useSizes = () => {
       if (!deleteSizesError.value) {
         fetchSizes()
         // NOTE: add to history
-        showSuccess('Товары успешно удалены!')
+        showSuccess($t('bulk.productsDeleted'))
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('common.error') + '. ' + $t('common.tryLater'))
       }
     })
   }

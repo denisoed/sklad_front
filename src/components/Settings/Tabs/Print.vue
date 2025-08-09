@@ -124,7 +124,7 @@ export default defineComponent({
         showSuccess('Шаблон создан!')
         close()
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('common.error') + '. ' + $t('common.tryLater'))
       }
       close()
     }
@@ -154,7 +154,7 @@ export default defineComponent({
           showSuccess('Шаблон успешно удалён!')
           close()
         } else {
-          showError('Произошла ошибка. Попробуйте позже.')
+          showError($t('common.error') + '. ' + $t('common.tryLater'))
         }
         close()
       })

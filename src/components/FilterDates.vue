@@ -22,11 +22,11 @@
           :options="optionsFn"
         >
           <div class="row items-center no-wrap justify-end q-gap-xs">
-            <q-btn label="Отмена" rounded color="grey" flat v-close-popup />
-            <q-btn label="Очистить" rounded color="deep-orange" flat @click="clear" />
+            <q-btn :label="$t('common.cancel')" rounded color="grey" flat v-close-popup />
+            <q-btn :label="$t('filter.clear')" rounded color="deep-orange" flat @click="clear" />
             <q-btn label="OK" rounded color="primary" flat @click="filterByCalendar" v-close-popup />
           </div>
-          <p class="text-grey q-mt-md q-mb-none text-caption">Двойное нажатие по дате вернёт результат за один день.</p>
+          <p class="text-grey q-mt-md q-mb-none text-caption">{{ $t('filter.doubleClickHint') }}</p>
         </q-date>
       </q-popup-proxy>
     </q-btn>
@@ -36,26 +36,15 @@
 <script setup>
 import moment from 'moment'
 import {
-  ref
+  ref,
+  computed
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useDate from 'src/modules/useDate'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
 import { FILTER_FORMAT, DAY, WEEK, MONTH } from 'src/config'
 
-const TABS = [
-  {
-    label: 'День',
-    value: DAY
-  },
-  {
-    label: 'Неделя',
-    value: WEEK
-  },
-  {
-    label: 'Месяц',
-    value: MONTH
-  },
-]
+// TABS будут создаваться динамически в computed
 
 const props = defineProps({
   withButtons: {
@@ -78,7 +67,23 @@ const props = defineProps({
 
 const emit = defineEmits(['on-change'])
 
+const { t: $t } = useI18n()
 const { getBetweenDays, getCurrentWeek, getCurrentMonth } = useDate()
+
+const TABS = computed(() => [
+  {
+    label: $t('statistics.day'),
+    value: DAY
+  },
+  {
+    label: $t('statistics.week'),
+    value: WEEK
+  },
+  {
+    label: $t('statistics.month'),
+    value: MONTH
+  },
+])
 
 const calendarDate = ref(props.selectedToday ? moment().startOf(DAY).format(FILTER_FORMAT) : null)
 const localSelectedTab = ref(props.selectedTab)
