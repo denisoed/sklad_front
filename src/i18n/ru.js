@@ -86,12 +86,10 @@ export default ({
   },
   
   auth: {
-    title: 'Авторизация',
-    btn: 'Вход',
-    google: 'Войти через google',
-    forgot: 'Забыли пароль?',
     success: 'Вы вошли в систему',
     error: 'Логин или пароль не верный',
+    loginSuccess: 'Вы вошли в систему',
+    authKeyError: 'Не удалось получить ключ авторизации',
   },
   
   register: {
@@ -425,6 +423,13 @@ export default ({
     warehouseSettings: 'Настройки склада',
     minStock: 'Остатки',
     minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
+    minSizesInProduct: 'Мин кол-во размеров в товаре',
+    valueMustBeZeroOrMore: 'Значение должно быть больше или равно нулю',
+    notifyLowStock: 'Оповещать о низких остатках',
+    sizesConfigurations: 'Конфигурации размеров',
+    manageSizesDescription: 'Создавайте и управляйте списками размеров для разных типов товаров',
+    configureSizes: 'Настроить размеры',
+    saveChanges: 'Сохранить изменения',
     employee: {
       noPeopleAdded: 'Люди не добавлены',
       removeEmployee: 'Удалить сотрудника',
@@ -455,6 +460,7 @@ export default ({
     updatedSuccessfully: 'Продукт успешно обновлён!',
     deletedSuccessfully: 'Товар успешно удалён!',
     categoryLabel: 'Категория товара',
+    categoryHint: 'Привязать товар к категории',
     originalPrice: 'Опт. цена',
     retailPrice: 'Роз. цена',
     discountPrice: 'Установить акционную цену',
@@ -467,12 +473,14 @@ export default ({
     additionalRetailPrices: 'Доп. розничные цены',
     additionalPricesDescription: 'Цена для постоянных клиентов',
     additionalPricesOther: 'И другие варианты',
+    additionalPricesFullDescription: 'Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например: цена для постоянных клиентов, цена после 18:00 и другие варианты. Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.',
     addPrice: 'Добавить цену',
     soldUnits: 'Продано единиц:',
     deletedFromWarehouse: 'Удалён со склада',
     returnProduct: 'Возврат товара',
     saleDate: 'Дата продажи',
     productName: 'Название товара',
+    productNameRequired: 'Название товара *',
     writeEverything: 'Пишите всё, что думаете',
     priceName: 'Название',
     create: 'Создать товар',
@@ -481,11 +489,24 @@ export default ({
     information: 'Информация',
     paymentMethods: 'Способы оплаты',
     wholesalePrice: 'Оптовая цена за 1 шт',
+    wholesalePriceRequired: 'Оптовая цена за 1 шт *',
     retailPricePerPiece: 'Розничная цена за 1 шт',
     additionalRetailPrice: 'Доп. розничные цены',
     canSpecifyLater: 'Можно указать позже',
     addPrice: 'Добавить цену',
     pricesForProduct: 'Цены на товар',
+    productHistory: 'История товара',
+    deleteThisProduct: 'Удалить этот товар',
+    duplicatingProduct: 'Дублируется товар: #{id}',
+    hasPromotion: 'На этот товар действует акция',
+    selectWarehouseHint: 'Выберите склад для товара',
+    articleId: 'Артикул(ID)',
+    setPromotionalPrice: 'Установить акционную цену',
+    promotionalPricePerUnit: 'Акционная цена за 1 шт',
+    sizesDescription: 'Этот параметр позволяет использовать размеры для товара',
+    noPromotionToday: 'На сегодня акции нет',
+    setPromotionDates: 'Выставить акционную цену на определенные даты',
+    promotionDates: 'Акция на даты:',
   },
 
   // Sizes
@@ -553,5 +574,23 @@ export default ({
   // Error messages
   error: {
     pageNotFound: 'Страница не найдена...',
+  },
+
+  // Start page
+  start: {
+    welcome: 'Добро пожаловать',
+    toSklad: 'на Sklad',
+    description: 'Мы рады, что вы присоединились к нам. Теперь управление вашими товарами и продажами станет проще и удобнее.',
+    loading: 'Подождите...',
+    error: 'Упс. Попробуйте позже.',
+  },
+
+  // Price Label Editor
+  priceLabelEditor: {
+    title: 'Редактирование ценника',
+    editElement: 'Редактировать элемент',
+    type: 'Тип',
+    text: 'Текст',
+    actions: 'Действия',
   },
 })

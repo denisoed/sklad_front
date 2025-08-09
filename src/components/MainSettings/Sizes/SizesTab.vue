@@ -48,10 +48,7 @@
               Загрузка...
             </span>
             <div v-else class="flex column items-start text-left">
-              <span class="text-subtitle2">Список пуст</span>
-              <p class="q-mb-none text-grey-5 text-caption q-mt-xs">
-                Создавайте и управляйте списком размеров под разные товары
-              </p>
+              {{ $t('pages.listIsEmpty') }}
             </div>
           </div>
         </div>

@@ -59,10 +59,10 @@
                 type="number"
                 outlined
                 min="0"
-                label="Мин кол-во размеров в товаре"
-                hint="Значение должно быть больше или равно нулю"
+                :label="$t('settings.minSizesInProduct')"
+                :hint="$t('settings.valueMustBeZeroOrMore')"
+                :rules="[val => val >= 0 || $t('settings.valueMustBeZeroOrMore')]"
                 :disable="!formData.useMinSizes"
-                :rules="[val => val >= 0 || 'Значение должно быть больше или равно нулю']"
                 enterkeyhint="done"
               />
             </template>
@@ -82,7 +82,7 @@
                   class="q-mb-sm"
                   dense
                 >
-                  <span class="text-subtitle1">Оповещать о низких остатках</span>
+                  <span class="text-subtitle1">{{ $t('settings.notifyLowStock') }}</span>
                 </q-checkbox>
                 <h6
                   class="q-ma-none q-mb-sm text-subtitle2 text-grey-2"
@@ -94,10 +94,10 @@
                   type="number"
                   outlined
                   min="0"
-                  label="Мин кол-во размеров в товаре"
-                  hint="Значение должно быть больше или равно нулю"
+                  :label="$t('settings.minSizesInProduct')"
+                  :hint="$t('settings.valueMustBeZeroOrMore')"
+                  :rules="[val => val >= 0 || $t('settings.valueMustBeZeroOrMore')]"
                   :disable="!formData.useMinSizes"
-                  :rules="[val => val >= 0 || 'Значение должно быть больше или равно нулю']"
                   enterkeyhint="done"
                 />
               </div>
@@ -107,17 +107,17 @@
           <!-- Size configurations link -->
           <Dropdown
             class="q-mt-md"
-            title="Конфигурации размеров"
+            :title="$t('sizes.configureSizes')"
           >
             <template #body>
               <div class="flex column">
-                <p class="q-ma-none text-grey-2 text-caption q-mb-sm">
-                  Создавайте и управляйте списками размеров для разных типов товаров
+                <p class="text-subtitle2 text-grey-6 q-mb-md">
+                  {{ $t('settings.manageSizesDescription') }}
                 </p>
                 <q-btn
                   color="primary"
                   outline
-                  label="Настроить размеры"
+                  :label="$t('sizes.configureSizes')"
                   icon="mdi-cog"
                   @click="goToSizesSettings"
                   class="full-width border-radius-sm"
@@ -148,7 +148,7 @@
 
       <div class="col-12 flex flex-center q-mt-auto">
         <q-btn
-          label="Сохранить изменения"
+          :label="$t('settings.saveChanges')"
           push
           color="primary"
           tabindex="8"

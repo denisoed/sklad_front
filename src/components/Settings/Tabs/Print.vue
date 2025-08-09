@@ -9,7 +9,7 @@
       <div v-else class="flex column items-center">
         <span>
           <q-icon size="sm" name="mdi-printer-alert" class="q-mr-sm text-grey-5" />
-          Список пуст
+          {{ $t('pages.listIsEmpty') }}
         </span>
         <p class="q-mt-md text-subtitle2 " style="max-width:350px;">
           {{ instructionText }}

@@ -39,6 +39,9 @@ import { defineComponent, ref, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 import useJwtMethods from 'src/modules/auth/useJwtMethods'
 import useHelpers from 'src/modules/useHelpers'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 export default defineComponent({
   name: 'ConnectGoogle',
@@ -59,15 +62,15 @@ export default defineComponent({
         try {
           const url = `/auth/google/callback?access_token=${access_token.value}`
           await connect(url)
-          showSuccess('Вы вошли в систему')
+          showSuccess($t('auth.loginSuccess'))
           window.location.href = window.location.origin
         } catch {
           error.value = true
-          showError('Не удалось получить ключ авторизации')
+          showError($t('auth.authKeyError'))
         }
       } else {
         error.value = true
-        showError('Не удалось получить ключ авторизации')
+        showError($t('auth.authKeyError'))
       }
     })
 

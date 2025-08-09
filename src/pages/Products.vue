@@ -8,17 +8,7 @@
         @clear="onClear"
       />
 
-      <p class="q-mb-sm text-subtitle2">Склады</p>
-      <MiniTabs
-        :list="skladsTabs"
-        :selected-id="selectedSkladId"
-        scroll-to-active-tab
-        class="q-mb-md"
-        @on-change="onChangeSklad"
-      />
-
-      <!-- Categories -->
-      <p class="q-mb-sm text-subtitle2">Категории</p>
+      <p class="q-mb-sm text-subtitle2">{{ $t('pages.productsLabel') }}</p>
       <MiniTabs
         :list="categories"
         :selected-id="selectedCategoryId"
@@ -29,7 +19,7 @@
       <template v-if="products?.length">
         <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
           <div class="flex items-center q-gap-sm">
-            <p class="q-mb-none text-subtitle2">Товары</p>
+            <p class="q-mb-none text-subtitle2">{{ $t('pages.productsLabel') }}</p>
             <q-badge color="primary" :label="products.length" />
           </div>
           
@@ -90,22 +80,22 @@
             name="mdi-loading"
             class="mdi-spin q-mr-sm "
           />
-          Загрузка...
+          {{ $t('pages.loading') }}
         </span>
         <div v-else class="flex column items-center">
           <span>
             <q-icon size="sm" name="mdi-cart-outline" class="q-mr-xs text-grey-5" />
-            Список пуст
+            {{ $t('pages.listIsEmpty') }}
           </span>
           <p class="q-mt-md text-subtitle2 text-grey-5" style="max-width:220px;">
-            Не удалось найти товары
+            {{ $t('pages.noProductsFound') }}
           </p>
         </div>
       </h6>
     </div>
     <ProductControls
       :show="Boolean(bulkProducts?.length)"
-      :title="`Выбрано: ${bulkProducts?.length}`"
+      :title="`${$t('pages.selected')}: ${bulkProducts?.length}`"
       @on-close="onCloseBulk"
       @on-finish-remove="onFinishRemove"
       @on-finish-update="onFinishUpdate"

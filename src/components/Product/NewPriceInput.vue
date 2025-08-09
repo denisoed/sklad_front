@@ -75,7 +75,7 @@
     <q-dialog v-model="showInfoDialog">
       <q-card style="min-width: 350px">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Доп. розничные цены</div>
+          <div class="text-h6">{{ $t('product.additionalRetailPrices') }}</div>
           <q-space />
           <q-btn
             round
@@ -94,15 +94,7 @@
 
         <q-card-section>
           <p class="text-subtitle2">
-            Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например,
-          </p>
-          <ul class="q-mt-md">
-            <li>Цена для постоянных клиентов</li>
-            <li>Цена после 18:00</li>
-            <li>И другие варианты</li>
-          </ul>
-          <p class="text-body2 q-mt-md text-grey-5">
-            Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.
+            {{ $t('product.additionalPricesFullDescription') }}
           </p>
         </q-card-section>
       </q-card>

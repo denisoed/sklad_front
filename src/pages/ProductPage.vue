@@ -25,7 +25,7 @@
                   >
                     <div class="flex items-center">
                       <q-icon name="mdi-content-duplicate" class="q-mr-sm" size="xs" />
-                      <span>Дублировать</span>
+                      <span>{{ $t('product.duplicate') }}</span>
                     </div>
                   </q-item-section>
                 </q-item>
@@ -39,7 +39,7 @@
                   <q-item-section>
                     <div class="flex no-wrap items-center">
                       <q-icon name="mdi-history" class="q-mr-sm" size="xs" />
-                      История товара
+                      {{ $t('product.productHistory') }}
                     </div>
                   </q-item-section>
                 </q-item>
@@ -54,7 +54,7 @@
                   >
                     <div class="flex items-center">
                       <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
-                      <span class="text-deep-orange">Удалить этот товар</span>
+                      <span class="text-deep-orange">{{ $t('product.deleteThisProduct') }}</span>
                     </div>
                   </q-item-section>
                 </q-item>
@@ -74,7 +74,7 @@
             name="mdi-loading"
             class="mdi-spin q-mr-sm "
           />
-          Загрузка...
+          {{ $t('pages.loading') }}
         </span>
       </h6>
 
@@ -91,7 +91,7 @@
               class="flex items-center border-radius-sm q-pa-sm q-mb-md q-px-md"
               style="background-color: rgb(255 255 0 / 8%);"
             >
-              <span>Дублируется товар: <strong>#{{ duplicatedFromID }}</strong></span>
+              <span>{{ $t('product.duplicatingProduct', { id: duplicatedFromID }) }}</span>
               <q-icon name="mdi-content-duplicate" class="q-ml-auto" color="primary" size="sm" />
             </div>
             <div
@@ -99,7 +99,7 @@
               class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
               style="background-color: rgb(255 0 0 / 8%);border-radius: 3px;"
             >
-              <span class="q-mr-sm">На этот товар действует акция</span>
+              <span class="q-mr-sm">{{ $t('product.hasPromotion') }}</span>
               <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
             </div>
 
@@ -112,10 +112,10 @@
               outlined
               class="full-width"
               :label="$t('common.warehouse') + ' *'"
-              hint="Выберите склад для товара"
+              :hint="$t('common.requiredField')"
+              :rules="[val => val?.length || $t('common.requiredField')]"
               tabindex="1"
               clearable
-              :rules="[() => !!cloneData.sklad || $t('common.requiredField')]"
             />
 
             <!-- Categories -->
@@ -126,8 +126,8 @@
               @on-create-new="onCreateNewCategory"
               outlined
               class="q-mb-md"
-              label="Категория товара"
-              hint="Привязать товар к категории"
+              :label="$t('product.categoryLabel')"
+              :hint="$t('product.categoryHint')"
               tabindex="2"
               clearable
               emit-value
@@ -149,9 +149,9 @@
                 <q-input
                   v-model="product.name"
                   outlined
-                  label="Название товара *"
-                  hint="Обязательное поле"
-                  :rules="[val => val?.length || 'Обязательное поле']"
+                  :label="$t('product.productNameRequired')"
+                  :hint="$t('common.requiredField')"
+                  :rules="[val => val?.length || $t('common.requiredField')]"
                   tabindex="4"
                   class="full-width"
                   data-scroller="name"
@@ -163,7 +163,7 @@
                 class="articul"
                 v-model="product.id"
                 outlined
-                label="Артикул(ID)"
+                :label="$t('product.articleId')"
                 readonly
                 enterkeyhint="done"
               />
@@ -176,7 +176,7 @@
             <InputPrice
               data-scroller="origPrice"
               v-model="product.origPrice"
-              label="Оптовая цена за 1 шт *"
+              :label="$t('product.wholesalePriceRequired')"
               hint="Обязательное поле"
               clear
               :rules="[val => val?.length || 'Обязательное поле']"
@@ -196,7 +196,7 @@
           >
             <q-checkbox
               v-model="product.withDiscount"
-              label="Установить акционную цену"
+              :label="$t('product.setPromotionalPrice')"
               class="full-width"
             />
             <div v-if="product.withDiscount" class="col-12 q-pa-sm">
@@ -207,7 +207,7 @@
                 </p>
                 <InputPrice
                   v-model="product.discountPrice"
-                  label="Акционная цена за 1 шт"
+                  :label="$t('product.promotionalPricePerUnit')"
                   clear
                   tabindex="7"
                   :rules="[
@@ -256,17 +256,17 @@
                 <q-checkbox
                   :model-value="!product.useNumberOfSizes"
                   @update:model-value="product.useNumberOfSizes = !$event"
-                  label="Использовать размеры"
+                  :label="$t('product.useSizes')"
                 />
               </div>
               <h6
                 class="q-ma-none q-px-sm  text-subtitle2 text-grey-5"
               >
-                Этот параметр позволяет использовать размеры для товара
+                {{ $t('product.sizesDescription') }}
               </h6>
               <div v-if="product.useNumberOfSizes" class="q-pa-sm">
                 <q-separator />
-                <p class="q-mt-md q-mb-sm">Количество:</p>
+                <p class="q-mt-md q-mb-sm">{{ $t('common.quantity') }}:</p>
                 <InputPlusMinus
                   v-model="product.countSizes"
                   :max="1000000"
@@ -289,7 +289,7 @@
                     to="/main-settings?tab=sizes"
                     push
                   >
-                    Настроить размеры
+                    {{ $t('sizes.configureSizes') }}
                   </q-btn>
                 </div>
               </div>

@@ -19,7 +19,7 @@
       <template #no-option>
         <div class="q-pa-md">
           <div class="text-grey-6 text-center q-mb-md">
-            Список пуст
+            {{ $t('pages.listIsEmpty') }}
           </div>
           <q-btn
             push
@@ -63,6 +63,9 @@ import {
   toRefs,
   watch
 } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   modelValue: {

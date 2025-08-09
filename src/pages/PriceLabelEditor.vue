@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Редактирование ценника" />
+      <PageTitle :title="$t('priceLabelEditor.title')" />
       <div
         id="editor"
         class="draggable-parent price-label_editor full-width flex flex-center"
@@ -48,7 +48,7 @@
           separator="cell"
           class="full-width table block-bg border-radius-sm"
           hide-pagination
-          no-data-label="Список пуст"
+          :no-data-label="$t('pages.listIsEmpty')"
         >
           <template #body="props">
             <q-tr :props="props">
@@ -60,7 +60,7 @@
               </q-td>
               <q-td class="text-right">
                 <div class="flex justify-end">
-                  <BasicDialog width="400px" title="Редактировать элемент">
+                  <BasicDialog width="400px" :title="$t('priceLabelEditor.editElement')">
                     <q-btn
                       icon="mdi-pencil"
                       round
