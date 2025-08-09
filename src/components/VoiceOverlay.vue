@@ -38,6 +38,8 @@
             v-if="isApiAvailable"
             :color="isUserPressingButton ? 'negative' : 'primary'"
             :icon="isUserPressingButton ? 'stop' : 'mic'"
+            :loading="isProcessing"
+            :disable="isProcessing"
             size="lg"
             round
             class="record-button"
@@ -50,7 +52,7 @@
         </div>
 
         <q-btn
-          v-if="hasStartedRecording && !isUserPressingButton && !isRecording"
+          v-if="hasStartedRecording && !recognizedText && !isRecording && !isUserPressingButton"
           color="primary"
           push
           label="Заново"
@@ -78,6 +80,7 @@ const isRetrying = ref(false)
 const hasStartedRecording = ref(false)
 const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
 const isUserPressingButton = ref(false)
+const isProcessing = ref(false)
 
 // Sequence guard to avoid async race between close and open
 let lifecycleSeq = 0
@@ -116,6 +119,7 @@ const finishHandler = (finalText) => {
     return
   }
   recognizedText.value = finalText
+  isProcessing.value = false
 }
 
 // Register finish handler initially
@@ -125,6 +129,7 @@ async function handleCancel() {
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
+  isProcessing.value = false
   // Ensure recognition won't auto-restart during teardown
   setShouldContinueCallback(() => false)
   if (isRecording.value) {
@@ -140,6 +145,7 @@ function handleRetry() {
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
+  isProcessing.value = false
   if (isRecording.value) {
     stopRecord()
   }
@@ -189,6 +195,7 @@ async function handlePointerUp(event) {
   if (event) event.preventDefault()
 
   isUserPressingButton.value = false
+  isProcessing.value = true
 
   if (isRecording.value) {
     stopRecord()
@@ -199,6 +206,10 @@ async function handlePointerUp(event) {
 
   // Небольшая задержка, чтобы дать доехать финальным результатам
   setTimeout(() => {
+    // Проверяем, есть ли результат, если нет - убираем loading (это означает ошибку)
+    if (!recognizedText.value && !transcript.value) {
+      isProcessing.value = false
+    }
     submitIfNeededAndClose()
   }, 150)
 }
@@ -206,11 +217,16 @@ async function handlePointerUp(event) {
 async function handlePointerCancel(event) {
   if (event) event.preventDefault()
   isUserPressingButton.value = false
+  isProcessing.value = true
   if (isRecording.value) {
     stopRecord()
   }
   await stopAudio()
   setTimeout(() => {
+    // Проверяем, есть ли результат, если нет - убираем loading (это означает ошибку)
+    if (!recognizedText.value && !transcript.value) {
+      isProcessing.value = false
+    }
     submitIfNeededAndClose()
   }, 150)
 }
@@ -373,6 +389,7 @@ watch(() => props.modelValue, async (val) => {
     hasStartedRecording.value = false
     isRetrying.value = false
     isUserPressingButton.value = false
+    isProcessing.value = false
     
     // Restore after full teardown (relevant for iOS fresh instance)
     restore()
@@ -396,6 +413,7 @@ watch(() => props.modelValue, async (val) => {
   } else {
     // Immediately disable continuation to prevent unintended restart
     isUserPressingButton.value = false
+    isProcessing.value = false
     setShouldContinueCallback(() => false)
 
     if (isRecording.value) {
