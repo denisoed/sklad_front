@@ -1,44 +1,92 @@
-import { ref, onBeforeUnmount } from 'vue'
+import { ref, onBeforeUnmount, watch } from 'vue'
+import { useSpeechRecognition as useVueUseSpeechRecognition } from '@vueuse/core'
 
 const useSpeechRecognition = () => {
+  // Состояния для обратной совместимости
   const transcript = ref('')
   const isRecording = ref(false)
   const isApiAvailable = Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
   
-  // Создаем новый экземпляр для каждого использования
-  let recognition = null
+  // Внутренние переменные для управления состоянием
   let finishCallback = null
   let isDestroyed = ref(false)
   let recognitionTimeout = null
-  let shouldContinueRecording = null // Callback для проверки, нужно ли продолжать запись
-  let accumulatedText = '' // Накопленный текст из предыдущих сессий
-  let currentSessionText = '' // Текст текущей сессии
+  let shouldContinueRecording = null
+  let accumulatedText = ''
+  let currentSessionText = ''
+  let lastProcessedResult = ''
+  
+  // Инициализируем VueUse SpeechRecognition
+  const {
+    isSupported,
+    isListening,
+    result,
+    start: vueUseStart,
+    stop: vueUseStop,
+    recognition
+  } = useVueUseSpeechRecognition({
+    lang: 'ru-RU',
+    interimResults: true,
+    continuous: !isIOS, // iOS Safari плохо работает с continuous=true
+    maxAlternatives: 1
+  })
 
-  function initializeRecognition() {
-    if (!isApiAvailable || recognition) {
-      return
-    }
+  // Синхронизируем состояния
+  watch(isListening, (newValue) => {
+    isRecording.value = newValue
+  })
 
-    try {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-      recognition = new SpeechRecognition()
+  // Используем VueUse result напрямую, но с правильной логикой
+  watch(result, (newText) => {
+    if (!newText || isDestroyed.value) return
+    
+    // Если это тот же результат, игнорируем
+    if (newText === lastProcessedResult) return
+    
+    // Обновляем текущий текст сессии
+    currentSessionText = newText
+    lastProcessedResult = newText
+    
+    // Показываем комбинацию накопленного + текущего текста
+    transcript.value = accumulatedText ? `${accumulatedText} ${currentSessionText}` : currentSessionText
+    
+  })
+
+  // Следим за окончанием записи
+  watch(isListening, (listening) => {
+    if (!listening && !isDestroyed.value) {
+      // Очищаем таймаут при нормальном завершении
+      if (recognitionTimeout) {
+        clearTimeout(recognitionTimeout)
+        recognitionTimeout = null
+      }
       
-      recognition.lang = 'ru-RU'
-      recognition.interimResults = true
-      // iOS Safari плохо работает с continuous=true. Для стабильности выключаем.
-      recognition.continuous = !isIOS
-      recognition.maxAlternatives = 1
-
-      recognition.onstart = onStart
-      recognition.onend = onEnd
-      recognition.onresult = onResult
-      recognition.onerror = onError
-      recognition.onnomatch = onNoMatch
-    } catch (error) {
-      console.error('Ошибка инициализации распознавания речи:', error)
+      // При остановке записи сохраняем текущий результат как финальный
+      if (currentSessionText.trim()) {
+        accumulatedText = accumulatedText ? accumulatedText + ' ' + currentSessionText.trim() : currentSessionText.trim()
+        transcript.value = accumulatedText
+        
+        // Вызываем callback для финального результата
+        if (finishCallback) {
+          finishCallback(accumulatedText.trim())
+        }
+        
+        // Сбрасываем текущий текст сессии после добавления в накопленный
+        currentSessionText = ''
+        lastProcessedResult = ''
+      }
+      
+      // Продолжаем запись, только если кнопка все еще зажата
+      if (shouldContinueRecording && shouldContinueRecording()) {
+        setTimeout(() => {
+          if (!isDestroyed.value && shouldContinueRecording && shouldContinueRecording()) {
+            startRecord()
+          }
+        }, 100)
+      }
     }
-  }
+  })
 
   function onFinish(callback) {
     finishCallback = callback
@@ -49,57 +97,38 @@ const useSpeechRecognition = () => {
   }
 
   function startRecord() {
-    if (isDestroyed.value) return
+    if (isDestroyed.value || !isApiAvailable) return
     
     try {
-      // На iOS принудительно очищаем старый экземпляр только если это первый запуск
-      if (isIOS && recognition && !isRecording.value) {
-        // Проверяем, нужна ли очистка (если recognition в нерабочем состоянии)
-        try {
-          const recognitionState = recognition.serviceState || 'unknown'
-          if (recognitionState === 'failed' || recognitionState === 'error') {
-            cleanupRecognition()
-          }
-        } catch (e) {
-          cleanupRecognition()
+      // Очищаем только текст текущей сессии при каждом старте
+      currentSessionText = ''
+      
+      // Для iOS обновляем таймаут на случай перезапуска
+      if (isIOS) {
+        if (recognitionTimeout) {
+          clearTimeout(recognitionTimeout)
         }
+        recognitionTimeout = setTimeout(() => {
+          // На iOS перезапуск через таймаут, если кнопка все еще зажата
+          if (shouldContinueRecording && shouldContinueRecording()) {
+            stopRecord()
+            setTimeout(() => startRecord(), 120)
+          } else {
+            stopRecord()
+          }
+        }, 12000)
       }
       
-      if (!recognition) {
-        initializeRecognition()
-      }
-      
-      if (recognition && !isRecording.value) {
-        // Очищаем только текст текущей сессии при каждом старте
-        currentSessionText = ''
-        
-        // Для iOS обновляем таймаут на случай перезапуска
-        if (isIOS) {
-          if (recognitionTimeout) {
-            clearTimeout(recognitionTimeout)
-          }
-          recognitionTimeout = setTimeout(() => {
-            // На iOS перезапуск через таймаут, если кнопка все еще зажата
-            if (shouldContinueRecording && shouldContinueRecording()) {
-              stopRecord()
-              setTimeout(() => startRecord(), 120)
-            } else {
-              stopRecord()
-            }
-          }, 12000)
-        }
-        
-        recognition.start()
+      if (!isRecording.value) {
+        vueUseStart()
       }
     } catch (error) {
       console.error('Ошибка начала записи:', error)
-      // Если произошла ошибка, попробуем переинициализировать
-      cleanupRecognition()
       
+      // Если произошла ошибка, попробуем переинициализировать
       const retryDelay = isIOS ? 300 : 120
       setTimeout(() => {
         if (!isDestroyed.value && shouldContinueRecording && shouldContinueRecording()) {
-          initializeRecognition()
           startRecord()
         }
       }, retryDelay)
@@ -116,149 +145,28 @@ const useSpeechRecognition = () => {
     }
     
     try {
-      if (recognition && isRecording.value) {
-        recognition.stop()
+      if (isRecording.value) {
+        vueUseStop()
       }
     } catch (error) {
       console.error('Ошибка остановки записи:', error)
-      // Пробуем аварийную остановку
-      try {
-        recognition && recognition.abort && recognition.abort()
-      } catch (_) {}
       isRecording.value = false
     }
   }
 
-  function onStart() {
-    if (isDestroyed.value) return
-    isRecording.value = true
-  }
-
-  function onEnd() {
-    if (isDestroyed.value) return
-    isRecording.value = false
-    
-    // Очищаем таймаут при нормальном завершении
-    if (recognitionTimeout) {
-      clearTimeout(recognitionTimeout)
-      recognitionTimeout = null
-    }
-    
-    // Сохраняем текст текущей сессии в накопленный текст
-    if (currentSessionText.trim()) {
-      accumulatedText = accumulatedText ? accumulatedText + ' ' + currentSessionText.trim() : currentSessionText.trim()
-      transcript.value = accumulatedText
-    }
-    
-    // Продолжаем запись, только если кнопка все еще зажата
-    if (shouldContinueRecording && shouldContinueRecording()) {
-      setTimeout(() => {
-        if (!isDestroyed.value && shouldContinueRecording && shouldContinueRecording()) {
-          startRecord()
-        }
-      }, 100)
-    }
-  }
-
-  function onResult(event) {
-    if (isDestroyed.value) return
-    
-    let finalTranscript = ''
-    let interimTranscript = ''
-    
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const result = event.results[i]
-      if (result.isFinal) {
-        finalTranscript += result[0].transcript
-      } else {
-        interimTranscript += result[0].transcript
-      }
-    }
-    
-    // Обновляем текст текущей сессии
-    if (finalTranscript) {
-      currentSessionText += finalTranscript
-    }
-    
-    // Показываем комбинацию накопленного + текущего + промежуточного текста
-    const currentDisplay = currentSessionText + (interimTranscript || '')
-    transcript.value = accumulatedText ? `${accumulatedText} ${currentDisplay}` : currentDisplay
-    
-    // Если есть финальный результат, вызываем callback
-    if (finalTranscript && finishCallback) {
-      const fullText = accumulatedText ? `${accumulatedText} ${currentSessionText}` : currentSessionText
-      finishCallback(fullText.trim())
-    }
-  }
-
-  function onError(event) {
-    if (isDestroyed.value) return
-    
-    // Очищаем таймаут при ошибке
-    if (recognitionTimeout) {
-      clearTimeout(recognitionTimeout)
-      recognitionTimeout = null
-    }
-    
-    isRecording.value = false
-    
-    // Сохраняем текст текущей сессии перед перезапуском
-    if (currentSessionText.trim()) {
-      accumulatedText = accumulatedText ? accumulatedText + ' ' + currentSessionText.trim() : currentSessionText.trim()
-      transcript.value = accumulatedText
-    }
-    
-    // Не перезапускаем, если кнопка не зажата
-    if (!(shouldContinueRecording && shouldContinueRecording())) {
-      return
-    }
-
-    // При любой ошибке пытаемся перезапустить, если кнопка еще зажата
-    setTimeout(() => {
-      cleanupRecognition()
-      setTimeout(() => {
-        if (!isDestroyed.value && shouldContinueRecording && shouldContinueRecording()) {
-          initializeRecognition()
-          startRecord()
-        }
-      }, 200)
-    }, 100)
-  }
-
-  function onNoMatch() {
-    if (isDestroyed.value) return
-    // Даже при отсутствии совпадений продолжаем если кнопка зажата
-    // Ничего не делаем здесь; управление происходит через shouldContinueRecording
-  }
-
-  function cleanupRecognition() {
+  function cleanup() {
     // Очищаем таймаут
     if (recognitionTimeout) {
       clearTimeout(recognitionTimeout)
       recognitionTimeout = null
     }
     
-    if (recognition) {
-      try {
-        if (isRecording.value && recognition.stop) {
-          recognition.stop()
-        }
-        // На некоторых браузерах требуется abort для мгновенной очистки
-        if (recognition.abort) {
-          try { recognition.abort() } catch (_) {}
-        }
-        
-        // Очищаем все обработчики
-        recognition.onstart = null
-        recognition.onend = null
-        recognition.onresult = null
-        recognition.onerror = null
-        recognition.onnomatch = null
-        
-        recognition = null
-      } catch (error) {
-        console.error('Ошибка очистки recognition:', error)
+    try {
+      if (isRecording.value) {
+        vueUseStop()
       }
+    } catch (error) {
+      console.error('Ошибка очистки recognition:', error)
     }
     
     isRecording.value = false
@@ -267,7 +175,7 @@ const useSpeechRecognition = () => {
 
   function destroy() {
     isDestroyed.value = true
-    cleanupRecognition()
+    cleanup()
     finishCallback = null
     shouldContinueRecording = null
     // Очищаем все при уничтожении
@@ -286,7 +194,7 @@ const useSpeechRecognition = () => {
   // Allows restoring the composable after destroy() without remounting the component
   function restore() {
     // Ensure a clean slate in case destroy() wasn't called
-    cleanupRecognition()
+    cleanup()
     // Clear destruction flag so startRecord() can work again
     isDestroyed.value = false
     // Reset text state
@@ -305,17 +213,17 @@ const useSpeechRecognition = () => {
 
   return {
     isRecording,
-    isApiAvailable,
+    isApiAvailable: isSupported,
     startRecord,
     stopRecord,
     onFinish,
     transcript,
     destroy,
-    cleanup: cleanupRecognition,
+    cleanup,
     setShouldContinueCallback,
     resetAccumulatedText,
     restore
   }
 }
 
-export default useSpeechRecognition
+export default useSpeechRecognition 

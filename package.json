@@ -24,7 +24,7 @@
     "@quasar/extras": "^1.0.0",
     "@sentry/vue": "^8.13.0",
     "@vue/apollo-composable": "^4.0.0-alpha.17",
-    "@vueuse/core": "^10.1.2",
+    "@vueuse/core": "^10.11.1",
     "apexcharts": "^3.37.0",
     "apollo-upload-client": "^17.0.0",
     "axios": "^1.6.2",

@@ -11,13 +11,6 @@
           class="absolute-top-right q-mt-md q-mr-md"
         />
 
-        <div class="voice-indicator q-mb-md">
-          <q-icon 
-            :name="isRecording ? 'mic' : 'mic_off'" 
-            size="48px" 
-            :color="isRecording ? 'primary' : 'grey'" 
-          />
-        </div>
         <div class="voice-placeholder q-mb-md">
           <span v-if="!isApiAvailable" class="text-red q-mb-md">
             Распознавание речи недоступно в вашем браузере
@@ -33,7 +26,7 @@
         </div>
         
         <!-- Кнопка записи -->
-        <div class="record-button-container q-mb-md">
+        <div class="record-button-container">
           <q-btn
             v-if="isApiAvailable"
             :color="isUserPressingButton ? 'negative' : 'primary'"
@@ -272,14 +265,6 @@ function drawBars() {
       ctx.shadowColor = accent
       ctx.shadowBlur = 8
       ctx.fill()
-      
-      ctx.beginPath()
-      ctx.roundRect(x + 2, HEIGHT / 2, barWidth - 4, barHeight, 4)
-      ctx.fillStyle = accent
-      ctx.globalAlpha = 0.7
-      ctx.shadowColor = accent
-      ctx.shadowBlur = 8
-      ctx.fill()
     }
     
     ctx.restore()
@@ -466,10 +451,10 @@ onBeforeUnmount(async () => {
   justify-content: center;
 }
 .record-button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 24px;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 2;
 }
 .record-button {
   width: 80px;
@@ -483,11 +468,10 @@ onBeforeUnmount(async () => {
   }
 }
 .voice-canvas {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 240px;
+  position: fixed;
+  left: 0;
+  bottom: -60px;
+  width: 100%;
   height: 120px;
   z-index: 1;
 }
