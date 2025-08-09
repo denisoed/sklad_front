@@ -283,6 +283,21 @@ const useSpeechRecognition = () => {
     transcript.value = ''
   }
 
+  // Allows restoring the composable after destroy() without remounting the component
+  function restore() {
+    // Ensure a clean slate in case destroy() wasn't called
+    cleanupRecognition()
+    // Clear destruction flag so startRecord() can work again
+    isDestroyed.value = false
+    // Reset text state
+    accumulatedText = ''
+    currentSessionText = ''
+    transcript.value = ''
+    // Leave callbacks empty; the caller will set them if needed
+    finishCallback = null
+    shouldContinueRecording = null
+  }
+
   // Автоматическая очистка при размонтировании компонента
   onBeforeUnmount(() => {
     destroy()
@@ -298,7 +313,8 @@ const useSpeechRecognition = () => {
     destroy,
     cleanup: cleanupRecognition,
     setShouldContinueCallback,
-    resetAccumulatedText
+    resetAccumulatedText,
+    restore
   }
 }
 

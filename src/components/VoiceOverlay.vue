@@ -100,19 +100,23 @@ const {
   cleanup,
   setShouldContinueCallback,
   resetAccumulatedText,
-  destroy
+  destroy,
+  restore
 } = speechRecognition
 
 // Устанавливаем callback для проверки, нужно ли продолжать запись
 setShouldContinueCallback(() => isUserPressingButton.value)
 
-onFinish((finalText) => {
+// Create a reusable finish handler to rebind after restore()
+const finishHandler = (finalText) => {
   if (isRetrying.value) {
     return
   }
-  // Показываем результат, но отправку делаем только при отпускании кнопки
   recognizedText.value = finalText
-})
+}
+
+// Register finish handler initially
+onFinish(finishHandler)
 
 async function handleCancel() {
   recognizedText.value = ''
@@ -363,13 +367,17 @@ watch(() => props.modelValue, async (val) => {
     hasStartedRecording.value = false
     isRetrying.value = false
     isUserPressingButton.value = false
+    
+    // Restore after full teardown (relevant for iOS fresh instance)
+    restore()
+    // Rebind finish handler after restore
+    onFinish(finishHandler)
     resetAccumulatedText()
     
     if (isIOS.value) {
       await new Promise(resolve => setTimeout(resolve, 100))
     }
     
-    // Start mic visualization immediately on open
     setShouldContinueCallback(() => isUserPressingButton.value)
     await startAudio()
   } else {
@@ -378,8 +386,8 @@ watch(() => props.modelValue, async (val) => {
     }
     await stopAudio()
     
-    setShouldContinueCallback(() => false)
-    cleanup()
+    // Ensure full cleanup on all platforms
+    destroy()
   }
 })
 
