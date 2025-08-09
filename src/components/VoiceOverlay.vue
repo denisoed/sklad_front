@@ -77,9 +77,6 @@ const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
 const isUserPressingButton = ref(false)
 const isProcessing = ref(false)
 
-// Sequence guard to avoid async race between close and open
-let lifecycleSeq = 0
-
 // Guard to prevent duplicate close event emission
 let hasEmittedClose = false
 
@@ -144,8 +141,7 @@ async function cleanup() {
   // Уничтожаем экземпляр распознавания речи
   destroy()
   
-  // Инкрементируем счетчик жизненного цикла для отмены async операций
-  lifecycleSeq++
+
 }
 
 async function handleClose() {
@@ -156,14 +152,24 @@ async function handleClose() {
   
   hasEmittedClose = true
   
-  // Perform cleanup
-  await cleanup()
-  
-  emit('close')
+  try {
+    // Perform cleanup
+    await cleanup()
+    
+    emit('close')
+  } catch (error) {
+    console.error('Error during cleanup:', error)
+    // Reset flag on cleanup failure to allow retry
+    hasEmittedClose = false
+    throw error
+  }
 }
 
 function handleRetry() {
   isRetrying.value = true
+  
+  // Reset close flag to allow proper closing after retry
+  hasEmittedClose = false
   
   // Полная очистка состояний
   recognizedText.value = ''
@@ -203,9 +209,19 @@ async function handlePointerDown(event) {
 
   // Готовим аудио-визуализацию по требованию
   if (!isAudioInitialized) {
-    await startAudio()
+    try {
+      await startAudio()
+    } catch (error) {
+      // startAudio failed and already handled cleanup/close
+      return
+    }
   } else if (isIOS.value && audioContext && audioContext.state === 'suspended') {
     try { await audioContext.resume() } catch (error) { console.error('AudioContext resume iOS error:', error) }
+  }
+
+  // Check if component is still active after potential startAudio failure
+  if (hasEmittedClose || !isAudioInitialized) {
+    return
   }
 
   if (!isRecording.value) {
@@ -415,6 +431,8 @@ async function startAudio() {
     handleMicrophoneError(e)
     // Закрываем overlay при ошибке доступа к микрофону
     await handleClose()
+    // Re-throw error to signal failure to callers
+    throw e
   }
 }
 
@@ -518,7 +536,8 @@ function handleVisibilityChange() {
 
 // Инициализация компонента при монтировании
 onMounted(async () => {
-  const seq = ++lifecycleSeq
+  // Reset close flag for component reuse scenarios
+  hasEmittedClose = false
   
   // Устанавливаем обработчики событий
   window.addEventListener('beforeunload', handleBeforeUnload)
@@ -544,12 +563,13 @@ onMounted(async () => {
     await new Promise(resolve => setTimeout(resolve, TIMEOUTS.MOUNT_DELAY))
   }
   
-  // If component was unmounted while awaiting, abort this initialization flow
-  if (seq !== lifecycleSeq) {
+  try {
+    await startAudio()
+  } catch (error) {
+    // startAudio failed and already handled cleanup/close
+    // Component will be closed, no further initialization needed
     return
   }
-  
-  await startAudio()
 })
 
 onBeforeUnmount(async () => {
