@@ -133,24 +133,30 @@ const useProduct = () => {
 
   async function removeProduct(id, product) {
     const { data } = await deleteProduct({ id })
-    if (!deleteProductError.value) {
-      const deletedProduct = data?.deleteProduct?.product
-      const imageId = deletedProduct?.image?.id
-      const duplicateFromImageId = deletedProduct?.duplicateFrom?.image?.id
-      
-      // Check if this is a duplicate product (has duplicateFrom field)
-      // If it's a duplicate, don't delete the image as it's shared with the original product
-      // But if the duplicate has a different image than the original, delete it
-      if (imageId && !duplicateFromImageId) {
-        // Not a duplicate - delete the image
-        removeImage({ id: imageId })
-      } else if (imageId && duplicateFromImageId && duplicateFromImageId !== imageId) {
-        // This is a duplicate with a modified image - delete the modified image
-        removeImage({ id: imageId })
+    try {
+      if (!deleteProductError.value) {
+        const deletedProduct = data?.deleteProduct?.product
+        const imageId = deletedProduct?.image?.id
+        const duplicateFromImageId = deletedProduct?.duplicateFrom?.image?.id
+        
+        // Check if this is a duplicate product (has duplicateFrom field)
+        // If it's a duplicate, don't delete the image as it's shared with the original product
+        // But if the duplicate has a different image than the original, delete it
+        if (imageId && !duplicateFromImageId) {
+          // Not a duplicate - delete the image
+          removeImage({ id: imageId })
+        } else if (imageId && duplicateFromImageId && duplicateFromImageId !== imageId) {
+          // This is a duplicate with a modified image - delete the modified image
+          removeImage({ id: imageId })
+        }
+        
+        createDeleteHistory(product, id, product.sklad.id)
+      } else {
+        console.error(deleteProductError.value);
+        showError('Не удалось удалить продукт. Проблемы на сервере.')
       }
-      
-      createDeleteHistory(product, id, product.sklad.id)
-    } else {
+    } catch (error) {
+      console.error(error);
       showError('Не удалось удалить продукт. Проблемы на сервере.')
     }
   }
