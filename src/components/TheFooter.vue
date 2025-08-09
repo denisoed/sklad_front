@@ -80,11 +80,13 @@ import { useBucketStore } from 'src/stores/bucket'
 import useEventBus from 'src/modules/useEventBus'
 import { MANAGE_SKLAD_DIALOG, MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
 import useDialog from 'src/modules/useDialog'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'TheFooter'
 })
 
+const { t: $t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { sklads } = useSklads()
@@ -113,19 +115,19 @@ const baseActions = [
   {
     id: CREATE_SKLAD_ID,
     icon: 'mdi-warehouse',
-    label: 'Создать склад',
+    label: $t('warehouse.create'),
     disabled: false
   },
   {
     id: CREATE_CATEGORY_ID,
     icon: 'mdi-folder-outline',
-    label: 'Создать категорию',
+    label: $t('category.create'),
     disabled: false
   },
   {
     id: CREATE_PRODUCT_ID,
     icon: 'mdi-cube-outline',
-    label: 'Создать товар',
+    label: $t('product.create'),
     disabled: false
   }
 ]
@@ -133,7 +135,7 @@ const baseActions = [
 const duplicateAction = {
   id: DUPLICATE_PRODUCT_ID,
   icon: 'mdi-content-duplicate',
-  label: 'Дублировать товар',
+  label: $t('product.duplicate'),
   disabled: false
 }
 

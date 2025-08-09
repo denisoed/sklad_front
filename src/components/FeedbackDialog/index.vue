@@ -48,17 +48,18 @@
                 class="feedback_popup-form flex column items-center q-gap-md"
               >
                 <div class="feedback_popup-form_text flex items-center justify-between full-width text-subtitle1">
-                  <span>Добавьте комментарии</span>
+                  <span>{{ t('feedback.addComment') }}</span>
                   <q-img :src="selectedRatingImg" />
                 </div>
                 <q-input
                   v-model="comment"
-                  placeholder="Пишите всё, что думаете"
+                  filled
                   type="textarea"
-                  cols="30"
-                  rows="3"
-                  outlined
-                  enterkeyhint="done"
+                  :placeholder="$t('product.writeEverything')"
+                  rows="4"
+                  maxlength="500"
+                  counter
+                  class="full-width"
                 />
                 <div class="flex q-gap-md">
                   <q-btn
@@ -66,7 +67,7 @@
                     push
                     @click="select(null)"
                   >
-                    Назад
+                    {{ t('feedback.back') }}
                   </q-btn>
                   <q-btn
                     color="primary"
@@ -74,7 +75,7 @@
                     :loading="sending"
                     @click="send"
                   >
-                    Отправить
+                    {{ t('feedback.send') }}
                   </q-btn>
                 </div>
               </div>
@@ -94,6 +95,7 @@ import {
 } from 'vue';
 import useFeedback from 'src/modules/useFeedback'
 import useHelpers from 'src/modules/useHelpers'
+import { useI18n } from 'vue-i18n'
 
 import verybadImg from 'src/assets/feedback/verybad.svg';
 import badImg from 'src/assets/feedback/bad.svg';
@@ -134,6 +136,7 @@ export default defineComponent({
   setup() {
     const { createFeedback, errorFeedback } = useFeedback()
     const { showSuccess, showError } = useHelpers()
+    const { t } = useI18n()
 
     const isPopupOpen = ref(false);
     const selectedRating = ref(null);
@@ -151,9 +154,9 @@ export default defineComponent({
         sending.value = true;
         await createFeedback({ rating: selectedRating.value, comment: comment.value })
         if (errorFeedback.value) {
-          showError('Неизвестная ошибка. Попробуйте позже.')
+          showError(t('feedback.unknownError'))
         } else {
-          showSuccess('Ваш отзыв успешно отправлен!')
+          showSuccess(t('feedback.feedbackSent'))
         }
       } finally {
         sending.value = false;
@@ -181,7 +184,8 @@ export default defineComponent({
       close,
       BUTTONS,
       sending,
-      selectedRatingImg
+      selectedRatingImg,
+      t
     };
   }
 });

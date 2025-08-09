@@ -2,16 +2,16 @@
   <div class="settings-goal">
     <Dropdown
       class="q-mt-md"
-      title="Цель на год"
+      :title="$t('settings.goal.yearGoal')"
       opened
     >
       <template #body>
         <InputPrice
           :model-value="goalValue"
-          label="Сумма"
-          hint="Отображается на главной странице склада"
+          :label="$t('settings.goal.amount')"
+          :hint="$t('settings.goal.displayOnMainPage')"
           clear
-          :rules="[val => val?.length || 'Обязательное поле']"
+          :rules="[val => val?.length || $t('common.requiredField')]"
           @update:model-value="onUpdate"
         />
       </template>
@@ -26,6 +26,7 @@ import {
   watch,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import InputPrice from 'src/components/InputPrice.vue'
 import Dropdown from 'src/components/Dropdown/index.vue'
 

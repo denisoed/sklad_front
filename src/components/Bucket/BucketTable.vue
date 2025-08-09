@@ -143,7 +143,7 @@
               size="sm"
               icon="mdi-keyboard-return"
               text-color="deep-orange"
-              @click="removeFromBucket(props.row)"
+              @click="confirmRemove(props.row)"
             />
           </div>
         </q-td>
@@ -153,13 +153,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useQuasar } from 'quasar'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
 import { getTotalSum } from 'src/components/Bucket/utils'
+
+defineOptions({
+  name: 'BucketTable'
+})
 
 const props = defineProps({
   bucketProducts: {
@@ -176,10 +181,12 @@ const emit = defineEmits([
   'openImagePreview',
   'remove',
   'update:checkedSaleProducts',
-  'openModalCountToBucket'
+  'openModalCountToBucket',
+  'remove-from-bucket'
 ])
 
 const router = useRouter()
+const { t: $t } = useI18n()
 const $q = useQuasar()
 const highlightRowId = ref(null)
 
@@ -189,21 +196,21 @@ const goToProduct = (bucketProduct) => {
   }
 }
 
-function removeFromBucket(bucketProduct) {
+function confirmRemove(bucketProduct) {
   $q.dialog({
-    title: 'Вернуть товар на склад?',
-    message: 'Товар будет возвращен на склад. Вы сможете добавить его в корзину позже.',
+    title: $t('bucket.returnToWarehouse'),
+    message: $t('bucket.returnDescription'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: 'Вернуть',
+      label: $t('bucket.return'),
       push: true
     },
     cancel: {
       color: 'white',
-      textColor: 'black', 
-      label: 'Отмена',
+      textColor: 'black',
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(() => {
@@ -214,63 +221,14 @@ function removeFromBucket(bucketProduct) {
   })
 }
 
-const columns = [
-  {
-    name: 'select',
-    label: '',
-    field: 'select',
-    align: 'center',
-    style: 'width: 50px'
-  },
-  {
-    name: 'image',
-    label: 'Фото',
-    field: 'image',
-    align: 'center',
-    style: 'width: 60px'
-  },
-  {
-    name: 'name',
-    label: 'Информация',
-    field: 'name',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'sizes',
-    label: 'Размеры/Кол-во',
-    field: 'sizes',
-    align: 'left'
-  },
-  {
-    name: 'price',
-    label: 'Цена',
-    field: 'price',
-    align: 'left',
-    style: 'width: 120px'
-  },
-  {
-    name: 'payment',
-    label: 'Оплата',
-    field: 'payment',
-    align: 'left',
-    style: 'width: 100px'
-  },
-  {
-    name: 'comment',
-    label: 'Комментарий',
-    field: 'comment',
-    align: 'left',
-    style: 'width: 120px'
-  },
-  {
-    name: 'actions',
-    label: 'Действия',
-    field: 'actions',
-    align: 'center',
-    style: 'width: 150px'
-  }
-]
+const columns = computed(() => [
+  { name: 'photo', label: $t('statistics.photo'), field: 'image', sortable: false },
+  { name: 'info', label: $t('bucket.information'), field: 'name', sortable: false },
+  { name: 'price', label: $t('common.price'), field: 'price', sortable: false },
+  { name: 'payment', label: $t('common.payment'), field: 'payment', sortable: false },
+  { name: 'comment', label: $t('bucket.comment'), field: 'comment', sortable: false },
+  { name: 'actions', label: $t('statistics.actions'), field: 'actions', sortable: false }
+])
 </script>
 
 <style lang="scss" scoped>

@@ -16,10 +16,10 @@
             </div>
           </div>
           <q-separator class="full-width q-my-md" />
-          <div class="flex">
-            <h6 class="flex q-ma-none q-mb-sm">Внимание!</h6>
+          <div class="flex column no-wrap">
+            <h6 class="flex q-ma-none q-mb-sm">{{ $t('pwa.attention') }}</h6>
             <p class="q-ma-none text-subtitle2">
-              Если вам неудобно использовать Sklad через Telegram, вы можете установить его на рабочий стол как полноценное приложение. Это позволит быстро и удобно получать доступ к складу без необходимости каждый раз открывать Telegram.
+              {{ $t('pwa.installDescription') }}
             </p>
           </div>
           <q-separator class="full-width q-my-md" />
@@ -27,7 +27,7 @@
             <q-btn
               class="button-size q-mr-auto"
               color="grey"
-              label="Не устанавливать"
+              :label="$t('common.notInstall')"
               push
               @click="close"
             />
@@ -35,7 +35,7 @@
               class="button-size"
               color="primary"
               push
-              label="Установить"
+              :label="$t('common.install')"
               @click="install"
             />
           </div>
@@ -48,7 +48,18 @@
 <script>
 import {
   defineComponent,
+  ref,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { usePwa } from 'src/composables/usePwa'
+import DialogWrapper from 'src/components/Dialogs/DialogWrapper.vue'
+
+defineOptions({
+  name: 'InstallPwaDialog'
+})
+
+const { t: $t } = useI18n()
+const { isInstallPromptAvailable } = usePwa()
 
 export default defineComponent({
   name: 'InstallPwaDialog',
@@ -60,6 +71,8 @@ export default defineComponent({
   },
   emits: ['on-close', 'on-install'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
+    
     function close() {
       emit('on-close')
     }
@@ -69,6 +82,7 @@ export default defineComponent({
     }
 
     return {
+      $t,
       close,
       install
     }

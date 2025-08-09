@@ -7,7 +7,7 @@
     separator="cell"
     class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
     hide-pagination
-    no-data-label="Нет данных"
+    :no-data-label="$t('common.noData')"
   >
     <template #header="props">
       <q-tr :props="props">
@@ -55,7 +55,7 @@
               text-color="primary"
               size="sm"
               class="q-mr-md"
-              title="Перейти в товар"
+              :title="$t('statistics.goToProduct')"
               :to="`/sklad/${props.row?.product?.sklad?.id}/product/${props.row?.product?.id}`"
             />
             <q-btn
@@ -63,7 +63,7 @@
               round
               color="deep-orange"
               size="sm"
-              title="Возврат товара на склад"
+              :title="$t('statistics.returnToWarehouse')"
               @click="$emit('return-product', props.row)"
             />
           </template>
@@ -106,6 +106,37 @@ import {
   READ_STATISTIC_TABLE_ACTIONS
 } from 'src/permissions'
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { formatPrice } from 'src/modules/usePriceFormatter'
+
+defineOptions({
+  name: 'StatisticTable'
+})
+
+const props = defineProps({
+  rows: {
+    type: Array,
+    default: () => []
+  }
+})
+
+const { t: $t } = useI18n()
+
+const columns = computed(() => [
+  {
+    name: 'photo',
+    required: true,
+    label: $t('statistics.photo'),
+    align: 'left',
+    field: 'image',
+    sortable: false
+  },
+  { name: 'name', align: 'left', label: $t('statistics.name'), field: 'name', sortable: true },
+  { name: 'sold', label: $t('statistics.sold'), field: 'sold', sortable: true },
+  { name: 'earned', label: $t('statistics.earned'), field: 'earned', sortable: true },
+  { name: 'actions', label: $t('statistics.actions'), field: 'actions', sortable: false }
+])
 
 export default defineComponent({
   name: 'StatisticTable',

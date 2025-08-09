@@ -182,28 +182,44 @@ export default ({
   },
 
   category: {
-    create: 'Категория түзүү',
-    update: 'Жаңыртуу',
-    delete: 'Категорияны өчүрүү',
-    deleteConfirm: 'Бул категорияны өчүрөсүзбү?',
-    deletedSuccessfully: 'Категория ийгиликтүү өчүрүлдү!',
-    selectColor: 'Көрүнүштүк айырма үчүн түс тандаңыз',
+    title: 'Категориялар',
+    create: 'Түзүү',
+    selectWarehouse: 'Категория үчүн кампаны тандаңыз',
+    deleteCategory: 'Категорияны өчүрүү',
+    confirmDeleteCategory: 'Бул категорияны өчүргүңүз келээби?',
+    delete: 'Өчүрүү',
+    categorySuccessfullyDeleted: 'Категория ийгиликтүү өчүрүлдү!',
+    allCategories: 'Бардык категориялар',
+    deleteWarning: 'Категорияны өчүргөндө, анын бардык маалыматы биротоло өчүрүлөт. Сиз ишенесизби?',
   },
 
+  // Settings
+  settings: {
+    employee: {
+      noPeopleAdded: 'Адамдар кошулган жок',
+      removeEmployee: 'Кызматкерди өчүрүү',
+      removeDescription: 'Адамды кампадан өчүргөндөн кийин, ал мындан ары кампага кирүү укугуна ээ болбойт.',
+    },
+    goal: {
+      yearGoal: 'Жылдык максат',
+      amount: 'Сумма',
+      displayOnMainPage: 'Кампанын башкы барагында көрсөтүлөт',
+    },
+  },
+
+  // Printing
   printing: {
-    printerNotConnected: 'Принтер туташпаган.',
-    printerNotConfigured: 'Туташкан принтер тууралангын эмес.',
-    setupRequired: 'Басууну улантуу үчүн, тууралоолор барагына өтүңүз.',
-    dpiSettingsRequired: 'Басууну улантуу үчүн, DPI, туурасы жана бийиктиги үчүн тууралоолорду кошуу керек.',
-    printedSuccessfully: 'Баа жапчыктары басылды!',
-    exampleLabel: 'Баа жапчыгынын мисалы',
-    templateCreated: 'Шаблон түзүлдү!',
-    templateDeleted: 'Шаблон ийгиликтүү өчүрүлдү!',
-    templateType: 'Шаблондун түрү',
-    templateName: 'Шаблондун аталышы',
+    printerNotConnected: 'Принтер туташкан жок.',
+    setupRequired: 'Басып чыгарууну улантуу үчүн, тууралоолор барагына өтүңүз.',
+    printerNotConfigured: 'Туташкан принтер тууралоого алынган жок.',
+    dpiSettingsRequired: 'Басып чыгарууну улантуу үчүн DPI, туурасы жана бийиктиги үчүн тууралоолорду кошуу керек.',
+    printedSuccessfully: 'Баа белгилери ийгиликтүү басылды!',
+    priceLabel: 'Баа белгиси',
+    templateType: 'Шаблон түрү',
+    templateName: 'Шаблон аталышы',
     width: 'Туурасы',
     height: 'Бийиктиги',
-    additionalSettings: 'Кошумча тууралоолор',
+    millimeters: 'миллиметр',
   },
 
   bulk: {
@@ -221,8 +237,11 @@ export default ({
   },
 
   feedback: {
-    addComments: 'Комментарийлерди кошуңуз',
-    sentSuccessfully: 'Сиздин пикириңиз ийгиликтүү жөнөтүлдү!',
+    addComment: 'Комментарий кошуңуз',
+    back: 'Артка',
+    send: 'Жөнөтүү',
+    unknownError: 'Белгисиз ката. Кийинчерээк аракет кылыңыз.',
+    feedbackSent: 'Сиздин пикириңиз ийгиликтүү жөнөтүлдү!',
   },
 
   voice: {
@@ -260,6 +279,7 @@ export default ({
     loadingSizes: 'Өлчөмдөр жүктөлүүдө...',
     errorLoadingSizes: 'Өлчөмдөрдү жүктөөдө ката:',
     doubleClickHint: 'Күнгө эки жолу чертүү бир күн үчүн натыйжа берет.',
+    sizesLoadingError: 'Өлчөмдөрдү жүктөө катасы:',
   },
 
   statistics: {
@@ -276,6 +296,14 @@ export default ({
     sizesReturned: 'Өлчөмдөр кайтарылды!',
     errorReturn: 'Кайтаруу мүмкүн болгон жок. Кийинчерээк аракет кылыңыз.',
     recordsPerPage: 'Баракта жазуулар',
+    photo: 'Сүрөт',
+    name: 'Аталышы',
+    sold: 'Сатылды',
+    earned: 'Табылды',
+    actions: 'Аракеттер',
+    goToProduct: 'Товарга өтүү',
+    returnToWarehouse: 'Товарды кампага кайтаруу',
+    recordsPerPage: 'Бир баракчада жазуулар',
   },
 
   costs: {
@@ -302,6 +330,7 @@ export default ({
 
   pwa: {
     attention: 'Көңүл буруңуз!',
+    installDescription: 'Эгер сизге Sklad\'ды Telegram аркылуу колдонуу ыңгайсыз болсо, аны иш столуна толук колдонмо катары орнотсоңуз болот. Бул ар бир жолу Telegram\'ды ачпастан, кампага тез жана ыңгайлуу кирүүгө мүмкүндүк берет.',
   },
 
   blocked: {
@@ -406,5 +435,16 @@ export default ({
         noPrinters: 'Туташкан түзүлүштөр жок'
       }
     },
-  }
+  },
+
+  // Business Goal
+  businessGoal: {
+    mainPageDescription: 'Бул кампанын негизги баракчасы.',
+    goal: 'Максат',
+    earnPerYear: 'жыл ичинде табуу',
+    cash: 'Касса',
+    earnedPerYear: 'жыл ичинде табылды',
+    products: 'Товарлар',
+    soldPerYear: 'жыл ичинде сатылды',
+  },
 })

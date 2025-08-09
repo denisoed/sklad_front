@@ -7,54 +7,42 @@
         </p>
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width">
-            <q-select outlined v-model="formData.type" emit-value map-options clearable :options="TYPES"
-              class="q-mb-md" label="Тип шаблона" behavior="menu">
-              <template v-slot:prepend>
-                <q-icon name="mdi-attachment" />
-              </template>
-              <template v-slot:option="scope">
-                <q-item v-if="!scope.opt.group" v-bind="scope.itemProps" v-on="scope.itemEvents">
-                  <q-item-section>
-                    <q-item-label class="flex">
-                      <div class="q-pa-sm q-mr-sm"
-                        :style="`border-radius:100%;opacity:0.5;background: ${scope.opt.color};`" />
-                      <span>{{ scope.opt.label }}</span>
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-            <q-input
-              v-model="formData.name"
+            <q-select
+              v-model="data.type"
+              :options="templateTypes"
               outlined
-              clearable
-              label="Название шаблона"
-              class="full-width q-mb-md"
-              enterkeyhint="done"
+              class="q-mb-md"
+              :label="$t('printing.templateType')"
+              behavior="menu"
             />
-            <div class="flex no-wrap">
+            
+            <q-input
+              ref="nameRef"
+              v-model="data.name"
+              outlined
+              class="q-mb-md"
+              :label="$t('printing.templateName')"
+              :rules="[val => val?.length || $t('common.requiredField')]"
+            />
+            
+            <div class="flex full-width q-gap-md q-mb-md">
               <q-input
-                v-model="formData.width"
+                v-model="data.width"
                 outlined
-                clearable
                 type="number"
-                label="Ширина"
-                class="q-mr-md"
-                min="1"
-                hint="миллиметры"
-                style="flex: 1;"
-                enterkeyhint="done"
+                class="col"
+                :label="$t('printing.width')"
+                :hint="$t('printing.millimeters')"
+                :rules="[val => val?.length || $t('common.requiredField')]"
               />
               <q-input
-                v-model="formData.height"
+                v-model="data.height"
                 outlined
-                clearable
                 type="number"
-                label="Высота"
-                hint="миллиметры"
-                min="1"
-                style="flex: 1;"
-                enterkeyhint="done"
+                class="col"
+                :label="$t('printing.height')"
+                :hint="$t('printing.millimeters')"
+                :rules="[val => val?.length || $t('common.requiredField')]"
               />
             </div>
           </div>
@@ -77,8 +65,11 @@ import {
   defineComponent,
   reactive,
   watch,
-  toRefs
+  toRefs,
+  ref,
+  computed
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'NewTemplate',
@@ -114,6 +105,12 @@ export default defineComponent({
         color: 'rgb(0 0 255 / 50%)',
       },
     ]
+
+    const { t: $t } = useI18n()
+
+    const templateTypes = computed(() => [
+      { label: $t('printing.priceLabel'), value: 'price-label' }
+    ])
 
     function close() {
       emit('close')

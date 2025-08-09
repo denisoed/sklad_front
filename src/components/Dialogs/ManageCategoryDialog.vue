@@ -12,22 +12,22 @@
       </div>
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          {{ selectedCategory ? 'Обновить' : 'Создать' }} категорию
+          {{ selectedCategory ? $t('common.update') : $t('category.create') }} {{ $t('common.category').toLowerCase() }}
         </p>
         <div class="flex justify-center q-gap-md full-width q-mt-md">
           <!-- Sklads -->
           <TheSelector
             v-model="formData.sklad"
-            title-postfix="склад"
+            :title-postfix="$t('common.warehouse').toLowerCase()"
             :options="skladsOptions"
             @on-create-new="onCreateNewSklad"
             outlined
             class="full-width"
-            label="Склад *"
-            hint="Выберите склад для категории"
+            :label="$t('common.warehouse') + ' *'"
+            :hint="$t('category.selectWarehouse')"
             tabindex="1"
             clearable
-            :rules="[() => !!formData.sklad || 'Обязательное поле']"
+            :rules="[() => !!formData.sklad || $t('common.requiredField')]"
             emit-value
             map-options
           />
@@ -35,9 +35,12 @@
           <q-input
             v-model="formData.name"
             outlined
-            label="Введите название"
-            class="full-width"
-            enterkeyhint="done"
+            class="full-width q-mt-md"
+            :label="$t('common.enterName')"
+            tabindex="2"
+            autofocus
+            :rules="[() => !!formData.name || $t('common.requiredField')]"
+            @keyup.enter="submit"
           />
           <div class="flex full-width flex-start">
             <p class="full-width text-left q-mb-sm">Выберите цвет для визуального отличия</p>
@@ -101,12 +104,14 @@ import ColorPicker from 'src/components/ColorPicker.vue'
 import TheSelector from 'src/components/UI/TheSelector.vue'
 import { useMutation } from '@vue/apollo-composable'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const { fetchCategories } = useCategories()
 const { closeDialog, openDialog } = useDialog()
 const { showSuccess, showError } = useHelpers()
 const { sklads } = useSklads()
 const $q = useQuasar()
+const { t } = useI18n()
 
 const route = useRoute()
 
@@ -172,9 +177,9 @@ async function createToDB() {
     }
   })
   if (!createError.value) {
-    showSuccess($t('warehouse.requestSuccess'))
+    showSuccess(t('warehouse.requestSuccess'))
   } else {
-    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
+    showError(t('common.unknownError') + '. ' + t('common.serverError'))
   }
 }
 
@@ -188,9 +193,9 @@ async function updateFromDB() {
     }
   })
   if (!updateError.value) {
-    showSuccess($t('warehouse.requestSuccess'))
+    showSuccess(t('warehouse.requestSuccess'))
   } else {
-    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
+    showError(t('common.unknownError') + '. ' + t('common.serverError'))
   }
 }
 
@@ -203,7 +208,7 @@ async function save() {
         await createToDB()
       }
     } catch (error) {
-      showError($t('common.unknownError') + '. ' + $t('common.serverError'))
+      showError(t('common.unknownError') + '. ' + t('common.serverError'))
     } finally {
       await fetchCategories({ sklad: skladId.value })
       close()
@@ -213,30 +218,30 @@ async function save() {
 
 function remove() {
   $q.dialog({
-    title: 'Удалить категорию',
-    message: 'Вы уверены, что хотите удалить эту категорию?',
+    title: t('category.deleteCategory'),
+    message: t('category.confirmDeleteCategory'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: 'Удалить',
+      label: t('category.delete'),
       push: true
     },
     cancel: {
       color: 'white',
       textColor: 'black',
-      label: 'Отмена',
+      label: t('common.cancel'),
       push: true
     }
   }).onOk(async () => {
     await deleteCategory({ id: selectedCategory.value.id })
     if (!deleteCategoryError.value) {
       await fetchCategories({ sklad: skladId.value })
-      showSuccess('Категория успешно удалёна!')
+      showSuccess(t('category.categorySuccessfullyDeleted'))
       close()
       // NOTE: add to history
     } else {
-      showError($t('common.error') + '. ' + $t('common.tryLater'))
+      showError(t('common.error') + '. ' + t('common.tryLater'))
     }
   })
 }

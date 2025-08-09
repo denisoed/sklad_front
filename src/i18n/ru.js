@@ -182,28 +182,44 @@ export default ({
   },
 
   category: {
-    create: 'Создать категорию',
-    update: 'Обновить',
-    delete: 'Удалить категорию',
-    deleteConfirm: 'Вы уверены, что хотите удалить эту категорию?',
-    deletedSuccessfully: 'Категория успешно удалёна!',
-    selectColor: 'Выберите цвет для визуального отличия',
+    title: 'Категории',
+    create: 'Создать',
+    selectWarehouse: 'Выберите склад для категории',
+    deleteCategory: 'Удалить категорию',
+    confirmDeleteCategory: 'Вы уверены, что хотите удалить эту категорию?',
+    delete: 'Удалить',
+    categorySuccessfullyDeleted: 'Категория успешно удалёна!',
+    allCategories: 'Все категории',
+    deleteWarning: 'При удалении категории, вся информация о ней будет удалена навсегда. Вы уверены?',
   },
 
+  // Settings
+  settings: {
+    employee: {
+      noPeopleAdded: 'Люди не добавлены',
+      removeEmployee: 'Удалить сотрудника',
+      removeDescription: 'После удаления человека из склада, он больше не будет иметь доступ к складу.',
+    },
+    goal: {
+      yearGoal: 'Цель на год',
+      amount: 'Сумма',
+      displayOnMainPage: 'Отображается на главной странице склада',
+    },
+  },
+
+  // Printing
   printing: {
     printerNotConnected: 'Принтер не подключен.',
-    printerNotConfigured: 'Подключенный принтер не настроин.',
     setupRequired: 'Чтобы продолжить печать, пожалуйста перейдите на страницу настроек.',
+    printerNotConfigured: 'Подключенный принтер не настроин.',
     dpiSettingsRequired: 'Чтобы продолжить печать, нужно добавить настройки для DPI, ширины и высоты рабочей зоны.',
-    printedSuccessfully: 'Ценники распечатаны!',
-    exampleLabel: 'Пример ценника',
-    templateCreated: 'Шаблон создан!',
-    templateDeleted: 'Шаблон успешно удалён!',
+    printedSuccessfully: 'Ценники успешно напечатаны!',
+    priceLabel: 'Ценник',
     templateType: 'Тип шаблона',
     templateName: 'Название шаблона',
     width: 'Ширина',
     height: 'Высота',
-    additionalSettings: 'Дополнительные настройки',
+    millimeters: 'миллиметры',
   },
 
   bulk: {
@@ -221,8 +237,11 @@ export default ({
   },
 
   feedback: {
-    addComments: 'Добавьте комментарии',
-    sentSuccessfully: 'Ваш отзыв успешно отправлен!',
+    addComment: 'Добавьте комментарии',
+    back: 'Назад',
+    send: 'Отправить',
+    unknownError: 'Неизвестная ошибка. Попробуйте позже.',
+    feedbackSent: 'Ваш отзыв успешно отправлен!',
   },
 
   voice: {
@@ -260,6 +279,7 @@ export default ({
     loadingSizes: 'Загрузка размеров...',
     errorLoadingSizes: 'Ошибка загрузки размеров:',
     doubleClickHint: 'Двойное нажатие по дате вернёт результат за один день.',
+    sizesLoadingError: 'Ошибка загрузки размеров:',
   },
 
   statistics: {
@@ -276,6 +296,13 @@ export default ({
     sizesReturned: 'Размеры возвращены!',
     errorReturn: 'Не удалось вернуть. Попробуйте позже.',
     recordsPerPage: 'Записей на странице',
+    photo: 'Фото',
+    name: 'Название',
+    sold: 'Продано',
+    earned: 'Заработано',
+    actions: 'Действия',
+    goToProduct: 'Перейти в товар',
+    returnToWarehouse: 'Возврат товара на склад',
   },
 
   costs: {
@@ -302,6 +329,7 @@ export default ({
 
   pwa: {
     attention: 'Внимание!',
+    installDescription: 'Если вам неудобно использовать Sklad через Telegram, вы можете установить его на рабочий стол как полноценное приложение. Это позволит быстро и удобно получать доступ к складу без необходимости каждый раз открывать Telegram.',
   },
 
   blocked: {
@@ -406,5 +434,16 @@ export default ({
         noPrinters: 'Нет подключенных устройств'
       }
     },
-  }
+  },
+
+  // Business Goal
+  businessGoal: {
+    mainPageDescription: 'Это главная страница склада.',
+    goal: 'Цель',
+    earnPerYear: 'заработать за год',
+    cash: 'Касса',
+    earnedPerYear: 'заработано за год',
+    products: 'Товары',
+    soldPerYear: 'продано за год',
+  },
 })

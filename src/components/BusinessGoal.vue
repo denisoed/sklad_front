@@ -1,32 +1,30 @@
 <template>
   <div class="businnes-goal full-width q-pt-md q-mb-xl">
     <div class="container">
-      <PageTitle :title="skladName ? skladName : 'Склад'">
+      <PageTitle :title="pageTitle">
         <div>
           <q-card-section class="q-pt-none">
-            Это главная страница склада.
+            {{ $t('businessGoal.mainPageDescription') }}
           </q-card-section>
         </div>
       </PageTitle>
       <div class="flex column items-center text-white q-mt-md">
-        <div class="text-h6">Цель</div>
+        <div class="text-h6">{{ $t('businessGoal.goal') }}</div>
         <div class="text-h4 text-bold">{{ skladGoal }}</div>
-        <div>заработать за год</div>
+        <div>{{ $t('businessGoal.earnPerYear') }}</div>
       </div>
       <div class="businnes-goal_cards flex q-mt-md">
-        <ChartCard
-          class="businnes-goal_item q-mr-auto"
-          title="Касса"
-          :body="formattedPriceTotal"
-          descr="заработано за год"
-          :loading="loadingActivities"
+        <SmallCard
+          :title="$t('businessGoal.cash')"
+          :count="formattedPriceTotal"
+          :descr="$t('businessGoal.earnedPerYear')"
+          class="businnes-goal_card"
         />
-        <ChartCard
-          class="businnes-goal_item"
-          title="Товары"
-          :body="`${soldCount} шт`"
-          descr="продано за год"
-          :loading="loadingActivities"
+        <SmallCard
+          :title="$t('businessGoal.products')"
+          :count="countTotal"
+          :descr="$t('businessGoal.soldPerYear')"
+          class="businnes-goal_card"
         />
       </div>
     </div>
@@ -36,6 +34,7 @@
 <script setup>
 import moment from 'moment'
 import { computed, onBeforeMount } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { FILTER_FORMAT, YEAR } from 'src/config'
 import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
@@ -44,6 +43,19 @@ import PageTitle from 'src/components/PageTitle.vue'
 import ChartCard from 'src/components/Charts/ChartCard.vue'
 import { useRoute } from 'vue-router'
 
+defineOptions({
+  name: 'BusinessGoal'
+})
+
+const props = defineProps({
+  skladName: {
+    type: String,
+    default: ''
+  }
+})
+
+const { t: $t } = useI18n()
+
 const {
   sklad,
 } = useSklads()
@@ -51,7 +63,7 @@ const { params } = useRoute()
 const { loadActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
 const { formatPrice } = useMoney()
 
-const skladName = computed(() => sklad.value?.name)
+const pageTitle = computed(() => props.skladName || $t('common.warehouse'))
 const skladGoal = computed(() => formatPrice(sklad.value?.goal))
 const formattedPriceTotal = computed(() => formatPrice(priceTotal.value))
 

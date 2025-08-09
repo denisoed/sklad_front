@@ -101,8 +101,8 @@
             <div class="flex column q-gap-sm">
               <q-checkbox
                 v-model="localFilters.withDiscount"
-                label="Со скидкой"
-                dense
+                :label="$t('filter.withDiscount')"
+                color="primary"
               />
             </div>
           </div>
@@ -144,6 +144,7 @@ import { defineComponent, ref, reactive, onMounted, watch } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
 import useSizes from 'src/modules/useSizes'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'FilterDialog',
@@ -163,6 +164,7 @@ export default defineComponent({
   },
   emits: ['update:modelValue', 'apply', 'clear'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const colorPickerRef = ref(null)
     const availableSizes = ref([])
     const loadingAvailableSizes = ref(false)
@@ -202,8 +204,7 @@ export default defineComponent({
           return a.localeCompare(b)
         })
       } catch (error) {
-        console.error('Ошибка загрузки размеров:', error)
-        availableSizes.value = []
+        console.error($t('filter.sizesLoadingError'), error)
       } finally {
         loadingAvailableSizes.value = false
       }
