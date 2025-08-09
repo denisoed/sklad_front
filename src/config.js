@@ -41,11 +41,21 @@ export const WEEK = 'week'
 export const MONTH = 'month'
 export const YEAR = 'year'
 
+// Accent colors
+export const ACCENT_COLORS = [
+  { name: 'Бежевый (по умолчанию)', value: '#BCA37F', rgb: '188, 163, 127' },
+  { name: 'Изумрудный', value: '#6B8E74', rgb: '107, 142, 116' },
+  { name: 'Аметистовый', value: '#9B7BB8', rgb: '155, 123, 184' },
+  { name: 'Терракотовый', value: '#C65D7B', rgb: '198, 93, 123' },
+  { name: 'Индиго', value: '#5A6FA8', rgb: '90, 111, 168' },
+]
+
 // Localstorage keys
 export const SKLAD_DRAFT_KEY = 'sklad-draft-product'
 export const I18N_LOCALE = 'sklad_i18n_locale'
 export const IS_DARK_MODE = 'sklad_is_dark_mode'
 export const SKLAD_PWA_INSTALLED = 'sklad_pwa_installed'
+export const ACCENT_COLOR = 'sklad_accent_color'
 
 // Telegram
 export const DEV_TG_INIT_DATA_UNSAFE = process.env.DEV_TG_INIT_DATA_UNSAFE

@@ -82,6 +82,13 @@ export default ({
         }
       },
     },
+    appearanceTab: {
+      title: 'Стиль',
+      accentColors: {
+        title: 'Акцентный цвет',
+        description: 'Тиркеменин интерфейси үчүн басылгалыу түстү тандаңыз',
+      }
+    },
     printTab: {
       title: 'Печать',
       connect: {

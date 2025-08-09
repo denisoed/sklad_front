@@ -44,10 +44,12 @@ import { useRouter, useRoute } from 'vue-router'
 import PageTitle from 'src/components/PageTitle.vue'
 import SizesTab from 'src/components/MainSettings/Sizes/SizesTab.vue'
 import UserTab from 'src/components/MainSettings/UserTab.vue'
+import AppearanceTab from 'src/components/MainSettings/AppearanceTab.vue'
 import BleIndex from 'src/components/Ble/index.vue'
 
 const TAB_USER = 'user'
 const TAB_SIZES = 'sizes'
+const TAB_APPEARANCE = 'appearance'
 const TAB_PRINT = 'print'
 
 const TABS = [
@@ -64,6 +66,12 @@ const TABS = [
     hide: false
   },
   {
+    name: TAB_APPEARANCE,
+    label: 'mainSettings.appearanceTab.title',
+    component: AppearanceTab,
+    hide: false
+  },
+  {
     name: TAB_PRINT,
     label: 'mainSettings.printTab.title',
     component: BleIndex,
@@ -77,7 +85,8 @@ export default defineComponent({
     PageTitle,
     BleIndex,
     SizesTab,
-    UserTab
+    UserTab,
+    AppearanceTab
   },
   setup() {
     const { query } = useRoute()

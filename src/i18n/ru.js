@@ -83,6 +83,13 @@ export default ({
         }
       },
       },
+    appearanceTab: {
+      title: 'Стиль',
+      accentColors: {
+        title: 'Акцентный цвет',
+        description: 'Выберите акцентный цвет для интерфейса приложения',
+      }
+    },
     printTab: {
       title: 'Печать',
       connect: {
