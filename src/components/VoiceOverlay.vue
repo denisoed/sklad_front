@@ -33,7 +33,7 @@
         </div>
         
         <!-- Кнопка записи -->
-        <div v-if="!hasStartedRecording || isUserPressingButton" class="record-button-container q-mb-md">
+        <div class="record-button-container q-mb-md">
           <q-btn
             v-if="isApiAvailable"
             :color="isUserPressingButton ? 'negative' : 'primary'"
@@ -41,18 +41,16 @@
             size="lg"
             round
             class="record-button"
-            @mousedown="handleRecordStart"
-            @mouseup="handleRecordStop"
-            @mouseleave="handleRecordStop"
-            @touchstart="handleRecordStart"
-            @touchend="handleRecordStop"
-            @touchcancel="handleRecordStop"
+            @pointerdown="handlePointerDown"
+            @pointerup="handlePointerUp"
+            @pointercancel="handlePointerCancel"
+            @pointerleave="handlePointerLeave"
             @contextmenu.prevent
           />
         </div>
 
         <q-btn
-          v-if="hasStartedRecording && !isUserPressingButton && !pendingResult"
+          v-if="hasStartedRecording && !isUserPressingButton && !isRecording"
           color="primary"
           push
           label="Заново"
@@ -79,8 +77,7 @@ const recognizedText = ref('')
 const isRetrying = ref(false)
 const hasStartedRecording = ref(false)
 const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
-const pendingResult = ref('')
-const isUserPressingButton = ref(false) // Отслеживаем физическое нажатие кнопки пользователем
+const isUserPressingButton = ref(false)
 
 // Аудио контекст и связанные переменные
 let audioContext = null
@@ -102,105 +99,108 @@ onFinish((finalText) => {
   if (isRetrying.value) {
     return
   }
-  
-  // Сохраняем результат, но не отправляем его сразу
-  pendingResult.value = finalText
+  // Показываем результат, но отправку делаем только при отпускании кнопки
   recognizedText.value = finalText
 })
 
 function handleCancel() {
   recognizedText.value = ''
-  pendingResult.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
   if (isRecording.value) {
     stopRecord()
   }
-  resetAccumulatedText() // Очищаем накопленный текст
+  resetAccumulatedText()
   emit('cancel')
+  emit('update:modelValue', false)
 }
 
 function handleRetry() {
   isRetrying.value = true
   recognizedText.value = ''
-  pendingResult.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
   if (isRecording.value) {
     stopRecord()
   }
-  resetAccumulatedText() // Очищаем накопленный текст
+  resetAccumulatedText()
   
-  // Даем время на остановку перед новой попыткой
   setTimeout(() => {
     isRetrying.value = false
   }, 300)
 }
 
-async function handleRecordStart(event) {
+async function handlePointerDown(event) {
   if (!isApiAvailable || isRetrying.value) return
-  
-  // Prevent default behavior to avoid context menu
-  if (event) {
-    event.preventDefault()
-  }
-  
+  if (event) event.preventDefault()
+
   hasStartedRecording.value = true
-  isUserPressingButton.value = true // Пользователь начал нажимать кнопку
-  pendingResult.value = ''
-  
-  // Очищаем предыдущий текст при начале новой записи
+  isUserPressingButton.value = true
+
+  // Очищаем текст при начале новой записи
   if (!isRecording.value) {
     recognizedText.value = ''
-    resetAccumulatedText() // Сбрасываем накопленный текст для новой сессии
+    resetAccumulatedText()
   }
-  
-  // На iOS необходимо возобновить AudioContext при каждом пользовательском взаимодействии
-  if (isIOS.value && audioContext && audioContext.state === 'suspended') {
-    try {
-      await audioContext.resume()
-    } catch (error) {
-      console.error('Ошибка возобновления AudioContext на iOS:', error)
-    }
+
+  // Готовим аудио-визуализацию по требованию
+  if (!isAudioInitialized) {
+    await startAudio()
+  } else if (isIOS.value && audioContext && audioContext.state === 'suspended') {
+    try { await audioContext.resume() } catch (error) { console.error('AudioContext resume iOS error:', error) }
   }
-  
+
   if (!isRecording.value) {
     startRecord()
   }
 }
 
-function handleRecordStop(event) {
-  if (!isApiAvailable || isRetrying.value) return
-  
-  // Prevent default behavior
-  if (event) {
-    event.preventDefault()
+function submitIfNeededAndClose() {
+  const resultToSend = (transcript.value || recognizedText.value || '').trim()
+  if (resultToSend) {
+    emit('result', resultToSend)
   }
-  
-  isUserPressingButton.value = false // Пользователь отпустил кнопку
-  
-  // Останавливаем запись только при отпускании кнопки
+  emit('update:modelValue', false)
+  recognizedText.value = ''
+}
+
+async function handlePointerUp(event) {
+  if (!isApiAvailable || isRetrying.value) return
+  if (event) event.preventDefault()
+
+  isUserPressingButton.value = false
+
   if (isRecording.value) {
     stopRecord()
   }
-  
-  // Отправляем результат ВСЕГДА при отпускании кнопки
+
+  // Останавливаем аудио сразу после отпускания
+  await stopAudio()
+
+  // Небольшая задержка, чтобы дать доехать финальным результатам
   setTimeout(() => {
-    // Берем либо pendingResult, либо текущий transcript, либо recognizedText
-    const resultToSend = pendingResult.value || transcript.value || recognizedText.value
-    
-    if (resultToSend && resultToSend.trim()) {
-      emit('result', resultToSend.trim())
-      emit('update:modelValue', false)
-    } else {
-      // Если нет никакого текста, все равно закрываем оверлей
-      emit('update:modelValue', false)
-    }
-    
-    // Очищаем состояния
-    pendingResult.value = ''
-    recognizedText.value = ''
-  }, 150) // Увеличиваем задержку для получения последних результатов
+    submitIfNeededAndClose()
+  }, 150)
+}
+
+async function handlePointerCancel(event) {
+  if (event) event.preventDefault()
+  isUserPressingButton.value = false
+  if (isRecording.value) {
+    stopRecord()
+  }
+  await stopAudio()
+  setTimeout(() => {
+    submitIfNeededAndClose()
+  }, 150)
+}
+
+async function handlePointerLeave(event) {
+  if (event) event.preventDefault()
+  // Если палец/курсор ушел за пределы, считаем как отпускание
+  if (isUserPressingButton.value) {
+    await handlePointerUp(event)
+  }
 }
 
 function drawBars() {
@@ -266,7 +266,6 @@ async function startAudio() {
         echoCancellation: true,
         noiseSuppression: true,
         autoGainControl: true,
-        // Для iOS добавляем дополнительные параметры
         ...(isIOS.value && {
           sampleRate: 44100,
           channelCount: 1
@@ -279,11 +278,9 @@ async function startAudio() {
     // Создаем новый AudioContext для каждой сессии
     const AudioContextClass = window.AudioContext || window.webkitAudioContext
     audioContext = new AudioContextClass({
-      // Для iOS лучше использовать более низкую частоту дискретизации
       sampleRate: isIOS.value ? 44100 : undefined
     })
     
-    // На iOS всегда нужно возобновлять контекст
     if (audioContext.state === 'suspended') {
       await audioContext.resume()
     }
@@ -298,7 +295,6 @@ async function startAudio() {
     
     isAudioInitialized = true
     
-    // Ждем следующий тик для начала анимации
     await nextTick()
     drawBars()
     
@@ -311,32 +307,20 @@ async function startAudio() {
 
 async function stopAudio() {
   try {
-    // Останавливаем анимацию
     if (animationId) {
       cancelAnimationFrame(animationId)
       animationId = null
     }
     
-    // Отключаем source перед закрытием контекста
     if (source) {
-      try {
-        source.disconnect()
-      } catch (error) {
-        console.error('Ошибка отключения source:', error)
-      }
+      try { source.disconnect() } catch (error) { console.error('Ошибка отключения source:', error) }
       source = null
     }
     
-    // Закрываем аудио контекст
     if (audioContext && audioContext.state !== 'closed') {
-      try {
-        await audioContext.close()
-      } catch (error) {
-        console.error('Ошибка закрытия AudioContext:', error)
-      }
+      try { await audioContext.close() } catch (error) { console.error('Ошибка закрытия AudioContext:', error) }
     }
     
-    // Останавливаем поток медиа
     if (stream) {
       stream.getTracks().forEach(track => {
         track.stop()
@@ -345,7 +329,6 @@ async function stopAudio() {
       stream = null
     }
     
-    // Очищаем ссылки
     audioContext = null
     analyser = null
     dataArray = null
@@ -369,22 +352,20 @@ watch(() => props.modelValue, async (val) => {
     hasStartedRecording.value = false
     isRetrying.value = false
     isUserPressingButton.value = false
-    resetAccumulatedText() // Очищаем накопленный текст при открытии
+    resetAccumulatedText()
     
-    // Небольшая задержка для iOS, чтобы дать время на полную очистку предыдущей сессии
     if (isIOS.value) {
       await new Promise(resolve => setTimeout(resolve, 100))
     }
     
+    // Start mic visualization immediately on open
     await startAudio()
   } else {
-    // Останавливаем запись при закрытии оверлея
     if (isRecording.value) {
       stopRecord()
     }
     await stopAudio()
     
-    // Даем время на корректное закрытие, особенно важно для iOS
     const cleanupDelay = isIOS.value ? 200 : 100
     setTimeout(() => {
       cleanup()
