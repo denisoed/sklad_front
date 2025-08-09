@@ -241,113 +241,6 @@ export default ({
 
   // Costs
   costs: {
-    author: 'Автор',
-    description: 'Описание',
-    amount: 'Сумма',
-    date: 'Дата',
-    removeCost: 'Удалить расход',
-    removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
-  },
-
-  // Printing
-  printing: {
-    printerNotConnected: 'Принтер не подключен.',
-    setupRequired: 'Чтобы продолжить печать, пожалуйста перейдите на страницу настроек.',
-    printerNotConfigured: 'Подключенный принтер не настроин.',
-    dpiSettingsRequired: 'Чтобы продолжить печать, нужно добавить настройки для DPI, ширины и высоты рабочей зоны.',
-    printedSuccessfully: 'Ценники успешно напечатаны!',
-    priceLabel: 'Ценник',
-    templateType: 'Тип шаблона',
-    templateName: 'Название шаблона',
-    width: 'Ширина',
-    height: 'Высота',
-    millimeters: 'миллиметры',
-  },
-
-  bulk: {
-    selectedProducts: 'Выбранные товары',
-    editing: 'Редактирование',
-    deletion: 'Удаление',
-    productsUpdated: 'Товары успешно обновлены!',
-    productsDeleted: 'Товары успешно удалены!',
-    deleteWarning: 'При удалении товаров, они пропадут со склада навсегда!',
-    preview: {
-      photo: 'Фото',
-      name: 'Название',
-      color: 'Цвет',
-    }
-  },
-
-  feedback: {
-    addComment: 'Добавьте комментарии',
-    back: 'Назад',
-    send: 'Отправить',
-    unknownError: 'Неизвестная ошибка. Попробуйте позже.',
-    feedbackSent: 'Ваш отзыв успешно отправлен!',
-  },
-
-  voice: {
-    speaking: 'Говорите...',
-    microphoneError: 'Доступ к микрофону запрещен. Разрешите доступ к микрофону в настройках браузера.',
-    dialogClosed: 'Диалог разрешений закрыт. Попробуйте снова и разрешите доступ к микрофону.',
-    micNotFound: 'Микрофон не найден. Подключите микрофон или проверьте настройки устройства.',
-    micInUse: 'Микрофон используется другим приложением. Закройте другие приложения, использующие микрофон.',
-    micNotSupported: 'Микрофон не поддерживает требуемые параметры записи.',
-    configError: 'Ошибка конфигурации микрофона. Обратитесь в техподдержку.',
-    accessError: 'Не удалось получить доступ к микрофону. Проверьте подключение и настройки.',
-    voiceSearch: 'Голосовой поиск',
-    recognitionUnavailable: 'Распознавание речи недоступно в вашем браузере',
-    pressButtonToStart: 'Зажмите кнопку ниже, чтобы начать запись',
-    speakNow: 'Говорите...',
-  },
-
-  bluetooth: {
-    notSupported: 'Ваш браузер не поддерживает блютуз',
-    connecting: 'Авто подключение...',
-    printerConnection: 'Подключение к принтеру',
-    changesSaved: 'Изменения сохранены',
-  },
-
-  filter: {
-    title: 'Фильтр',
-    searchByName: 'Поиск по названию',
-    searchByEvent: 'Поиск по событию',
-    searchByPeople: 'Поиск по людям',
-    searchByDescription: 'Поиск по описанию',
-    from: 'От',
-    to: 'До',
-    withDiscount: 'Со скидкой',
-    clear: 'Очистить',
-    loadingSizes: 'Загрузка размеров...',
-    errorLoadingSizes: 'Ошибка загрузки размеров:',
-    doubleClickHint: 'Двойное нажатие по дате вернёт результат за один день.',
-    sizesLoadingError: 'Ошибка загрузки размеров:',
-  },
-
-  statistics: {
-    title: 'Отчеты',
-    finance: 'Финансы',
-    reports: 'Отчеты',
-    reportsAllWarehouses: 'Отчеты по всем складам',
-    earned: 'Заработано',
-    sold: 'Продано',
-    cash: 'Касса',
-    day: 'День',
-    week: 'Неделя',
-    month: 'Месяц',
-    sizesReturned: 'Размеры возвращены!',
-    errorReturn: 'Не удалось вернуть. Попробуйте позже.',
-    recordsPerPage: 'Записей на странице',
-    photo: 'Фото',
-    name: 'Название',
-    sold: 'Продано',
-    earned: 'Заработано',
-    actions: 'Действия',
-    goToProduct: 'Перейти в товар',
-    returnToWarehouse: 'Возврат товара на склад',
-  },
-
-  costs: {
     title: 'Финансовые расходы',
     description: 'помогут отследить какое кол-во финансов было потрачено за выбранный промежуток времени.',
     automaticRecording: 'Расходы записываются автоматически при добавлении товара.',
@@ -409,72 +302,26 @@ export default ({
     selectMultiple: 'Чтобы выбрать несколько единиц, удерживайте нужный размер пару секунд.',
     sizesCountSpecified: 'Указано размеров:',
     deleteSize: 'Чтобы удалить размер, удерживайте его несколько секунд.',
+    remainingStock: 'Остатки',
   },
 
   mainSettings: {
     userTab: {
-      title: 'Профиль',
+      autoRefill: 'Автопополнение',
       lang: 'Язык',
-      info: 'Информация',
-      wallet: {
-        title: 'Кошелек',
-        autoRefill: 'Автопополнение',
+      logout: 'Выйти',
+      languages: {
+        russian: 'Русский',
+        kyrgyz: 'Кыргызча',
       },
       user: {
-        fullnameTitle: 'Обновить ФИО',
-        fullnamePlaceholder: 'ФИО',
-        success: 'Профиль успешно обнавлен',
-        error: 'Ошибка при обновлении профиля. Попробуйте позже!',
         noNameSpecified: 'Имя не указано',
       },
-      theme: {
-        title: 'Тема',
-        light: 'Светлая тема',
-        dark: 'Темная тема'
-      },
-      logout: 'Выйти',
     },
     sizesTab: {
-      title: 'Размеры',
-      sizesConfigurations: 'Конфигурации размеров',
       sizesSettings: {
-        title: 'Настроить размеры',
-        modal: {
-          title: 'Создать размеры',
-          inputNameLabel: 'Название',
-          inputNameHint: 'Например: Размеры для обуви',
-          inputSizesLabel: 'Список размеров',
-          inputSizesHint: 'Указывать через запятую. Например: 36, 37, 38...',
-          sizePlaceholder: 'Название размера',
-          newSizesCreated: 'Новые размеры созданы!',
-          sizesUpdated: 'Размеры обновлены!',
-          sizeDeleted: 'Размер успешно удален!',
-          errorDeleteAll: 'Нельзя удалить все размеры. Используйте кнопку редактирования для удаления всего набора размеров.',
-          errorDelete: 'Произошла ошибка при удалении размера.',
-        },
-        presets: {
-          title: 'Готовые размеры',
-          childrenShoes: 'Размеры детской обуви',
-          womenShoes: 'Размеры женской обуви',
-          menShoes: 'Размеры мужской обуви',
-        },
         deleteConfirm: 'Вы уверены, что хотите удалить эти размеры?',
-        deletedSuccessfully: 'Товары успешно удалены!',
       },
-    },
-    appearanceTab: {
-      title: 'Стиль',
-      accentColors: {
-        title: 'Акцентный цвет',
-        description: 'Выберите акцентный цвет для интерфейса приложения',
-      }
-    },
-    printTab: {
-      title: 'Печать',
-      connect: {
-        title: 'Подключение к принтеру',
-        noPrinters: 'Нет подключенных устройств'
-      }
     },
   },
 
@@ -487,5 +334,36 @@ export default ({
     earnedPerYear: 'заработано за год',
     products: 'Товары',
     soldPerYear: 'продано за год',
+  },
+
+  // Printing updates
+  printing: {
+    printerNotConnected: 'Принтер не подключен.',
+    setupRequired: 'Чтобы продолжить печать, пожалуйста перейдите на страницу настроек.',
+    printerNotConfigured: 'Подключенный принтер не настроин.',
+    dpiSettingsRequired: 'Чтобы продолжить печать, нужно добавить настройки для DPI, ширины и высоты рабочей зоны.',
+    printedSuccessfully: 'Ценники успешно напечатаны!',
+    priceLabel: 'Ценник',
+    templateType: 'Тип шаблона',
+    templateName: 'Название шаблона',
+    width: 'Ширина',
+    height: 'Высота',
+    millimeters: 'миллиметры',
+    createTemplateInstruction: 'Для создания шаблона, воспользуйтесь кнопкой "Создать шаблон", под этим описанием.',
+    templateCreated: 'Шаблон создан!',
+    deleteTemplate: 'Удалить шаблон?',
+    deleteTemplateConfirm: 'Вы уверены, что хотите удалить этот шаблон?',
+    templateDeleted: 'Шаблон успешно удалён!',
+  },
+
+  // Costs title
+  costs: {
+    title: 'Расходы',
+    author: 'Автор',
+    description: 'Описание',
+    amount: 'Сумма',
+    date: 'Дата',
+    removeCost: 'Удалить расход',
+    removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
   },
 })

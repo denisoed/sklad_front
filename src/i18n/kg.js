@@ -262,6 +262,11 @@ export default ({
     width: 'Туурасы',
     height: 'Бийиктиги',
     millimeters: 'миллиметр',
+    createTemplateInstruction: 'Шаблон түзүү үчүн, бул сүрөттөмөнүн астындагы "Шаблон түзүү" баскычын колдонуңуз.',
+    templateCreated: 'Шаблон түзүлдү!',
+    deleteTemplate: 'Шаблонду өчүрөсүзбү?',
+    deleteTemplateConfirm: 'Бул шаблонду өчүргүңүз келээби?',
+    templateDeleted: 'Шаблон ийгиликтүү өчүрүлдү!',
   },
 
   bulk: {
@@ -349,16 +354,13 @@ export default ({
   },
 
   costs: {
-    title: 'Каржылык чыгымдар',
-    description: 'тандалган мөөнөттө канча каржы сарпталганын көзөмөлдөөгө жардам берет.',
-    automaticRecording: 'Чыгымдар товар кошулганда автоматтык түрдө жазылат.',
-    whereSpent: 'Кайда сарпталды?',
-    howMuchSpent: 'Канча сарпталды?',
-    placeholder: 'Мисалы: Жарнамага',
-    saved: 'Чыгымдар сакталды!',
-    deleted: 'Чыгым ийгиликтүү өчүрүлдү!',
-    errorSave: 'Ката пайда болду. Кийинчерээк аракет кылыңыз.',
-    errorDelete: 'Ката пайда болду. Кийинчерээк аракет кылыңыз.',
+    title: 'Чыгымдар',
+    author: 'Автор',
+    description: 'Сүрөттөмө',
+    amount: 'Сумма',
+    date: 'Дата',
+    removeCost: 'Чыгымды өчүрүү',
+    removeConfirm: 'Бул чыгымды өчүргүңүз келээби?',
   },
 
   history: {
@@ -394,7 +396,7 @@ export default ({
     notifyLowStock: 'Аз калган товарлар жөнүндө эскертүү',
     returnToMain: 'Башкы барагына кайтуу',
     duplicateProduct: 'Товарды көчүрүү',
-    cashAndCard: 'Накт:',
+    cashAndCard: 'Нак:',
     cardPayment: 'Карт:',
     sum: 'сом',
     amount: 'Сумма',
@@ -410,72 +412,26 @@ export default ({
     selectMultiple: 'Бир нече бирдикти тандоо үчүн, керектүү өлчөмдү бир нече секунд кармаңыз.',
     sizesCountSpecified: 'Көрсөтүлгөн өлчөмдөр:',
     deleteSize: 'Өлчөмдү өчүрүү үчүн, аны бир нече секунд кармаңыз.',
+    remainingStock: 'Калдыктар',
   },
 
   mainSettings: {
     userTab: {
-      title: 'Профиль',
-      lang: 'Тилди тандоо',
-      info: 'Маалымат',
-      wallet: {
-        title: 'Кошелек',
-        autoRefill: 'Авто толтуруу',
+      autoRefill: 'Авто толтуруу',
+      lang: 'Тил',
+      logout: 'Чыгуу',
+      languages: {
+        russian: 'Орусча',
+        kyrgyz: 'Кыргызча',
       },
       user: {
-        fullnameTitle: 'Толук атын жаңыртыңыз',
-        fullnamePlaceholder: 'Толук аты',
-        success: 'Профиль ийгиликтүү жаңыртылды',
-        error: 'Профильди жаңыртууда ката. Кийинчерээк аракет кылыңыз!',
-        noNameSpecified: 'Ат көрсөтүлгөн эмес',
+        noNameSpecified: 'Аты көрсөтүлгөн жок',
       },
-      theme: {
-        title: 'Тиркеменин темасы',
-        light: 'Жарык тема',
-        dark: 'Карангы тема'
-      },
-      logout: 'Чыгуу',
     },
     sizesTab: {
-      title: 'Өлчөмдөр',
-      sizesConfigurations: 'Өлчөмдөрдүн конфигурациялары',
       sizesSettings: {
-        title: 'Өлчөмдөрдү тууралоо',
-        modal: {
-          title: 'Өлчөмдөрдү түзүү',
-          inputNameLabel: 'Аталышы',
-          inputNameHint: 'Мисалы: Бут кийим өлчөмдөрү',
-          inputSizesLabel: 'Өлчөмдөрдүн тизмеси',
-          inputSizesHint: 'Үтүр менен көрсөтүңүз. Мисалы: 36, 37, 38...',
-          sizePlaceholder: 'Өлчөмдүн аталышы',
-          newSizesCreated: 'Жаңы өлчөмдөр түзүлдү!',
-          sizesUpdated: 'Өлчөмдөр жаңыртылды!',
-          sizeDeleted: 'Өлчөм ийгиликтүү өчүрүлдү!',
-          errorDeleteAll: 'Бардык өлчөмдөрдү өчүрүү мүмкүн эмес. Бардык өлчөмдөр топтомун өчүрүү үчүн оңдоо баскычын колдонуңуз.',
-          errorDelete: 'Өлчөмдү өчүрүүдө ката пайда болду.',
-        },
-        presets: {
-          title: 'Даяр өлчөмдөр',
-          childrenShoes: 'Балдар бут кийиминин өлчөмдөрү',
-          womenShoes: 'Аялдар бут кийиминин өлчөмдөрү',
-          menShoes: 'Эркектер бут кийиминин өлчөмдөрү',
-        },
-        deleteConfirm: 'Бул өлчөмдөрдү өчүрөсүзбү?',
-        deletedSuccessfully: 'Товарлар ийгиликтүү өчүрүлдү!',
+        deleteConfirm: 'Бул өлчөмдөрдү өчүргүңүз келээби?',
       },
-    },
-    appearanceTab: {
-      title: 'Стиль',
-      accentColors: {
-        title: 'Акценттик түс',
-        description: 'Тиркеменин интерфейси үчүн басылгалуу түстү тандаңыз',
-      }
-    },
-    printTab: {
-      title: 'Басуу',
-      connect: {
-        title: 'Принтерге туташуу',
-        noPrinters: 'Туташкан түзүлүштөр жок'
-      }
     },
   },
 

@@ -5,7 +5,7 @@
       <BlockLink
         v-if="useMinSizes && countProductsWithMinSizes"
         v-permissions="[READ_PRODUCTS_WITH_MIN_SIZES]"
-        title="Остатки"
+        :title="$t('pages.remainingStock')"
         caption="Товары, которых мало"
         icon="mdi-cart-arrow-up"
         :to="productsWithMinSizesLink"
@@ -20,14 +20,14 @@
       </BlockLink>
       <BlockLink
         v-permissions="[READ_CATEGORIES]"
-        title="Категории"
+        :title="$t('category.title')"
         caption="Категории товаров"
         icon="mdi-folder-outline"
         :to="categoriesLink"
         accent-color="rgb(255 0 255 / 20%)"
       />
       <BlockLink
-        title="Товары"
+        :title="$t('product.title')"
         caption="Товары на складе"
         icon="mdi-cube-outline"
         :to="productsLink"
@@ -36,7 +36,7 @@
       <div v-permissions="[READ_HISTORY, READ_SETTINGS]" class="flex no-wrap full-width q-gap-md">
         <BlockLink
           v-permissions="[READ_HISTORY]"
-          title="История"
+          :title="$t('history.title')"
           caption="Активность на складе"
           icon="mdi-history"
           :to="historyLink"
@@ -44,7 +44,7 @@
         />
         <BlockLink
           v-permissions="[READ_SETTINGS]"
-          title="Настройки"
+          :title="$t('common.settings')"
           caption="Настройки склада"
           icon="mdi-cog-outline"
           :to="settingsLink"
@@ -53,7 +53,7 @@
       </div>
       <BlockLink
         v-permissions="[READ_COST]"
-        title="Расходы"
+        :title="$t('costs.title')"
         caption="Траты по складу"
         icon="mdi-cash"
         :to="costsLink"
@@ -81,10 +81,13 @@ import {
   READ_PRODUCTS_WITH_MIN_SIZES,
   READ_CATEGORIES
 } from 'src/permissions'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'SkladPage',
 })
+
+const { t: $t } = useI18n()
 
 const { sklad } = useSklads()
 const { params } = useRoute()

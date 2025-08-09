@@ -12,7 +12,7 @@
           Список пуст
         </span>
         <p class="q-mt-md text-subtitle2 " style="max-width:350px;">
-          Для создания шаблона, воспользуйтесь кнопкой "Создать шаблон", под этим описанием.
+          {{ instructionText }}
         </p>
       </div>
     </h6>
@@ -74,6 +74,7 @@ import useHelpers from 'src/modules/useHelpers'
 import { useRoute } from 'vue-router'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import NewTemplate from 'src/components/Settings/NewTemplate.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'SettingsPrint',
@@ -99,6 +100,7 @@ export default defineComponent({
       refetch: refetchTemplates
     } = useQuery(PRINT_TEMPLATES)
     const { showSuccess, showError } = useHelpers()
+    const { t: $t } = useI18n()
 
     const openedNewTemplateModal = ref(false)
     const selectedTemplate = ref(null)
@@ -121,7 +123,7 @@ export default defineComponent({
       if (!errorCreateTemplate.value) {
         refetchTemplates()
         openedNewTemplateModal.value = false
-        showSuccess('Шаблон создан!')
+        showSuccess($t('printing.templateCreated'))
         close()
       } else {
         showError($t('common.error') + '. ' + $t('common.tryLater'))
@@ -131,19 +133,19 @@ export default defineComponent({
 
     async function onDelete(id) {
       $q.dialog({
-        title: 'Удалить шаблон?',
-        message: 'Вы уверены, что хотите удалить этот шаблон?',
+        title: $t('printing.deleteTemplate'),
+        message: $t('printing.deleteTemplateConfirm'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('common.delete'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('common.cancel'),
           push: true
         }
       }).onOk(async () => {
@@ -151,7 +153,7 @@ export default defineComponent({
         if (!errorDeleteTemplate.value) {
           refetchTemplates()
           openedNewTemplateModal.value = false
-          showSuccess('Шаблон успешно удалён!')
+          showSuccess($t('printing.templateDeleted'))
           close()
         } else {
           showError($t('common.error') + '. ' + $t('common.tryLater'))
@@ -166,6 +168,7 @@ export default defineComponent({
     )
 
     const listTemplates = computed(() => templates.value?.printTemplates || [])
+    const instructionText = computed(() => $t('printing.createTemplateInstruction'))
 
     return {
       openedNewTemplateModal,
@@ -178,7 +181,8 @@ export default defineComponent({
       listTemplates,
       loadingTemplates,
       selectedTemplate,
-      params
+      params,
+      instructionText
     }
   }
 })

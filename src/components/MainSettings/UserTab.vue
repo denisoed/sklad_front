@@ -57,7 +57,7 @@
             </label>
           </div>
           <div class="flex items-center justify-between q-gap-md">
-            <q-toggle v-model="refillWallet" label="Автопополнение" dense />
+            <q-toggle v-model="refillWallet" :label="$t('mainSettings.userTab.autoRefill')" dense />
             <q-btn color="primary" push>Пополнить</q-btn>
           </div>
         </div>
@@ -70,7 +70,7 @@
       </template>
       <template #body>
         <div class="flex column">
-          <label v-for="(l, i) of LANGS" :key="i" style="height: 50px;" class="flex items-center cursor-pointer q-pr-xs">
+          <label v-for="(l, i) of LANGS.value" :key="i" style="height: 50px;" class="flex items-center cursor-pointer q-pr-xs">
             <q-img :src="l.flag" alt="logo" style="height: 20px; max-width: 20px" class="q-mr-md" />
             <span>{{ l.label }}</span>
             <q-radio v-model="locale" dense :val="l.value" class="q-ml-auto" />
@@ -105,7 +105,8 @@ import {
   defineComponent,
   ref,
   reactive,
-  watch
+  watch,
+  computed
 } from 'vue'
 import { LocalStorage, copyToClipboard } from 'quasar';
 import Dropdown from 'src/components/Dropdown/index.vue'
@@ -137,18 +138,29 @@ const PRICES = [
   },
 ]
 
-const LANGS = [
+const LANGS = computed(() => [
   {
-    label: 'Русский',
+    label: $t('mainSettings.userTab.languages.russian'),
     value: 'ru-RU',
     flag: RU
   },
   // {
-  //   label: 'Кыргызча',
+  //   label: $t('mainSettings.userTab.languages.kyrgyz'),
   //   value: 'kg-KG',
   //   flag: KG
   // },
-]
+])
+
+defineOptions({
+  name: 'UserTab'
+})
+
+const { t: $t } = useI18n()
+
+const languageOptions = computed(() => [
+  { label: $t('mainSettings.userTab.languages.russian'), value: 'ru' },
+  { label: $t('mainSettings.userTab.languages.kyrgyz'), value: 'kg' }
+])
 
 export default defineComponent({
   name: 'UserTab',

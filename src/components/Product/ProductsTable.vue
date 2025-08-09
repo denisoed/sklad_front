@@ -115,8 +115,9 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
@@ -125,6 +126,19 @@ import {
   CAN_UPDATE_PRODUCT,
   READ_ORIGINAL_PRICE
 } from 'src/permissions'
+
+defineOptions({
+  name: 'ProductsTable'
+})
+
+const { t: $t } = useI18n()
+
+const columns = computed(() => [
+  { name: 'image', label: $t('statistics.photo'), field: 'image', sortable: false },
+  { name: 'info', label: $t('product.information'), field: 'name', sortable: true },
+  { name: 'price', label: $t('common.price'), field: 'price', sortable: true },
+  { name: 'actions', label: $t('statistics.actions'), field: 'actions', sortable: false }
+])
 
 export default defineComponent({
   name: 'ProductsTable',
@@ -151,9 +165,11 @@ export default defineComponent({
     'openCountModal',
     'openSizesModal'
   ],
-  setup() {
+  setup(props) {
+    const { t: $t } = useI18n()
     const router = useRouter()
-    const highlightRowId = ref(null)
+    const { profile } = useProfile()
+    const selectedProducts = ref([])
     
     const goToProduct = (product) => {
       if (product?.sklad?.id && product?.id) {
@@ -161,50 +177,6 @@ export default defineComponent({
       }
     }
     
-    const columns = [
-      {
-        name: 'select',
-        label: '',
-        field: 'select',
-        align: 'center',
-        style: 'width: 50px'
-      },
-      {
-        name: 'image',
-        label: 'Картинка',
-        field: 'image',
-        align: 'center',
-        style: 'width: 60px'
-      },
-      {
-        name: 'name',
-        label: 'Информация',
-        field: 'name',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'sizes',
-        label: 'Размеры/Кол-во',
-        field: 'sizes',
-        align: 'left'
-      },
-      {
-        name: 'price',
-        label: 'Цена',
-        field: 'price',
-        align: 'left',
-        style: 'width: 120px'
-      },
-      {
-        name: 'actions',
-        label: 'Действия',
-        field: 'actions',
-        align: 'center',
-        style: 'width: 120px'
-      }
-    ]
-
     return {
       columns,
       highlightRowId,
