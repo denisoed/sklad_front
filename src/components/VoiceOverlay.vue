@@ -33,26 +33,24 @@
         </div>
         
         <!-- Кнопка записи -->
-        <div v-if="!hasStartedRecording || isRecording" class="record-button-container q-mb-md">
+        <div class="record-button-container q-mb-md">
           <q-btn
             v-if="isApiAvailable"
-            :color="isRecording ? 'negative' : 'primary'"
-            :icon="isRecording ? 'stop' : 'mic'"
+            :color="isUserPressingButton ? 'negative' : 'primary'"
+            :icon="isUserPressingButton ? 'stop' : 'mic'"
             size="lg"
             round
             class="record-button"
-            @mousedown="handleRecordStart"
-            @mouseup="handleRecordStop"
-            @mouseleave="handleRecordStop"
-            @touchstart="handleRecordStart"
-            @touchend="handleRecordStop"
-            @touchcancel="handleRecordStop"
+            @pointerdown="handlePointerDown"
+            @pointerup="handlePointerUp"
+            @pointercancel="handlePointerCancel"
+            @pointerleave="handlePointerLeave"
             @contextmenu.prevent
           />
         </div>
 
         <q-btn
-          v-if="hasStartedRecording && !isRecording"
+          v-if="hasStartedRecording && !isUserPressingButton && !isRecording"
           color="primary"
           push
           label="Заново"
@@ -78,6 +76,8 @@ const canvasRef = ref(null)
 const recognizedText = ref('')
 const isRetrying = ref(false)
 const hasStartedRecording = ref(false)
+const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
+const isUserPressingButton = ref(false)
 
 // Аудио контекст и связанные переменные
 let audioContext = null
@@ -90,67 +90,116 @@ let isAudioInitialized = false
 
 // Создаем экземпляр распознавания речи
 const speechRecognition = useSpeechRecognition()
-const { isRecording, isApiAvailable, startRecord, stopRecord, onFinish, transcript, cleanup } = speechRecognition
+const { isRecording, isApiAvailable, startRecord, stopRecord, onFinish, transcript, cleanup, setShouldContinueCallback, resetAccumulatedText } = speechRecognition
+
+// Устанавливаем callback для проверки, нужно ли продолжать запись
+setShouldContinueCallback(() => isUserPressingButton.value)
 
 onFinish((finalText) => {
   if (isRetrying.value) {
     return
   }
+  // Показываем результат, но отправку делаем только при отпускании кнопки
   recognizedText.value = finalText
-
-  // Emit both the full text and any found colors
-  emit('result', finalText)
-  
-  emit('update:modelValue', false)
 })
 
 function handleCancel() {
   recognizedText.value = ''
   hasStartedRecording.value = false
+  isUserPressingButton.value = false
   if (isRecording.value) {
     stopRecord()
   }
+  resetAccumulatedText()
   emit('cancel')
+  emit('update:modelValue', false)
 }
 
 function handleRetry() {
   isRetrying.value = true
   recognizedText.value = ''
   hasStartedRecording.value = false
+  isUserPressingButton.value = false
   if (isRecording.value) {
     stopRecord()
   }
+  resetAccumulatedText()
   
-  // Даем время на остановку перед новой попыткой
   setTimeout(() => {
     isRetrying.value = false
   }, 300)
 }
 
-function handleRecordStart(event) {
+async function handlePointerDown(event) {
   if (!isApiAvailable || isRetrying.value) return
-  
-  // Prevent default behavior to avoid context menu
-  if (event) {
-    event.preventDefault()
-  }
-  
+  if (event) event.preventDefault()
+
   hasStartedRecording.value = true
+  isUserPressingButton.value = true
+
+  // Очищаем текст при начале новой записи
+  if (!isRecording.value) {
+    recognizedText.value = ''
+    resetAccumulatedText()
+  }
+
+  // Готовим аудио-визуализацию по требованию
+  if (!isAudioInitialized) {
+    await startAudio()
+  } else if (isIOS.value && audioContext && audioContext.state === 'suspended') {
+    try { await audioContext.resume() } catch (error) { console.error('AudioContext resume iOS error:', error) }
+  }
+
   if (!isRecording.value) {
     startRecord()
   }
 }
 
-function handleRecordStop(event) {
-  if (!isApiAvailable || isRetrying.value) return
-  
-  // Prevent default behavior
-  if (event) {
-    event.preventDefault()
+function submitIfNeededAndClose() {
+  const resultToSend = (transcript.value || recognizedText.value || '').trim()
+  if (resultToSend) {
+    emit('result', resultToSend)
   }
-  
+  emit('update:modelValue', false)
+  recognizedText.value = ''
+}
+
+async function handlePointerUp(event) {
+  if (!isApiAvailable || isRetrying.value) return
+  if (event) event.preventDefault()
+
+  isUserPressingButton.value = false
+
   if (isRecording.value) {
     stopRecord()
+  }
+
+  // Останавливаем аудио сразу после отпускания
+  await stopAudio()
+
+  // Небольшая задержка, чтобы дать доехать финальным результатам
+  setTimeout(() => {
+    submitIfNeededAndClose()
+  }, 150)
+}
+
+async function handlePointerCancel(event) {
+  if (event) event.preventDefault()
+  isUserPressingButton.value = false
+  if (isRecording.value) {
+    stopRecord()
+  }
+  await stopAudio()
+  setTimeout(() => {
+    submitIfNeededAndClose()
+  }, 150)
+}
+
+async function handlePointerLeave(event) {
+  if (event) event.preventDefault()
+  // Если палец/курсор ушел за пределы, считаем как отпускание
+  if (isUserPressingButton.value) {
+    await handlePointerUp(event)
   }
 }
 
@@ -205,25 +254,33 @@ function drawBars() {
 }
 
 async function startAudio() {
-  // Предотвращаем множественную инициализацию
+  // Полная очистка перед новой инициализацией
   if (isAudioInitialized) {
-    return
+    await stopAudio()
   }
 
   try {
-    // Запрашиваем доступ к микрофону
-    stream = await navigator.mediaDevices.getUserMedia({ 
+    // Запрашиваем доступ к микрофону с iOS-оптимизированными настройками
+    const audioConstraints = {
       audio: {
         echoCancellation: true,
         noiseSuppression: true,
-        autoGainControl: true
-      } 
+        autoGainControl: true,
+        ...(isIOS.value && {
+          sampleRate: 44100,
+          channelCount: 1
+        })
+      }
+    }
+    
+    stream = await navigator.mediaDevices.getUserMedia(audioConstraints)
+    
+    // Создаем новый AudioContext для каждой сессии
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext
+    audioContext = new AudioContextClass({
+      sampleRate: isIOS.value ? 44100 : undefined
     })
     
-    // Создаем новый AudioContext
-    audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    
-    // Проверяем состояние контекста
     if (audioContext.state === 'suspended') {
       await audioContext.resume()
     }
@@ -238,44 +295,43 @@ async function startAudio() {
     
     isAudioInitialized = true
     
-    // Ждем следующий тик для начала анимации
     await nextTick()
     drawBars()
     
   } catch (e) {
     console.error('Ошибка доступа к микрофону:', e)
-    stopAudio()
+    await stopAudio()
     emit('update:modelValue', false)
   }
 }
 
-function stopAudio() {
+async function stopAudio() {
   try {
-    // Останавливаем анимацию
     if (animationId) {
       cancelAnimationFrame(animationId)
       animationId = null
     }
     
-    // Закрываем аудио контекст
-    if (audioContext && audioContext.state !== 'closed') {
-      audioContext.close().catch(e => console.error('Ошибка закрытия AudioContext:', e))
+    if (source) {
+      try { source.disconnect() } catch (error) { console.error('Ошибка отключения source:', error) }
+      source = null
     }
     
-    // Останавливаем поток медиа
+    if (audioContext && audioContext.state !== 'closed') {
+      try { await audioContext.close() } catch (error) { console.error('Ошибка закрытия AudioContext:', error) }
+    }
+    
     if (stream) {
       stream.getTracks().forEach(track => {
         track.stop()
         track.enabled = false
       })
+      stream = null
     }
     
-    // Очищаем ссылки
     audioContext = null
     analyser = null
     dataArray = null
-    source = null
-    stream = null
     isAudioInitialized = false
     
   } catch (error) {
@@ -283,6 +339,7 @@ function stopAudio() {
   }
 }
 
+// Следим за изменениями transcript для обновления отображения
 watch(transcript, (newText) => {
   if (newText) {
     recognizedText.value = newText
@@ -294,22 +351,30 @@ watch(() => props.modelValue, async (val) => {
     recognizedText.value = ''
     hasStartedRecording.value = false
     isRetrying.value = false
+    isUserPressingButton.value = false
+    resetAccumulatedText()
+    
+    if (isIOS.value) {
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+    
+    // Start mic visualization immediately on open
     await startAudio()
   } else {
-    // Останавливаем запись при закрытии оверлея
     if (isRecording.value) {
       stopRecord()
     }
-    stopAudio()
-    // Даем время на корректное закрытие
+    await stopAudio()
+    
+    const cleanupDelay = isIOS.value ? 200 : 100
     setTimeout(() => {
       cleanup()
-    }, 100)
+    }, cleanupDelay)
   }
 })
 
-onBeforeUnmount(() => {
-  stopAudio()
+onBeforeUnmount(async () => {
+  await stopAudio()
   if (isRecording.value) {
     stopRecord()
   }
@@ -374,7 +439,7 @@ onBeforeUnmount(() => {
   color: #fff;
   margin-bottom: 24px;
   border-radius: 16px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.8);
   padding: 16px;
   width: 90%;
 }
