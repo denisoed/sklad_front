@@ -122,9 +122,6 @@ async function handleCancel() {
     stopRecord()
   }
   await stopAudio()
-  cleanup()
-  setShouldContinueCallback(() => false)
-  resetAccumulatedText()
   emit('cancel')
   emit('update:modelValue', false)
 }
@@ -382,10 +379,7 @@ watch(() => props.modelValue, async (val) => {
     await stopAudio()
     
     setShouldContinueCallback(() => false)
-    const cleanupDelay = isIOS.value ? 200 : 100
-    setTimeout(() => {
-      cleanup()
-    }, cleanupDelay)
+    cleanup()
   }
 })
 
@@ -394,7 +388,6 @@ onBeforeUnmount(async () => {
   if (isRecording.value) {
     stopRecord()
   }
-  destroy()
 })
 </script>
 
