@@ -9,10 +9,10 @@ export default function useProductHistory() {
   const { difference } = useHelpers()
 
   /**
-   * Создает запись в истории для создания товара
-   * @param {Object} product - созданный товар
-   * @param {string} productId - ID товара
-   * @param {Object} sklad - склад
+   * Creates a history entry for product creation
+   * @param {Object} product - created product
+   * @param {string} productId - product ID
+   * @param {Object} sklad - warehouse
    */
   function createProductHistory(product, productId, sklad) {
     createHistory({
@@ -35,11 +35,11 @@ export default function useProductHistory() {
   }
 
   /**
-   * Создает записи в истории для обновления товара
-   * @param {Object} oldData - старые данные товара
-   * @param {Object} newData - новые данные товара
-   * @param {string} productId - ID товара
-   * @param {Object} sklad - склад
+   * Creates history entries for product update
+   * @param {Object} oldData - old product data
+   * @param {Object} newData - new product data
+   * @param {string} productId - product ID
+   * @param {Object} sklad - warehouse
    */
   function createUpdateHistory(oldData, newData, productId, sklad) {
     const fields = []
@@ -135,10 +135,10 @@ export default function useProductHistory() {
   }
 
   /**
-   * Создает запись в истории для удаления товара
-   * @param {Object} product - удаленный товар
-   * @param {string} productId - ID товара
-   * @param {Object} sklad - склад
+   * Creates a history entry for product deletion
+   * @param {Object} product - deleted product
+   * @param {string} productId - product ID
+   * @param {Object} sklad - warehouse
    */
   function createDeleteHistory(product, productId, sklad) {
     createHistory({

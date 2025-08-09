@@ -15,14 +15,14 @@
         </div>
         <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl">
           
-          <!-- Фильтр по размерам -->
+          <!-- Size filter -->
           <div v-if="availableSizes.length" class="full-width">
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Размеры
+              {{ $t('sizes.title') }}
             </p>
             <div v-if="loadingAvailableSizes" class="text-center q-py-md">
               <q-spinner size="20px" />
-              <span class="q-ml-sm">Загрузка размеров...</span>
+              <span class="q-ml-sm">{{ $t('sizes.loading') }}</span>
             </div>
             <div v-else-if="availableSizes.length" class="sizes-grid">
               <q-btn
@@ -39,15 +39,15 @@
               />
             </div>
             <div v-else class="text-grey-6 text-center q-py-md">
-              Размеры не найдены
+              {{ $t('sizes.notFound') }}
             </div>
             <q-separator class="full-width q-my-md" />
           </div>
           
-          <!-- Ценовой диапазон -->
+          <!-- Price range -->
           <div class="full-width q-mb-md">
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Ценовой диапазон (розничная цена)
+              {{ $t('filter.priceRange') }}
             </p>
             <div class="flex q-gap-sm">
               <InputPrice
@@ -70,10 +70,10 @@
           
           <q-separator class="full-width q-mb-md" />
           
-          <!-- Цветовой фильтр -->
+          <!-- Color filter -->
           <div class="flex items-center no-wrap column full-width q-gap-sm q-mb-md">
             <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-              Фильтр по цвету
+              {{ $t('filter.colorFilter') }}
             </p>
             <ColorPicker
               ref="colorPickerRef"
@@ -86,10 +86,10 @@
           
           <q-separator class="full-width q-mb-md" />
           
-          <!-- Фильтры по состоянию товара -->
+          <!-- Product status filter -->
           <div class="full-width q-mb-md">
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Состояние товара
+              {{ $t('filter.productStatus') }}
             </p>
             <div class="flex column q-gap-sm">
               <q-checkbox
@@ -102,7 +102,7 @@
           
           <q-separator class="full-width q-mb-md" />
           
-          <!-- Управление -->
+          <!-- Controls -->
           <div class="flex justify-between no-wrap q-gap-md full-width">
             <q-btn
               style="height:40px;"

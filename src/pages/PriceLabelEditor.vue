@@ -29,12 +29,12 @@
       </div>
       <div class="price-label_elements flex column full-width bg-white q-mt-md q-pa-md">
         <div class="flex items-center q-gap-md justify-between q-mb-sm">
-          <span class="text-subtitle2">Слои</span>
+          <span class="text-subtitle2">{{ $t('priceLabelEditor.layers') }}</span>
           <q-btn push color="primary" round icon="mdi-plus">
             <q-menu anchor="bottom right" self="top right">
               <q-list style="min-width: 100px">
                 <q-item clickable v-close-popup @click="addText">
-                  <q-item-section>Добавить текст</q-item-section>
+                  <q-item-section>{{ $t('priceLabelEditor.addText') }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -242,7 +242,7 @@ export default defineComponent({
 
 
     const resizeElement = (action) => {
-      const step = 10; // Шаг изменения размера
+      const step = 10; // Size change step
       const maxCanvasWidth = ctx.width;
       const maxCanvasHeight = ctx.height;
       const ratio = ctx.selectedElement.width / ctx.selectedElement.height;
@@ -279,7 +279,7 @@ export default defineComponent({
     };
 
     const moveElement = (direction) => {
-      const step = 10; // Шаг перемещения элемента
+      const step = 10; // Element move step
 
       const minX = 0;
       const minY = 0;
@@ -336,29 +336,29 @@ export default defineComponent({
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
 
-        // Ограничить перемещение элементов внутри границ канваса
+        // Restrict element movement within canvas bounds
         const minX = 0;
         const minY = 0;
         const maxX = ctx.width - ctx.selectedElement.width;
         const maxY = ctx.height - ctx.selectedElement.height;
 
-        // Вычислить новые координаты элемента с учетом ограничений
+        // Calculate new element coordinates with bounds
         let newX = x - ctx.dragOffsetX;
         let newY = y - ctx.dragOffsetY;
 
-        // Определение шагов для перемещения элементов
-        const stepX = 10; // Шаг по оси X
-        const stepY = 10; // Шаг по оси Y
+        // Define steps for element movement
+        const stepX = 10; // X-axis step
+        const stepY = 10; // Y-axis step
 
-        // Применение шагов
+        // Apply steps
         newX = Math.round(newX / stepX) * stepX;
         newY = Math.round(newY / stepY) * stepY;
 
-        // Проверить, не выходят ли новые координаты за границы канваса
+        // Check if new coordinates are within canvas bounds
         newX = Math.max(minX, Math.min(newX, maxX));
         newY = Math.max(minY, Math.min(newY, maxY));
 
-        // Применить новые координаты элемента
+        // Apply new element coordinates
         ctx.selectedElement.x = newX;
         ctx.selectedElement.y = newY;
 
@@ -374,29 +374,29 @@ export default defineComponent({
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
 
-        // Ограничить перемещение элементов внутри границ канваса
+        // Restrict element movement within canvas bounds
         const minX = 0;
         const minY = 0;
         const maxX = ctx.width - ctx.selectedElement.width;
         const maxY = ctx.height - ctx.selectedElement.height;
 
-        // Вычислить новые координаты элемента с учетом ограничений
+        // Calculate new element coordinates with bounds
         let newX = x - ctx.dragOffsetX;
         let newY = y - ctx.dragOffsetY;
 
-        // Определение шагов для перемещения элементов
-        const stepX = 10; // Шаг по оси X
-        const stepY = 10; // Шаг по оси Y
+        // Define steps for element movement
+        const stepX = 10; // X-axis step
+        const stepY = 10; // Y-axis step
 
-        // Применение шагов
+        // Apply steps
         newX = Math.round(newX / stepX) * stepX;
         newY = Math.round(newY / stepY) * stepY;
 
-        // Проверить, не выходят ли новые координаты за границы канваса
+        // Check if new coordinates are within canvas bounds
         newX = Math.max(minX, Math.min(newX, maxX));
         newY = Math.max(minY, Math.min(newY, maxY));
 
-        // Применить новые координаты элемента
+        // Apply new element coordinates
         ctx.selectedElement.x = newX;
         ctx.selectedElement.y = newY;
 
@@ -409,12 +409,12 @@ export default defineComponent({
     };
 
     const drawGrid = () => {
-      const gridSize = 10; // Размер сетки (количество пикселей между линиями)
-      const gridColor = '#e0e0e0'; // Цвет сетки
+      const gridSize = 10; // Grid size (number of pixels between lines)
+      const gridColor = '#e0e0e0'; // Grid color
       const { canvas } = ctx;
       const context = canvas.getContext('2d');
 
-      // Отрисовка вертикальных линий сетки
+      // Draw vertical grid lines
       for (let x = 0; x <= ctx.width; x += gridSize) {
         context.beginPath();
         context.moveTo(x, 0);
@@ -423,7 +423,7 @@ export default defineComponent({
         context.stroke();
       }
 
-      // Отрисовка горизонтальных линий сетки
+      // Draw horizontal grid lines
       for (let y = 0; y <= ctx.height; y += gridSize) {
         context.beginPath();
         context.moveTo(0, y);
@@ -445,8 +445,8 @@ export default defineComponent({
         context.rect(element.x, element.y, element.width, element.height);
 
         if (element === ctx.selectedElement) {
-          context.strokeStyle = 'red'; // Цвет подсветки для выбранного элемента
-          context.lineWidth = 2; // Толщина линии подсветки
+          context.strokeStyle = 'red'; // Highlight color for selected element
+          context.lineWidth = 2; // Highlight line thickness
         } else {
           context.strokeStyle = 'black';
           context.lineWidth = 1;
@@ -481,8 +481,8 @@ export default defineComponent({
 
     function getCanvasSize() {
       const dpi = 203; // DPI (dots per inch)
-      const widthInMM = 58; // Ширина канваса в миллиметрах
-      const heightInMM = 40; // Высота канваса в миллиметрах
+      const widthInMM = 58; // Canvas width in millimeters
+      const heightInMM = 40; // Canvas height in millimeters
       const widthInPixels = Math.round((widthInMM / 25.4) * dpi);
       const heightInPixels = Math.round((heightInMM / 25.4) * dpi);
       return {
@@ -522,19 +522,19 @@ export default defineComponent({
       return [
         {
           name: 'type',
-          label: 'Тип',
+          label: 'Type',
           align: 'left',
           field: 'type'
         },
         {
           name: 'text',
-          label: 'Текст',
+          label: 'Text',
           align: 'left',
           field: 'text'
         },
         {
           name: 'action',
-          label: 'Действия',
+          label: 'Actions',
           align: 'right',
           field: 'action'
         },

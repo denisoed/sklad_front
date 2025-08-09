@@ -139,7 +139,7 @@
               class="q-mb-md"
               tabindex="3"
               hint="Обязательное поле"
-              :rules="[val => val?.length || 'Обязательное поле']"
+              :rules="[val => val?.length || $t('common.requiredField')]"
               @on-change="product.image = $event"
               @clear="product.image = null"
             />
@@ -150,8 +150,8 @@
                   v-model="product.name"
                   outlined
                   :label="$t('product.productNameRequired')"
-                  :hint="$t('common.requiredField')"
-                  :rules="[val => val?.length || $t('common.requiredField')]"
+                  :hint="$t('validation.required')"
+                  :rules="[val => val?.length || $t('validation.required')]"
                   tabindex="4"
                   class="full-width"
                   data-scroller="name"
@@ -179,7 +179,7 @@
               :label="$t('product.wholesalePriceRequired')"
               hint="Обязательное поле"
               clear
-              :rules="[val => val?.length || 'Обязательное поле']"
+              :rules="[val => val?.length || $t('common.requiredField')]"
               tabindex="5"
             />
           </div>
@@ -202,7 +202,7 @@
             <div v-if="product.withDiscount" class="col-12 q-pa-sm">
               <template v-if="product.discountDays">
                 <p v-if="!isDiscountToday" class="flex items-center no-wrap q-px-sm product-page_discount-not-today">
-                  <span class="q-mr-sm">На сегодня акции нет</span>
+                  <span class="q-mr-sm">{{ $t('product.noPromotionToday') }}</span>
                   <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="xs" />
                 </p>
                 <InputPrice
@@ -211,16 +211,16 @@
                   clear
                   tabindex="7"
                   :rules="[
-                    val => val?.length || 'Укажите акционную цену',
-                    val => +val !== 0 || 'Укажите акционную цену',
-                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || 'Акционная цена должна быть меньше Роз. цены'
+                    val => val?.length || $t('validation.promotionalPriceRequired'),
+                    val => +val !== 0 || $t('validation.promotionalPriceRequired'),
+                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || $t('validation.promotionalPriceLowerThanRetail')
                   ]"
                 />
               </template>
               <div class="flex items-center no-wrap q-px-md q-py-sm product-page_discount">
                 <div v-if="product.discountDays" class="q-mr-sm product-page_discount-dates">
                   <p class="q-mr-md q-mb-sm">
-                    Акция на даты:
+                    {{ $t('product.promotionDates') }}
                   </p>
                   <div class="flex q-gap-xs">
                     <q-chip
@@ -235,7 +235,7 @@
                     </q-chip>
                   </div>
                 </div>
-                <p v-else class="q-mr-md q-mb-none">Выставить акционную цену на определенные даты</p>
+                <p v-else class="q-mr-md q-mb-none">{{ $t('product.setPromotionalPrice') }}</p>
                 <FilterDates
                   class="q-ml-auto"
                   :with-buttons="false"
@@ -624,12 +624,16 @@ function clearDraft() {
 }
 
 async function saveCost(sum, isAdd) {
-  const description = isAdd ? `Добавлены размеры в товар: ${product.name}`: `Убраны размеры из товара: ${product.name}`
+  const description = isAdd ? $t('product.sizesAddedToProduct', { name: product.name }) : $t('product.sizesRemovedFromProduct', { name: product.name })
   await createCost(description, sum)
   if (!errorCost.value) {
     history(
       isAdd ? HISTORY_UPDATE : HISTORY_DELETE,
-      `${isAdd ? 'Добавлены размеры в товар' : 'Убраны размеры из товара'}: ${product.name}. Сумма: ${sum}`
+      $t('product.sizesOperationWithSum', { 
+        operation: isAdd ? $t('product.sizesAdded') : $t('product.sizesRemoved'),
+        name: product.name,
+        sum 
+      })
     )
   } else {
     showError($t('common.error') + '. ' + $t('common.tryLater'))
@@ -666,7 +670,7 @@ async function create() {
   const { uploaded, hasError } = await handleImageUpload()
   
   if (hasError) {
-    showError('Не удалось загрузить фото. Проблемы на сервере.')
+    showError($t('errors.photoUploadError'))
     return
   }
 
@@ -682,12 +686,12 @@ async function create() {
       }
     } else {
       await cleanupImageOnError(uploaded)
-      showError('Не удалось создать продукт. Проблемы на сервере.')
+      showError($t('errors.productCreateError'))
     }
   } catch (error) {
     console.error(error)
     await cleanupImageOnError(uploaded)
-    showError('Не удалось создать продукт. Проблемы на сервере.')
+    showError($t('errors.productCreateError'))
   }
 }
 
@@ -695,7 +699,7 @@ async function update() {
   const { uploaded, hasError } = await handleImageUpload()
   
   if (hasError) {
-    showError('Не удалось загрузить фото. Проблемы на сервере.')
+    showError($t('errors.photoUploadError'))
     return
   }
 
@@ -713,15 +717,15 @@ async function update() {
         ...product,
         prices: [...(product.prices || [])]
       })
-      showSuccess('Продукт успешно обновлён!')
+      showSuccess($t('product.updateSuccess'))
     } else {
       await cleanupImageOnError(uploaded)
-      showError('Не удалось обновить продукт. Проблемы на сервере.')
+      showError($t('errors.productUpdateError'))
     }
   } catch (error) {
     console.log(error)
     await cleanupImageOnError(uploaded)
-    showError('Не удалось обновить продукт. Проблемы на сервере.')
+    showError($t('errors.productUpdateError'))
   }
 }
 
@@ -746,8 +750,8 @@ function duplicateProduct() {
 
 function cancel(type) {
   $q.dialog({
-    title: type === 'remove' ? 'Удалить этот товар?' : 'Сбосить введенные значения?',
-    message: type === 'remove' ? 'При удалении товара, он пропадет со склада навсегда!' : 'Всё что Вы ввели будет стёрто!',
+    title: type === 'remove' ? $t('product.deleteConfirmTitle') : $t('product.resetConfirmTitle'),
+    message: type === 'remove' ? $t('product.deleteConfirmMessage') : $t('product.resetConfirmMessage'),
     cancel: true,
     persistent: true,
     ok: {
@@ -766,7 +770,7 @@ function cancel(type) {
       resetAll()
     } else {
       await removeProduct(params?.productId, editProduct.value?.product)
-      showSuccess('Товар успешно удалён!')
+      showSuccess($t('product.deleteSuccess'))
       push('/products')
     }
   })
@@ -829,11 +833,11 @@ const isDiscountToday = computed(() => {
 const isDirty = computed(() => isEqual(product, copiedProductForDirty))
 const pageTitle = computed(() => {
   if (isDuplicating.value) {
-    return 'Дублирование товара'
+    return $t('product.duplicating')
   } else if (props.isEdit) {
-    return 'Редактирование товара'
+    return $t('product.editing')
   }
-  return 'Создание товара'
+  return $t('product.creating')
 })
 const submitBtnLabel = computed(() => {
   if (isDuplicating.value) {

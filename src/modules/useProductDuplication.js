@@ -10,14 +10,14 @@ export default function useProductDuplication() {
   const duplicatedFromID = ref('')
 
   /**
-   * Сохраняет данные товара для дублирования в localStorage
-   * @param {Object} product - объект товара для дублирования
+   * Saves product data for duplication in localStorage
+   * @param {Object} product - product object for duplication
    */
   function saveProductForDuplication(product) {
     const productData = {
       sklad: product.sklad,
       category: product.category,
-      name: `${product.name} (копия)`,
+      name: `${product.name} (copy)`,
       origPrice: product.origPrice,
       newPrice: product.newPrice,
       discountPrice: product.discountPrice,
@@ -41,8 +41,8 @@ export default function useProductDuplication() {
   }
 
   /**
-   * Загружает данные дублирования из localStorage
-   * @returns {Object|null} данные товара для дублирования или null
+   * Loads duplication data from localStorage
+   * @returns {Object|null} product data for duplication or null
    */
   function loadDuplicateData() {
     const duplicateData = localStorage.getItem(DUPLICATE_DATA_KEY)
@@ -58,7 +58,7 @@ export default function useProductDuplication() {
   }
 
   /**
-   * Очищает данные дублирования из localStorage
+   * Clears duplication data from localStorage
    */
   function clearDuplicateData() {
     localStorage.removeItem(DUPLICATE_DATA_KEY)
@@ -68,8 +68,8 @@ export default function useProductDuplication() {
   }
 
   /**
-   * Запускает процесс дублирования товара
-   * @param {Object} product - товар для дублирования
+   * Starts the product duplication process
+   * @param {Object} product - product for duplication
    */
   function duplicateProduct(product) {
     saveProductForDuplication(product)
@@ -77,9 +77,9 @@ export default function useProductDuplication() {
   }
 
   /**
-   * Применяет данные дублирования к объекту товара
-   * @param {Object} product - объект товара для применения данных
-   * @param {Object} duplicateData - данные для дублирования
+   * Applies duplication data to product object
+   * @param {Object} product - product object to apply data to
+   * @param {Object} duplicateData - data for duplication
    */
   function applyDuplicateData(product, duplicateData) {
     if (duplicateData) {

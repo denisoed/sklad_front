@@ -76,6 +76,17 @@ export default ({
     removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
     exampleDescription: 'Например: На рекламу',
     exampleAmount: 'Например: 250',
+    exampleDescription: 'Пример: Бензин для доставки',
+    exampleAmount: 'Пример: 1500',
+    financialExpenses: 'Финансовые расходы',
+    trackExpensesDescription: 'Раздел поможет отслеживать расходы',
+    recordAllExpensesHint: 'Старайтесь записывать все расходы, чтобы итоговый финансовый отчёт был максимально достоверным.',
+    total: 'Итог',
+    whereSpent: 'Куда потратили?',
+    howMuchSpent: 'Сколько потратили?',
+    historyEntry: 'Описание: {description}. Сумма: {sum}',
+    saveSuccess: 'Расходы сохранена!',
+    deleteSuccess: 'Расход успешно удалён!',
   },
   
   footer: {
@@ -382,16 +393,24 @@ export default ({
     templateDeleted: 'Шаблон успешно удалён!',
   },
 
-  // Filter and search
+  // Filter
   filter: {
     searchByEvent: 'Поиск по событию',
-    searchByPeople: 'Поиск по людям', 
+    searchByPeople: 'Поиск по людям',
     searchByDescription: 'Поиск по описанию',
     searchByName: 'Поиск по названию',
-    withDiscount: 'Со скидкой',
-    from: 'От',
-    to: 'До',
-    currency: 'сом',
+    withDiscount: 'С акцией',
+    priceRange: 'Ценовой диапазон (розничная цена)',
+    colorFilter: 'Фильтр по цвету',
+    productStatus: 'Состояние товара',
+    priceFrom: 'Цена от',
+    priceTo: 'Цена до',
+    colors: 'Цвета',
+    sizes: 'Размеры',
+    hasImage: 'С изображением',
+    noImage: 'Без изображения',
+    lowStock: 'Заканчивается',
+    inStock: 'В наличии',
   },
 
   // Scanner
@@ -507,6 +526,31 @@ export default ({
     noPromotionToday: 'На сегодня акции нет',
     setPromotionDates: 'Выставить акционную цену на определенные даты',
     promotionDates: 'Акция на даты:',
+    additionalPricesFullDescription: 'Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например: цена для постоянных клиентов, цена после 18:00 и другие варианты. Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.',
+    productNameRequired: 'Название товара *',
+    retailPrice: 'Розничная цена',
+    additionalRetailPrices: 'Доп. розничные цены',
+    sizesAddedToProduct: 'Добавлены размеры в товар: {name}',
+    sizesRemovedFromProduct: 'Убраны размеры из товара: {name}',
+    sizesAdded: 'Добавлены размеры в товар',
+    sizesRemoved: 'Убраны размеры из товара',
+    sizesOperationWithSum: '{operation}: {name}. Сумма: {sum}',
+    updateSuccess: 'Продукт успешно обновлён!',
+    deleteConfirmTitle: 'Удалить этот товар?',
+    resetConfirmTitle: 'Сбросить введенные значения?',
+    deleteConfirmMessage: 'При удалении товара, он пропадет со склада навсегда!',
+    resetConfirmMessage: 'Всё что Вы ввели будет стёрто!',
+    deleteSuccess: 'Товар успешно удалён!',
+    duplicating: 'Дублирование товара',
+    editing: 'Редактирование товара',
+    creating: 'Создание товара',
+  },
+
+  // Errors
+  errors: {
+    photoUploadError: 'Не удалось загрузить фото. Проблемы на сервере.',
+    productCreateError: 'Не удалось создать продукт. Проблемы на сервере.',
+    productUpdateError: 'Не удалось обновить продукт. Проблемы на сервере.',
   },
 
   // Sizes
@@ -517,30 +561,27 @@ export default ({
     menShoes: 'Размеры мужской обуви',
     sizeName: 'Название размера',
     configureSizes: 'Настроить размеры',
+    title: 'Размеры',
+    loading: 'Загрузка размеров...',
+    notFound: 'Размеры не найдены',
   },
 
-  // Statistics additions
+  // Statistics
   statistics: {
-    title: 'Отчеты',
-    finance: 'Финансы',
-    reports: 'Отчеты',
     reportsAllWarehouses: 'Отчеты по всем складам',
-    earned: 'Заработано',
-    sold: 'Продано',
-    cash: 'Касса',
-    day: 'День',
-    week: 'Неделя',
-    month: 'Месяц',
-    sizesReturned: 'Размеры возвращены!',
-    errorReturn: 'Не удалось вернуть. Попробуйте позже.',
-    recordsPerPage: 'Записей на странице',
-    photo: 'Фото',
-    name: 'Название',
-    actions: 'Действия',
-    goToProduct: 'Перейти в товар',
-    returnToWarehouse: 'Возврат товара на склад',
-    returnConfirm: 'При возврате товара, отчеты будет пересчитаны',
+    returnToWarehouse: 'Вернуть на склад',
+    returnConfirm: 'Хотите вернуть на склад товары?',
     return: 'Вернуть',
+    finances: 'Финансы',
+    reports: 'Отчеты',
+    cashRegister: 'Касса',
+    expenses: 'Расходы',
+    approximateIncome: 'Примерный доход',
+    marginalIncome: 'Маржинальный <br> доход',
+    expectedIncomeFromGoods: 'Ожидаемый доход от имеющихся товаров',
+    goodsWholesaleValue: 'Сумма товаров по оптовой цене',
+    sizesReturned: 'Размеры возвращены!',
+    returnError: 'Не удалось вернуть. Попробуйте позже.',
   },
 
   // Bucket additions
@@ -592,5 +633,14 @@ export default ({
     type: 'Тип',
     text: 'Текст',
     actions: 'Действия',
+    layers: 'Слои',
+    addText: 'Добавить текст',
+  },
+
+  // Validation messages
+  validation: {
+    required: 'Обязательное поле',
+    promotionalPriceRequired: 'Укажите акционную цену',
+    promotionalPriceLowerThanRetail: 'Акционная цена должна быть меньше Роз. цены',
   },
 })

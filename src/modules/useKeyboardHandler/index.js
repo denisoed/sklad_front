@@ -6,16 +6,16 @@ export default function useKeyboardHandler() {
       
       const target = event.target;
       
-      // Проверяем, является ли элемент input или textarea
+      // Check if the element is an input or textarea
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        // Проверяем атрибут enterkeyhint
+        // Check the enterkeyhint attribute
         if (target.getAttribute('enterkeyhint') === 'done') {
           event.preventDefault();
           target.blur();
           
-          // Дополнительно для мобильных устройств
+          // Additionally for mobile devices
           if (window.navigator.userAgent.includes('Mobile')) {
-            // Небольшая задержка для корректного закрытия клавиатуры
+            // Small delay for proper keyboard closing
             setTimeout(() => {
               target.blur();
             }, 100);
@@ -23,7 +23,7 @@ export default function useKeyboardHandler() {
         }
       }
       
-      // Также проверяем родительские элементы для q-input
+      // Also check parent elements for q-input
       let currentElement = target;
       while (currentElement && currentElement !== document.body) {
         if (currentElement.classList && currentElement.classList.contains('q-input')) {
@@ -48,10 +48,10 @@ export default function useKeyboardHandler() {
   function handleBeforeInput(event) {
     const target = event.target;
     
-    // Обработка кнопки Done на мобильной клавиатуре
+    // Handle Done button on mobile keyboard
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
       if (target.getAttribute('enterkeyhint') === 'done') {
-        // Проверяем, если это событие от кнопки Done (data === null означает Done)
+        // Check if this is an event from the Done button (data === null means Done)
         if (event.inputType === 'insertText' && event.data === null) {
           event.preventDefault();
           target.blur();
@@ -61,10 +61,10 @@ export default function useKeyboardHandler() {
   }
 
   function setupKeyboardHandlers() {
-    // Глобальный обработчик для закрытия клавиатуры при нажатии Enter
+    // Global handler for closing keyboard on Enter press
     document.addEventListener('keydown', handleKeydown);
     
-    // Обработчик для кнопки Done на мобильной клавиатуре
+    // Handler for Done button on mobile keyboard
     document.addEventListener('beforeinput', handleBeforeInput);
   }
 
@@ -73,7 +73,7 @@ export default function useKeyboardHandler() {
     document.removeEventListener('beforeinput', handleBeforeInput);
   }
 
-  // Автоматическая настройка при использовании в setup()
+  // Automatic setup when used in setup()
   onMounted(() => {
     setupKeyboardHandlers();
   });

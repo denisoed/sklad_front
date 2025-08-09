@@ -426,4 +426,22 @@ export default ({
     products: 'Товарлар',
     soldPerYear: 'жыл ичинде сатылды',
   },
+
+  // Validation messages
+  validation: {
+    required: 'Милдеттүү талаа',
+    promotionalPriceRequired: 'Акциялык бааны көрсөтүңүз',
+    promotionalPriceLowerThanRetail: 'Акциялык баа соода баасынан төмөн болушу керек',
+  },
+
+  // Price Label Editor
+  priceLabelEditor: {
+    title: 'Баа белгисин түзөтүү',
+    editElement: 'Элементти түзөтүү',
+    type: 'Түрү',
+    text: 'Текст',
+    actions: 'Аракеттер',
+    layers: 'Катмарлар',
+    addText: 'Текст кошуу',
+  },
 })

@@ -37,12 +37,12 @@ export const ALL_PERMISSIONS = [
 ]
 
 export const ALL_PERMISSIONS_WITH_DESCRIPTION = [
-  { val: READ_HISTORY, description: 'Видит страницу История' },
-  { val: READ_SETTINGS, description: 'Видит страницу Настройки' },
-  { val: READ_COST, description: 'Видит страницу Расходы' },
-  { val: READ_STATISTIC, description: 'Видит страницу Отчеты' },
-  { val: READ_ORIGINAL_PRICE, description: 'Видит оптовую цену' },
-  { val: READ_PRODUCTS_WITH_MIN_SIZES, description: 'Видит страницу Остатки' },
+  { val: READ_HISTORY, description: 'Sees History page' },
+  { val: READ_SETTINGS, description: 'Sees Settings page' },
+  { val: READ_COST, description: 'Sees Costs page' },
+  { val: READ_STATISTIC, description: 'Sees Reports page' },
+  { val: READ_ORIGINAL_PRICE, description: 'Sees wholesale price' },
+  { val: READ_PRODUCTS_WITH_MIN_SIZES, description: 'Sees Stock page' },
   { val: READ_NET_PRICE, description: 'Отчеты: блок Чистый доход' },
   { val: READ_STATISTIC_TABLE_ACTIONS, description: 'Отчеты: кнопки управления в таблице' },
   { val: READ_STATISTIC_FINANCE, description: 'Отчеты: блок Финансы' },

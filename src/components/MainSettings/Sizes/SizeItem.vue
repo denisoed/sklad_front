@@ -44,7 +44,7 @@ export default defineComponent({
     },
     name: {
       type: String,
-      default: 'Название размеров' 
+      default: 'Size names'
     },
     list: {
       type: Array,
@@ -92,16 +92,16 @@ export default defineComponent({
         }
       }).onOk(async () => {
         try {
-          // Создаем новый список без удаляемого размера
+          // Create a new list without the removed size
           const newList = props.list.filter(item => item.size !== sizeToRemove.size)
           
-          // Если список станет пустым, показываем предупреждение
+          // If the list becomes empty, show warning
           if (newList.length === 0) {
-            showError('Нельзя удалить все размеры. Используйте кнопку редактирования для удаления всего набора размеров.')
+            showError('You cannot delete all sizes. Use the edit button to delete the entire size set.')
             return
           }
 
-          // Формируем данные точно так же, как в CrudSizesModal
+          // Form data exactly as in CrudSizesModal
           const sizesString = newList.map(item => item.size).join(', ')
           const formattedList = sizesString.split(',').map(s => ({ size: s?.trim() }))
 
@@ -114,13 +114,13 @@ export default defineComponent({
           })
           
           if (!updateError.value) {
-            showSuccess('Размер успешно удален!')
+            showSuccess('Size successfully deleted!')
             emit('on-update')
           } else {
-            showError('Произошла ошибка при удалении размера.')
+            showError('An error occurred while deleting the size.')
           }
         } catch (error) {
-          showError('Произошла ошибка при удалении размера.')
+          showError('An error occurred while deleting the size.')
         }
       })
     }

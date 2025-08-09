@@ -50,7 +50,7 @@
           <div class="text-caption text-grey-6">#{{ props.row.product?.id }}</div>
           <div class="text-weight-medium">{{ props.row.product?.name }}</div>
           <div v-if="props.row.product?.color" class="flex items-center q-gutter-xs q-mt-xs">
-            <span class="text-caption text-grey-6">Цвет:</span>
+            <span class="text-caption text-grey-6">{{ $t('common.color') }}:</span>
             <ColorDisplay :color="props.row.product?.color" size="16px" />
           </div>
         </q-td>
@@ -72,7 +72,7 @@
               />
             </div>
             <div v-if="props.row.discount" class="text-caption text-red">
-              Скидка: 
+              {{ $t('common.discount') }}: 
               <template v-if="props.row.percentageDiscount">
                 {{ props.row.discount }}%
               </template>
@@ -81,7 +81,7 @@
               </template>
             </div>
             <div class="text-weight-bold">
-              Итого:
+              {{ $t('common.total') }}:
               <PriceFormatter :value="getTotalSum(props.row)" />
             </div>
           </div>
@@ -91,17 +91,17 @@
         <q-td key="payment" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="payment-column">
             <div v-if="props.row.payCash && props.row.payCard" class="text-caption">
-              <div>Нал: <PriceFormatter :value="props.row.cashSum || 0" /></div>
-              <div>Карт: <PriceFormatter :value="props.row.cardSum || 0" /></div>
+              <div>{{ $t('common.cash') }}: <PriceFormatter :value="props.row.cashSum || 0" /></div>
+              <div>{{ $t('common.card') }}: <PriceFormatter :value="props.row.cardSum || 0" /></div>
             </div>
             <div v-else-if="props.row.payCash" class="text-caption">
-              Наличными
+              {{ $t('common.cash') }}
             </div>
             <div v-else-if="props.row.payCard" class="text-caption">
-              Картой
+              {{ $t('common.card') }}
             </div>
             <div v-else class="text-caption text-grey-6">
-              Не указано
+              {{ $t('common.notSpecified') }}
             </div>
           </div>
         </q-td>

@@ -4,10 +4,10 @@
       <PageTitle :title="$t('costs.financialExpenses')">
         <div>
           <q-card-section class="q-pt-none text-primary">
-            Раздел поможет отслеживать расходы
+            {{ $t('costs.trackExpensesDescription') }}
           </q-card-section>
           <q-card-section class="q-pt-none text-grey-8">
-            Старайтесь записывать все расходы, чтобы итоговый финансовый отчёт был максимально достоверным.
+            {{ $t('costs.recordAllExpensesHint') }}
           </q-card-section>
         </div>
       </PageTitle>
@@ -45,7 +45,7 @@
         <template #bottom-row>
           <q-tr>
             <q-td class="text-left text-bold">
-              Итог
+              {{ $t('costs.total') }}
             </q-td>
             <q-td class="text-left text-bold" />
             <q-td class="text-right text-bold">
@@ -61,7 +61,7 @@
         <q-card style="width: 350px">
           <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
             <div class="flex column items-center full-width">
-              <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">Куда потратили?</p>
+              <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">{{ $t('costs.whereSpent') }}</p>
               <q-input
                 v-model="description"
                 outlined
@@ -69,7 +69,7 @@
                 class="q-mb-md full-width"
                 enterkeyhint="done"
               />
-              <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">Сколько потратили?</p>
+              <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">{{ $t('costs.howMuchSpent') }}</p>
               <q-input
                 ref="inputRef"
                 v-model="sum"
@@ -226,8 +226,8 @@ export default defineComponent({
       if (!errorCost.value) {
         dialog.value = false
         costsRefetch()
-        history(HISTORY_CREATE, `Описание: ${description.value}. Сумма: ${sum.value}`)
-        showSuccess('Расходы сохранена!')
+        history(HISTORY_CREATE, $t('costs.historyEntry', { description: description.value, sum: sum.value }))
+        showSuccess($t('costs.saveSuccess'))
         description.value = null
         sum.value = null
       } else {
@@ -257,7 +257,7 @@ export default defineComponent({
         if (!deleteError.value) {
           costsRefetch()
           // NOTE: add to history
-          showSuccess('Расход успешно удалён!')
+          showSuccess($t('costs.deleteSuccess'))
         } else {
           showError($t('common.error') + '. ' + $t('common.tryLater'))
         }

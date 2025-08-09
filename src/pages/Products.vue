@@ -248,7 +248,8 @@ export default defineComponent({
     // View mode toggle (grid/table)
     const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
     
-    // Вычисляемые свойства для работы с фильтрами
+    // Computed properties for filter operations
+    
     const hasActiveFilters = computed(() => {
       const { sort, ...filters } = selectedFilters.value || {}
       return Object.keys(filters).some(key => {
@@ -274,16 +275,16 @@ export default defineComponent({
       const info = []
       
       const filterLabels = {
-        name_contains: 'Поиск по имени',
-        withDiscount: 'Со скидкой',
-        priceFrom: 'Цена от',
-        priceTo: 'Цена до',
-        color_in: 'Цвета',
-        sizes_contains: 'Размеры',
-        hasImage: 'С изображением',
-        noImage: 'Без изображения',
-        lowStock: 'Заканчивается',
-        inStock: 'В наличии'
+        name_contains: $t('filter.searchByName'),
+        withDiscount: $t('filter.withDiscount'),
+        priceFrom: $t('filter.priceFrom'),
+        priceTo: $t('filter.priceTo'),
+        color_in: $t('filter.colors'),
+        sizes_contains: $t('filter.sizes'),
+        hasImage: $t('filter.hasImage'),
+        noImage: $t('filter.noImage'),
+        lowStock: $t('filter.lowStock'),
+        inStock: $t('filter.inStock')
       }
       
       Object.keys(filters).forEach(key => {
@@ -330,7 +331,7 @@ export default defineComponent({
           Object.assign(selectedFilters, urlFilters)
         }
       } catch (error) {
-        console.warn('Не удалось загрузить фильтры из URL:', error)
+        console.warn('Failed to load filters from URL:', error)
       }
     }
 

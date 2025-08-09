@@ -3,7 +3,7 @@
     <div class="container">
       <PageTitle :title="$t('statistics.reportsAllWarehouses')" />
       <div v-permissions="[READ_STATISTIC_FINANCE]" class="q-mb-lg">
-        <h6 class="text-h6 q-mb-md q-mt-none">Финансы</h6>
+        <h6 class="text-h6 q-mb-md q-mt-none">{{ $t('statistics.finances') }}</h6>
         <div class="statistic-cards q-gap-md">
           <div
             v-for="(c, i) of statisticFinance"
@@ -22,13 +22,13 @@
           </div>
         </div>
       </div>
-      <h6 class="text-h6 q-mb-md q-mt-none">Отчеты</h6>
+      <h6 class="text-h6 q-mb-md q-mt-none">{{ $t('statistics.reports') }}</h6>
       <FilterDates @on-change="load" />
       <div
         class="costs_type flex items-center q-pa-md q-mb-md q-mt-md border-radius-sm"
         style="background-color: rgb(255 0 255 / 8%);"
       >
-        <div class="costs_type-label q-ma-none">Касса</div>
+        <div class="costs_type-label q-ma-none">{{ $t('statistics.cashRegister') }}</div>
         <div class="costs_type-value q-ml-auto">
           <span v-if="priceTotal === 0 || priceTotal">{{ formatPrice(priceTotal) }}</span>
           <q-spinner
@@ -41,7 +41,7 @@
         class="costs_type flex items-center q-pa-md q-mb-md hidden"
         style="background-color: rgb(255 0 0 / 8%);"
       >
-        <div class="costs_type-label q-ma-none">Расходы</div>
+        <div class="costs_type-label q-ma-none">{{ $t('statistics.expenses') }}</div>
         <div class="costs_type-value q-ml-auto">
           <span v-if="!loadingListCostsSum">{{ costsSum }}</span>
           <q-spinner
@@ -56,7 +56,7 @@
         style="background-color: rgb(0 255 0 / 8%);"
         @click="showNetPriceTooltip = true"
       >
-        <div class="costs_type-label q-ma-none">Примерный доход</div>
+        <div class="costs_type-label q-ma-none">{{ $t('statistics.approximateIncome') }}</div>
         <div class="costs_type-value q-ml-auto">
           <span v-if="netProfit === 0 || netProfit">{{ netProfit }}</span>
           <q-spinner
@@ -185,17 +185,17 @@ export default defineComponent({
       const data = statisticFinanceResult.value?.statisticFinance
       return [
         {
-          label: 'Маржинальный <br> доход',
+          label: $t('statistics.marginalIncome'),
           value: formatPrice(totalRevenue.value),
           bg: 'rgb(0 255 255 / 8%)'
         },
         {
-          label: 'Ожидаемый доход от имеющихся товаров',
+          label: $t('statistics.expectedIncomeFromGoods'),
           value: formatPrice(data?.incomeFromAvailableProducts),
           bg: 'rgb(0 255 0 / 8%)'
         },
         {
-          label: 'Сумма товаров по оптовой цене',
+          label: $t('statistics.goodsWholesaleValue'),
           value: formatPrice(data?.sumAvailableProductsWholesalePrice),
           bg: 'rgb(255 255 0 / 8%)'
         },
@@ -254,13 +254,13 @@ export default defineComponent({
               },
               action: HISTORY_RETURN
             })
-            showSuccess('Размеры возвращены!')
+            showSuccess($t('statistics.sizesReturned'))
           }
         } else {
-          showError('Не удалось вернуть. Попробуйте позже.')
+          showError($t('statistics.returnError'))
         }
       } catch {
-        showError('Не удалось вернуть. Попробуйте позже.')
+        showError($t('statistics.returnError'))
       }
     }
 
