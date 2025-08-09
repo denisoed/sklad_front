@@ -490,6 +490,7 @@ export default defineComponent({
     onBeforeMount(() => {
       initFiltersFromUrl();
       loadData();
+      onCloseBulk();
     })
 
     onMounted(() => {

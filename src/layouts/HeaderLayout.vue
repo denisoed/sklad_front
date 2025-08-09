@@ -57,7 +57,7 @@ watch(sklads, (newValue) => {
   if (newValue) {
     const ids = newValue?.map(s => s.id)
     if (ids?.length) {
-      fetchHistory({ sklad: ids })
+      fetchHistory()
     }
   }
 }, {

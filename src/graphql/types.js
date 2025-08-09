@@ -43,6 +43,10 @@ export const CREATE_PRODUCT = gql`
     createProduct(input: { data: $data }) {
       product {
         id
+        sklad {
+          id
+          name
+        }
       }
     }
   }

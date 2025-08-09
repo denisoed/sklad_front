@@ -51,21 +51,13 @@ const useHistory = () => {
     )
   }
 
-  async function createHistory({
-    productId,
-    skladId,
-    action,
-    json,
-  }) {
+  async function createHistory(data) {
     await apolloClient.mutate({
       mutation: CREATE_HISTORY,
       variables: {
         data: {
-          action,
-          json,
-          product: productId,
-          sklad: skladId,
-          users_permissions_user: profile.value?.id,
+          ...data,
+          userId: +profile.value?.id || null,
         }
       }
     })
@@ -78,8 +70,8 @@ const useHistory = () => {
       mutation: CREATE_HISTORY,
       variables: {
         data: {
-          sklad: params?.skladId,
-          users_permissions_user: profile.value?.id,
+          skladId: +params?.skladId || null,
+          userId: +profile.value?.id || null,
           action,
           description
         }
@@ -166,24 +158,23 @@ const useHistory = () => {
     const histories = historiesStore.getHistories;
     if (!histories?.length) return []
     return histories.map(a => ({
-      productId: a?.product?.id,
-      sklad: a.sklad.name,
+      productId: a?.productId,
+      skladName: a.skladName,
       action: a.action,
       json: a.json,
       created_at: moment(a.created_at).format(DISPLAY_FORMAT),
-      fullname: a?.users_permissions_user?.fullname ||
-        a?.users_permissions_user?.email ||
-        a.users_permissions_user?.telegramId,
+      fullname: a?.fullname ||
+        a?.email ||
+        a?.telegramId ||
+        a?.userId,
       actionColor: HISTORY_ACTIONS_COLORS[a.action],
       isNew: moment(a.created_at).isAfter(lastViewed)
     }));
   })
 
   watch(historyRes, (val) => {
-    const histories = val?.listHistories
-    if (histories?.length) {
-      historiesStore.setHistories(histories)
-    }
+    const histories = val?.listHistories || []
+    historiesStore.setHistories(histories)
   })
 
   return {
