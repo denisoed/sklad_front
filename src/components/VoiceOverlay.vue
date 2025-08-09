@@ -90,7 +90,18 @@ let isAudioInitialized = false
 
 // Создаем экземпляр распознавания речи
 const speechRecognition = useSpeechRecognition()
-const { isRecording, isApiAvailable, startRecord, stopRecord, onFinish, transcript, cleanup, setShouldContinueCallback, resetAccumulatedText } = speechRecognition
+const {
+  isRecording,
+  isApiAvailable,
+  startRecord,
+  stopRecord,
+  onFinish,
+  transcript,
+  cleanup,
+  setShouldContinueCallback,
+  resetAccumulatedText,
+  destroy
+} = speechRecognition
 
 // Устанавливаем callback для проверки, нужно ли продолжать запись
 setShouldContinueCallback(() => isUserPressingButton.value)
@@ -103,13 +114,16 @@ onFinish((finalText) => {
   recognizedText.value = finalText
 })
 
-function handleCancel() {
+async function handleCancel() {
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
   if (isRecording.value) {
     stopRecord()
   }
+  await stopAudio()
+  cleanup()
+  setShouldContinueCallback(() => false)
   resetAccumulatedText()
   emit('cancel')
   emit('update:modelValue', false)
@@ -359,6 +373,7 @@ watch(() => props.modelValue, async (val) => {
     }
     
     // Start mic visualization immediately on open
+    setShouldContinueCallback(() => isUserPressingButton.value)
     await startAudio()
   } else {
     if (isRecording.value) {
@@ -366,6 +381,7 @@ watch(() => props.modelValue, async (val) => {
     }
     await stopAudio()
     
+    setShouldContinueCallback(() => false)
     const cleanupDelay = isIOS.value ? 200 : 100
     setTimeout(() => {
       cleanup()
@@ -378,7 +394,7 @@ onBeforeUnmount(async () => {
   if (isRecording.value) {
     stopRecord()
   }
-  cleanup()
+  destroy()
 })
 </script>
 
