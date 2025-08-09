@@ -119,33 +119,60 @@ const finishHandler = (finalText) => {
 onFinish(finishHandler)
 
 async function handleCancel() {
+  // Блокируем все колбэки для предотвращения перезапуска
+  setShouldContinueCallback(() => false)
+  
+  // Сбрасываем все состояния
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
   isProcessing.value = false
-  // Ensure recognition won't auto-restart during teardown
-  setShouldContinueCallback(() => false)
+  isRetrying.value = false
+  
+  // Принудительно останавливаем запись
   if (isRecording.value) {
     stopRecord()
   }
+  
+  // Ждем завершения остановки записи
+  await new Promise(resolve => setTimeout(resolve, 100))
+  
+  // Полная очистка аудио ресурсов
   await stopAudio()
+  
+  // Уничтожаем экземпляр распознавания речи
+  destroy()
+  
+  // Инкрементируем счетчик жизненного цикла для отмены async операций
+  lifecycleSeq++
+  
   emit('cancel')
   emit('update:modelValue', false)
 }
 
 function handleRetry() {
   isRetrying.value = true
+  
+  // Полная очистка состояний
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
   isProcessing.value = false
+  
+  // Блокируем продолжение записи на время сброса
+  setShouldContinueCallback(() => false)
+  
   if (isRecording.value) {
     stopRecord()
   }
+  
+  // Сбрасываем накопленный текст в модуле речи
   resetAccumulatedText()
   
   setTimeout(() => {
     isRetrying.value = false
+    // Восстанавливаем callback после сброса
+    setShouldContinueCallback(() => isUserPressingButton.value)
   }, 300)
 }
 
@@ -209,12 +236,23 @@ async function handlePointerUp(event) {
 
 async function handlePointerCancel(event) {
   if (event) event.preventDefault()
+  
+  // Принудительно сбрасываем состояния
   isUserPressingButton.value = false
   isProcessing.value = true
+  
+  // Блокируем продолжение записи
+  setShouldContinueCallback(() => false)
+  
   if (isRecording.value) {
     stopRecord()
   }
+  
+  // Ждем завершения для iOS
+  await new Promise(resolve => setTimeout(resolve, isIOS.value ? 150 : 100))
+  
   await stopAudio()
+  
   setTimeout(() => {
     // Проверяем, есть ли результат, если нет - убираем loading (это означает ошибку)
     if (!recognizedText.value && !transcript.value) {
@@ -328,32 +366,72 @@ async function startAudio() {
 
 async function stopAudio() {
   try {
+    // Останавливаем анимацию
     if (animationId) {
       cancelAnimationFrame(animationId)
       animationId = null
     }
     
+    // Отключаем source от analyser
     if (source) {
-      try { source.disconnect() } catch (error) { console.error('Ошибка отключения source:', error) }
+      try { 
+        source.disconnect() 
+        if (source.mediaStream) {
+          source.mediaStream.getTracks().forEach(track => {
+            track.stop()
+            track.enabled = false
+          })
+        }
+      } catch (error) { 
+        console.error('Ошибка отключения source:', error) 
+      }
       source = null
     }
     
-    if (audioContext && audioContext.state !== 'closed') {
-      try { await audioContext.close() } catch (error) { console.error('Ошибка закрытия AudioContext:', error) }
+    // Закрываем AudioContext принудительно
+    if (audioContext) {
+      try { 
+        if (audioContext.state !== 'closed') {
+          // На iOS нужно сначала suspend, потом close
+          if (audioContext.state === 'running') {
+            await audioContext.suspend()
+          }
+          await audioContext.close() 
+        }
+      } catch (error) { 
+        console.error('Ошибка закрытия AudioContext:', error) 
+      }
+      audioContext = null
     }
     
+    // Принудительно останавливаем все треки медиа потока
     if (stream) {
       stream.getTracks().forEach(track => {
-        track.stop()
-        track.enabled = false
+        try {
+          track.stop()
+          track.enabled = false
+          // Дополнительная очистка для iOS
+          if (track.readyState !== 'ended') {
+            track.stop()
+          }
+        } catch (error) {
+          console.error('Ошибка остановки трека:', error)
+        }
       })
       stream = null
     }
     
-    audioContext = null
+    // Сбрасываем все связанные переменные
     analyser = null
     dataArray = null
     isAudioInitialized = false
+    
+    // Дополнительная очистка canvas
+    if (canvasRef.value) {
+      const canvas = canvasRef.value
+      const ctx = canvas.getContext('2d')
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+    }
     
   } catch (error) {
     console.error('Ошибка при остановке аудио:', error)
@@ -364,6 +442,34 @@ async function stopAudio() {
 watch(transcript, (newText) => {
   if (newText) {
     recognizedText.value = newText
+  }
+})
+
+// Дополнительная защита - принудительная очистка при закрытии вкладки/браузера
+function handleBeforeUnload() {
+  setShouldContinueCallback(() => false)
+  if (isRecording.value) {
+    stopRecord()
+  }
+  destroy()
+}
+
+// Обработчик смены видимости вкладки
+function handleVisibilityChange() {
+  if (document.hidden && props.modelValue) {
+    // Если вкладка скрылась и overlay открыт - принудительно закрываем
+    handleCancel()
+  }
+}
+
+// Устанавливаем обработчики при открытии overlay
+watch(() => props.modelValue, (val) => {
+  if (val) {
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+  } else {
+    window.removeEventListener('beforeunload', handleBeforeUnload)
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
   }
 })
 
@@ -396,14 +502,31 @@ watch(() => props.modelValue, async (val) => {
     
     await startAudio()
   } else {
+    // КРИТИЧЕСКАЯ ОЧИСТКА ПРИ ЗАКРЫТИИ
+    
     // Immediately disable continuation to prevent unintended restart
+    setShouldContinueCallback(() => false)
+    
+    // Сбрасываем все состояния принудительно
     isUserPressingButton.value = false
     isProcessing.value = false
-    setShouldContinueCallback(() => false)
+    hasStartedRecording.value = false
+    recognizedText.value = ''
+    isRetrying.value = false
 
+    // Принудительно останавливаем запись
     if (isRecording.value) {
       stopRecord()
     }
+    
+    // Ждем завершения операций записи для iOS
+    if (isIOS.value) {
+      await new Promise(resolve => setTimeout(resolve, 200))
+    } else {
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+    
+    // Полная очистка аудио ресурсов
     await stopAudio()
     
     // If state changed while awaiting, abort this close flow
@@ -411,16 +534,49 @@ watch(() => props.modelValue, async (val) => {
       return
     }
     
-    // Ensure full cleanup on all platforms
+    // Ensure full cleanup on all platforms - ПРИНУДИТЕЛЬНО
     destroy()
+    
+    // Дополнительная очистка состояний после destroy
+    recognizedText.value = ''
+    hasStartedRecording.value = false
+    isUserPressingButton.value = false
+    isProcessing.value = false
+    isRetrying.value = false
   }
 })
 
 onBeforeUnmount(async () => {
-  await stopAudio()
+  // Инкрементируем счетчик для отмены всех async операций
+  lifecycleSeq++
+  
+  // Очищаем обработчики событий
+  window.removeEventListener('beforeunload', handleBeforeUnload)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  
+  // Блокируем все колбэки
+  setShouldContinueCallback(() => false)
+  
+  // Сбрасываем все состояния
+  isUserPressingButton.value = false
+  isProcessing.value = false
+  isRetrying.value = false
+  hasStartedRecording.value = false
+  recognizedText.value = ''
+  
+  // Принудительно останавливаем запись
   if (isRecording.value) {
     stopRecord()
   }
+  
+  // Ждем завершения операций записи
+  await new Promise(resolve => setTimeout(resolve, 150))
+  
+  // Полная очистка аудио ресурсов
+  await stopAudio()
+  
+  // Уничтожаем экземпляр распознавания речи
+  destroy()
 })
 </script>
 

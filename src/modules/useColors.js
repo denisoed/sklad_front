@@ -71,7 +71,6 @@ export const COLORS = [
 const COLOR_MAPPINGS = {
   'зелен': GREEN.color,
   'розов': PINK.color,
-  'розов': PINK.color,
   'оранжев': ORANGE.color,
   'серы': GRAY.color,
   'сера': GRAY.color,
