@@ -172,7 +172,6 @@ const useProduct = () => {
       data
     })
     const product = response?.createProduct?.product
-    console.log(product);
     if (!createProductError.value && product) {
       createProductHistory(data, product?.id, product?.sklad)
     }

@@ -173,10 +173,8 @@ const useHistory = () => {
   })
 
   watch(historyRes, (val) => {
-    const histories = val?.listHistories
-    if (histories?.length) {
-      historiesStore.setHistories(histories)
-    }
+    const histories = val?.listHistories || []
+    historiesStore.setHistories(histories)
   })
 
   return {
