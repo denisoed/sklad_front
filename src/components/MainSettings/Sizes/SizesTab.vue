@@ -18,6 +18,13 @@
             </q-btn>
           </div>
           
+          <TheSelector
+            v-model="selectedSizes"
+            :title="$t('mainSettings.sizesTab.sizes')"
+            :options="sizesOptions"
+            @on-create-new="onCreateNew"
+          />
+
           <div v-if="sizes?.length" class="q-gap-sm flex column">
             <div
               style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
@@ -60,7 +67,7 @@
       @close="onClose"
       @remove="removeSizes"
       @finished="onFinish"
-      title="размеры"
+      :title="$t('mainSettings.sizesTab.sizes')"
     />
   </div>
 </template>
@@ -69,14 +76,22 @@
 import {
   defineComponent,
   ref,
-  onBeforeMount
+  onBeforeMount,
+  computed
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CrudSizesModal from 'src/components/MainSettings/Sizes/CrudSizesModal.vue'
 import SizeItem from 'src/components/MainSettings/Sizes/SizeItem.vue'
 import Dropdown from 'src/components/Dropdown/index.vue'
 import useSizes from 'src/modules/useSizes'
 import useProfile from 'src/modules/useProfile'
 import { CREATE_SIZES, UPDATE_SIZES } from 'src/graphql/sizes'
+
+defineOptions({
+  name: 'SizesTab'
+})
+
+const { t: $t } = useI18n()
 
 export default defineComponent({
   name: 'SizesTab',

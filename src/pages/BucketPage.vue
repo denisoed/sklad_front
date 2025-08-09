@@ -340,13 +340,13 @@ function toSell() {
     persistent: true,
     ok: {
       color: 'primary',
-      label: 'Продать',
+      label: $t('bucket.sell'),
       push: true,
     },
     cancel: {
       color: 'white',
       textColor: 'black', 
-      label: 'Отмена',
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(async () => {

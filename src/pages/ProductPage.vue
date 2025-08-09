@@ -105,19 +105,17 @@
 
             <!-- Sklads -->
             <TheSelector
-              v-model="product.sklad"
-              title-postfix="склад"
+              v-model="cloneData.sklad"
+              :title-postfix="$t('common.warehouse').toLowerCase()"
               :options="skladsOptions"
               @on-create-new="onCreateNewSklad"
               outlined
-              class="q-mb-md"
-              label="Склад *"
-              hint="Привязать товар к складу"
+              class="full-width"
+              :label="$t('common.warehouse') + ' *'"
+              hint="Выберите склад для товара"
               tabindex="1"
               clearable
-              emit-value
-              map-options
-              :rules="[() => !!product.sklad || 'Обязательное поле']"
+              :rules="[() => !!cloneData.sklad || $t('common.requiredField')]"
             />
 
             <!-- Categories -->
@@ -754,13 +752,13 @@ function cancel(type) {
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: type === 'remove' ? 'Удалить' : 'Сбросить',
+      label: type === 'remove' ? $t('common.delete') : $t('product.reset'),
       push: true
     },
     cancel: {
       color: 'white',
       textColor: 'black', 
-      label: 'Отмена',
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(async () => {
@@ -839,11 +837,11 @@ const pageTitle = computed(() => {
 })
 const submitBtnLabel = computed(() => {
   if (isDuplicating.value) {
-    return 'Дублировать'
+    return $t('product.duplicate')
   } else if (props.isEdit) {
-    return 'Обновить'
+    return $t('common.update')
   }
-  return 'Сохранить'
+  return $t('common.save')
 })
 
 async function hanleProductCategotyBySklad(skladId) {

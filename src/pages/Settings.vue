@@ -78,9 +78,22 @@
                   :min="0"
                 />
               </div>
-              <p class="text-body2 text-grey-7 q-mt-sm q-mb-none">
+              <h6
+                class="q-ma-none q-mb-sm text-subtitle2 text-grey-2"
+              >
                 {{ $t('settings.minStockDescription') }}
-              </p>
+              </h6>
+              <q-input
+                v-model="formData.minSizes"
+                type="number"
+                outlined
+                min="0"
+                label="Мин кол-во размеров в товаре"
+                hint="Значение должно быть больше или равно нулю"
+                :disable="!formData.useMinSizes"
+                :rules="[val => val >= 0 || 'Значение должно быть больше или равно нулю']"
+                enterkeyhint="done"
+              />
             </template>
           </Dropdown>
         </q-tab-panel>
@@ -88,8 +101,8 @@
         <q-tab-panel name="sizes" class="q-px-sm">
           <Dropdown
             class="q-mt-md"
-            title="Остатки"
-            :opened="formData.useMinSizes"
+            :title="$t('pages.remainingStock')"
+            opened
           >
             <template #body>
               <div class="flex column">

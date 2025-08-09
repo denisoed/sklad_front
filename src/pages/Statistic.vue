@@ -113,6 +113,14 @@ import {
   READ_STATISTIC_TABLE_ACTIONS,
   READ_STATISTIC_FINANCE
 } from 'src/permissions'
+import { useI18n } from 'vue-i18n'
+
+defineOptions({
+  name: 'Statistic'
+})
+
+const { t: $t } = useI18n()
+const $q = useQuasar()
 
 export default defineComponent({
   name: 'StatisticPage',
@@ -122,7 +130,7 @@ export default defineComponent({
     StatisticTable
   },
   setup() {
-    const $q = useQuasar()
+    const { t: $t } = useI18n()
     const { params } = useRoute()
     const { profile } = useProfile()
     const {
@@ -258,19 +266,19 @@ export default defineComponent({
 
     function returnProduct(activity) {
       $q.dialog({
-        title: 'Вернуть товар на склад?',
-        message: 'При возврате товара, отчеты будет пересчитаны',
+        title: $t('statistics.returnToWarehouse'),
+        message: $t('statistics.returnConfirm'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Вернуть',
+          label: $t('statistics.return'),
           push: true
         },
         cancel: {
           color: 'white',
-          textColor: 'black', 
-          label: 'Отмена',
+          textColor: 'black',
+          label: $t('common.cancel'),
           push: true
         }
       }).onOk(() => {

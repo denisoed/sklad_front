@@ -27,7 +27,9 @@
 <script>
 import {
   defineComponent,
+  ref
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useQuasar } from 'quasar'
 import { useMutation } from '@vue/apollo-composable'
 import { UPDATE_SIZES } from 'src/graphql/sizes'
@@ -55,6 +57,7 @@ export default defineComponent({
   },
   emits: ['on-edit', 'on-update'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const $q = useQuasar()
     const { showSuccess, showError } = useHelpers()
     
@@ -72,19 +75,19 @@ export default defineComponent({
       if (props.disable) return
 
       $q.dialog({
-        title: `Удалить размер "${sizeToRemove.size}"?`,
-        message: 'Вы уверены, что хотите удалить этот размер?',
+        title: $t('mainSettings.sizesTab.deleteSize'),
+        message: $t('mainSettings.sizesTab.deleteConfirm'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('common.delete'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('common.cancel'),
           push: true
         }
       }).onOk(async () => {
