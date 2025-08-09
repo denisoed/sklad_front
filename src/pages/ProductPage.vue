@@ -761,7 +761,7 @@ function cancel(type) {
     if (type === 'reset') {
       resetAll()
     } else {
-      await removeProduct(params?.productId, product)
+      await removeProduct(params?.productId, editProduct.value?.product)
       showSuccess('Товар успешно удалён!')
       push('/products')
     }
