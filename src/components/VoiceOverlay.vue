@@ -25,7 +25,7 @@
           <span v-else-if="!hasStartedRecording" class="text-bold">
             Зажмите кнопку ниже, чтобы начать запись
           </span>
-          <span v-else-if="!recognizedText && !isRecording" class="text-bold text-red">
+          <span v-else-if="!recognizedText && !isRecording && !isUserPressingButton" class="text-bold text-red">
             Не удалось распознать речь. Попробуйте сказать еще раз...
           </span>
           <span v-else-if="!recognizedText" class="text-bold">Говорите...</span>
