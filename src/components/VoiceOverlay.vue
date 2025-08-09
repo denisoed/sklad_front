@@ -46,8 +46,10 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import useSpeechRecognition from '../modules/useSpeechRecognition'
+import useHelpers from '../modules/useHelpers'
 
 const emit = defineEmits(['close', 'result'])
+const { showError } = useHelpers()
 
 // Константы
 const TIMEOUTS = {
@@ -75,8 +77,8 @@ const isIOS = ref(/iPad|iPhone|iPod/.test(navigator.userAgent))
 const isUserPressingButton = ref(false)
 const isProcessing = ref(false)
 
-// Sequence guard to avoid async race between close and open
-let lifecycleSeq = 0
+// Guard to prevent duplicate close event emission
+let hasEmittedClose = false
 
 // Аудио контекст и связанные переменные
 let audioContext = null
@@ -117,7 +119,8 @@ const finishHandler = (finalText) => {
 // Register finish handler initially
 onFinish(finishHandler)
 
-async function handleClose() {
+// Cleanup function without event emission
+async function cleanup() {
   // Блокируем все колбэки для предотвращения перезапуска
   setShouldContinueCallback(() => false)
   
@@ -138,14 +141,35 @@ async function handleClose() {
   // Уничтожаем экземпляр распознавания речи
   destroy()
   
-  // Инкрементируем счетчик жизненного цикла для отмены async операций
-  lifecycleSeq++
+
+}
+
+async function handleClose() {
+  // Prevent duplicate close event emission
+  if (hasEmittedClose) {
+    return
+  }
   
-  emit('close')
+  hasEmittedClose = true
+  
+  try {
+    // Perform cleanup
+    await cleanup()
+    
+    emit('close')
+  } catch (error) {
+    console.error('Error during cleanup:', error)
+    // Reset flag on cleanup failure to allow retry
+    hasEmittedClose = false
+    throw error
+  }
 }
 
 function handleRetry() {
   isRetrying.value = true
+  
+  // Reset close flag to allow proper closing after retry
+  hasEmittedClose = false
   
   // Полная очистка состояний
   recognizedText.value = ''
@@ -185,9 +209,19 @@ async function handlePointerDown(event) {
 
   // Готовим аудио-визуализацию по требованию
   if (!isAudioInitialized) {
-    await startAudio()
+    try {
+      await startAudio()
+    } catch (error) {
+      // startAudio failed and already handled cleanup/close
+      return
+    }
   } else if (isIOS.value && audioContext && audioContext.state === 'suspended') {
     try { await audioContext.resume() } catch (error) { console.error('AudioContext resume iOS error:', error) }
+  }
+
+  // Check if component is still active after potential startAudio failure
+  if (hasEmittedClose || !isAudioInitialized) {
+    return
   }
 
   if (!isRecording.value) {
@@ -216,7 +250,7 @@ async function finishRecording(isCancel = false) {
   if (isCancel) {
     // Блокируем продолжение записи при отмене
     setShouldContinueCallback(() => false)
-    handleClose()
+    await handleClose()
     return
   }
 
@@ -325,6 +359,41 @@ function setupAnalyser(audioContext) {
   return analyser
 }
 
+// Обработка ошибок доступа к микрофону с информативными сообщениями
+function handleMicrophoneError(error) {
+  const errorName = error.name || error.constructor?.name || 'UnknownError'
+  
+  switch (errorName) {
+    case 'NotAllowedError':
+    case 'PermissionDeniedError':
+      showError('Доступ к микрофону запрещен. Разрешите доступ к микрофону в настройках браузера.')
+      break
+    case 'PermissionDismissedError':
+      showError('Диалог разрешений закрыт. Попробуйте снова и разрешите доступ к микрофону.')
+      break
+    case 'NotFoundError':
+    case 'DevicesNotFoundError':
+      showError('Микрофон не найден. Подключите микрофон или проверьте настройки устройства.')
+      break
+    case 'NotReadableError':
+    case 'TrackStartError':
+      showError('Микрофон используется другим приложением. Закройте другие приложения, использующие микрофон.')
+      break
+    case 'OverconstrainedError':
+    case 'ConstraintNotSatisfiedError':
+      showError('Микрофон не поддерживает требуемые параметры записи.')
+      break
+    case 'SecurityError':
+      showError('Запись голоса недоступна в небезопасном контексте. Используйте HTTPS.')
+      break
+    case 'TypeError':
+      showError('Ошибка конфигурации микрофона. Обратитесь в техподдержку.')
+      break
+    default:
+      showError('Не удалось получить доступ к микрофону. Проверьте подключение и настройки.')
+  }
+}
+
 async function startAudio() {
   // Полная очистка перед новой инициализацией
   if (isAudioInitialized) {
@@ -358,6 +427,12 @@ async function startAudio() {
   } catch (e) {
     console.error('Ошибка доступа к микрофону:', e)
     await stopAudio()
+    // Показываем информативную ошибку пользователю в зависимости от типа ошибки
+    handleMicrophoneError(e)
+    // Закрываем overlay при ошибке доступа к микрофону
+    await handleClose()
+    // Re-throw error to signal failure to callers
+    throw e
   }
 }
 
@@ -461,7 +536,8 @@ function handleVisibilityChange() {
 
 // Инициализация компонента при монтировании
 onMounted(async () => {
-  const seq = ++lifecycleSeq
+  // Reset close flag for component reuse scenarios
+  hasEmittedClose = false
   
   // Устанавливаем обработчики событий
   window.addEventListener('beforeunload', handleBeforeUnload)
@@ -487,12 +563,13 @@ onMounted(async () => {
     await new Promise(resolve => setTimeout(resolve, TIMEOUTS.MOUNT_DELAY))
   }
   
-  // If component was unmounted while awaiting, abort this initialization flow
-  if (seq !== lifecycleSeq) {
+  try {
+    await startAudio()
+  } catch (error) {
+    // startAudio failed and already handled cleanup/close
+    // Component will be closed, no further initialization needed
     return
   }
-  
-  await startAudio()
 })
 
 onBeforeUnmount(async () => {
@@ -500,8 +577,8 @@ onBeforeUnmount(async () => {
   window.removeEventListener('beforeunload', handleBeforeUnload)
   document.removeEventListener('visibilitychange', handleVisibilityChange)
   
-  // Используем handleClose для правильной очистки всех ресурсов
-  await handleClose()
+  // Выполняем только очистку ресурсов без эмиссии события
+  await cleanup()
 })
 </script>
 
