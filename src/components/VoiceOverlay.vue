@@ -16,9 +16,6 @@
       <span v-else-if="!hasStartedRecording" class="text-bold">
         Зажмите кнопку ниже, чтобы начать запись
       </span>
-      <span v-else-if="shouldShowErrorMessage" class="text-bold text-red">
-        Не удалось распознать речь. Попробуйте сказать еще раз...
-      </span>
       <span v-else-if="!recognizedText" class="text-bold">Говорите...</span>
       <span v-else>{{ recognizedText }}</span>
     </div>
@@ -41,21 +38,13 @@
         @contextmenu.prevent
       />
     </div>
-
-    <q-btn
-      v-if="shouldShowRetryButton"
-      color="primary"
-      push
-      label="Заново"
-      @click="handleRetry"
-    />
     
     <canvas ref="canvasRef" class="voice-canvas" width="480" height="240"></canvas>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import useSpeechRecognition from '../modules/useSpeechRecognition'
 
 const emit = defineEmits(['close', 'result'])
@@ -113,15 +102,6 @@ const {
   restore
 } = speechRecognition
 
-// Computed свойства для сложных условий в template
-const shouldShowErrorMessage = computed(() => 
-  !recognizedText.value && !isRecording.value && !isUserPressingButton.value
-)
-
-const shouldShowRetryButton = computed(() => 
-  hasStartedRecording.value && !recognizedText.value && !isRecording.value && !isUserPressingButton.value
-)
-
 // Устанавливаем callback для проверки, нужно ли продолжать запись
 setShouldContinueCallback(() => isUserPressingButton.value)
 
@@ -131,7 +111,7 @@ const finishHandler = (finalText) => {
     return
   }
   recognizedText.value = finalText
-  isProcessing.value = false
+  // Не убираем лоадер при получении результата - только при закрытии
 }
 
 // Register finish handler initially
@@ -142,11 +122,7 @@ async function handleClose() {
   setShouldContinueCallback(() => false)
   
   // Сбрасываем все состояния
-  recognizedText.value = ''
-  hasStartedRecording.value = false
   isUserPressingButton.value = false
-  isProcessing.value = false
-  isRetrying.value = false
   
   // Принудительно останавливаем запись
   if (isRecording.value) {
@@ -197,7 +173,7 @@ function handleRetry() {
 async function handlePointerDown(event) {
   if (!isApiAvailable || isRetrying.value) return
   if (event) event.preventDefault()
-
+  
   hasStartedRecording.value = true
   isUserPressingButton.value = true
 
@@ -219,11 +195,6 @@ async function handlePointerDown(event) {
   }
 }
 
-// Проверка наличия результата
-function hasResult() {
-  return !!(recognizedText.value || transcript.value)
-}
-
 // Получение результата для отправки
 function getResult() {
   return (transcript.value || recognizedText.value || '').trim()
@@ -233,9 +204,8 @@ function submitIfNeededAndClose() {
   const resultToSend = getResult()
   if (resultToSend) {
     emit('result', resultToSend)
-    handleClose()
   }
-  recognizedText.value = ''
+  handleClose()
 }
 
 // Общая логика завершения записи
@@ -246,25 +216,18 @@ async function finishRecording(isCancel = false) {
   if (isCancel) {
     // Блокируем продолжение записи при отмене
     setShouldContinueCallback(() => false)
+    handleClose()
+    return
   }
 
   if (isRecording.value) {
     stopRecord()
   }
 
-  // Ждем завершения для iOS при отмене
-  if (isCancel) {
-    await new Promise(resolve => setTimeout(resolve, isIOS.value ? TIMEOUTS.IOS_STOP_DELAY : TIMEOUTS.ANDROID_STOP_DELAY))
-  }
-
   await stopAudio()
 
-    // Небольшая задержка, чтобы дать доехать финальным результатам
+  // Небольшая задержка, чтобы дать доехать финальным результатам
   setTimeout(() => {
-    // Проверяем, есть ли результат, если нет - убираем loading (это означает ошибку)
-    if (!hasResult()) {
-      isProcessing.value = false
-    }
     submitIfNeededAndClose()
   }, TIMEOUTS.RESULT_DELAY)
 }
