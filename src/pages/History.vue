@@ -182,7 +182,7 @@ export default defineComponent({
       fetchHistory({
         skladId: +params?.skladId || null,
         dates: selectedDates.value,
-        ...(params?.productId && { product: params.productId }),
+        ...(params?.productId && { productId: params.productId }),
         ...selectedFilters.value,
         ...filters
       })
