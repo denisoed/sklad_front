@@ -11,6 +11,16 @@ export default ({
   create: 'Создать',
   update: 'Обновить',
   offline: 'Нет соединения с интернетом',
+
+  colors: {
+    accent: {
+      default: 'Бежевый (по умолчанию)',
+      emerald: 'Изумрудный',
+      amethyst: 'Аметистовый',
+      terracotta: 'Терракотовый',
+      indigo: 'Индиго',
+    },
+  },
   
   // Common actions
   common: {
@@ -58,7 +68,13 @@ export default ({
     actions: 'Действия',
     per: 'за',
     areYouSure: 'Вы уверены?',
-
+    description: 'Описание',
+    date: 'Дата',
+    event: 'Событие',
+    author: 'Автор',
+    product: 'Товар',
+    notifications: 'Уведомления',
+    noNewNotifications: 'Новых уведомлений нет',
     // Errors and success messages
     success: 'Успешно',
     error: 'Ошибка',
@@ -246,13 +262,19 @@ export default ({
   history: {
     title: 'История',
     productHistory: 'История по товару',
-    event: 'Событие',
-    author: 'Автор',
-    product: 'Товар',
-    description: 'Описание',
-    date: 'Дата',
+    description: '<b>История</b> - содержит список событий созданых пользователями.',
+    cannotDelete: 'Историю невозможно удалить.',
+    recordedForAll: 'История записывается независимо от роли.',
+    filterHintBefore: 'Кнопка',
+    filterHintAfter: 'поможет отфильтровать историю.',
+    actions: {
+      create: 'Создан',
+      update: 'Обновлен',
+      delete: 'Удален',
+      sold: 'Продан',
+      return: 'Возврат',
+    }
   },
-
   // Costs
   costs: {
     title: 'Финансовые расходы',
@@ -265,17 +287,6 @@ export default ({
     deleted: 'Расход успешно удалён!',
     errorSave: 'Произошла ошибка. Попробуйте позже.',
     errorDelete: 'Произошла ошибка. Попробуйте позже.',
-  },
-
-  history: {
-    title: 'История',
-    description: 'содержит список событий созданых пользователями.',
-    cannotDelete: 'Историю невозможно удалить.',
-    recordedForAll: 'История записывается независимо от роли.',
-    filterHintBefore: 'Кнопка',
-    filterHintAfter: 'поможет отфильтровать историю.',
-    notifications: 'Уведомления',
-    noNewNotifications: 'Новых уведомлений нет',
   },
 
   pwa: {

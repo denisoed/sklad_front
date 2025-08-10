@@ -4,7 +4,7 @@
       <PageTitle :title="title">
         <div>
           <q-card-section class="q-pt-none text-primary">
-            <b>{{ $t('history.title') }}</b> - {{ $t('history.description') }}
+            <span v-html="$t('history.description')" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <ul>
@@ -44,7 +44,7 @@
               :props="props"
               :style="`background-color: ${props.row.actionColor}1A`"
             >
-              {{ HISTORY_ACTIONS[props.row.action] }}
+              {{ $t(`history.actions.${props.row.action}`) }}
             </q-td>
             <q-td key="fullname" :props="props">
               {{ props.row.fullname }}
@@ -97,8 +97,6 @@ import { useRoute, useRouter } from 'vue-router'
 import FilterDates from 'src/components/FilterDates.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import {
-  HISTORY_ACTIONS,
-  HISTORY_ACTIONS_COLORS,
   FILTER_FORMAT
 } from 'src/config'
 
@@ -118,11 +116,36 @@ const title = computed(() =>
 )
 
 const columns = computed(() => [
-  { name: 'event', label: $t('history.event'), field: 'event', sortable: true },
-  { name: 'author', label: $t('history.author'), field: 'author', sortable: true },
-  { name: 'product', label: $t('history.product'), field: 'product', sortable: true },
-  { name: 'description', label: $t('history.description'), field: 'description', sortable: false },
-  { name: 'date', label: $t('history.date'), field: 'date', sortable: true }
+  {
+    name: 'action',
+    label: $t('common.event'),
+    align: 'left',
+    field: 'action',
+  },
+  {
+    name: 'fullname',
+    label: $t('common.author'),
+    field: 'fullname',
+    align: 'left',
+  },
+  {
+    name: 'productId',
+    label: $t('common.product'),
+    field: 'productId',
+    align: 'left',
+  },
+  {
+    name: 'description',
+    label: $t('common.description'),
+    field: 'description',
+    align: 'left',
+  },
+  {
+    name: 'created_at',
+    label: $t('common.date'),
+    field: 'created_at',
+    align: 'left',
+  },
 ])
 
 const { formatTimeAgo } = useDate()
@@ -133,7 +156,6 @@ const { sklad } = useSklads()
 const openedFilterHistory = ref(false)
 const selectedDates = ref([moment.utc(TODAY).local().format(FILTER_FORMAT)])
 const selectedFilters = ref({})
-const isDateModal = ref(false)
 const pagination = {
   rowsPerPage: -1
 }

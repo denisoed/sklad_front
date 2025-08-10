@@ -21,7 +21,7 @@
                 class="color-circle"
                 :style="{ backgroundColor: color.value }"
               ></div>
-              <span class="color-name">{{ color.name }}</span>
+              <span class="color-name">{{ $t(`colors.accent.${color.name}`) }}</span>
               <q-icon 
                 v-if="selectedColor === color.value" 
                 name="mdi-check" 

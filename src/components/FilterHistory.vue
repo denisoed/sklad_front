@@ -113,7 +113,6 @@
 import { computed, reactive, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
-  HISTORY_ACTIONS,
   HISTORY_CREATE,
   HISTORY_UPDATE,
   HISTORY_DELETE,
@@ -150,28 +149,28 @@ const formData = reactive({
   people: null
 })
 
-const actions = [
+const actions = computed(() => [
   {
-    label: HISTORY_ACTIONS[HISTORY_CREATE],
+    label: $t(`history.actions.${HISTORY_CREATE}`),
     value: HISTORY_CREATE,
     color: HISTORY_ACTIONS_COLORS[HISTORY_CREATE]
   },
   {
-    label: HISTORY_ACTIONS[HISTORY_UPDATE],
+    label: $t(`history.actions.${HISTORY_UPDATE}`),
     value: HISTORY_UPDATE,
     color: HISTORY_ACTIONS_COLORS[HISTORY_UPDATE]
   },
   {
-    label: HISTORY_ACTIONS[HISTORY_DELETE],
+    label: $t(`history.actions.${HISTORY_DELETE}`),
     value: HISTORY_DELETE,
     color: HISTORY_ACTIONS_COLORS[HISTORY_DELETE]
   },
   {
-    label: HISTORY_ACTIONS[HISTORY_SOLD],
+    label: $t(`history.actions.${HISTORY_SOLD}`),
     value: HISTORY_SOLD,
     color: HISTORY_ACTIONS_COLORS[HISTORY_SOLD]
   }
-]
+])
 
 const skladUsers = computed(() =>
   users.value.map(u => ({ label: u.fullname, email: u.email, value: u.id }))

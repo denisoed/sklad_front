@@ -1,10 +1,3 @@
-export const HISTORY_ACTIONS = {
-  create: 'Создан',
-  update: 'Обновлен',
-  delete: 'Удален',
-  sold: 'Продан',
-  return: 'Возврат',
-}
 export const HISTORY_ACTIONS_COLORS = {
   create: '#00FF00',
   update: '#FFFF00',
@@ -43,11 +36,12 @@ export const YEAR = 'year'
 
 // Accent colors
 export const ACCENT_COLORS = [
-  { name: 'Бежевый (по умолчанию)', value: '#BCA37F', rgb: '188, 163, 127' },
-  { name: 'Изумрудный', value: '#6B8E74', rgb: '107, 142, 116' },
-  { name: 'Аметистовый', value: '#9B7BB8', rgb: '155, 123, 184' },
-  { name: 'Терракотовый', value: '#C65D7B', rgb: '198, 93, 123' },
-  { name: 'Индиго', value: '#5A6FA8', rgb: '90, 111, 168' },
+  { name: 'default', value: '#BCA37F', rgb: '188, 163, 127' },
+  { name: 'emerald', value: '#6B8E74', rgb: '107, 142, 116' },
+  { name: 'amethyst', value: '#9B7BB8', rgb: '155, 123, 184' },
+  { name: 'terracotta', value: '#C65D7B', rgb: '198, 93, 123' },
+  { name: 'indigo', value: '#5A6FA8', rgb: '90, 111, 168' },
+
 ]
 
 // Localstorage keys
