@@ -16,7 +16,7 @@
       <div class="flex items-center justify-between no-wrap q-pr-sm">
         <q-checkbox
           v-model="showAdditionalPrices"
-          :label="$t('product.additionalRetailPrice')"
+          :label="$t('product.additionalRetailPrices')"
           class="full-width"
           @update:model-value="onShowAdditionalPricesChange"
         />

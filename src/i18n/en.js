@@ -464,7 +464,6 @@ export default ({
     information: 'Information',
     paymentMethods: 'Payment methods',
     retailPricePerPiece: 'Retail price per 1 pc',
-    additionalRetailPrice: 'Additional retail prices',
     retailPrice: 'Retail price',
     retailPriceShort: 'Retail',
     additionalRetailPrices: 'Additional retail prices',

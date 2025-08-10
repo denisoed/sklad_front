@@ -464,7 +464,6 @@ export default ({
     information: 'Информация',
     paymentMethods: 'Способы оплаты',
     retailPricePerPiece: 'Розничная цена за 1 шт',
-    additionalRetailPrice: 'Доп. розничные цены',
     retailPrice: 'Розничная цена',
     retailPriceShort: 'Розн. цена',
     additionalRetailPrices: 'Доп. розничные цены',
