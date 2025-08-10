@@ -278,6 +278,26 @@ export default ({
       delete: 'Удален',
       sold: 'Продан',
       return: 'Возврат',
+    },
+    descriptionTemplates: {
+      productPrefix: 'Товар: {name}. ',
+      soldWithSizes: '{productPrefix}Проданы размеры: {sizes}',
+      soldWithoutSizes: '{productPrefix}Продано: {count}{pieces}',
+      returnWithSizes: 'Размеры: {sizes} - вернули обратно в товар',
+      returnWithoutSizes: '{count}{pieces} - вернули обратно в товар',
+      delete: 'Удален товар: {name}',
+      createdWithSizes: '{name} - цена: {origPrice}/{newPrice}, размеры: {sizes}',
+      createdWithCount: '{name} - цена: {origPrice}/{newPrice}, кол-во: {count}{pieces}',
+      update: {
+        name: 'Обновлено название',
+        color: 'Обновлён цвет',
+        origPrice: 'Обновлена опт цена',
+        newPrice: 'Обновлена роз цена',
+        countSizes: 'Обновлено кол-во',
+        removedSizes: 'Удалены размеры',
+        addedSizes: 'Добавлены размеры',
+        valueArrow: '{old} -> {new}',
+      },
     }
   },
   pwa: {

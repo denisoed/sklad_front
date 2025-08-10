@@ -278,6 +278,26 @@ export default ({
       delete: 'Deleted',
       sold: 'Sold',
       return: 'Returned',
+    },
+    descriptionTemplates: {
+      productPrefix: 'Product: {name}. ',
+      soldWithSizes: '{productPrefix}Sold sizes: {sizes}',
+      soldWithoutSizes: '{productPrefix}Sold: {count}{pieces}',
+      returnWithSizes: 'Sizes: {sizes} - returned back to product',
+      returnWithoutSizes: '{count}{pieces} - returned back to product',
+      delete: 'Product deleted: {name}',
+      createdWithSizes: '{name} - price: {origPrice}/{newPrice}, sizes: {sizes}',
+      createdWithCount: '{name} - price: {origPrice}/{newPrice}, quantity: {count}{pieces}',
+      update: {
+        name: 'Name updated',
+        color: 'Color updated',
+        origPrice: 'Wholesale price updated',
+        newPrice: 'Retail price updated',
+        countSizes: 'Quantity updated',
+        removedSizes: 'Sizes removed',
+        addedSizes: 'Sizes added',
+        valueArrow: '{old} -> {new}',
+      },
     }
   },
   pwa: {

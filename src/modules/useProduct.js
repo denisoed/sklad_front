@@ -157,15 +157,15 @@ const useProduct = () => {
 
   function generateProductMeta(product) {
     return `
-      ${`Склад=${product.sklad}`},
-      ${`Категория=${product.category}`},
-      ${`Название=${product.name}`},
-      ${`Цвет=${product.colorName}`},
-      ${product.sizes.length ? `Размеры=${product.sizes.map(s => s.size).join(', ')},` : ''}
-      ${product.useNumberOfSizes ? `Количество=${product.countSizes},` : ''}
-      ${product.withDiscount ? `Скидка=${product.discountPrice},` : ''}
-      ${`Оптовая цена=${product.origPrice}`},
-      ${`Розничная цена=${product.newPrice}`},
+      ${`${$t('common.warehouse')}=${product.sklad}`},
+      ${`${$t('common.category')}=${product.category}`},
+      ${`${$t('product.productName')}=${product.name}`},
+      ${`${$t('common.color')}=${product.colorName}`},
+      ${product.sizes.length ? `${$t('common.sizes')}=${product.sizes.map(s => s.size).join(', ')},` : ''}
+      ${product.useNumberOfSizes ? `${$t('common.quantity')}=${product.countSizes},` : ''}
+      ${product.withDiscount ? `${$t('common.discount')}=${product.discountPrice},` : ''}
+      ${`${$t('product.originalPrice')}=${product.origPrice}`},
+      ${`${$t('product.retailPrice')}=${product.newPrice}`},
     `.trim()
   }
 

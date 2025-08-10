@@ -278,6 +278,26 @@ export default ({
       delete: 'Өчтү',
       sold: 'Сатылды',
       return: 'Кайтарылды',
+    },
+    descriptionTemplates: {
+      productPrefix: 'Товар: {name}. ',
+      soldWithSizes: '{productPrefix}Сатылган өлчөмдөр: {sizes}',
+      soldWithoutSizes: '{productPrefix}Сатылды: {count}{pieces}',
+      returnWithSizes: 'Өлчөмдөр: {sizes} - товарга кайтарылды',
+      returnWithoutSizes: '{count}{pieces} - товарга кайтарылды',
+      delete: 'Товар өчүрүлдү: {name}',
+      createdWithSizes: '{name} - баа: {origPrice}/{newPrice}, өлчөмдөр: {sizes}',
+      createdWithCount: '{name} - баа: {origPrice}/{newPrice}, саны: {count}{pieces}',
+      update: {
+        name: 'Аталышы жаңырды',
+        color: 'Түс жаңырды',
+        origPrice: 'Опт баа жаңырды',
+        newPrice: 'Розн баа жаңырды',
+        countSizes: 'Саны жаңырды',
+        removedSizes: 'Өлчөмдөр өчүрүлдү',
+        addedSizes: 'Өлчөмдөр кошулду',
+        valueArrow: '{old} -> {new}',
+      },
     }
   },
   pwa: {
