@@ -11,7 +11,7 @@
 
       <q-btn
         color="primary"
-        @click="onBack"
+        push
         unelevated
         to="/"
         :label="$t('common.backToHome')"
@@ -20,17 +20,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import { defineComponent } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-export default defineComponent({
-  name: 'ErrorNotFound',
-  setup() {
-    const { t: $t } = useI18n()
-
-    return { $t }
-  }
-})
-</script>
