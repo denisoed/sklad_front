@@ -89,7 +89,6 @@ const props = defineProps({
 const emit = defineEmits(['on-change'])
 const { t: $t } = useI18n()
 
-// Always default to DEFAULT_PRICE (Розничная цена)
 const selected = ref(DEFAULT_PRICE);
 const formData = reactive({
   otherPrice: null,

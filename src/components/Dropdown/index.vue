@@ -47,7 +47,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Заголовок'
+      default: null
     },
     opened: {
       type: Boolean,

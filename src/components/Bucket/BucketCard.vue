@@ -6,7 +6,7 @@
       v-if="discount"
       class="bucket-card_discount"
     >
-      Скидка: <template v-if="percentageDiscount">{{ discount }}%</template><template v-else><PriceFormatter :value="discount" />c</template>
+      {{ $t('common.discount') }}: <template v-if="percentageDiscount">{{ discount }}%</template><template v-else><PriceFormatter :value="discount" />c</template>
     </div>
     <router-link
       class="bucket-card_content"
@@ -47,7 +47,7 @@
           v-if="countSizes"
           class="text-primary"
         >
-          {{ countSizes }} шт
+          {{ countSizes }} {{ $t('common.pieces') }}
         </p>
         <p v-else class="text-deep-orange">{{ $t('common.notSpecified') }}</p>
       </div>

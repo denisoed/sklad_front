@@ -7,7 +7,7 @@
     <q-card style="width: 350px">
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          Фильтр по истории
+          {{ $t('history.filterByHistory') }}
         </p>
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width q-gap-md">
@@ -81,21 +81,21 @@
           </div>
           <q-separator class="full-width q-my-md" />
           <div class="flex justify-between no-wrap q-gap-md full-width">
-            <q-btn
+              <q-btn
               style="height:40px;"
               color="deep-orange"
               icon="mdi-trash-can-outline"
               push
               @click="clear"
             />
-            <q-btn
+              <q-btn
               class="button-size q-mr-auto"
               color="grey"
               icon="mdi-close"
               push
               @click="close"
             />
-            <q-btn
+              <q-btn
               class="button-size"
               color="primary"
               icon="search"

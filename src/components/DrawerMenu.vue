@@ -96,7 +96,7 @@ import useHelpers from 'src/modules/useHelpers'
 const MENU_LIST = [
   // {
   //   icon: 'mdi-account-group-outline',
-  //   label: 'Контакты',
+  //   label: $t('pages.contacts'),
   //   separator: false,
   //   disable: true,
   //   to: '/contacts'
@@ -104,7 +104,7 @@ const MENU_LIST = [
   // {
   //   icon: 'mdi-book-open-page-variant',
   //   iconColor: 'primary',
-  //   label: 'Блог',
+  //   label: $t('pages.posts'),
   //   separator: false,
   //   disable: false,
   //   to: '/posts'

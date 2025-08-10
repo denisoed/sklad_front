@@ -12,7 +12,7 @@
             <q-checkbox :model-value="selected" @update:model-value="toggleOption(opt)" />
           </q-item-section>
           <q-item-section>
-            <q-item-label v-html="opt.label" />
+            <q-item-label>{{ opt.label }}</q-item-label>
           </q-item-section>
         </q-item>
       </template>
@@ -28,7 +28,7 @@
             icon="mdi-plus"
             @click="emit('on-create-new')"
           >
-            Создать {{ titlePostfix }}
+            {{ $t('create') }} {{ titlePostfix }}
           </q-btn>
         </div>
       </template>
@@ -49,7 +49,7 @@
             icon="mdi-plus"
             @click="emit('on-create-new')"
           >
-            Создать {{ titlePostfix }}
+            {{ $t('create') }} {{ titlePostfix }}
           </q-btn>
         </div>
       </template>

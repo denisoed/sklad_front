@@ -145,7 +145,6 @@ const isLoading = computed(() =>
   updatedLoading.value
 )
 
-// Опции для селекта складов
 const skladsOptions = computed(() => {
   return sklads.value?.map(c => ({
     label: c.name,

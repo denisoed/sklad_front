@@ -57,7 +57,7 @@
               :max="max"
               :min="1"
               :label="$t('bucket.quantityForSale')"
-              :tooltip-plus-text="`Минимальное количество: ${min}`"
+              :tooltip-plus-text="$t('pages.minimumQuantity', { min })"
               class="q-my-auto"
             />
             <q-separator class="full-width q-my-md" />
