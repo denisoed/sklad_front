@@ -10,7 +10,7 @@
       separator="cell"
       class="table full-width block-bg border-radius-sm"
       :no-data-label="$t('common.noData')"
-      :rows-per-page-label="$t('statistics.recordsPerPage')"
+      :rows-per-page-label="$t('common.recordsPerPage')"
     >
       <template #top-row="props">
         <slot v-bind="props" name="top-row" />

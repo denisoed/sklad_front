@@ -75,9 +75,30 @@ const emit = defineEmits(['on-next'])
 
 const { t: $t } = useI18n()
 const COLUMNS = computed(() => [
-  { name: 'image', label: $t('statistics.photo'), field: 'image', sortable: false },
-  { name: 'name', label: $t('statistics.name'), field: 'name', sortable: false },
-  { name: 'color', label: $t('common.color'), field: 'color', sortable: false }
+  {
+    name: 'image',
+    label: $t('common.image'),
+    field: 'image',
+    align: 'left',
+  },
+  {
+    name: 'name',
+    label: $t('common.name'),
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: $t('common.color'),
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: '',
+    field: 'actions',
+    align: 'right',
+  },
 ])
 
 const bulkStore = useBulkStore()

@@ -50,6 +50,8 @@ export default ({
     payment: 'Оплата',
     cash: 'Наличными',
     card: 'Картой',
+    cashShort: 'Нал',
+    cardShort: 'Карт',
     total: 'Итог',
     totalSum: 'Итоговая сумма',
     notSpecified: 'Не указано',
@@ -77,6 +79,8 @@ export default ({
     noNewNotifications: 'Новых уведомлений нет',
     amount: 'Сумма',
     total: 'Итог',
+    recordsPerPage: 'Записей на странице',
+    
     // Errors and success messages
     success: 'Успешно',
     error: 'Ошибка',
@@ -166,6 +170,7 @@ export default ({
     items2: 'товара',
     items5: 'товаров',
     updateBasket: 'Корзина обновлена',
+    emptyBasket: 'Корзина пуста',
     returnToWarehouse: 'Товар возвращен на склад',
     sellProducts: 'Продать товары',
     addToBasket: 'Добавить товары в корзину',
@@ -304,8 +309,6 @@ export default ({
     notifyLowStock: 'Оповещать о низких остатках',
     returnToMain: 'Вернуться на главную',
     duplicateProduct: 'Дублировать товар',
-    cashAndCard: 'Нал:',
-    cardPayment: 'Карт:',
     sum: 'сом',
     contactsCopied: 'Почта скопирована',
     telegramCopied: 'Telegram ID скопирован',
@@ -324,7 +327,6 @@ export default ({
     listIsEmpty: 'Список пуст',
     selected: 'Выбрано',
     loading: 'Загрузка...',
-    emptyBasket: 'Корзина пуста',
     noProductsFound: 'Не удалось найти товары',
     lowStockWarning: 'На этой странице отображаются товары, количество которых менее',
     warehousesLabel: 'Склады',
@@ -481,7 +483,7 @@ export default ({
     additionalComment: 'Комментарий',
     additionalDiscount: 'Доп. скидка',
     additionalPricesDescription: 'Цена для постоянных клиентов',
-    additionalPricesOther: 'И другие варианты',
+    additionalPrice: 'Другая цена',
     additionalPricesFullDescription: 'Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например: <ul class="q-mt-md"><li>Цена для постоянных клиентов</li><li>Цена после 18:00</li><li>И другие варианты</li></ul><p class="text-body2 q-mt-md text-grey-5">Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.</p>',
     addPrice: 'Добавить цену',
     soldUnits: 'Продано единиц:',
@@ -633,5 +635,15 @@ export default ({
     promotionalPriceRequired: 'Укажите акционную цену',
     promotionalPriceLowerThanRetail: 'Акционная цена должна быть меньше Роз. цены',
     emailInvalid: 'Email не валидный',
+  },
+
+  // Bulk
+  bulk: {
+    selectedProductsForDeletion: 'Товары для удаления',
+    selectedProductsForUpdate: 'Товары для обновления',
+    deletion: 'Удаление',
+    productsDeleted: 'Товары успешно удалены!',
+    editing: 'Редактирование',
+    productsUpdated: 'Товары успешно обновлены!',
   },
 })

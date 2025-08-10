@@ -6,7 +6,7 @@
       v-if="discount"
       class="bucket-card_discount"
     >
-      {{ $t('common.discount') }}: <template v-if="percentageDiscount">{{ discount }}%</template><template v-else><PriceFormatter :value="discount" />c</template>
+      {{ $t('common.discount') }}: <template v-if="percentageDiscount">{{ discount }}%</template><template v-else><PriceFormatter :value="discount" /></template>
     </div>
     <router-link
       class="bucket-card_content"
@@ -221,7 +221,7 @@ const checked = ref(true)
 
 const payMethod = computed(() => {
   if (payCash.value && payCard.value)
-    return `${$t('pages.cashAndCard')} ${formatPrice(cashSum.value || 0)} + ${$t('pages.cardPayment')} ${formatPrice(cardSum.value || 0)}`
+    return `${$t('common.cashShort')}: ${formatPrice(cashSum.value || 0)} + ${$t('common.cardShort')}: ${formatPrice(cardSum.value || 0)}`
   if (payCash.value) return $t('common.cash')
   if (payCard.value) return $t('common.card')
   return null

@@ -68,7 +68,7 @@ const { showSuccess, showError } = useHelpers()
 const step = ref(1)
 const isLoading = ref(false)
 
-const title = computed(() => step.value === 1 ? $t('bulk.selectedProducts') : $t('bulk.editing'))
+const title = computed(() => step.value === 1 ? $t('bulk.selectedProductsForUpdate') : $t('bulk.editing'))
 
 function remove() {}
 

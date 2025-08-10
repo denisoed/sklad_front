@@ -15,10 +15,10 @@
           <h6 class="bucket-card-title">{{ $t('bucket.title') }}</h6>
           <p class="bucket-card-description">
             <span v-if="bucketProductsCount > 0">
-              {{ bucketProductsCount }} {{ bucketProductsCount === 1 ? $t('bucket.item') : bucketProductsCount < 5 ? $t('bucket.items2') : $t('common.pieces') }} {{ $t('bucket.inBucket') }}
+              {{ bucketProductsCount }} {{ bucketProductsCount === 1 ? $t('bucket.item') : bucketProductsCount < 5 ? $t('bucket.items2') : $t('bucket.items5') }} {{ $t('bucket.inBucket') }}
             </span>
             <span v-else>
-              {{ $t('common.listEmpty') }}
+              {{ $t('bucket.emptyBasket') }}
             </span>
           </p>
         </div>

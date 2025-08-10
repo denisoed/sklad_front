@@ -38,7 +38,7 @@
         </div>
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === OTHER_PRICE }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">{{ $t('product.additionalPricesOther') }}</div>
+            <div class="pay-methods_title">{{ $t('product.additionalPrice') }}</div>
             <q-radio v-model="selected" :val="OTHER_PRICE" dense />
           </label>
           <div v-if="selected === OTHER_PRICE" class="pay-methods_body flex column q-gap-sm q-pb-none q-mt-md">

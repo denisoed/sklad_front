@@ -40,7 +40,7 @@
               opened
             >
               <q-input
-                v-model="data.height"
+                v-model="formData.height"
                 outlined
                 type="number"
                 :label="$t('printing.height')"
@@ -103,7 +103,7 @@ const props = defineProps({
   },
 })
 
-const data = reactive({
+const formData = reactive({
   name: null,
   address: null,
   height: null,
