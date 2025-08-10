@@ -1,64 +1,63 @@
 const WHITE = {
   color: '#FFFFFF',
-  name: 'белый'
+  nameKey: 'colors.names.white'
 }
 const BLACK = {
   color: '#000000',
-  name: 'черный'
+  nameKey: 'colors.names.black'
 }
 const GREEN = {
   color: '#008000',
-  name: 'зеленый'
+  nameKey: 'colors.names.green'
 }
 const BLUE = {
   color: '#0000FF',
-  name: 'синий'
+  nameKey: 'colors.names.blue'
 }
 const YELLOW = {
   color: '#FFFF00',
-  name: 'желтый'
+  nameKey: 'colors.names.yellow'
 }
 const SILVER = {
   color: '#C0C0C0',
-  name: 'серебристый'
+  nameKey: 'colors.names.silver'
 }
 const BROWN = {
   color: '#800000',
-  name: 'коричневый'
+  nameKey: 'colors.names.brown'
 }
 const PINK = {
   color: '#FF1493',
-  name: 'розовый'
+  nameKey: 'colors.names.pink'
 }
 const RED = {
   color: '#FF0000',
-  name: 'красный'
+  nameKey: 'colors.names.red'
 }
 const MAGENTA = {
   color: '#FF00FF',
-  name: 'пурпурный'
+  nameKey: 'colors.names.magenta'
 }
 const CYAN = {
   color: '#00FFFF',
-  name: 'голубой'
+  nameKey: 'colors.names.cyan'
 }
 const ORANGE = {
   color: '#FFA500',
-  name: 'оранжевый'
+  nameKey: 'colors.names.orange'
 }
 const PURPLE = {
   color: '#800080',
-  name: 'фиолетовый'
+  nameKey: 'colors.names.purple'
 }
 const GRAY = {
   color: '#808080',
-  name: 'серый'
+  nameKey: 'colors.names.gray'
 }
 const TEAL = {
   color: '#008080',
-  name: 'бирюзовый'
+  nameKey: 'colors.names.teal'
 }
-
 export const COLORS = [
   WHITE, BLACK, RED,
   BLUE, YELLOW, ORANGE, PURPLE,

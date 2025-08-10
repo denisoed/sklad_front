@@ -35,7 +35,7 @@
         ]"
         :style="{ background: color.color }"
       >
-        <span class="color-picker--selected-name">{{ color.name }}</span>
+        <span class="color-picker--selected-name">{{ $t(color.nameKey) }}</span>
         <q-btn
           flat
           round
@@ -55,101 +55,76 @@
       ]"
       :style="{ background: pick.color }"
     >
-      <span class="color-picker--selected-name">{{ pick.name }}</span>
+      <span class="color-picker--selected-name">{{ $t(pick.nameKey) }}</span>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   reactive,
-  defineComponent,
   toRefs
 } from 'vue'
 import useColors, { COLORS } from '../modules/useColors'
 
-export default defineComponent({
-  name: 'ColorPicker',
-  props: {
-    selected: {
-      type: String,
-      default: '#FFFFFF'
-    },
-    selectedColors: {
-      type: Array,
-      default: () => []
-    },
-    multiselect: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  selected: {
+    type: String,
+    default: '#FFFFFF'
   },
-  emits: ['on-change'],
-  setup(props, { emit }) {
-    const { findColorByHex } = useColors()
-
-    const { selected, selectedColors, multiselect } = toRefs(props)
-
-    const pick = reactive({
-      color: selected.value,
-      name: findColorByHex(selected.value)?.name || ''
-    })
-
-    const selectedColorsArray = reactive([...selectedColors.value])
-
-    const isColorSelected = (color) => {
-      if (multiselect.value) {
-        return selectedColorsArray.some(selectedColor => selectedColor.color === color.color)
-      }
-      return pick.color === color.color
-    }
-
-    function clear() {
-      if (multiselect.value) {
-        selectedColorsArray.length = 0
-        emit('on-change', [])
-      } else {
-        pick.color = null
-        pick.name = ''
-        emit('on-change', null)
-      }
-    }
-
-    function removeColor(colorToRemove) {
-      const index = selectedColorsArray.findIndex(color => color.color === colorToRemove.color)
-      if (index !== -1) {
-        selectedColorsArray.splice(index, 1)
-        emit('on-change', [...selectedColorsArray])
-      }
-    }
-
-    function handlerClick(c) {
-      if (multiselect.value) {
-        const existingIndex = selectedColorsArray.findIndex(color => color.color === c.color)
-        if (existingIndex !== -1) {
-          selectedColorsArray.splice(existingIndex, 1)
-        } else {
-          selectedColorsArray.push(c)
-        }
-        emit('on-change', [...selectedColorsArray])
-      } else {
-        pick.color = c.color
-        pick.name = c.name
-        emit('on-change', pick)
-      }
-    }
-
-    return {
-      handlerClick,
-      pick,
-      selectedColorsArray,
-      COLORS,
-      clear,
-      removeColor,
-      isColorSelected
-    }
+  selectedColors: {
+    type: Array,
+    default: () => []
+  },
+  multiselect: {
+    type: Boolean,
+    default: false
   }
 })
+
+const emit = defineEmits(['on-change'])
+
+const { findColorByHex } = useColors()
+
+const { selected, selectedColors, multiselect } = toRefs(props)
+
+const pick = reactive({
+  color: selected.value,
+  nameKey: findColorByHex(selected.value)?.nameKey || ''
+})
+
+const selectedColorsArray = reactive([...selectedColors.value])
+
+const isColorSelected = (color) => {
+  if (multiselect.value) {
+    return selectedColorsArray.some(selectedColor => selectedColor.color === color.color)
+  }
+  return pick.color === color.color
+}
+
+function removeColor(colorToRemove) {
+  const index = selectedColorsArray.findIndex(color => color.color === colorToRemove.color)
+  if (index !== -1) {
+    selectedColorsArray.splice(index, 1)
+    emit('on-change', [...selectedColorsArray])
+  }
+}
+
+function handlerClick(c) {
+  if (multiselect.value) {
+    const existingIndex = selectedColorsArray.findIndex(color => color.color === c.color)
+    if (existingIndex !== -1) {
+      selectedColorsArray.splice(existingIndex, 1)
+    } else {
+      selectedColorsArray.push(c)
+    }
+    emit('on-change', [...selectedColorsArray])
+  } else {
+    pick.color = c.color
+    pick.nameKey = c.nameKey
+    emit('on-change', pick)
+  }
+}
 </script>
 
 <style lang="scss" scoped>
