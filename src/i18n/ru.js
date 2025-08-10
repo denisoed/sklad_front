@@ -51,8 +51,12 @@ export default ({
     update: 'Обновить',
     title: 'Заголовок',
     backToHome: 'Вернуться на главную',
+    image: 'Изображение',
+    comment: 'Комментарий',
+    information: 'Информация',
+    counts: 'Кол-во',
+    actions: 'Действия',
 
-    
     // Errors and success messages
     success: 'Успешно',
     error: 'Ошибка',
@@ -158,13 +162,20 @@ export default ({
     errorUpdate: 'Не удалось обновить продукт. Попробуйте позже.',
     errorReturn: 'Не удалось вернуть товар на склад. Попробуйте позже.',
     errorSell: 'Произошла ошибка. Попробуйте позже.',
-    comment: 'Коммент',
+    comment: 'Комментарий',
+    information: 'Информация',
     paymentMethod: 'Наличными',
     paymentCard: 'Картой',
     mixed: 'Смешанная оплата',
     mixedDescription: 'Этот товар будет оплачен картой',
     cashDescription: 'Этот товар будет оплачен наличными',
     cardDescription: 'Этот товар будет оплачен картой',
+    returnDescription: 'Товар будет возвращен на склад. Вы сможете добавить его в корзину позже.',
+    return: 'Вернуть',
+    sell: 'Продать',
+    quantityForSale: 'Кол-во товара для продажи',
+    salesProducts: 'Товары на продажу',
+    salesPageDescription: 'На этой странице отображаются товары выбранные для продажи.',
   },
 
   
@@ -519,6 +530,7 @@ export default ({
     articleId: 'Артикул(ID)',
     setPromotionalPrice: 'Установить акционную цену',
     promotionalPricePerUnit: 'Акционная цена за 1 шт',
+    promotionPriceShort: 'Акц. цена',
     sizesDescription: 'Этот параметр позволяет использовать размеры для товара',
     noPromotionToday: 'На сегодня акции нет',
     setPromotionDates: 'Выставить акционную цену на определенные даты',
@@ -586,33 +598,6 @@ export default ({
     sold: 'продано',
   },
 
-  // Bucket additions
-  bucket: {
-    title: 'Корзина',
-    orders: 'Заказы',
-    item: 'товар',
-    items2: 'товара',
-    items5: 'товаров',
-    inBucket: 'в корзине',
-    removeFromBasket: 'Удалить этот товар из корзины?',
-    removeDescription: 'При удалении товара из корзины, он будет возвращен на склад.',
-    comment: 'Комментарий',
-    information: 'Информация',
-    addToBasket: 'Добавить товары в корзину',
-    sellProducts: 'Продать товары',
-    updateBasket: 'Корзина обновлена',
-    errorUpdate: 'Не удалось обновить продукт. Попробуйте позже.',
-    returnToWarehouse: 'Товар возвращен на склад',
-    errorReturn: 'Не удалось вернуть товар на склад. Попробуйте позже.',
-    soldSuccessfully: 'Товары успешно проданы!',
-    errorSell: 'Произошла ошибка. Попробуйте позже.',
-    returnDescription: 'Товар будет возвращен на склад. Вы сможете добавить его в корзину позже.',
-    return: 'Вернуть',
-    sell: 'Продать',
-    quantityForSale: 'Кол-во товара для продажи',
-    salesProducts: 'Товары на продажу',
-    salesPageDescription: 'На этой странице отображаются товары выбранные для продажи.',
-  },
 
   // Error messages
   error: {

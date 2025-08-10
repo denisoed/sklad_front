@@ -14,17 +14,19 @@
         <div>{{ $t('businessGoal.earnPerYear') }}</div>
       </div>
       <div class="businnes-goal_cards flex q-mt-md">
-        <SmallCard
+        <ChartCard
+          class="businnes-goal_item q-mr-auto"
           :title="$t('businessGoal.cash')"
-          :count="formattedPriceTotal"
           :descr="$t('businessGoal.earnedPerYear')"
-          class="businnes-goal_card"
+          :body="formattedPriceTotal"
+          :loading="loadingActivities"
         />
-        <SmallCard
+        <ChartCard
+          class="businnes-goal_item"
           :title="$t('businessGoal.products')"
-          :count="countTotal"
           :descr="$t('businessGoal.soldPerYear')"
-          class="businnes-goal_card"
+          :body="`${soldCount} ${$t('common.pieces')}`"
+          :loading="loadingActivities"
         />
       </div>
     </div>
@@ -47,13 +49,6 @@ defineOptions({
   name: 'BusinessGoal'
 })
 
-const props = defineProps({
-  skladName: {
-    type: String,
-    default: ''
-  }
-})
-
 const { t: $t } = useI18n()
 
 const {
@@ -63,7 +58,7 @@ const { params } = useRoute()
 const { loadActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
 const { formatPrice } = useMoney()
 
-const pageTitle = computed(() => props.skladName || $t('common.warehouse'))
+const pageTitle = computed(() => sklad.value?.name || $t('common.warehouse'))
 const skladGoal = computed(() => formatPrice(sklad.value?.goal))
 const formattedPriceTotal = computed(() => formatPrice(priceTotal.value))
 

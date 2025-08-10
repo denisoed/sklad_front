@@ -76,7 +76,7 @@
                <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
                  {{ $t('product.retailPrice') }}: <PriceFormatter :value="props.row.newPrice" />
               </div>
-               {{ $t('product.promotionalPricePerUnit') }}: <PriceFormatter :value="props.row.discountPrice" />
+               {{ $t('product.promotionPriceShort') }}: <PriceFormatter :value="props.row.discountPrice" />
             </div>
             <div v-else class="text-weight-bold">
                {{ $t('product.retailPrice') }}: <PriceFormatter :value="props.row.newPrice" />
@@ -153,10 +153,47 @@ const router = useRouter()
 const highlightRowId = ref(null)
 
 const columns = computed(() => [
-  { name: 'image', label: $t('statistics.photo'), field: 'image', sortable: false },
-  { name: 'info', label: $t('product.information'), field: 'name', sortable: true },
-  { name: 'price', label: $t('common.price'), field: 'price', sortable: true },
-  { name: 'actions', label: $t('statistics.actions'), field: 'actions', sortable: false }
+  {
+    name: 'select',
+    label: '',
+    field: 'select',
+    align: 'center',
+    style: 'width: 50px'
+  },
+  {
+    name: 'image',
+    label: $t('common.image'),
+    field: 'image',
+    align: 'center',
+    style: 'width: 60px'
+  },
+  {
+    name: 'name',
+    label: $t('common.information'),
+    field: 'name',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'sizes',
+    label: `${$t('common.sizes')}/${$t('common.counts')}`,
+    field: 'sizes',
+    align: 'left'
+  },
+  {
+    name: 'price',
+    label: $t('common.price'),
+    field: 'price',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'actions',
+    label: $t('common.actions'),
+    field: 'actions',
+    align: 'center',
+    style: 'width: 120px'
+  }
 ])
 
 function goToProduct(product) {

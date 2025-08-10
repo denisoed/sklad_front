@@ -8,7 +8,16 @@
         @clear="onClear"
       />
 
-      <p class="q-mb-sm text-subtitle2">{{ $t('pages.productsLabel') }}</p>
+      <p class="q-mb-sm text-subtitle2">{{ $t('pages.warehousesLabel') }}</p>
+      <MiniTabs
+        :list="skladsTabs"
+        :selected-id="selectedSkladId"
+        scroll-to-active-tab
+        class="q-mb-md"
+        @on-change="onChangeSklad"
+      />
+
+      <p class="q-mb-sm text-subtitle2">{{ $t('pages.categoriesLabel') }}</p>
       <MiniTabs
         :list="categories"
         :selected-id="selectedCategoryId"
@@ -151,8 +160,6 @@ import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
 const VIEW_TABLE = 'table'
 const VIEW_GRID = 'grid'
 
-import { CAN_SELL_PRODUCT, CAN_UPDATE_PRODUCT } from 'src/permissions'
-
 defineOptions({
   name: 'Products'
 })
@@ -166,17 +173,6 @@ defineProps({
   }
 })
 
-const filterOptions = computed(() => [
-  { label: $t('products.all'), value: 'all' },
-  { label: $t('products.lowStock'), value: 'lowStock' }
-])
-
-const filterLabels = computed(() => ({
-  color_in: $t('products.colors'),
-  sizes_contains: $t('products.sizes'),
-  lowStock: $t('products.lowStock')
-}))
-
 const bulkStore = useBulkStore()
 const { bulkProducts } = storeToRefs(bulkStore)
 
@@ -189,7 +185,7 @@ const ALL_TAB = computed(() => ({
 const route = useRoute()
 const router = useRouter()
 const { query, params } = route
-const { sklad, sklads, skladProducts } = useSklads()
+const { sklads } = useSklads()
 const { forceRefreshBucket } = useBucket()
 const { categories: categoriesResult, fetchCategories } = useCategories()
 const { addSizesToBucket, searchProducts, addCountToBucket, products, searchLoading } = useProduct()
@@ -199,79 +195,12 @@ const imagePreviewDialog = ref(false)
 const imagePreview = ref(null)
 const selectedCategoryId = ref(params?.categoryId || ALL_TAB.value.id)
 const selectedFilters = reactive({})
-const showFiltersInfo = ref(false)
 
 const countModalVisible = ref(false)
 const sizesModalVisible = ref(false)
 const selectedProduct = ref(null)
 
 const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
-
-const hasActiveFilters = computed(() => {
-  const { sort, ...filters } = selectedFilters.value || {}
-  return Object.keys(filters).some(key => {
-    const value = filters[key]
-    if (Array.isArray(value)) return value.length > 0
-    if (typeof value === 'boolean') return value
-    return value !== null && value !== undefined && value !== ''
-  })
-})
-
-const activeFiltersCount = computed(() => {
-  const { sort, ...filters } = selectedFilters.value || {}
-  return Object.keys(filters)
-    .filter(key => {
-      const value = filters[key]
-      if (Array.isArray(value)) return value.length > 0
-      if (typeof value === 'boolean') return value
-      return value !== null && value !== undefined && value !== ''
-    }).length
-})
-
-const activeFiltersInfo = computed(() => {
-  const { sort, ...filters } = selectedFilters.value || {}
-  const info = []
-
-  const filterLabels = {
-    name_contains: $t('filter.searchByName'),
-    withDiscount: $t('filter.withDiscount'),
-    priceFrom: $t('filter.priceFrom'),
-    priceTo: $t('filter.priceTo'),
-    color_in: $t('filter.colors'),
-    sizes_contains: $t('filter.sizes'),
-    hasImage: $t('filter.hasImage'),
-    noImage: $t('filter.noImage'),
-    lowStock: $t('filter.lowStock'),
-    inStock: $t('filter.inStock')
-  }
-
-  Object.keys(filters).forEach(key => {
-    const value = filters[key]
-    if (Array.isArray(value) && value.length > 0) {
-      info.push({ key, label: `${filterLabels[key] || key}: ${value.join(', ')}` })
-    } else if (typeof value === 'boolean' && value) {
-      info.push({ key, label: filterLabels[key] || key })
-    } else if (value !== null && value !== undefined && value !== '') {
-      info.push({ key, label: `${filterLabels[key] || key}: ${value}` })
-    }
-  })
-
-  return info
-})
-
-function removeFilter(filterKey) {
-  if (selectedFilters.value[filterKey] !== undefined) {
-    if (Array.isArray(selectedFilters.value[filterKey])) {
-      selectedFilters.value[filterKey] = []
-    } else if (typeof selectedFilters.value[filterKey] === 'boolean') {
-      selectedFilters.value[filterKey] = false
-    } else {
-      selectedFilters.value[filterKey] = null
-    }
-
-    onSearch(selectedFilters.value)
-  }
-}
 
 function initFiltersFromUrl() {
   try {
