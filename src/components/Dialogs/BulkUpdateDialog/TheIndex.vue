@@ -59,7 +59,10 @@ const props = defineProps({
 const emit = defineEmits(['on-finish'])
 
 const { t: $t } = useI18n()
-const { updateProducts } = useBulk()
+const bulkStore = useBulkStore()
+const {
+  updateProductById,
+} = useProduct()
 const { showSuccess, showError } = useHelpers()
 
 const step = ref(1)
@@ -82,13 +85,17 @@ function onHide() {
   emit('update:modelValue', false)
 }
 
-async function update(ids, formData) {
+async function submit(data) {
   isLoading.value = true
   try {
-    await updateProducts(ids, formData)
+    const ids = bulkStore.getBulkProducts.map(p => p.id)
+    for (const id of ids) {
+      await updateProductById(id, data)
+    }
     showSuccess($t('bulk.productsUpdated'))
     emit('on-finish')
   } catch (error) {
+    emit('on-error')
     showError($t('common.error') + ', ' + $t('common.tryLater'))
   } finally {
     onHide()

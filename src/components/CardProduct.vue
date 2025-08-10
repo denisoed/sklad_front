@@ -61,7 +61,7 @@
           <p v-else class="text-deep-orange">{{ $t('common.notSpecified') }}</p>
         </div>
         <div v-else class="card-product_sizes">
-          <span>{{ $t('product.sizes') }}:</span>
+          <span>{{ $t('common.sizes') }}:</span>
           <SizeCount v-if="sizes && sizes.length" :sizes="sizes" />
           <p v-else class="text-deep-orange">{{ $t('common.notSpecifiedSizes') }}</p>
         </div>

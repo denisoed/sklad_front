@@ -11,12 +11,12 @@
 
     <div class="voice-placeholder q-mb-md">
       <span v-if="!isApiAvailable" class="text-red q-mb-md">
-        {{ t('voiceOverlay.recognitionUnavailable') }}
+        {{ $t('voiceOverlay.recognitionUnavailable') }}
       </span>
       <span v-else-if="!hasStartedRecording" class="text-bold">
-        {{ t('voiceOverlay.pressButtonToStart') }}
+        {{ $t('voiceOverlay.pressButtonToStart') }}
       </span>
-      <span v-else-if="!recognizedText" class="text-bold">{{ t('voiceOverlay.speakNow') }}</span>
+      <span v-else-if="!recognizedText" class="text-bold">{{ $t('voiceOverlay.speakNow') }}</span>
       <span v-else>{{ recognizedText }}</span>
     </div>
     
