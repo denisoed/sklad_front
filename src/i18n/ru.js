@@ -229,19 +229,26 @@ export default ({
       goals: 'Цели',
     },
     warehouseName: 'Название склада',
-    minStock: 'Остатки',
     warehouseColor: 'Цвет склада',
     deleteWarehouse: 'Удалить склад',
     minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
+
+    warehouseSettings: 'Настройки склада',
+    minSizesInProduct: 'Мин кол-во размеров в товаре',
+    valueMustBeZeroOrMore: 'Значение должно быть больше или равно нулю',
+    notifyLowStock: 'Оповещать о низких остатках',
     sizesConfigurations: 'Конфигурации размеров',
+    manageSizesDescription: 'Создавайте и управляйте списками размеров для разных типов товаров',
+    saveChanges: 'Сохранить изменения',
     employee: {
       noPeopleAdded: 'Люди не добавлены',
       removeEmployee: 'Удалить сотрудника',
       removeDescription: 'После удаления человека из склада, он больше не будет иметь доступ к складу.',
+      hint: 'Сотрудник, к которому будут присвоины полномочия',
+      placeholder: 'Введите телеграм ID',
     },
     goal: {
       yearGoal: 'Цель на год',
-      amount: 'Сумма',
       displayOnMainPage: 'Отображается на главной странице склада',
     },
   },
@@ -446,38 +453,6 @@ export default ({
     marginHint: 'Для колибровки отступа от края бумаги',
   },
 
-  // Settings additions
-  settings: {
-    tabs: {
-      main: 'Основное',
-      sizes: 'Размеры',
-      accesses: 'Доступы',
-      goals: 'Цели',
-    },
-    warehouseName: 'Название склада',
-    warehouseSettings: 'Настройки склада',
-    minStock: 'Остатки',
-    minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
-    minSizesInProduct: 'Мин кол-во размеров в товаре',
-    valueMustBeZeroOrMore: 'Значение должно быть больше или равно нулю',
-    notifyLowStock: 'Оповещать о низких остатках',
-    sizesConfigurations: 'Конфигурации размеров',
-    manageSizesDescription: 'Создавайте и управляйте списками размеров для разных типов товаров',
-    configureSizes: 'Настроить размеры',
-    saveChanges: 'Сохранить изменения',
-    employee: {
-      noPeopleAdded: 'Люди не добавлены',
-      removeEmployee: 'Удалить сотрудника',
-      removeDescription: 'После удаления человека из склада, он больше не будет иметь доступ к складу.',
-      hint: 'Сотрудник, к которому будут присвоины полномочия',
-      placeholder: 'Введите телеграм ID',
-    },
-    goal: {
-      yearGoal: 'Цель на год',
-      displayOnMainPage: 'Отображается на главной странице склада',
-    },
-  },
-
   // Product additions
   product: {
     title: 'Товары',
@@ -603,7 +578,6 @@ export default ({
     sold: 'продано',
   },
 
-
   // Error messages
   error: {
     pageNotFound: 'Страница не найдена...',
@@ -643,6 +617,7 @@ export default ({
     unknownError: 'Неизвестная ошибка. Попробуйте позже.',
     feedbackSent: 'Ваш отзыв успешно отправлен!',
   },
+
   bluetooth: {
     notSupported: 'Ваш браузер не поддерживает блютуз',
     connecting: 'Авто подключение...',

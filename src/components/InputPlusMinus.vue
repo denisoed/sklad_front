@@ -7,7 +7,7 @@
     <div class="flex no-wrap q-gap-sm">
       <q-btn
         color="primary"
-        outline
+        push
         @click="minus"
         :disable="count <= min"
         style="height:50px;"
@@ -34,7 +34,7 @@
       />
       <q-btn
         color="primary"
-        outline
+        push
         @click="plus"
         :disable="count >= max"
         style="height:50px;"
