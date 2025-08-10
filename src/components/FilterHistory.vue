@@ -84,7 +84,7 @@
               <q-btn
               style="height:40px;"
               color="deep-orange"
-              icon="mdi-trash-can-outline"
+              icon="mdi-refresh"
               push
               @click="clear"
             />
@@ -141,7 +141,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'save', 'on-search'])
 
-useI18n()
+const { t: $t } = useI18n()
+
 const { users } = toRefs(props)
 const formData = reactive({
   description: null,

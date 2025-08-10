@@ -263,6 +263,7 @@ export default ({
     recordedForAll: 'История записывается независимо от роли.',
     filterHintBefore: 'Кнопка',
     filterHintAfter: 'поможет отфильтровать историю.',
+    filterByHistory: 'Фильтр по истории',
     actions: {
       create: 'Создан',
       update: 'Обновлен',
