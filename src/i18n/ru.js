@@ -11,7 +11,6 @@ export default ({
   create: 'Создать',
   update: 'Обновить',
   offline: 'Нет соединения с интернетом',
-
   colors: {
     accent: {
       default: 'Бежевый (по умолчанию)',
@@ -21,8 +20,6 @@ export default ({
       indigo: 'Индиго',
     },
   },
-  
-  // Common actions
   common: {
     clear: 'Очистить',
     uploadPhoto: 'Загрузить фото',
@@ -78,8 +75,6 @@ export default ({
     amount: 'Сумма',
     total: 'Итог',
     recordsPerPage: 'Записей на странице',
-    
-    // Errors and success messages
     success: 'Успешно',
     error: 'Ошибка',
     unknownError: 'Неизвестная ошибка',
@@ -89,15 +84,11 @@ export default ({
     reloadPage: 'Перезагрузите страницу, попробуйте еще раз',
     noAccess: 'Нет доступа',
   },
-
-  // Voice
   voiceOverlay: {
     recognitionUnavailable: 'Служба распознавания речи не доступна в вашем браузере',
     pressButtonToStart: 'Зажмите кнопку, чтобы начать запись',
     speakNow: 'Говорите...',
   },
-
-  // Costs additions
   costs: {
     title: 'Финансовые расходы',
     removeCost: 'Удалить расход',
@@ -113,14 +104,12 @@ export default ({
     deleteSuccess: 'Расход успешно удалён!',
     description: '<b>Финансовые расходы</b> - помогут отследить какое кол-во финансов было потрачено за выбранный промежуток времени.',
   },
-  
   footer: {
     home: 'Главная',
     products: 'Товары',
     statistic: 'Отчеты',
     bucket: 'Корзина',
   },
-  
   auth: {
     title: 'Авторизация',
     processing: 'Ожидайте окончания авторизации...',
@@ -130,7 +119,6 @@ export default ({
     loginSuccess: 'Вы вошли в систему',
     authKeyError: 'Не удалось получить ключ авторизации',
   },
-  
   register: {
     title: 'Регистрация',
     submit: 'Создать',
@@ -142,14 +130,12 @@ export default ({
       btn: 'Вернуться на стр авторизации'
     }
   },
-  
   forgot: {
     title: 'Забыли пароль?',
     descr: 'Указав почту, вам будет отправлена ссылка, пройдя по которой вы сможете сбросить пароль.',
     btn: 'Отправить',
     error: 'Ошибка при отправки письма. Попробуйте позже.'
   },
-  
   reset: {
     title: 'Обновление пароля',
     btn: 'Обновить',
@@ -157,7 +143,6 @@ export default ({
     incorrectLink: 'Некорректная ссылка. Попробуйте еще раз запросить смену пароля',
     error: 'Не удалось обновить пароль. Попробуйте еще раз запросить смену пароля',
   },
-
   bucket: {
     title: 'Корзина',
     orders: 'Заказы',
@@ -192,9 +177,7 @@ export default ({
     salesProducts: 'Товары на продажу',
     salesPageDescription: 'На этой странице отображаются товары выбранные для продажи.',
     sellSelectedProducts: 'Продать выбранные товары',
-  },  
-
-  // Warehouse
+  },
   warehouse: {
     title: 'Склад',
     create: 'Создать склад',
@@ -212,8 +195,6 @@ export default ({
     deletedSuccessfully: 'Склад успешно удалён!',
     deleteWarning: 'После удаления склада, все товары и категории будут удалены.',
   },
-
-  // Category additions
   category: {
     title: 'Категории',
     productCategories: 'Категории товаров',
@@ -227,8 +208,6 @@ export default ({
     pageDescription: 'На этой странице находятся товары разбитые по категориям. Категории обеспечивают более удобный визуальный поиск.',
     deleteHint: 'Чтобы удалить или отредактировать категорию, удерживайте её несколько секунд.',
   },
-
-  // Settings
   settings: {
     tabs: {
       main: 'Основное',
@@ -240,7 +219,6 @@ export default ({
     warehouseColor: 'Цвет склада',
     deleteWarehouse: 'Удалить склад',
     minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
-
     warehouseSettings: 'Настройки склада',
     minSizesInProduct: 'Мин кол-во размеров в товаре',
     valueMustBeZeroOrMore: 'Значение должно быть больше или равно нулю',
@@ -262,16 +240,12 @@ export default ({
       displayOnMainPage: 'Отображается на главной странице склада',
     },
   },
-
-  // Products
   products: {
     all: 'Все',
     lowStock: 'Заканчивается',
     colors: 'Цвета',
     sizes: 'Размеры',
   },
-
-  // History
   history: {
     title: 'История',
     productHistory: 'История по товару',
@@ -289,12 +263,10 @@ export default ({
       return: 'Возврат',
     }
   },
-
   pwa: {
     attention: 'Внимание!',
     installDescription: 'Если вам неудобно использовать Sklad через Telegram, вы можете установить его на рабочий стол как полноценное приложение. Это позволит быстро и удобно получать доступ к складу без необходимости каждый раз открывать Telegram.',
   },
-
   blocked: {
     trialExpired: 'Пробный период истек!',
     unlockAccount: 'Чтобы разблокировать аккаунт, пожалуйста, оформите подписку.',
@@ -303,7 +275,6 @@ export default ({
     subscriptionIssued: 'Подписка оформлена!',
     checkout: 'Оформить',
   },
-
   pages: {
     posts: 'Спискок статей',
     info: 'Инфо',
@@ -339,8 +310,6 @@ export default ({
     productsLabel: 'Товары',
     countUnitsForSize: 'Кол-во единиц для размера',
   },
-
-  // Main settings
   mainSettings: {
     title: 'Основные Настройки',
     userTab: {
@@ -391,8 +360,6 @@ export default ({
       },
     },
   },
-
-  // Business Goal
   businessGoal: {
     mainPageDescription: 'Это главная страница склада.',
     goal: 'Цель',
@@ -402,8 +369,6 @@ export default ({
     products: 'Товары',
     soldPerYear: 'продано за год',
   },
-
-  // Printing updates
   printing: {
     printerNotConnected: 'Принтер не подключен.',
     setupRequired: 'Чтобы продолжить печать, пожалуйста перейдите на страницу настроек.',
@@ -422,8 +387,6 @@ export default ({
     deleteTemplateConfirm: 'Вы уверены, что хотите удалить этот шаблон?',
     templateDeleted: 'Шаблон успешно удалён!',
   },
-
-  // Filter
   filter: {
     searchByEvent: 'Поиск по событию',
     searchByPeople: 'Поиск по людям',
@@ -443,13 +406,9 @@ export default ({
     inStock: 'В наличии',
     doubleClickHint: 'Двойное нажатие по дате вернет результат за один день',
   },
-
-  // Scanner
   scanner: {
     qrPrompt: 'Поместите qr-code в область сканирования',
   },
-
-  // Printer settings
   printer: {
     requiredSettingsTitle: 'Обязательные настройки принтера',
     dpi: 'Кол-во точек на дюйм(DPI)',
@@ -461,8 +420,6 @@ export default ({
     marginFromEdge: 'Отступ от края бумаги в mm',
     marginHint: 'Для колибровки отступа от края бумаги',
   },
-
-  // Product additions
   product: {
     title: 'Товары',
     printPriceLabels: 'Печать ценников',
@@ -541,15 +498,11 @@ export default ({
     editing: 'Редактирование товара',
     creating: 'Создание товара',
   },
-
-  // Errors
   errors: {
     photoUploadError: 'Не удалось загрузить фото. Проблемы на сервере.',
     productCreateError: 'Не удалось создать продукт. Проблемы на сервере.',
     productUpdateError: 'Не удалось обновить продукт. Проблемы на сервере.',
   },
-
-  // Sizes
   sizes: {
     readySizes: 'Готовые размеры',
     childrenShoes: 'Размеры детской обуви',
@@ -564,8 +517,6 @@ export default ({
     errorDeletingSize: 'Не удалось удалить размер. Попробуйте позже.',
     cannotDeleteAllSizes: 'Нельзя удалять все размеры разом. Только один размер за раз.',
   },
-
-  // Statistics
   statistics: {
     reportsAllWarehouses: 'Отчеты по всем складам',
     returnToWarehouse: 'Вернуть на склад',
@@ -589,13 +540,9 @@ export default ({
     earned: 'заработано',
     sold: 'продано',
   },
-
-  // Error messages
   error: {
     pageNotFound: 'Страница не найдена...',
   },
-
-  // Start page
   start: {
     welcome: 'Добро пожаловать',
     toSklad: 'на Sklad',
@@ -604,8 +551,6 @@ export default ({
     error: 'Упс. Попробуйте позже.',
     bannerAlt: 'Добро пожаловать в Sklad'
   },
-
-  // Price Label Editor
   priceLabelEditor: {
     title: 'Редактирование ценника',
     editElement: 'Редактировать элемент',
@@ -615,14 +560,10 @@ export default ({
     layers: 'Слои',
     addText: 'Добавить текст',
   },
-
-  // App
   app: {
     name: 'Sklad',
     version: 'Версия {version}'
   },
-
-  // Feedback additions
   feedback: {
     title: 'Отзыв',
     howEasyToUse: 'Насколько легко пользоваться складом?',
@@ -632,7 +573,6 @@ export default ({
     back: 'Назад',
     send: 'Отправить',
   },
-
   bluetooth: {
     notSupported: 'Ваш браузер не поддерживает блютуз',
     connecting: 'Авто подключение...',
@@ -641,8 +581,6 @@ export default ({
     searching: 'Поиск устройств...',
     notConnected: 'Нет подключенных устройств',
   },
-
-  // Validation messages
   validation: {
     required: 'Обязательное поле',
     promotionalPriceRequired: 'Укажите акционную цену',
@@ -651,8 +589,6 @@ export default ({
     fileSizeLessThan: 'Файл должен быть меньше {size} КБ.',
     valueCannotBeMore: 'Значение не может быть больше {value}',
   },
-
-  // Bulk
   bulk: {
     selectedProductsForDeletion: 'Товары для удаления',
     selectedProductsForUpdate: 'Товары для обновления',
@@ -661,7 +597,6 @@ export default ({
     editing: 'Редактирование',
     productsUpdated: 'Товары успешно обновлены!',
   },
-
   permissions: {
     seeHistory :'Видит страницу История',
     seeSettings :'Видит страницу Настройки',

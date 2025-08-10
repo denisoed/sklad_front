@@ -11,7 +11,6 @@ export default ({
   create: 'Түзүү',
   update: 'Жаңыртуу',
   offline: 'Интернет жок',
-
   colors: {
     accent: {
       default: 'Бежевый (демейки)',
@@ -21,7 +20,6 @@ export default ({
       indigo: 'Индиго',
     },
   },
-  
   common: {
     clear: 'Тазалоо',
     uploadPhoto: 'Сүрөт жүктөө',
@@ -86,13 +84,11 @@ export default ({
     reloadPage: 'Баракты жаңыртып көрүңүз',
     noAccess: 'Кирүү мүмкүн эмес',
   },
-
   voiceOverlay: {
     recognitionUnavailable: 'Добуш таануу браузериңизде жеткиликсиз',
     pressButtonToStart: 'Жаздыруу үчүн басып туруңуз',
     speakNow: 'Сүйлөңүз...',
   },
-
   costs: {
     title: 'Чыгымдар',
     removeCost: 'Чыгымды өчүрүү',
@@ -108,14 +104,12 @@ export default ({
     deleteSuccess: 'Чыгым өчүрүлдү!',
     description: '<b>Чыгымдар</b> - белгиленген убакыттагы кеткен акчаны көрсөтөт.',
   },
-  
   footer: {
     home: 'Башкы бет',
     products: 'Товарлар',
     statistic: 'Отчеттор',
     bucket: 'Себет',
   },
-  
   auth: {
     title: 'Кирүү',
     processing: 'Күтүңүз...',
@@ -125,7 +119,6 @@ export default ({
     loginSuccess: 'Ийгиликтүү кирдиңиз',
     authKeyError: 'Кирүү ачкычы алынбады',
   },
-  
   register: {
     title: 'Катталуу',
     submit: 'Түзүү',
@@ -137,14 +130,12 @@ export default ({
       btn: 'Кирүү бетине кайтуу'
     }
   },
-  
   forgot: {
     title: 'Сырсөздү унуттуңузбу?',
     descr: 'Почтаңызды жазсаңыз, сырсөздү жаңыртуу шилтемеси келет.',
     btn: 'Жөнөтүү',
     error: 'Ката кетти. Кийин аракет кылыңыз.'
-  },
-  
+  },  
   reset: {
     title: 'Сырсөздү жаңыртуу',
     btn: 'Жаңыртуу',
@@ -187,7 +178,6 @@ export default ({
     salesPageDescription: 'Бул бетте сатууга тандалган товарлар көрсөтүлөт.',
     sellSelectedProducts: 'Тандалган товарларды сатуу',
   },
-
   warehouse: {
     title: 'Кампа',
     create: 'Кампа ачуу',
@@ -205,7 +195,6 @@ export default ({
     deletedSuccessfully: 'Кампа өчүрүлдү!',
     deleteWarning: 'Кампа өчүрүлсө, бардык товар жана категория өчөт.',
   },
-
   category: {
     title: 'Категориялар',
     productCategories: 'Товар категориялары',
@@ -219,7 +208,6 @@ export default ({
     pageDescription: 'Бул бетте товарлар категорияга бөлүнөт.',
     deleteHint: 'Өчүрүү же өзгөртүү үчүн бир нече секунд басып туруңуз.',
   },
-
   settings: {
     tabs: {
       main: 'Негизги',
@@ -252,14 +240,12 @@ export default ({
       displayOnMainPage: 'Башкы бетте көрсөтүлөт',
     },
   },
-
   products: {
     all: 'Баары',
     lowStock: 'Аз калган',
     colors: 'Түстөр',
     sizes: 'Өлчөмдөр',
   },
-
   history: {
     title: 'Тарых',
     productHistory: 'Товар тарыхы',
@@ -281,7 +267,6 @@ export default ({
     attention: 'Көңүл буруңуз!',
     installDescription: 'Эгер Telegram аркылуу колдонуу ыңгайсыз болсо, колдонмону түз эле телефондун же компьютердин экранына орното аласыз.',
   },
-
   blocked: {
     trialExpired: 'Акысыз мөөнөт бүттү!',
     unlockAccount: 'Аккаунтту ачуу үчүн жазылуу алыңыз.',
@@ -290,7 +275,6 @@ export default ({
     subscriptionIssued: 'Жазылуу иштеди!',
     checkout: 'Төлөө',
   },
-
   pages: {
     posts: 'Макалалар тизмеси',
     info: 'Маалымат',
@@ -326,7 +310,6 @@ export default ({
     productsLabel: 'Товарлар',
     countUnitsForSize: 'Өлчөм үчүн бирдик саны',
   },
-
   mainSettings: {
     title: 'Негизги баптоолор',
     userTab: {
@@ -377,7 +360,6 @@ export default ({
       },
     },
   },
-
   businessGoal: {
     mainPageDescription: 'Бул кампаны башкы бет.',
     goal: 'Максат',
@@ -387,7 +369,6 @@ export default ({
     products: 'Товарлар',
     soldPerYear: 'жылына сатылды',
   },
-
   printing: {
     printerNotConnected: 'Принтер туташкан жок.',
     setupRequired: 'Печать үчүн баптоого кириңиз.',
@@ -426,11 +407,9 @@ export default ({
     inStock: 'Бар',
     doubleClickHint: 'Датаны эки жолу бассаңыз бир күн чыгат',
   },
-
   scanner: {
     qrPrompt: 'QR кодду камерага коюңуз',
   },
-
   printer: {
     requiredSettingsTitle: 'Принтер баптоолору',
     dpi: 'DPI',
@@ -442,7 +421,6 @@ export default ({
     marginFromEdge: 'Кагаз четинен аралык мм',
     marginHint: 'Аралыкты тууралоо үчүн',
   },
-
   product: {
     title: 'Товарлар',
     printPriceLabels: 'Бааларды басуу',
@@ -517,13 +495,11 @@ export default ({
     editing: 'Товар түзөтүү',
     creating: 'Товар түзүү',
   },
-
   errors: {
     photoUploadError: 'Сүрөт жүктөлгөн жок. Сервер ката.',
     productCreateError: 'Товар түзүлгөн жок. Сервер ката.',
     productUpdateError: 'Товар жаңырган жок. Сервер ката.',
   },
-
   sizes: {
     readySizes: 'Даяр өлчөмдөр',
     childrenShoes: 'Балдар бут кийим өлчөмдөрү',
@@ -538,7 +514,6 @@ export default ({
     errorDeletingSize: 'Өлчөм өчпөдү. Кийин аракет кылыңыз.',
     cannotDeleteAllSizes: 'Баарын бир учурда өчүрүү мүмкүн эмес.',
   },
-
   statistics: {
     reportsAllWarehouses: 'Бардык кампалардын отчеттору',
     returnToWarehouse: 'Кампага кайтаруу',
@@ -562,11 +537,9 @@ export default ({
     earned: 'табылды',
     sold: 'сатылды',
   },
-
   error: {
     pageNotFound: 'Барак табылган жок...',
   },
-
   start: {
     welcome: 'Кош келиңиз',
     toSklad: 'Skladга',
@@ -575,7 +548,6 @@ export default ({
     error: 'Ката кетти. Кийин аракет кылыңыз.',
     bannerAlt: 'Skladга кош келиңиз'
   },
-
   priceLabelEditor: {
     title: 'Баа кагазын түзөтүү',
     editElement: 'Элементти түзөтүү',
@@ -585,12 +557,10 @@ export default ({
     layers: 'Катмарлар',
     addText: 'Текст кошуу',
   },
-
   app: {
     name: 'Sklad',
     version: 'Версия {version}'
   },
-
   feedback: {
     title: 'Пикир',
     howEasyToUse: 'Колдонуу канчалык жеңил?',
@@ -600,7 +570,6 @@ export default ({
     back: 'Артка',
     send: 'Жөнөтүү',
   },
-
   bluetooth: {
     notSupported: 'Браузер Bluetooth колдобойт',
     connecting: 'Авто туташуу...',
@@ -609,7 +578,6 @@ export default ({
     searching: 'Түзмөктөрдү издөө...',
     notConnected: 'Түзмөк туташкан жок',
   },
-
   validation: {
     required: 'Милдеттүү талаа',
     promotionalPriceRequired: 'Акция баасын жазыңыз',
@@ -618,7 +586,6 @@ export default ({
     fileSizeLessThan: 'Файл {size} КБдан кичине болушу керек.',
     valueCannotBeMore: 'Маани {value} дан көп болбошу керек',
   },
-
   bulk: {
     selectedProductsForDeletion: 'Өчүрүлүүчү товарлар',
     selectedProductsForUpdate: 'Жаңыртуучу товарлар',
@@ -627,7 +594,6 @@ export default ({
     editing: 'Түзөтүү',
     productsUpdated: 'Товарлар жаңырды!',
   },
-
   permissions: {
     seeHistory: 'Тарыхты көрүү',
     seeSettings: 'Баптоону көрүү',

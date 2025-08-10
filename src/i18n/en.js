@@ -11,7 +11,6 @@ export default ({
   create: 'Create',
   update: 'Update',
   offline: 'No internet connection',
-
   colors: {
     accent: {
       default: 'Beige (default)',
@@ -21,8 +20,6 @@ export default ({
       indigo: 'Indigo',
     },
   },
-  
-  // Common actions
   common: {
     clear: 'Clear',
     uploadPhoto: 'Upload photo',
@@ -87,13 +84,11 @@ export default ({
     reloadPage: 'Reload page and try again',
     noAccess: 'No access',
   },
-
   voiceOverlay: {
     recognitionUnavailable: 'Speech recognition service is not available in your browser',
     pressButtonToStart: 'Hold the button to start recording',
     speakNow: 'Speak now...',
   },
-
   costs: {
     title: 'Financial expenses',
     removeCost: 'Delete expense',
@@ -109,14 +104,12 @@ export default ({
     deleteSuccess: 'Expense successfully deleted!',
     description: '<b>Financial expenses</b> - help track how much money was spent over a selected period.',
   },
-  
   footer: {
     home: 'Home',
     products: 'Products',
     statistic: 'Reports',
     bucket: 'Cart',
   },
-  
   auth: {
     title: 'Authorization',
     processing: 'Please wait for authorization to complete...',
@@ -126,7 +119,6 @@ export default ({
     loginSuccess: 'Logged in successfully',
     authKeyError: 'Failed to get authorization key',
   },
-  
   register: {
     title: 'Registration',
     submit: 'Create',
@@ -138,14 +130,12 @@ export default ({
       btn: 'Back to login page'
     }
   },
-  
   forgot: {
     title: 'Forgot password?',
     descr: 'By providing your email, you will receive a link to reset your password.',
     btn: 'Send',
     error: 'Error sending email. Try again later.'
   },
-  
   reset: {
     title: 'Password reset',
     btn: 'Update',
@@ -153,7 +143,6 @@ export default ({
     incorrectLink: 'Invalid link. Try requesting a password reset again',
     error: 'Failed to update password. Try again later',
   },
-
   bucket: {
     title: 'Cart',
     orders: 'Orders',
@@ -188,8 +177,7 @@ export default ({
     salesProducts: 'Products for sale',
     salesPageDescription: 'This page displays products selected for sale.',
     sellSelectedProducts: 'Sell selected products',
-  },  
-
+  },
   warehouse: {
     title: 'Warehouse',
     create: 'Create warehouse',
@@ -207,7 +195,6 @@ export default ({
     deletedSuccessfully: 'Warehouse deleted successfully!',
     deleteWarning: 'After deleting the warehouse, all products and categories will be deleted.',
   },
-
   category: {
     title: 'Categories',
     productCategories: 'Product categories',
@@ -221,7 +208,6 @@ export default ({
     pageDescription: 'This page contains products grouped by categories. Categories make visual search easier.',
     deleteHint: 'To delete or edit a category, hold it for a few seconds.',
   },
-
   settings: {
     tabs: {
       main: 'Main',
@@ -254,14 +240,12 @@ export default ({
       displayOnMainPage: 'Displayed on the main warehouse page',
     },
   },
-
   products: {
     all: 'All',
     lowStock: 'Low stock',
     colors: 'Colors',
     sizes: 'Sizes',
   },
-
   history: {
     title: 'History',
     productHistory: 'Product history',
@@ -283,7 +267,6 @@ export default ({
     attention: 'Attention!',
     installDescription: 'If it is inconvenient for you to use Sklad through Telegram, you can install it on your desktop as a standalone app. This will allow quick and convenient access to the warehouse without having to open Telegram each time.',
   },
-
   blocked: {
     trialExpired: 'Trial period expired!',
     unlockAccount: 'To unlock your account, please purchase a subscription.',
@@ -292,7 +275,6 @@ export default ({
     subscriptionIssued: 'Subscription activated!',
     checkout: 'Checkout',
   },
-
   pages: {
     posts: 'List of posts',
     info: 'Info',
@@ -328,7 +310,6 @@ export default ({
     productsLabel: 'Products',
     countUnitsForSize: 'Number of units for size',
   },
-
   mainSettings: {
     title: 'Main settings',
     userTab: {
@@ -379,7 +360,6 @@ export default ({
       },
     },
   },
-
   businessGoal: {
     mainPageDescription: 'This is the main warehouse page.',
     goal: 'Goal',
@@ -389,7 +369,6 @@ export default ({
     products: 'Products',
     soldPerYear: 'sold per year',
   },
-
   printing: {
     printerNotConnected: 'Printer not connected.',
     setupRequired: 'To continue printing, please go to settings.',
@@ -408,7 +387,6 @@ export default ({
     deleteTemplateConfirm: 'Are you sure you want to delete this template?',
     templateDeleted: 'Template deleted successfully!',
   },
-
   filter: {
     searchByEvent: 'Search by event',
     searchByPeople: 'Search by people',
@@ -428,11 +406,9 @@ export default ({
     inStock: 'In stock',
     doubleClickHint: 'Double-clicking the date will return results for a single day',
   },
-
   scanner: {
     qrPrompt: 'Place QR code in the scanning area',
   },
-
   printer: {
     requiredSettingsTitle: 'Required printer settings',
     dpi: 'Dots per inch (DPI)',
@@ -444,7 +420,6 @@ export default ({
     marginFromEdge: 'Margin from paper edge in mm',
     marginHint: 'For margin calibration',
   },
-
   product: {
     title: 'Products',
     printPriceLabels: 'Print price tags',
@@ -523,13 +498,11 @@ export default ({
     editing: 'Editing product',
     creating: 'Creating product',
   },
-
   errors: {
     photoUploadError: 'Failed to upload photo. Server issues.',
     productCreateError: 'Failed to create product. Server issues.',
     productUpdateError: 'Failed to update product. Server issues.',
   },
-
   sizes: {
     readySizes: 'Ready sizes',
     childrenShoes: 'Children’s shoe sizes',
@@ -544,7 +517,6 @@ export default ({
     errorDeletingSize: 'Failed to delete size. Try again later.',
     cannotDeleteAllSizes: 'Cannot delete all sizes at once. Only one size at a time.',
   },
-
   statistics: {
     reportsAllWarehouses: 'Reports for all warehouses',
     returnToWarehouse: 'Return to warehouse',
@@ -568,11 +540,9 @@ export default ({
     earned: 'earned',
     sold: 'sold',
   },
-
   error: {
     pageNotFound: 'Page not found...',
   },
-
   start: {
     welcome: 'Welcome',
     toSklad: 'to Sklad',
@@ -581,7 +551,6 @@ export default ({
     error: 'Oops. Try again later.',
     bannerAlt: 'Welcome to Sklad'
   },
-
   priceLabelEditor: {
     title: 'Price tag editing',
     editElement: 'Edit element',
@@ -591,12 +560,10 @@ export default ({
     layers: 'Layers',
     addText: 'Add text',
   },
-
   app: {
     name: 'Sklad',
     version: 'Version {version}'
   },
-
   feedback: {
     title: 'Feedback',
     howEasyToUse: 'How easy is it to use the warehouse?',
@@ -606,7 +573,6 @@ export default ({
     back: 'Back',
     send: 'Send',
   },
-
   bluetooth: {
     notSupported: 'Your browser does not support Bluetooth',
     connecting: 'Auto connecting...',
@@ -615,7 +581,6 @@ export default ({
     searching: 'Searching for devices...',
     notConnected: 'No connected devices',
   },
-
   validation: {
     required: 'Required field',
     promotionalPriceRequired: 'Enter promotional price',
@@ -624,7 +589,6 @@ export default ({
     fileSizeLessThan: 'File must be less than {size} KB.',
     valueCannotBeMore: 'Value cannot be more than {value}',
   },
-
   bulk: {
     selectedProductsForDeletion: 'Products for deletion',
     selectedProductsForUpdate: 'Products for update',
@@ -633,7 +597,6 @@ export default ({
     editing: 'Editing',
     productsUpdated: 'Products updated successfully!',
   },
-
   permissions: {
     seeHistory: 'Can see History page',
     seeSettings: 'Can see Settings page',
