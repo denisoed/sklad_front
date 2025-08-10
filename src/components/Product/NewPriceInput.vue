@@ -58,8 +58,7 @@
             />
           </div>
         </div>
-        
-        <!-- Кнопка добавления новой цены -->
+
         <q-btn
           icon="mdi-plus"
           :label="$t('product.addPrice')"

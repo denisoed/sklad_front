@@ -114,24 +114,43 @@
   </q-table>
 </template>
 
-<script>
-import { defineComponent, ref, computed } from 'vue'
+<script setup>
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
-import {
-  CAN_SELL_PRODUCT,
-  CAN_UPDATE_PRODUCT,
-  READ_ORIGINAL_PRICE
-} from 'src/permissions'
+import { CAN_SELL_PRODUCT, CAN_UPDATE_PRODUCT, READ_ORIGINAL_PRICE } from 'src/permissions'
 
 defineOptions({
   name: 'ProductsTable'
 })
 
+defineProps({
+  products: {
+    type: Array,
+    default: () => []
+  },
+  bulkProducts: {
+    type: Array,
+    default: () => []
+  }
+})
+
+defineEmits([
+  'openImagePreview',
+  'addCountToBucket',
+  'addSizesToBucket',
+  'update:bulkProducts',
+  'openCountModal',
+  'openSizesModal'
+])
+
 const { t: $t } = useI18n()
+const router = useRouter()
+
+const highlightRowId = ref(null)
 
 const columns = computed(() => [
   { name: 'image', label: $t('statistics.photo'), field: 'image', sortable: false },
@@ -140,53 +159,11 @@ const columns = computed(() => [
   { name: 'actions', label: $t('statistics.actions'), field: 'actions', sortable: false }
 ])
 
-export default defineComponent({
-  name: 'ProductsTable',
-  components: {
-    ColorDisplay,
-    PriceFormatter,
-    SizeCount
-  },
-  props: {
-    products: {
-      type: Array,
-      default: () => []
-    },
-    bulkProducts: {
-      type: Array,
-      default: () => []
-    }
-  },
-  emits: [
-    'openImagePreview',
-    'addCountToBucket',
-    'addSizesToBucket',
-    'update:bulkProducts',
-    'openCountModal',
-    'openSizesModal'
-  ],
-  setup(props) {
-    const { t: $t } = useI18n()
-    const router = useRouter()
-    const { profile } = useProfile()
-    const selectedProducts = ref([])
-    
-    const goToProduct = (product) => {
-      if (product?.sklad?.id && product?.id) {
-        router.push(`/sklad/${product.sklad.id}/product/${product.id}`)
-      }
-    }
-    
-    return {
-      columns,
-      highlightRowId,
-      goToProduct,
-      CAN_SELL_PRODUCT,
-      CAN_UPDATE_PRODUCT,
-      READ_ORIGINAL_PRICE
-    }
+function goToProduct(product) {
+  if (product?.sklad?.id && product?.id) {
+    router.push(`/sklad/${product.sklad.id}/product/${product.id}`)
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>

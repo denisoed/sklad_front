@@ -85,16 +85,9 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import moment from 'moment'
-import {
-  computed,
-  defineComponent,
-  onBeforeMount,
-  ref,
-  watch,
-  onMounted
-} from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import FilterHistory from 'src/components/FilterHistory.vue'
 import useSklads from 'src/modules/useSklads'
@@ -115,12 +108,13 @@ defineOptions({
 
 const { t: $t } = useI18n()
 const route = useRoute()
+const { push } = useRouter()
 const { params, query } = route
 
-const title = computed(() => 
-  query?.product ? 
-  `${$t('history.productHistory')} ${query.product}` : 
-  $t('history.title')
+const title = computed(() =>
+  query?.product
+    ? `${$t('history.productHistory')} ${query.product}`
+    : $t('history.title')
 )
 
 const columns = computed(() => [
@@ -131,90 +125,52 @@ const columns = computed(() => [
   { name: 'date', label: $t('history.date'), field: 'date', sortable: true }
 ])
 
-export default defineComponent({
-  name: 'HistoryPage',
-  components: {
-    FilterDates,
-    FilterHistory,
-    PageTitle,
-  },
-  setup() {
-    const { t: $t } = useI18n()
-    const route = useRoute()
-    const { params, query } = route
-    const { push } = useRouter()
-    const { formatTimeAgo } = useDate()
-    const TODAY = Date.now()
-    const {
-      fetchHistory,
-      fetchHistoryLoading,
-      historyResult,
-      getDescription
-    } = useHistory()
-    const {
-      sklad,
-    } = useSklads()
+const { formatTimeAgo } = useDate()
+const TODAY = Date.now()
+const { fetchHistory, fetchHistoryLoading, historyResult, getDescription } = useHistory()
+const { sklad } = useSklads()
 
-    const openedFilterHistory = ref(false)
-    const selectedDates = ref([moment.utc(TODAY).local().format(FILTER_FORMAT)])
-    const selectedFilters = ref({})
-    const isDateModal = ref(false)
-    const pagination = {
-      rowsPerPage: -1,
-    }
+const openedFilterHistory = ref(false)
+const selectedDates = ref([moment.utc(TODAY).local().format(FILTER_FORMAT)])
+const selectedFilters = ref({})
+const isDateModal = ref(false)
+const pagination = {
+  rowsPerPage: -1
+}
 
-    const skladUsers = computed(() => sklad.value?.users || [])
-    const historyRows = computed(() => {
-      return historyResult.value.map(h => ({
-        ...h,
-        description: getDescription(h.action, h.json)
-      }));
-    })
+const skladUsers = computed(() => sklad.value?.users || [])
+const historyRows = computed(() => {
+  return historyResult.value.map(h => ({
+    ...h,
+    description: getDescription(h.action, h.json)
+  }))
+})
 
-    function loadHistories(filters = {}) {
-      fetchHistory({
-        skladId: +params?.skladId || null,
-        dates: selectedDates.value,
-        ...(params?.productId && { productId: params.productId }),
-        ...selectedFilters.value,
-        ...filters
-      })
-    }
+function loadHistories(filters = {}) {
+  fetchHistory({
+    skladId: +params?.skladId || null,
+    dates: selectedDates.value,
+    ...(params?.productId && { productId: params.productId }),
+    ...selectedFilters.value,
+    ...filters
+  })
+}
 
-    function onChangeDates(dates = []) {
-      selectedDates.value = dates
-      loadHistories(dates)
-    }
-    
-    function onSearch(filters) {
-      selectedFilters.value = {
-        action: filters?.actions?.map(f => f.value) || [],
-        users_permissions_user: filters?.people?.map(f => f.value) || [],
-      }
-      loadHistories({ dates: selectedDates.value, ...selectedFilters.value })
-    }
+function onChangeDates(dates = []) {
+  selectedDates.value = dates
+  loadHistories(dates)
+}
 
-    onBeforeMount(() => {
-      loadHistories()
-    })
-
-    return {
-      columns,
-      historyRows,
-      fetchHistoryLoading,
-      isDateModal,
-      onSearch,
-      title,
-      pagination,
-      HISTORY_ACTIONS,
-      onChangeDates,
-      skladUsers,
-      openedFilterHistory,
-      HISTORY_ACTIONS_COLORS,
-      formatTimeAgo,
-      push
-    }
+function onSearch(filters) {
+  selectedFilters.value = {
+    action: filters?.actions?.map(f => f.value) || [],
+    users_permissions_user: filters?.people?.map(f => f.value) || []
   }
+  loadHistories({ dates: selectedDates.value, ...selectedFilters.value })
+}
+
+onBeforeMount(() => {
+  loadHistories()
 })
 </script>
 

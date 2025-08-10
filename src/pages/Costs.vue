@@ -120,14 +120,10 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import { useQuasar } from 'quasar'
 import moment from 'moment'
-import {
-  computed,
-  defineComponent,
-  ref,
-} from 'vue'
+import { computed, ref } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import useCosts from 'src/modules/useCosts'
 import useMoney from 'src/modules/useMoney'
@@ -138,7 +134,6 @@ import PageTitle from 'src/components/PageTitle.vue'
 import { DISPLAY_FORMAT, HISTORY_CREATE } from 'src/config'
 import { CAN_ADD_COST } from 'src/permissions'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
 
 defineOptions({
   name: 'Costs'
@@ -176,129 +171,101 @@ function confirmRemoveCost(cost) {
   })
 }
 
-export default defineComponent({
-  name: 'CostsPage',
-  components: {
-    TableComp,
-    PageTitle,
-  },
-  setup() {
-    const { t: $t } = useI18n()
-    const route = useRoute()
-    const { params } = route
-    const { showSuccess, showError } = useHelpers()
-    const { formatPrice } = useMoney()
-    const {
-      createCost,
-      errorCost,
-      loadingCost,
-      loadCosts,
-      costsResult,
-      costsLoading,
-      costsRefetch,
-      deleteCost,
-      deleteError,
-      deleteLoading
-    } = useCosts()
-    const { history } = useHistory()
+const { showSuccess, showError } = useHelpers()
+const { formatPrice } = useMoney()
+const {
+  createCost,
+  errorCost,
+  loadingCost,
+  loadCosts,
+  costsResult,
+  costsLoading,
+  costsRefetch,
+  deleteCost,
+  deleteError,
+  deleteLoading
+} = useCosts()
+const { history } = useHistory()
 
-    const dialog = ref(false)
-    const description = ref(null)
-    const sum = ref(null)
-    const pagination = {
-      rowsPerPage: -1,
-    }
+const dialog = ref(false)
+const description = ref(null)
+const sum = ref(null)
+const pagination = {
+  rowsPerPage: -1
+}
 
-    const { inputRef, numberValue } = useCurrencyInput({
-      currency: 'USD',
-      currencyDisplay: 'hidden',
-      hideCurrencySymbolOnFocus: false,
-      hideGroupingSeparatorOnFocus: false,
-      hideNegligibleDecimalDigitsOnFocus: false,
-    })
+const { inputRef, numberValue } = useCurrencyInput({
+  currency: 'USD',
+  currencyDisplay: 'hidden',
+  hideCurrencySymbolOnFocus: false,
+  hideGroupingSeparatorOnFocus: false,
+  hideNegligibleDecimalDigitsOnFocus: false
+})
 
-    function openDialog() {
-      dialog.value = true
-    }
+function openDialog() {
+  dialog.value = true
+}
 
-    async function save() {
-      await createCost(description.value, numberValue.value)
-      if (!errorCost.value) {
-        dialog.value = false
-        costsRefetch()
-        history(HISTORY_CREATE, $t('costs.historyEntry', { description: description.value, sum: sum.value }))
-        showSuccess($t('costs.saveSuccess'))
-        description.value = null
-        sum.value = null
-      } else {
-        showError($t('common.error') + '. ' + $t('common.tryLater'))
-      }
-    }
-    
-    function remove(cost) {
-      $q.dialog({
-        title: $t('costs.removeCost'),
-        message: $t('costs.removeConfirm'),
-        cancel: true,
-        persistent: true,
-        ok: {
-          color: 'deep-orange',
-          label: $t('common.delete'),
-          push: true
-        },
-        cancel: {
-          color: 'white',
-          textColor: 'black',
-          label: $t('common.cancel'),
-          push: true
-        }
-      }).onOk(async () => {
-        await deleteCost(cost.id)
-        if (!deleteError.value) {
-          costsRefetch()
-          // NOTE: add to history
-          showSuccess($t('costs.deleteSuccess'))
-        } else {
-          showError($t('common.error') + '. ' + $t('common.tryLater'))
-        }
-      })
-    }
-
-    const rows = computed(() => {
-      const costs = costsResult.value?.listCosts || []
-      return costs.map(c => ({
-        id: c.id,
-        fullname: c?.users_permissions_user?.fullname || 'n/a',
-        description: c.description,
-        sum: formatPrice(c.sum),
-        created_at: moment(c.created_at).local().format(DISPLAY_FORMAT),
-      }));
-    })
-
-    const costsSum = computed(() => {
-      const costs = costsResult.value?.listCosts || []
-      const sum = costs.reduce((prev, next) => prev + next.sum, 0)
-      return formatPrice(sum)
-    })
-
-    return {
-      dialog,
-      inputRef,
-      sum,
-      save,
-      description,
-      openDialog,
-      loadingCost,
-      columns,
-      pagination,
-      rows,
-      costsLoading,
-      loadCosts,
-      costsSum,
-      CAN_ADD_COST,
-      remove,
-      deleteLoading
-    }
+async function save() {
+  await createCost(description.value, numberValue.value)
+  if (!errorCost.value) {
+    dialog.value = false
+    costsRefetch()
+    history(
+      HISTORY_CREATE,
+      $t('costs.historyEntry', { description: description.value, sum: sum.value })
+    )
+    showSuccess($t('costs.saveSuccess'))
+    description.value = null
+    sum.value = null
+  } else {
+    showError($t('common.error') + '. ' + $t('common.tryLater'))
   }
+}
+
+function remove(cost) {
+  $q.dialog({
+    title: $t('costs.removeCost'),
+    message: $t('costs.removeConfirm'),
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'deep-orange',
+      label: $t('common.delete'),
+      push: true
+    },
+    cancel: {
+      color: 'white',
+      textColor: 'black',
+      label: $t('common.cancel'),
+      push: true
+    }
+  }).onOk(async () => {
+    await deleteCost(cost.id)
+    if (!deleteError.value) {
+      costsRefetch()
+      // NOTE: add to history
+      showSuccess($t('costs.deleteSuccess'))
+    } else {
+      showError($t('common.error') + '. ' + $t('common.tryLater'))
+    }
+  })
+}
+
+const rows = computed(() => {
+  const costs = costsResult.value?.listCosts || []
+  return costs.map(c => ({
+    id: c.id,
+    fullname: c?.users_permissions_user?.fullname || 'n/a',
+    description: c.description,
+    sum: formatPrice(c.sum),
+    created_at: moment(c.created_at).local().format(DISPLAY_FORMAT)
+  }))
+})
+
+const costsSum = computed(() => {
+  const costs = costsResult.value?.listCosts || []
+  const sumValue = costs.reduce((prev, next) => prev + next.sum, 0)
+  return formatPrice(sumValue)
 })
 </script>

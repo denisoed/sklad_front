@@ -1,22 +1,36 @@
 <template>
   <TheDropdown :title="$t('product.additionalSettings')" outline>
+    <template #icon>
+      <q-icon name="mdi-cog-outline" size="sm" class="q-mr-sm" />
+    </template>
     <template #body>
-      <q-input
-        v-model="comment"
-        outlined
-        :label="$t('product.additionalComment')"
-        class="q-mb-md"
-        @update:model-value="$emit('update:comment', $event)"
-      />
-      
-      <InputPrice
-        v-model="discountPercent"
-        outlined
-        :label="$t('product.additionalDiscount')"
-        suffix="%"
-        class="q-mb-md"
-        @update:model-value="$emit('update:discount-percent', $event)"
-      />
+      <div class="additional-settings flex column q-gap-sm">
+        <q-input
+          v-model="localComment"
+          outlined
+          class="full-width"
+          dense
+          :label="$t('product.additionalComment')"
+          clearable
+          enterkeyhint="done"
+        />
+        <div class="flex no-wrap items-center q-gap-sm">
+          <InputPrice
+            v-model="localDiscountPrice"
+            :label="$t('product.additionalDiscount')"
+            clear
+            class="full-width"
+            dense
+            :icon="localPercentageDiscount ? 'mdi-percent' : 'mdi-cash-multiple'"
+          />
+          <SwitchTabs
+            :tabs="DISCOUNT_TABS"
+            :selected-tab="localPercentageDiscount"
+            class="discount-tabs"
+            @on-change="localPercentageDiscount = $event"
+          />
+        </div>
+      </div>
     </template>
   </TheDropdown>
 </template>

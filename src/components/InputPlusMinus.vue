@@ -48,94 +48,78 @@
   </div>
 </template>
 
-<script>
-import {
-  defineComponent,
-  ref,
-  toRefs,
-} from 'vue'
+<script setup>
+import { ref, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'InputPlusMinus'
 })
 
-export default defineComponent({
-  name: 'InputPlusMinus',
-  props: {
-    modelValue: {
-      type: Number,
-      default: 0
-    },
-    max: {
-      type: Number,
-      default: null
-    },
-    min: {
-      type: Number,
-      default: 0
-    },
-    label: {
-      type: String,
-      default: null
-    }
+const props = defineProps({
+  modelValue: {
+    type: Number,
+    default: 0
   },
-  emits: ['update:model-value'],
-  setup(props, { emit }) {
-    const { modelValue, min } = toRefs(props)
-    const count = ref(modelValue.value)
-    const { t: $t } = useI18n()
-
-    function plus() {
-      count.value += 1
-      emit('update:model-value', count.value)
-    }
-
-    function minus() {
-      if (count.value > min.value) {
-        count.value -= 1
-        emit('update:model-value', count.value)
-      }
-    }
-
-    function onInput(value) {
-      count.value = Number(value)
-      emit('update:model-value', count.value)
-    }
-
-    function checkNumber(e) {
-      let evt = e ? e : window.event;
-      const charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57))) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    function validate(e) {
-      if (parseInt(e.target.value) < parseInt(e.target.min)) {
-        e.target.value = Number(e.target.min)
-        count.value = Number(e.target.min)
-      }
-      if (parseInt(e.target.value) > parseInt(e.target.max)) {
-        e.target.value = Number(e.target.max)
-        count.value = Number(e.target.max)
-      }
-      if (!checkNumber(e)) {
-        e.preventDefault()
-      }
-    }
-
-    return {
-      count,
-      plus,
-      minus,
-      onInput,
-      validate
-    }
+  max: {
+    type: Number,
+    default: null
+  },
+  min: {
+    type: Number,
+    default: 0
+  },
+  label: {
+    type: String,
+    default: null
   }
 })
+
+const emit = defineEmits(['update:model-value'])
+
+const { t: $t } = useI18n()
+const { modelValue, min } = toRefs(props)
+const count = ref(modelValue.value)
+
+function plus() {
+  count.value += 1
+  emit('update:model-value', count.value)
+}
+
+function minus() {
+  if (count.value > min.value) {
+    count.value -= 1
+    emit('update:model-value', count.value)
+  }
+}
+
+function onInput(value) {
+  count.value = Number(value)
+  emit('update:model-value', count.value)
+}
+
+function checkNumber(e) {
+  const evt = e || window.event
+  const charCode = evt.which ? evt.which : evt.keyCode
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    return false
+  }
+  return true
+}
+
+function validate(e) {
+  if (parseInt(e.target.value) < parseInt(e.target.min)) {
+    e.target.value = Number(e.target.min)
+    count.value = Number(e.target.min)
+  }
+  if (parseInt(e.target.value) > parseInt(e.target.max)) {
+    e.target.value = Number(e.target.max)
+    count.value = Number(e.target.max)
+  }
+  if (!checkNumber(e)) {
+    e.preventDefault()
+  }
+}
 </script>
 
 <style lang="scss">

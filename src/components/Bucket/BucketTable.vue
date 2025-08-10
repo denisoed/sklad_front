@@ -166,7 +166,7 @@ defineOptions({
   name: 'BucketTable'
 })
 
-const props = defineProps({
+defineProps({
   bucketProducts: {
     type: Array,
     default: () => []
@@ -190,7 +190,7 @@ const { t: $t } = useI18n()
 const $q = useQuasar()
 const highlightRowId = ref(null)
 
-const goToProduct = (bucketProduct) => {
+function goToProduct(bucketProduct) {
   if (bucketProduct?.product?.id) {
     router.push(`/product/${bucketProduct.product.id}`)
   }
@@ -214,9 +214,11 @@ function confirmRemove(bucketProduct) {
       push: true
     }
   }).onOk(() => {
-    emit('remove', bucketProduct.product, { 
-      id: bucketProduct.id, 
-      ...(bucketProduct.product?.useNumberOfSizes ? { countSizes: bucketProduct.countSizes } : { sizes: bucketProduct.sizes })
+    emit('remove', bucketProduct.product, {
+      id: bucketProduct.id,
+      ...(bucketProduct.product?.useNumberOfSizes
+        ? { countSizes: bucketProduct.countSizes }
+        : { sizes: bucketProduct.sizes })
     })
   })
 }

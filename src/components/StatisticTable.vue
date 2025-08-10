@@ -98,99 +98,57 @@
   </q-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
 import PriceFormatter from 'src/components/PriceFormatter.vue'
-import {
-  READ_ORIGINAL_PRICE,
-  READ_STATISTIC_TABLE_ACTIONS
-} from 'src/permissions'
+import { READ_ORIGINAL_PRICE, READ_STATISTIC_TABLE_ACTIONS } from 'src/permissions'
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { formatPrice } from 'src/modules/usePriceFormatter'
 
 defineOptions({
   name: 'StatisticTable'
 })
 
-const props = defineProps({
-  rows: {
+defineProps({
+  listActivities: {
     type: Array,
     default: () => []
+  },
+  loadingActivities: {
+    type: Boolean,
+    default: false
+  },
+  soldCount: {
+    type: Number,
+    default: 0
+  },
+  origPriceTotal: {
+    type: String,
+    default: ''
+  },
+  newPriceTotal: {
+    type: String,
+    default: ''
+  },
+  discountTotal: {
+    type: String,
+    default: ''
   }
 })
 
-const { t: $t } = useI18n()
+defineEmits(['return-product'])
 
-const columns = computed(() => [
-  {
-    name: 'photo',
-    required: true,
-    label: $t('statistics.photo'),
-    align: 'left',
-    field: 'image',
-    sortable: false
-  },
-  { name: 'name', align: 'left', label: $t('statistics.name'), field: 'name', sortable: true },
-  { name: 'sold', label: $t('statistics.sold'), field: 'sold', sortable: true },
-  { name: 'earned', label: $t('statistics.earned'), field: 'earned', sortable: true },
-  { name: 'actions', label: $t('statistics.actions'), field: 'actions', sortable: false }
-])
+useI18n()
+const router = useRouter()
 
-export default defineComponent({
-  name: 'StatisticTable',
-  components: {
-    PriceFormatter
-  },
-  props: {
-    listActivities: {
-      type: Array,
-      default: () => []
-    },
-    loadingActivities: {
-      type: Boolean,
-      default: false
-    },
-    soldCount: {
-      type: Number,
-      default: 0
-    },
-    origPriceTotal: {
-      type: String,
-      default: ''
-    },
-    newPriceTotal: {
-      type: String,
-      default: ''
-    },
-    discountTotal: {
-      type: String,
-      default: ''
-    }
-  },
-  emits: ['return-product'],
-  setup() {
-    const router = useRouter()
+const pagination = {
+  rowsPerPage: -1
+}
 
-    const pagination = {
-      rowsPerPage: -1,
-    }
-
-    const handleRowClick = (event, row) => {
-      if (row?.product?.sklad?.id && row?.product?.id) {
-        router.push(`/sklad/${row.product.sklad.id}/product/${row.product.id}`)
-      }
-    }
-
-    return {
-      pagination,
-      handleRowClick,
-      READ_ORIGINAL_PRICE,
-      READ_STATISTIC_TABLE_ACTIONS
-    }
+function handleRowClick(event, row) {
+  if (row?.product?.sklad?.id && row?.product?.id) {
+    router.push(`/sklad/${row.product.sklad.id}/product/${row.product.id}`)
   }
-})
+}
 </script>
 
 <style lang="scss">

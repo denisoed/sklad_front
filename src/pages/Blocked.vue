@@ -30,8 +30,8 @@
   </q-page>
 </template>
 
-<script>
-import { defineComponent, ref, computed } from 'vue'
+<script setup>
+import { ref, computed } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import { useRouter } from 'vue-router'
 import { HOME_ROUTE } from 'src/router/routes'
@@ -42,35 +42,21 @@ defineOptions({
 })
 
 const { t: $t } = useI18n()
-
 const btnLabel = computed(() => $t('blocked.checkout'))
 
-export default defineComponent({
-  name: 'BlockedPage',
-  setup() {
-    const title = $t('blocked.subscriptionExpired')
-    const isLoading = ref(false)
+const title = $t('blocked.subscriptionExpired')
+const isLoading = ref(false)
 
-    const { push } = useRouter()
+const { push } = useRouter()
+const { showSuccess } = useHelpers()
 
-    const { showSuccess } = useHelpers()
-
-    async function submit() {
-      try {
-        isLoading.value = true
-        showSuccess($t('blocked.subscriptionIssued'))
-        push(HOME_ROUTE)
-      } finally {
-        isLoading.value = false
-      }
-    }
-
-    return {
-      title,
-      btnLabel,
-      submit,
-      isLoading,
-    }
+async function submit() {
+  try {
+    isLoading.value = true
+    showSuccess($t('blocked.subscriptionIssued'))
+    push(HOME_ROUTE)
+  } finally {
+    isLoading.value = false
   }
-})
+}
 </script>

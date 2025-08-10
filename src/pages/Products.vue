@@ -128,16 +128,8 @@
   </q-page>
 </template>
 
-<script>
-import {
-  computed,
-  defineComponent,
-  onBeforeMount,
-  ref,
-  reactive,
-  onMounted,
-  watch
-} from 'vue'
+<script setup>
+import { computed, onBeforeMount, ref, reactive, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
@@ -145,7 +137,7 @@ import useCategories from 'src/modules/useCategories'
 import useBucket from 'src/modules/useBucket'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { useBulkStore } from 'src/stores/bulk';
+import { useBulkStore } from 'src/stores/bulk'
 
 import FiltersComp from 'src/components/FiltersComp.vue'
 import ProductControls from 'src/components/ProductControls.vue'
@@ -159,16 +151,20 @@ import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
 const VIEW_TABLE = 'table'
 const VIEW_GRID = 'grid'
 
-import {
-  CAN_SELL_PRODUCT,
-  CAN_UPDATE_PRODUCT
-} from 'src/permissions'
+import { CAN_SELL_PRODUCT, CAN_UPDATE_PRODUCT } from 'src/permissions'
 
 defineOptions({
   name: 'Products'
 })
 
 const { t: $t } = useI18n()
+
+defineProps({
+  searchAutofocus: {
+    type: Boolean,
+    deafult: false
+  }
+})
 
 const filterOptions = computed(() => [
   { label: $t('products.all'), value: 'all' },
@@ -181,389 +177,299 @@ const filterLabels = computed(() => ({
   lowStock: $t('products.lowStock')
 }))
 
-export default defineComponent({
-  name: 'ProductsPage',
-  components: {
-    FiltersComp,
-    ProductControls,
-    MiniTabs,
-    ProductsGrid,
-    ProductsTable,
-    ModalCountToBucket,
-    ModalSizesToBucket,
-    ImagePreviewDialog
-  },
-  props: {
-    searchAutofocus: {
-      type: Boolean,
-      deafult: false,
-    }
-  },
-  setup() {
-    const { t: $t } = useI18n()
-    const bulkStore = useBulkStore();
-    const { bulkProducts } = storeToRefs(bulkStore);
-    
-    const ALL_TAB = computed(() => ({
-      id: 0,
-      name: $t('products.all'),
-      color: '#fff'
-    }))
+const bulkStore = useBulkStore()
+const { bulkProducts } = storeToRefs(bulkStore)
 
-    const route = useRoute()
-    const router = useRouter()
-    const { query, params } = route
-    const {
-      sklad,
-      sklads,
-      skladProducts,
-    } = useSklads()
-    const { forceRefreshBucket } = useBucket()
-    const {
-      categories: categoriesResult,
-      fetchCategories,
-    } = useCategories()
-    const {
-      addSizesToBucket,
-      searchProducts,
-      addCountToBucket,
-      products,
-      searchLoading
-    } = useProduct()
+const ALL_TAB = computed(() => ({
+  id: 0,
+  name: $t('products.all'),
+  color: '#fff'
+}))
 
-    const selectedSkladId = ref(
-      params?.skladId || query?.sklad || ALL_TAB.value.id
-    )
-    const imagePreviewDialog = ref(false)
-    const imagePreview = ref(null)
-    const selectedCategoryId = ref(params?.categoryId || ALL_TAB.value.id)
-    const selectedFilters = reactive({})
-    const showFiltersInfo = ref(false)
-    
-    // Modal states
-    const countModalVisible = ref(false)
-    const sizesModalVisible = ref(false)
-    const selectedProduct = ref(null)
-    
-    // View mode toggle (grid/table)
-    const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
-    
-    // Computed properties for filter operations
-    
-    const hasActiveFilters = computed(() => {
-      const { sort, ...filters } = selectedFilters.value || {}
-      return Object.keys(filters).some(key => {
-        const value = filters[key]
-        if (Array.isArray(value)) return value.length > 0
-        if (typeof value === 'boolean') return value
-        return value !== null && value !== undefined && value !== ''
-      })
-    })
-    
-    const activeFiltersCount = computed(() => {
-      const { sort, ...filters } = selectedFilters.value || {}
-      return Object.keys(filters).filter(key => {
-        const value = filters[key]
-        if (Array.isArray(value)) return value.length > 0
-        if (typeof value === 'boolean') return value
-        return value !== null && value !== undefined && value !== ''
-      }).length
-    })
-    
-    const activeFiltersInfo = computed(() => {
-      const { sort, ...filters } = selectedFilters.value || {}
-      const info = []
-      
-      const filterLabels = {
-        name_contains: $t('filter.searchByName'),
-        withDiscount: $t('filter.withDiscount'),
-        priceFrom: $t('filter.priceFrom'),
-        priceTo: $t('filter.priceTo'),
-        color_in: $t('filter.colors'),
-        sizes_contains: $t('filter.sizes'),
-        hasImage: $t('filter.hasImage'),
-        noImage: $t('filter.noImage'),
-        lowStock: $t('filter.lowStock'),
-        inStock: $t('filter.inStock')
-      }
-      
-      Object.keys(filters).forEach(key => {
-        const value = filters[key]
-        if (Array.isArray(value) && value.length > 0) {
-          info.push({
-            key,
-            label: `${filterLabels[key] || key}: ${value.join(', ')}`
-          })
-        } else if (typeof value === 'boolean' && value) {
-          info.push({
-            key,
-            label: filterLabels[key] || key
-          })
-        } else if (value !== null && value !== undefined && value !== '') {
-          info.push({
-            key,
-            label: `${filterLabels[key] || key}: ${value}`
-          })
-        }
-      })
-      
-      return info
-    })
+const route = useRoute()
+const router = useRouter()
+const { query, params } = route
+const { sklad, sklads, skladProducts } = useSklads()
+const { forceRefreshBucket } = useBucket()
+const { categories: categoriesResult, fetchCategories } = useCategories()
+const { addSizesToBucket, searchProducts, addCountToBucket, products, searchLoading } = useProduct()
 
-    function removeFilter(filterKey) {
-      if (selectedFilters.value[filterKey] !== undefined) {
-        if (Array.isArray(selectedFilters.value[filterKey])) {
-          selectedFilters.value[filterKey] = []
-        } else if (typeof selectedFilters.value[filterKey] === 'boolean') {
-          selectedFilters.value[filterKey] = false
-        } else {
-          selectedFilters.value[filterKey] = null
-        }
-        
-        onSearch(selectedFilters.value)
-      }
-    }
-  
-    function initFiltersFromUrl() {
-      try {
-        if (query.filters) {
-          const urlFilters = JSON.parse(decodeURIComponent(query.filters))
-          Object.assign(selectedFilters, urlFilters)
-        }
-      } catch (error) {
-        console.warn('Failed to load filters from URL:', error)
-      }
-    }
+const selectedSkladId = ref(params?.skladId || query?.sklad || ALL_TAB.value.id)
+const imagePreviewDialog = ref(false)
+const imagePreview = ref(null)
+const selectedCategoryId = ref(params?.categoryId || ALL_TAB.value.id)
+const selectedFilters = reactive({})
+const showFiltersInfo = ref(false)
 
-    function saveFiltersToUrl(filters) {
-      const hasFilters = Object.keys(filters).some(key => {
-        const value = filters[key]
-        if (Array.isArray(value)) return value.length > 0
-        if (typeof value === 'boolean') return value
-        return value !== null && value !== undefined && value !== ''
-      })
-      
-      if (hasFilters) {
-        router.replace({
-          query: {
-            ...query,
-            filters: encodeURIComponent(JSON.stringify(filters))
-          }
-        })
-      } else {
-        const { filters: _, ...newQuery } = query
-        router.replace({ query: newQuery })
-      }
-    }
+const countModalVisible = ref(false)
+const sizesModalVisible = ref(false)
+const selectedProduct = ref(null)
 
-    const skladsTabs = computed(() => {
-      return [ALL_TAB.value, ...sklads.value]
-    })
+const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
 
-    const categories = computed(
-      () => {
-        const categories = categoriesResult.value || []
-        const skladCategories =
-          categories.filter(c => c?.sklad?.id === selectedSkladId.value)
-        
-        return [
-          ALL_TAB.value,
-          ...(selectedSkladId.value === ALL_TAB.value.id ? categories : skladCategories)
-        ]
-      }
-    );
-
-    async function onAddSizesToBucket(product, payload) {
-      await addSizesToBucket(product, payload)
-      await forceRefreshBucket()
-      loadData()
-      sizesModalVisible.value = false
-      selectedProduct.value = null
-    }
-
-    async function onAddCountToBucket(product, payload) {
-      await addCountToBucket(product, payload)
-      await forceRefreshBucket()
-      loadData()
-      countModalVisible.value = false
-      selectedProduct.value = null
-    }
-
-    function onCloseBulk() {
-      bulkStore.setBulkProducts([])
-    }
-
-    function onFinishUpdate() {
-      loadData()
-      onCloseBulk()
-    }
-
-    async function onFinishRemove() {
-      onCloseBulk()
-      await loadData()
-      await forceRefreshBucket()
-    }
-
-    // Scroll to card by id from url and highlight it
-    function onScrollToCard() {
-      const id = query.product;
-      const element = document.getElementById(id)
-      if (element) {
-        // Scroll only vertically to the row, do not scroll horizontally
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: viewMode.value === VIEW_TABLE ? 'nearest' : 'center',
-        })
-        element.classList.add('highlight')
-        setTimeout(() => {
-          element.classList.remove('highlight')
-        }, 10000)
-      }
-    }
-
-    function onClear() {
-      selectedSkladId.value = ALL_TAB.value.id
-      selectedCategoryId.value = ALL_TAB.value.id
-    }
-
-    async function loadData() {
-      const { sort, ...otherFilters } = selectedFilters.value || {};
-      const sizes = otherFilters.sizes
-      const search = otherFilters.search
-      const filters = { ...otherFilters }
-      delete filters.sizes
-      delete filters.search
-      const resp = await searchProducts({
-        q: search || null,
-        where: {
-          ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
-          ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
-          ...filters
-        },
-        sizes: sizes?.length ? sizes : null
-      })
-      return resp;
-    }
-
-    async function onSearch(filters = {}) {
-      const { sort, ...otherFilters } = filters;
-      
-      selectedFilters.value = {
-        ...otherFilters,
-        sort
-      };
-      
-      saveFiltersToUrl(filters);
-      
-      const hasSearchFilters = Object.keys(otherFilters).some(key => 
-        key !== 'sort' && otherFilters[key] !== null && otherFilters[key] !== undefined && 
-        (Array.isArray(otherFilters[key]) ? otherFilters[key].length > 0 : otherFilters[key] !== '')
-      );
-      
-      if (hasSearchFilters) {
-        selectedCategoryId.value = ALL_TAB.value.id;
-        selectedSkladId.value = ALL_TAB.value.id;
-      }
-      
-      loadData();
-    }
-    
-    function onChangeSklad(id) {
-      selectedSkladId.value = id;
-      selectedCategoryId.value = ALL_TAB.value.id;
-      loadData();
-    }
-
-    function onChangeCategory(id) {
-      selectedCategoryId.value = id;
-      loadData();
-    }
-
-    function onOpenImagePreview(url) {
-      imagePreview.value = url
-      imagePreviewDialog.value = true
-    }
-
-    function onOpenCountModal(product) {
-      selectedProduct.value = product
-      countModalVisible.value = true
-    }
-
-    function onOpenSizesModal(product) {
-      selectedProduct.value = product
-      sizesModalVisible.value = true
-    }
-
-    function toggleViewMode() {
-      viewMode.value = viewMode.value === VIEW_GRID ? VIEW_TABLE : VIEW_GRID
-    }
-    
-    onBeforeMount(() => {
-      initFiltersFromUrl();
-      loadData();
-      onCloseBulk();
-    })
-
-    onMounted(() => {
-      setTimeout(() => {
-        onScrollToCard()
-      }, 300);
-    })
-
-    watch(viewMode, (newValue) => {
-      localStorage.setItem('products-view-mode', newValue)
-    })
-
-    watch(sklads, (val) => {
-      if (val.length) {
-        fetchCategories({ sklad: sklads.value.map(s => s.id) })
-      }
-    }, { immediate: true })
-
-    return {
-      searchLoading,
-      onSearch,
-      onClear,
-      sklad,
-      sklads,
-      params,
-      onAddSizesToBucket,
-      onAddCountToBucket,
-      CAN_SELL_PRODUCT,
-      CAN_UPDATE_PRODUCT,
-      onFinishRemove,
-      onCloseBulk,
-      onFinishUpdate,
-      bulkProducts,
-      onChangeSklad,
-      selectedSkladId,
-      categories,
-      onChangeCategory,
-      selectedCategoryId,
-      skladProducts,
-      products,
-      imagePreviewDialog,
-      imagePreview,
-      onOpenImagePreview,
-      onOpenCountModal,
-      onOpenSizesModal,
-      countModalVisible,
-      sizesModalVisible,
-      selectedProduct,
-      hasActiveFilters,
-      activeFiltersCount,
-      activeFiltersInfo,
-      showFiltersInfo,
-      removeFilter,
-      viewMode,
-      toggleViewMode,
-      VIEW_GRID,
-      VIEW_TABLE,
-      skladsTabs
-    }
-  }
+const hasActiveFilters = computed(() => {
+  const { sort, ...filters } = selectedFilters.value || {}
+  return Object.keys(filters).some(key => {
+    const value = filters[key]
+    if (Array.isArray(value)) return value.length > 0
+    if (typeof value === 'boolean') return value
+    return value !== null && value !== undefined && value !== ''
+  })
 })
+
+const activeFiltersCount = computed(() => {
+  const { sort, ...filters } = selectedFilters.value || {}
+  return Object.keys(filters)
+    .filter(key => {
+      const value = filters[key]
+      if (Array.isArray(value)) return value.length > 0
+      if (typeof value === 'boolean') return value
+      return value !== null && value !== undefined && value !== ''
+    }).length
+})
+
+const activeFiltersInfo = computed(() => {
+  const { sort, ...filters } = selectedFilters.value || {}
+  const info = []
+
+  const filterLabels = {
+    name_contains: $t('filter.searchByName'),
+    withDiscount: $t('filter.withDiscount'),
+    priceFrom: $t('filter.priceFrom'),
+    priceTo: $t('filter.priceTo'),
+    color_in: $t('filter.colors'),
+    sizes_contains: $t('filter.sizes'),
+    hasImage: $t('filter.hasImage'),
+    noImage: $t('filter.noImage'),
+    lowStock: $t('filter.lowStock'),
+    inStock: $t('filter.inStock')
+  }
+
+  Object.keys(filters).forEach(key => {
+    const value = filters[key]
+    if (Array.isArray(value) && value.length > 0) {
+      info.push({ key, label: `${filterLabels[key] || key}: ${value.join(', ')}` })
+    } else if (typeof value === 'boolean' && value) {
+      info.push({ key, label: filterLabels[key] || key })
+    } else if (value !== null && value !== undefined && value !== '') {
+      info.push({ key, label: `${filterLabels[key] || key}: ${value}` })
+    }
+  })
+
+  return info
+})
+
+function removeFilter(filterKey) {
+  if (selectedFilters.value[filterKey] !== undefined) {
+    if (Array.isArray(selectedFilters.value[filterKey])) {
+      selectedFilters.value[filterKey] = []
+    } else if (typeof selectedFilters.value[filterKey] === 'boolean') {
+      selectedFilters.value[filterKey] = false
+    } else {
+      selectedFilters.value[filterKey] = null
+    }
+
+    onSearch(selectedFilters.value)
+  }
+}
+
+function initFiltersFromUrl() {
+  try {
+    if (query.filters) {
+      const urlFilters = JSON.parse(decodeURIComponent(query.filters))
+      Object.assign(selectedFilters, urlFilters)
+    }
+  } catch (error) {
+    console.warn('Failed to load filters from URL:', error)
+  }
+}
+
+function saveFiltersToUrl(filters) {
+  const hasFilters = Object.keys(filters).some(key => {
+    const value = filters[key]
+    if (Array.isArray(value)) return value.length > 0
+    if (typeof value === 'boolean') return value
+    return value !== null && value !== undefined && value !== ''
+  })
+
+  if (hasFilters) {
+    router.replace({
+      query: {
+        ...query,
+        filters: encodeURIComponent(JSON.stringify(filters))
+      }
+    })
+  } else {
+    const { filters: _, ...newQuery } = query
+    router.replace({ query: newQuery })
+  }
+}
+
+const skladsTabs = computed(() => {
+  return [ALL_TAB.value, ...sklads.value]
+})
+
+const categories = computed(() => {
+  const categoriesList = categoriesResult.value || []
+  const skladCategories = categoriesList.filter(c => c?.sklad?.id === selectedSkladId.value)
+  return [
+    ALL_TAB.value,
+    ...(selectedSkladId.value === ALL_TAB.value.id ? categoriesList : skladCategories)
+  ]
+})
+
+async function onAddSizesToBucket(product, payload) {
+  await addSizesToBucket(product, payload)
+  await forceRefreshBucket()
+  loadData()
+  sizesModalVisible.value = false
+  selectedProduct.value = null
+}
+
+async function onAddCountToBucket(product, payload) {
+  await addCountToBucket(product, payload)
+  await forceRefreshBucket()
+  loadData()
+  countModalVisible.value = false
+  selectedProduct.value = null
+}
+
+function onCloseBulk() {
+  bulkStore.setBulkProducts([])
+}
+
+function onFinishUpdate() {
+  loadData()
+  onCloseBulk()
+}
+
+async function onFinishRemove() {
+  onCloseBulk()
+  await loadData()
+  await forceRefreshBucket()
+}
+
+function onScrollToCard() {
+  const id = query.product
+  const element = document.getElementById(id)
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: viewMode.value === VIEW_TABLE ? 'nearest' : 'center'
+    })
+    element.classList.add('highlight')
+    setTimeout(() => {
+      element.classList.remove('highlight')
+    }, 10000)
+  }
+}
+
+function onClear() {
+  selectedSkladId.value = ALL_TAB.value.id
+  selectedCategoryId.value = ALL_TAB.value.id
+}
+
+async function loadData() {
+  const { sort, ...otherFilters } = selectedFilters.value || {}
+  const sizes = otherFilters.sizes
+  const search = otherFilters.search
+  const filters = { ...otherFilters }
+  delete filters.sizes
+  delete filters.search
+  const resp = await searchProducts({
+    q: search || null,
+    where: {
+      ...(selectedSkladId.value ? { sklad: selectedSkladId.value } : {}),
+      ...(selectedCategoryId.value ? { category: selectedCategoryId.value } : {}),
+      ...filters
+    },
+    sizes: sizes?.length ? sizes : null
+  })
+  return resp
+}
+
+async function onSearch(filters = {}) {
+  const { sort, ...otherFilters } = filters
+
+  selectedFilters.value = {
+    ...otherFilters,
+    sort
+  }
+
+  saveFiltersToUrl(filters)
+
+  const hasSearchFilters = Object.keys(otherFilters).some(
+    key =>
+      key !== 'sort' &&
+      otherFilters[key] !== null &&
+      otherFilters[key] !== undefined &&
+      (Array.isArray(otherFilters[key]) ? otherFilters[key].length > 0 : otherFilters[key] !== '')
+  )
+
+  if (hasSearchFilters) {
+    selectedCategoryId.value = ALL_TAB.value.id
+    selectedSkladId.value = ALL_TAB.value.id
+  }
+
+  loadData()
+}
+
+function onChangeSklad(id) {
+  selectedSkladId.value = id
+  selectedCategoryId.value = ALL_TAB.value.id
+  loadData()
+}
+
+function onChangeCategory(id) {
+  selectedCategoryId.value = id
+  loadData()
+}
+
+function onOpenImagePreview(url) {
+  imagePreview.value = url
+  imagePreviewDialog.value = true
+}
+
+function onOpenCountModal(product) {
+  selectedProduct.value = product
+  countModalVisible.value = true
+}
+
+function onOpenSizesModal(product) {
+  selectedProduct.value = product
+  sizesModalVisible.value = true
+}
+
+function toggleViewMode() {
+  viewMode.value = viewMode.value === VIEW_GRID ? VIEW_TABLE : VIEW_GRID
+}
+
+onBeforeMount(() => {
+  initFiltersFromUrl()
+  loadData()
+  onCloseBulk()
+})
+
+onMounted(() => {
+  setTimeout(() => {
+    onScrollToCard()
+  }, 300)
+})
+
+watch(viewMode, newValue => {
+  localStorage.setItem('products-view-mode', newValue)
+})
+
+watch(
+  sklads,
+  val => {
+    if (val.length) {
+      fetchCategories({ sklad: sklads.value.map(s => s.id) })
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style lang="scss" scoped>

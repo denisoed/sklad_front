@@ -109,13 +109,8 @@
   </q-dialog>
 </template>
 
-<script>
-import {
-  computed,
-  defineComponent,
-  reactive,
-  toRefs
-} from 'vue'
+<script setup>
+import { computed, reactive, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   HISTORY_ACTIONS,
@@ -130,82 +125,71 @@ defineOptions({
   name: 'FilterHistory'
 })
 
-export default defineComponent({
-  name: 'FilterHistory',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    users: {
-      type: Array,
-      default: () => []
-    },
-    title: {
-      type: String,
-      default: null
-    },
+const props = defineProps({
+  opened: {
+    type: Boolean,
+    default: false
   },
-  emits: ['close', 'save', 'on-search'],
-  setup(props, { emit }) {
-    const { t: $t } = useI18n()
-    const { users } = toRefs(props)
-    const formData = reactive({
-      description: null,
-      actions: null,
-      people: null,
-    })
-
-    const actions = [
-      {
-        label: HISTORY_ACTIONS[HISTORY_CREATE],
-        value: HISTORY_CREATE,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_CREATE],
-      },
-      {
-        label: HISTORY_ACTIONS[HISTORY_UPDATE],
-        value: HISTORY_UPDATE,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_UPDATE],
-      },
-      {
-        label: HISTORY_ACTIONS[HISTORY_DELETE],
-        value: HISTORY_DELETE,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_DELETE],
-      },
-      {
-        label: HISTORY_ACTIONS[HISTORY_SOLD],
-        value: HISTORY_SOLD,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_SOLD],
-      },
-    ]
-    const skladUsers = computed(
-      () => users.value.map(u => ({ label: u.fullname, email: u.email, value: u.id }))
-    )
-
-    function close() {
-      emit('close')
-    }
-    
-    function search() {
-      close()
-      emit('on-search', formData)
-    }
-    
-    function clear() {
-      formData.description = null
-      formData.actions = null
-      formData.people = null
-      search()
-    }
-
-    return {
-      close,
-      search,
-      actions,
-      formData,
-      clear,
-      skladUsers,
-    }
+  users: {
+    type: Array,
+    default: () => []
+  },
+  title: {
+    type: String,
+    default: null
   }
 })
+
+const emit = defineEmits(['close', 'save', 'on-search'])
+
+useI18n()
+const { users } = toRefs(props)
+const formData = reactive({
+  description: null,
+  actions: null,
+  people: null
+})
+
+const actions = [
+  {
+    label: HISTORY_ACTIONS[HISTORY_CREATE],
+    value: HISTORY_CREATE,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_CREATE]
+  },
+  {
+    label: HISTORY_ACTIONS[HISTORY_UPDATE],
+    value: HISTORY_UPDATE,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_UPDATE]
+  },
+  {
+    label: HISTORY_ACTIONS[HISTORY_DELETE],
+    value: HISTORY_DELETE,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_DELETE]
+  },
+  {
+    label: HISTORY_ACTIONS[HISTORY_SOLD],
+    value: HISTORY_SOLD,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_SOLD]
+  }
+]
+
+const skladUsers = computed(() =>
+  users.value.map(u => ({ label: u.fullname, email: u.email, value: u.id }))
+)
+
+function close() {
+  emit('close')
+}
+
+function search() {
+  close()
+  emit('on-search', formData)
+}
+
+function clear() {
+  formData.description = null
+  formData.actions = null
+  formData.people = null
+  search()
+}
 </script>
