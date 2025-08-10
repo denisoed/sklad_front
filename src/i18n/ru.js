@@ -14,6 +14,9 @@ export default ({
   
   // Common actions
   common: {
+    clear: 'Очистить',
+    uploadPhoto: 'Загрузить фото',
+    sizes: 'Размеры',
     pieces: 'шт',
     save: 'Сохранить',
     cancel: 'Отмена',
@@ -62,8 +65,10 @@ export default ({
   },
 
   // Voice
-  voice: {
-    search: 'Голосовой поиск',
+  voiceOverlay: {
+    recognitionUnavailable: 'Служба распознавания речи не доступна в вашем браузере',
+    pressButtonToStart: 'Зажмите кнопку, чтобы начать запись',
+    speakNow: 'Говорите...',
   },
 
   // Costs additions
@@ -162,44 +167,7 @@ export default ({
     cardDescription: 'Этот товар будет оплачен картой',
   },
 
-  product: {
-    title: 'Товары',
-    printPriceLabels: 'Печать ценников',
-    controlPanel: 'Панель управления',
-    addToBasket: 'Товар добавлен в корзину!',
-    errorAddToBasket: 'Не удалось добавить в корзину. Попробуйте позже.',
-    errorDelete: 'Не удалось удалить продукт. Проблемы на сервере.',
-    errorRemoveProduct: 'Не удалось удалить продукт. Проблемы на сервере.',
-    errorLoadPhoto: 'Не удалось загрузить фото. Проблемы на сервере.',
-    errorCreate: 'Не удалось создать продукт. Проблемы на сервере.',
-    errorUpdate: 'Не удалось обновить продукт. Проблемы на сервере.',
-    createdSuccessfully: 'Товар успешно создан!',
-    updatedSuccessfully: 'Продукт успешно обновлён!',
-    deletedSuccessfully: 'Товар успешно удалён!',
-    categoryLabel: 'Категория товара',
-    originalPrice: 'Опт. цена',
-    retailPrice: 'Роз. цена',
-    discountPrice: 'Установить акционную цену',
-    useSizes: 'Использовать размеры',
-    sizesList: 'Размеры:',
-    sizesNotSpecified: 'Не увазаны',
-    additionalSettings: 'Дополнительные настройки',
-    additionalComment: 'Комментарий',
-    additionalDiscount: 'Доп. скидка',
-    additionalRetailPrices: 'Доп. розничные цены',
-    additionalPricesDescription: 'Цена для постоянных клиентов',
-    additionalPricesOther: 'И другие варианты',
-    addPrice: 'Добавить цену',
-    soldUnits: 'Продано единиц:',
-    deletedFromWarehouse: 'Удалён со склада',
-    returnProduct: 'Возврат товара',
-    saleDate: 'Дата продажи',
-    productName: 'Название товара',
-    writeEverything: 'Пишите всё, что думаете',
-    priceName: 'Название',
-    create: 'Создать товар',
-    duplicate: 'Дублировать товар',
-  },
+  
 
   // Warehouse
   warehouse: {
@@ -441,6 +409,7 @@ export default ({
     noImage: 'Без изображения',
     lowStock: 'Заканчивается',
     inStock: 'В наличии',
+    doubleClickHint: 'Двойное нажатие по дате вернет результат за один день',
   },
 
   // Scanner
@@ -512,7 +481,6 @@ export default ({
     categoryLabel: 'Категория товара',
     categoryHint: 'Привязать товар к категории',
     originalPrice: 'Опт. цена',
-    retailPrice: 'Роз. цена',
     discountPrice: 'Установить акционную цену',
     useSizes: 'Использовать размеры',
     sizesList: 'Размеры:',
@@ -520,10 +488,9 @@ export default ({
     additionalSettings: 'Дополнительно',
     additionalComment: 'Комментарий',
     additionalDiscount: 'Доп. скидка',
-    additionalRetailPrices: 'Доп. розничные цены',
     additionalPricesDescription: 'Цена для постоянных клиентов',
     additionalPricesOther: 'И другие варианты',
-    additionalPricesFullDescription: 'Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например: цена для постоянных клиентов, цена после 18:00 и другие варианты. Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.',
+    additionalPricesFullDescription: 'Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например: <ul class="q-mt-md"><li>Цена для постоянных клиентов</li><li>Цена после 18:00</li><li>И другие варианты</li></ul><p class="text-body2 q-mt-md text-grey-5">Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.</p>',
     addPrice: 'Добавить цену',
     soldUnits: 'Продано единиц:',
     deletedFromWarehouse: 'Удалён со склада',
@@ -543,7 +510,6 @@ export default ({
     retailPricePerPiece: 'Розничная цена за 1 шт',
     additionalRetailPrice: 'Доп. розничные цены',
     canSpecifyLater: 'Можно указать позже',
-    addPrice: 'Добавить цену',
     pricesForProduct: 'Цены на товар',
     productHistory: 'История товара',
     deleteThisProduct: 'Удалить этот товар',
@@ -557,8 +523,6 @@ export default ({
     noPromotionToday: 'На сегодня акции нет',
     setPromotionDates: 'Выставить акционную цену на определенные даты',
     promotionDates: 'Акция на даты:',
-    additionalPricesFullDescription: 'Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например: цена для постоянных клиентов, цена после 18:00 и другие варианты. Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.',
-    productNameRequired: 'Название товара *',
     retailPrice: 'Розничная цена',
     additionalRetailPrices: 'Доп. розничные цены',
     sizesAddedToProduct: 'Добавлены размеры в товар: {name}',

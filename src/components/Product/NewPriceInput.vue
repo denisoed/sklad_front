@@ -36,17 +36,18 @@
             <q-input
               v-model="price.name"
               outlined
-              dense
               :label="$t('product.priceName')"
-              class="q-mr-sm"
-              style="flex: 1;"
+              class="full-width"
+              enterkeyhint="done"
+              @update:model-value="(value) => onAdditionalPriceNameChange(index, value)"
             />
             <InputPrice
               v-model="price.value"
-              outlined
-              dense
               :label="$t('common.price')"
-              style="flex: 1;"
+              clear
+              :icon="false"
+              class="full-width"
+              @update:model-value="(value) => onAdditionalPriceValueChange(index, value)"
             />
             <q-btn
               v-if="localAdditionalPrices.length > 1"
@@ -70,7 +71,6 @@
       </div>
     </div>
 
-    <!-- Диалог с информацией о дополнительных ценах -->
     <q-dialog v-model="showInfoDialog">
       <q-card style="min-width: 350px">
         <q-card-section class="row items-center q-pb-none">
@@ -92,9 +92,7 @@
         </q-card-section>
 
         <q-card-section>
-          <p class="text-subtitle2">
-            {{ $t('product.additionalPricesFullDescription') }}
-          </p>
+          <p v-html="$t('product.additionalPricesFullDescription')" class="text-subtitle2" />
         </q-card-section>
       </q-card>
     </q-dialog>

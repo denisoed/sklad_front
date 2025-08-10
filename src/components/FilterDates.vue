@@ -23,7 +23,7 @@
         >
           <div class="row items-center no-wrap justify-end q-gap-xs">
             <q-btn :label="$t('common.cancel')" rounded color="grey" flat v-close-popup />
-            <q-btn :label="$t('filter.clear')" rounded color="deep-orange" flat @click="clear" />
+            <q-btn :label="$t('common.clear')" rounded color="deep-orange" flat @click="clear" />
             <q-btn label="OK" rounded color="primary" flat @click="filterByCalendar" v-close-popup />
           </div>
           <p class="text-grey q-mt-md q-mb-none text-caption">{{ $t('filter.doubleClickHint') }}</p>
