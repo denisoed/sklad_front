@@ -44,8 +44,6 @@ import useDate from 'src/modules/useDate'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
 import { FILTER_FORMAT, DAY, WEEK, MONTH } from 'src/config'
 
-// TABS будут создаваться динамически в computed
-
 const props = defineProps({
   withButtons: {
     type: Boolean,

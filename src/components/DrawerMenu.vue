@@ -36,9 +36,9 @@
         <q-item-section avatar>
           <q-icon name="feedback" />
         </q-item-section>
-        <q-item-section>
-          Отзыв
-        </q-item-section>
+          <q-item-section>
+            {{ $t('feedback.title') }}
+          </q-item-section>
       </q-item>
     </FeedbackDialog>
     
@@ -54,7 +54,7 @@
           <q-img src="~assets/logo.svg" class="drawer-install-logo" />
         </q-item-section>
         <q-item-section>
-          <span>Установить</span>
+            <span>{{ $t('common.install') }}</span>
         </q-item-section>
       </q-item>
       <template v-for="(item, index) in MENU_LIST_BOTTOM" :key="index">

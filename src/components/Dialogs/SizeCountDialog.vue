@@ -18,7 +18,7 @@
             class="full-width"
             :max="100"
             :model-value="selectedSize.count"
-            :label="`Количество единиц для размера <b>${selectedSize.size}</b>`"
+            :label="`${$t('pages.countUnitsForSize')}: <b>${selectedSize.size}</b>`"
             @update:model-value="selectedCounts = $event"
           />
           <q-separator class="full-width" />

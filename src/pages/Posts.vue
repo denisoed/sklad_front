@@ -11,7 +11,7 @@
         >
           <q-icon name="mdi-arrow-left" />
         </q-btn>
-        <div class="posts-title">Спискок статей</div>
+        <div class="posts-title">{{ $t('pages.posts') }}</div>
       </div>
       <div class="flex column q-gap-md">
         <router-link
@@ -26,7 +26,7 @@
   
             <q-card-section>
               <div class="text-h6">{{ post.title }}</div>
-              <div class="q-mt-sm updated-at">Обновлено: {{ post.updated_at }}</div>
+              <div class="q-mt-sm updated-at">{{ $t('pages.updated') }}: {{ post.updated_at }}</div>
             </q-card-section>
           </q-card>
         </router-link>

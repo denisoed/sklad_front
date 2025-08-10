@@ -3,7 +3,7 @@
     <q-card style="width: 350px">
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          Создание шаблона
+          {{ $t('printing.createTemplate') }}
         </p>
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width">
@@ -100,7 +100,7 @@ export default defineComponent({
 
     const TYPES = [
       {
-        label: 'Ценник',
+        label: $t('printing.priceLabel'),
         value: 'price-label',
         color: 'rgb(0 0 255 / 50%)',
       },

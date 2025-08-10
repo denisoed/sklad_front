@@ -49,7 +49,7 @@
               @update:model-value="selectAllPermissions"
             >
               <span class="text-bold">
-                {{ selectedPermissions ? 'Снять все права' : 'Дать все права' }}
+                {{ selectedPermissions ? $t('settings.employee.unselectAll') : $t('settings.employee.selectAll') }}
               </span>
             </q-checkbox>
             <q-separator />
