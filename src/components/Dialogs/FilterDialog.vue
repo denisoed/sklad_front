@@ -132,134 +132,113 @@
   </q-dialog>
 </template>
 
-<script>
-import { defineComponent, ref, reactive, onMounted, watch } from 'vue'
+<script setup>
+import { ref, reactive, onMounted, watch } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
 import useSizes from 'src/modules/useSizes'
 import { useI18n } from 'vue-i18n'
+import InputPrice from 'src/components/InputPrice.vue'
 
-export default defineComponent({
-  name: 'FilterDialog',
-  components: {
-    ColorPicker,
-    SwipeToClose
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
   },
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false
-    },
-    filters: {
-      type: Object,
-      required: true
-    }
-  },
-  emits: ['update:modelValue', 'apply', 'clear'],
-  setup(props, { emit }) {
-    const { t: $t } = useI18n()
-    const colorPickerRef = ref(null)
-    const availableSizes = ref([])
-    const loadingAvailableSizes = ref(false)
-    const { sizes, fetchSizes } = useSizes()
-
-    const localFilters = reactive({ 
-      ...props.filters,
-      colors: props.filters.colors || []
-    })
-
-    watch(() => props.filters, (newFilters) => {
-      Object.assign(localFilters, newFilters)
-      // Убеждаемся, что массив цветов инициализирован
-      if (!localFilters.colors) {
-        localFilters.colors = []
-      }
-    }, { deep: true })
-
-    async function fetchAvailableSizes() {
-      try {
-        loadingAvailableSizes.value = true
-        await fetchSizes()
-        const sizesSet = new Set()
-        sizes.value?.forEach(sizeGroup => {
-          sizeGroup.list?.forEach(sizeItem => {
-            if (sizeItem.size) {
-              sizesSet.add(sizeItem.size)
-            }
-          })
-        })
-        availableSizes.value = Array.from(sizesSet).sort((a, b) => {
-          const aIsNumber = !isNaN(a)
-          const bIsNumber = !isNaN(b)
-          if (aIsNumber && bIsNumber) return Number(a) - Number(b)
-          if (aIsNumber) return -1
-          if (bIsNumber) return 1
-          return a.localeCompare(b)
-        })
-      } catch (error) {
-        console.error($t('filter.sizesLoadingError'), error)
-        availableSizes.value = []
-      } finally {
-        loadingAvailableSizes.value = false
-      }
-    }
-
-    function toggleSize(size) {
-      const index = localFilters.sizes.indexOf(size)
-      if (index === -1) {
-        localFilters.sizes.push(size)
-      } else {
-        localFilters.sizes.splice(index, 1)
-      }
-    }
-
-    function setColorName(colors) {
-      if (Array.isArray(colors)) {
-        // Мультивыбор - массив цветов
-        localFilters.colors = colors
-        localFilters.color = colors.length > 0 ? colors[0].color : null
-        localFilters.colorName = colors.length > 0 ? colors[0].name : null
-      } else {
-        // Одиночный выбор (для обратной совместимости)
-        localFilters.color = colors?.color
-        localFilters.colorName = colors?.name
-        localFilters.colors = colors ? [colors] : []
-      }
-    }
-
-    function apply() {
-      emit('apply', localFilters)
-      emit('update:modelValue', false)
-    }
-
-    function clear() {
-      colorPickerRef.value?.clear()
-      // Очищаем локальные фильтры
-      localFilters.sizes = []
-      localFilters.priceFrom = null
-      localFilters.priceTo = null
-      localFilters.color = null
-      localFilters.colorName = null
-      localFilters.colors = []
-      localFilters.withDiscount = false
-      emit('clear')
-      emit('update:modelValue', false)
-    }
-
-    onMounted(fetchAvailableSizes)
-
-    return {
-      localFilters,
-      colorPickerRef,
-      availableSizes,
-      loadingAvailableSizes,
-      toggleSize,
-      apply,
-      clear,
-      setColorName
-    }
+  filters: {
+    type: Object,
+    required: true
   }
 })
+
+const emit = defineEmits(['update:modelValue', 'apply', 'clear'])
+
+const { t: $t } = useI18n()
+const colorPickerRef = ref(null)
+const availableSizes = ref([])
+const loadingAvailableSizes = ref(false)
+const { sizes, fetchSizes } = useSizes()
+
+const localFilters = reactive({ 
+  ...props.filters,
+  colors: props.filters.colors || []
+})
+
+watch(() => props.filters, (newFilters) => {
+  Object.assign(localFilters, newFilters)
+  if (!localFilters.colors) {
+    localFilters.colors = []
+  }
+}, { deep: true })
+
+async function fetchAvailableSizes() {
+  try {
+    loadingAvailableSizes.value = true
+    await fetchSizes()
+    const sizesSet = new Set()
+    sizes.value?.forEach(sizeGroup => {
+      sizeGroup.list?.forEach(sizeItem => {
+        if (sizeItem.size) {
+          sizesSet.add(sizeItem.size)
+        }
+      })
+    })
+    availableSizes.value = Array.from(sizesSet).sort((a, b) => {
+      const aIsNumber = !isNaN(a)
+      const bIsNumber = !isNaN(b)
+      if (aIsNumber && bIsNumber) return Number(a) - Number(b)
+      if (aIsNumber) return -1
+      if (bIsNumber) return 1
+      return a.localeCompare(b)
+    })
+  } catch (error) {
+    console.error($t('filter.sizesLoadingError'), error)
+    availableSizes.value = []
+  } finally {
+    loadingAvailableSizes.value = false
+  }
+}
+
+function toggleSize(size) {
+  const index = localFilters.sizes.indexOf(size)
+  if (index === -1) {
+    localFilters.sizes.push(size)
+  } else {
+    localFilters.sizes.splice(index, 1)
+  }
+}
+
+function setColorName(colors) {
+  if (Array.isArray(colors)) {
+    localFilters.colors = colors
+    localFilters.color = colors.length > 0 ? colors[0].color : null
+    localFilters.colorName = colors.length > 0 ? colors[0].name : null
+  } else {
+    localFilters.color = colors?.color
+    localFilters.colorName = colors?.name
+    localFilters.colors = colors ? [colors] : []
+  }
+}
+
+function apply() {
+  emit('apply', localFilters)
+  emit('update:modelValue', false)
+}
+
+function clear() {
+  colorPickerRef.value?.clear()
+  localFilters.sizes = []
+  localFilters.priceFrom = null
+  localFilters.priceTo = null
+  localFilters.color = null
+  localFilters.colorName = null
+  localFilters.colors = []
+  localFilters.withDiscount = false
+  emit('clear')
+  emit('update:modelValue', false)
+}
+
+onMounted(fetchAvailableSizes)
 </script>
 
 <style lang="scss" scoped>
