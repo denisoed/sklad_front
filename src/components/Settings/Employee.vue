@@ -1,7 +1,7 @@
 <template>
   <div class="full-width">
     <div class="flex items-center q-mb-md">
-      <h6 class=" text-subtitle1 q-my-none">{{ $t('warehouse.participant') }}</h6>
+      <h6 class=" text-subtitle1 q-my-none">{{ $t('warehouse.participants') }}</h6>
       <q-btn
         icon="mdi-plus"
         round
@@ -101,7 +101,7 @@ export default defineComponent({
       return [
         {
           name: 'name',
-          label: $t('product.priceName'),
+          label: $t('common.name'),
           align: 'left',
           field: 'name'
         },
@@ -119,7 +119,7 @@ export default defineComponent({
         // },
         {
           name: 'action',
-          label: $t('statistics.actions'),
+          label: $t('common.actions'),
           align: 'right',
           field: 'action'
         },

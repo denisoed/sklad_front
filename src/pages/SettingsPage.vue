@@ -177,6 +177,7 @@ import {
   computed,
   watch,
   reactive,
+  ref,
 } from 'vue'
 import {
   UPDATE_SKLAD
@@ -196,6 +197,8 @@ import {
   MAIN_SETTINGS_ROUTE
 } from 'src/router/routes'
 import { useI18n } from 'vue-i18n'
+import useHelpers from 'src/modules/useHelpers'
+import { useRoute, useRouter } from 'vue-router'
 
 defineOptions({
   name: 'SettingsPage'
@@ -224,6 +227,10 @@ const formData = reactive({
   color: null,
   goal: null,
 })
+const { query, params } = useRoute()
+const { push, replace } = useRouter()
+const { showError, showSuccess } = useHelpers()
+const tab = ref(query?.tab || 'main')
 
 const isLoading = computed(
   () => removeSkladLoading.value || isLoadingSklad.value || updateSkladLoading.value

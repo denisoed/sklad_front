@@ -9,42 +9,29 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   computed,
-  defineComponent,
   toRefs
 } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { identicon } from 'minidenticons'
 
-export default defineComponent({
-  name: 'UserInfo',
-  props: {
-    fullname: {
-      type: String,
-      default: null
-    },
-    email: {
-      type: String,
-      default: null
-    },
-    telegramId: {
-      type: Number,
-      default: null
-    }
+const props = defineProps({
+  fullname: {
+    type: String,
+    default: null
   },
-  setup(props) {
-    const { t: $t } = useI18n()
-    const { telegramId, email } = toRefs(props)
-    const avatar = computed(() => identicon(String(telegramId.value || email.value) || ''))
-
-    return {
-      $t,
-      avatar
-    }
+  email: {
+    type: String,
+    default: null
+  },
+  telegramId: {
+    type: Number,
+    default: null
   }
 })
+const { telegramId, email } = toRefs(props)
+const avatar = computed(() => identicon(String(telegramId.value || email.value) || ''))
 </script>
 
 <style lang="scss" scoped>

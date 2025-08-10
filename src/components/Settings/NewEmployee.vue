@@ -12,9 +12,9 @@
         <div class="dialog-close" id="dialog-close">
           <div class="dialog-close-line" />
         </div>
-        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
+        <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl q-pt-none">
         <div class="flex justify-center full-width">
-          <div class="q-px-md q-pt-md q-pb-sm full-width new-employee_field">
+          <div class="q-pt-md q-pb-sm full-width new-employee_field">
             <q-input
               outlined
               color="primary"
@@ -43,7 +43,7 @@
               </q-menu>
             </q-input>
           </div>
-          <div class="new-employee_checkboxes q-px-sm q-pb-md">
+          <div class="new-employee_checkboxes q-pb-md">
             <q-checkbox
               :model-value="selectedPermissions"
               @update:model-value="selectAllPermissions"
@@ -63,7 +63,7 @@
               class="full-width"
             />
           </div>
-          <div class="flex column q-px-md full-width q-gap-md">
+          <div class="flex column full-width q-gap-md">
             <q-separator class="full-width" />
             <div class="flex justify-between no-wrap q-gap-md full-width">
               <q-btn
@@ -100,7 +100,6 @@ import {
   toRefs,
   watch,
   ref,
-  defineComponent
 } from 'vue'
 import { useLazyQuery } from '@vue/apollo-composable'
 import { useI18n } from 'vue-i18n'
@@ -219,7 +218,7 @@ watch(opened, (newVal) => {
 const listPermissions = computed(() => {
   return ALL_PERMISSIONS_WITH_DESCRIPTION.map(p => ({
     val: p.val,
-    label: p.description,
+    label: $t(p.description),
   }))
 })
 
@@ -229,14 +228,7 @@ const users = computed(() => resultUsers.value?.users || [])
 <style lang="scss" scoped>
 .new-employee {
   &_field {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-
-  &_checkboxes {
-    max-height: 400px;
-    overflow-y: auto;
+    background-color: var(--block-bg);
   }
 }
 </style>

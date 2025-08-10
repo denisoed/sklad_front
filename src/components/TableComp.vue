@@ -25,60 +25,44 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   onBeforeMount,
 } from 'vue'
-import { useI18n } from 'vue-i18n'
 import FilterDates from 'src/components/FilterDates.vue'
 
-export default defineComponent({
-  name: 'TableComp',
-  components: {
-    FilterDates,
+const emit = defineEmits(['on-change'])
+
+const props = defineProps({
+  rows: {
+    type: Array,
+    default: () => []
   },
-  emits: ['on-change'],
-  props: {
-    rows: {
-      type: Array,
-      default: () => []
-    },
-    columns: {
-      type: Array,
-      default: () => []
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    isFilters: {
-      type: Boolean,
-      default: true
-    },
+  columns: {
+    type: Array,
+    default: () => []
   },
-  setup(props, { emit }) {
-    const { t: $t } = useI18n()
-    
-    const pagination = {
-      rowsPerPage: 10,
-    }
-
-    function onChange(args) {
-      emit('on-change', args)
-    }
-
-    onBeforeMount(() => {
-      onChange();
-    });
-
-    return {
-      $t,
-      pagination,
-      onChange,
-    }
-  }
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  isFilters: {
+    type: Boolean,
+    default: true
+  },
 })
+
+const pagination = {
+  rowsPerPage: 10,
+}
+
+function onChange(args) {
+  emit('on-change', args)
+}
+
+onBeforeMount(() => {
+  onChange();
+});
 </script>
 
 <style lang="scss">

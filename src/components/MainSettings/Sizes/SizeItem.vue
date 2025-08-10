@@ -97,7 +97,7 @@ export default defineComponent({
           
           // If the list becomes empty, show warning
           if (newList.length === 0) {
-            showError('You cannot delete all sizes. Use the edit button to delete the entire size set.')
+            showError($t('sizes.cannotDeleteAllSizes'))
             return
           }
 
@@ -114,13 +114,13 @@ export default defineComponent({
           })
           
           if (!updateError.value) {
-            showSuccess('Size successfully deleted!')
+            showSuccess($t('sizes.sizeDeleted'))
             emit('on-update')
           } else {
-            showError('An error occurred while deleting the size.')
+            showError($t('sizes.errorDeletingSize'))
           }
         } catch (error) {
-          showError('An error occurred while deleting the size.')
+          showError($t('sizes.errorDeletingSize'))
         }
       })
     }

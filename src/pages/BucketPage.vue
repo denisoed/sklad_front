@@ -59,6 +59,26 @@
         class="full-width text-center text-grey-5"
       >
         {{ $t('pages.loading') }}
+        <span
+          v-if="bucketProductsLoading"
+        >
+          <q-icon
+            size="sm"
+            name="mdi-loading"
+            class="mdi-spin q-mr-sm "
+          />
+          {{ $t('pages.loading') }}
+        </span>
+        <span
+          v-else
+        >
+          <q-icon
+            size="sm"
+            name="mdi-cart-outline"
+            class="q-mr-sm text-grey-5"
+          />
+          {{ $t('bucket.emptyBasket') }}
+        </span>
       </h6>
       <div class="flex flex-center q-mt-lg">
         <q-btn
@@ -167,6 +187,7 @@ const { profile } = useProfile()
 const {
   loadBucketProducts,
   forceRefreshBucket,
+  bucketProductsLoading,
   bucketProducts
 } = useBucket()
 const {
@@ -266,7 +287,7 @@ async function remove(product, payload) {
   })
   if (!deleteSaleProductError.value) {
     await forceRefreshBucket()
-    showSuccess($t('bucket.returnToWarehouse'))
+    showSuccess($t('bucket.returnedToWarehouse'))
   } else {
     showError($t('bucket.errorReturn'))
   }

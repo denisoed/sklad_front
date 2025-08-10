@@ -8,7 +8,7 @@
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width">
             <q-select
-              v-model="data.type"
+              v-model="formData.type"
               :options="templateTypes"
               outlined
               class="q-mb-md"
@@ -18,7 +18,7 @@
             
             <q-input
               ref="nameRef"
-              v-model="data.name"
+              v-model="formData.name"
               outlined
               class="q-mb-md"
               :label="$t('printing.templateName')"
@@ -27,7 +27,7 @@
             
             <div class="flex full-width q-gap-md q-mb-md">
               <q-input
-                v-model="data.width"
+                v-model="formData.width"
                 outlined
                 type="number"
                 class="col"
@@ -60,99 +60,84 @@
   </q-dialog>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   reactive,
   watch,
   toRefs,
-  ref,
   computed
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-export default defineComponent({
-  name: 'NewTemplate',
-  props: {
-    selected: {
-      type: Object,
-      default: null,
-    },
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
+const props = defineProps({
+  selected: {
+    type: Object,
+    default: null,
   },
-  emits: ['close', 'on-create', 'on-delete'],
-  setup(props, { emit }) {
-    const { selected } = toRefs(props)
-    const formData = reactive({
-      id: null,
-      type: null,
-      name: null,
-      width: null,
-      height: null,
-    })
+  opened: {
+    type: Boolean,
+    default: false
+  },
+  isLoading: {
+    type: Boolean,
+    default: false
+  },
+})
+const emit = defineEmits(['close', 'on-create', 'on-delete'])
 
-    const TYPES = [
-      {
-        label: $t('printing.priceLabel'),
-        value: 'price-label',
-        color: 'rgb(0 0 255 / 50%)',
-      },
-    ]
+const { selected } = toRefs(props)
+const formData = reactive({
+  id: null,
+  type: null,
+  name: null,
+  width: null,
+  height: null,
+})
 
-    const { t: $t } = useI18n()
+const TYPES = [
+  {
+    label: $t('printing.priceLabel'),
+    value: 'price-label',
+    color: 'rgb(0 0 255 / 50%)',
+  },
+]
 
-    const templateTypes = computed(() => [
-      { label: $t('printing.priceLabel'), value: 'price-label' }
-    ])
+const { t: $t } = useI18n()
 
-    function close() {
-      emit('close')
-    }
+const templateTypes = computed(() => [
+  { label: $t('printing.priceLabel'), value: 'price-label' }
+])
 
-    function submit() {
-      emit('on-create', {
-        type: formData.type,
-        name: formData.name,
-        width: formData.width,
-        height: formData.height,
-      })
-    }
+function close() {
+  emit('close')
+}
 
-    function remove() {
-      emit('on-delete', formData.id)
-    }
+function submit() {
+  emit('on-create', {
+    type: formData.type,
+    name: formData.name,
+    width: formData.width,
+    height: formData.height,
+  })
+}
 
-    function clear() {
-      formData.id = null
-      formData.type = null
-      formData.name = null
-      formData.width = null
-      formData.height = null
-    }
+function remove() {
+  emit('on-delete', formData.id)
+}
 
-    watch(selected, (newVal) => {
-      formData.id = newVal?.id
-      formData.type = newVal?.type
-      formData.name = newVal?.name
-      formData.width = newVal?.width
-      formData.height = newVal?.height
-    })
+function clear() {
+  formData.id = null
+  formData.type = null
+  formData.name = null
+  formData.width = null
+  formData.height = null
+}
 
-    return {
-      close,
-      submit,
-      TYPES,
-      formData,
-      clear,
-      remove,
-    }
-  }
+watch(selected, (newVal) => {
+  formData.id = newVal?.id
+  formData.type = newVal?.type
+  formData.name = newVal?.name
+  formData.width = newVal?.width
+  formData.height = newVal?.height
 })
 </script>
