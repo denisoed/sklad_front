@@ -31,16 +31,16 @@
             emit-value
             map-options
           />
-          
+
           <q-input
-            v-model="formData.name"
-            outlined
-            class="full-width q-mt-md"
-            :label="$t('common.enterName')"
-            tabindex="2"
-            autofocus
+            :label="`${$t('common.enterName')} *`"
+            :hint="$t('common.requiredField')"
             :rules="[() => !!formData.name || $t('common.requiredField')]"
-            @keyup.enter="submit"
+            v-model="formData.name"
+            tabindex="2"
+            outlined
+            class="full-width"
+            enterkeyhint="done"
           />
           <div class="flex full-width flex-start">
             <p class="full-width text-left q-mb-sm">{{ $t('category.selectColor') }}</p>
@@ -111,7 +111,7 @@ const { closeDialog, openDialog } = useDialog()
 const { showSuccess, showError } = useHelpers()
 const { sklads } = useSklads()
 const $q = useQuasar()
-const { t } = useI18n()
+const { t: $t } = useI18n()
 
 const route = useRoute()
 
@@ -176,9 +176,9 @@ async function createToDB() {
     }
   })
   if (!createError.value) {
-    showSuccess(t('warehouse.requestSuccess'))
+    showSuccess($t('warehouse.requestSuccess'))
   } else {
-    showError(t('common.unknownError') + '. ' + t('common.serverError'))
+    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
   }
 }
 
@@ -192,9 +192,9 @@ async function updateFromDB() {
     }
   })
   if (!updateError.value) {
-    showSuccess(t('warehouse.requestSuccess'))
+    showSuccess($t('warehouse.requestSuccess'))
   } else {
-    showError(t('common.unknownError') + '. ' + t('common.serverError'))
+    showError($t('common.unknownError') + '. ' + $t('common.serverError'))
   }
 }
 
@@ -207,7 +207,7 @@ async function save() {
         await createToDB()
       }
     } catch (error) {
-      showError(t('common.unknownError') + '. ' + t('common.serverError'))
+      showError($t('common.unknownError') + '. ' + $t('common.serverError'))
     } finally {
       await fetchCategories({ sklad: skladId.value })
       close()
@@ -217,30 +217,30 @@ async function save() {
 
 function remove() {
   $q.dialog({
-    title: t('category.deleteCategory'),
-    message: t('category.confirmDeleteCategory'),
+    title: $t('category.deleteCategory'),
+    message: $t('category.confirmDeleteCategory'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: t('category.delete'),
+      label: $t('category.delete'),
       push: true
     },
     cancel: {
       color: 'white',
       textColor: 'black',
-      label: t('common.cancel'),
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(async () => {
     await deleteCategory({ id: selectedCategory.value.id })
     if (!deleteCategoryError.value) {
       await fetchCategories({ sklad: skladId.value })
-      showSuccess(t('category.categorySuccessfullyDeleted'))
+      showSuccess($t('category.categorySuccessfullyDeleted'))
       close()
       // NOTE: add to history
     } else {
-      showError(t('common.error') + '. ' + t('common.tryLater'))
+      showError($t('common.error') + '. ' + $t('common.tryLater'))
     }
   })
 }

@@ -7,7 +7,7 @@
             {{ $t('category.pageDescription') }}
           </q-card-section>
           <q-card-section class="q-pt-none text-primary">
-            <p class="text-caption">
+            <p class="text-warning">
               {{ $t('category.deleteHint') }}
             </p>
           </q-card-section>
@@ -80,7 +80,7 @@
       </h6>
       <div class="flex column items-center q-mt-md">
         <q-btn
-          v-permissions="[CAN_ADD_CATEGORY]"
+          v-permissions="{ permissions: [CAN_ADD_CATEGORY] }"
           color="primary"
           push
           :loading="categoriesLoading"
@@ -105,9 +105,8 @@ import PageTitle from 'src/components/PageTitle.vue'
 import useDialog from 'src/modules/useDialog'
 import { MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
 import useCategories from 'src/modules/useCategories'
-import { useI18n } from 'vue-i18n'
+import { CAN_ADD_CATEGORY } from 'src/permissions'
 
-const { t: $t } = useI18n()
 const { categories, categoriesLoading, fetchCategories } = useCategories()
 const { params } = useRoute()
 const { openDialog } = useDialog()

@@ -17,9 +17,11 @@
           <q-input
             v-model="formData.name"
             outlined
-            :label="$t('common.enterName')"
+            :label="`${$t('common.enterName')} *`"
+            :hint="$t('common.requiredField')"
+            :rules="[() => !!formData.name || $t('common.requiredField')]"
             class="full-width"
-            autofocus
+            tabindex="1"
             enterkeyhint="done"
           />
           <div class="flex full-width flex-start">

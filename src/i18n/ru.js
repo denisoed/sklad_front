@@ -190,6 +190,7 @@ export default ({
     warehouseActivity: 'Активность на складе',
     warehouseSettings: 'Настройки склада',
     warehouseCosts: 'Траты по складу',
+    selectColor: 'Выберите цвет для визуального отличия',
   },
 
   // Category additions
@@ -198,6 +199,7 @@ export default ({
     productCategories: 'Категории товаров',
     create: 'Создать категорию',
     update: 'Обновить категорию',
+    selectWarehouse: 'Выберите склад для категории',
     selectColor: 'Выберите цвет для визуального отличия',
     notFound: 'Категории не найдены!',
     helpText: 'Категории помогут разделять <br> товары по группам',
