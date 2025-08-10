@@ -236,6 +236,8 @@ export default ({
     },
     warehouseName: 'Название склада',
     minStock: 'Остатки',
+    warehouseColor: 'Цвет склада',
+    deleteWarehouse: 'Удалить склад',
     minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
     sizesConfigurations: 'Конфигурации размеров',
     employee: {
@@ -315,7 +317,6 @@ export default ({
     earnPerYear: 'заработать за год',
     earnedPerYear: 'заработано за год',
     createWarehouse: 'Создать склад',
-    deleteWarehouse: 'Удалить склад',
     notifyLowStock: 'Оповещать о низких остатках',
     returnToMain: 'Вернуться на главную',
     duplicateProduct: 'Дублировать товар',
@@ -603,6 +604,13 @@ export default ({
     goodsWholesaleValue: 'Сумма товаров по оптовой цене',
     sizesReturned: 'Размеры возвращены!',
     returnError: 'Не удалось вернуть. Попробуйте позже.',
+    for: 'за',
+    day: 'день',
+    week: 'неделю',
+    month: 'месяц',
+    year: 'год',
+    earned: 'заработано',
+    sold: 'продано',
   },
 
   // Bucket additions
@@ -667,6 +675,7 @@ export default ({
 
   // Feedback additions
   feedback: {
+    title: 'Отзыв',
     howEasyToUse: 'Насколько легко пользоваться складом?',
     unknownError: 'Неизвестная ошибка. Попробуйте позже.',
     feedbackSent: 'Ваш отзыв успешно отправлен!',

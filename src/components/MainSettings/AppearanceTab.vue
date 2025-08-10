@@ -1,6 +1,6 @@
 <template>
   <div class="appearance-tab flex column q-gap-md">
-    <Dropdown :title="$t('mainSettings.appearanceTab.accentColors.title')">
+    <TheDropdown :title="$t('mainSettings.appearanceTab.accentColors.title')">
       <template #icon>
         <q-icon name="mdi-palette" size="sm" class="q-mr-sm" />
       </template>
@@ -32,52 +32,35 @@
           </div>
         </div>
       </template>
-    </Dropdown>
+    </TheDropdown>
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   onMounted
 } from 'vue'
 import { LocalStorage } from 'quasar'
-import Dropdown from 'src/components/Dropdown/index.vue'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import useTheme from 'src/modules/useTheme'
 import { ACCENT_COLORS, ACCENT_COLOR } from 'src/config'
-import { useI18n } from 'vue-i18n'
 
-export default defineComponent({
-  name: 'AppearanceTab',
-  components: {
-    Dropdown
-  },
-  setup() {
-    const { t: $t } = useI18n({ useScope: 'global' })
-    const { setAccentColor } = useTheme()
-    
-    const selectedColor = ref(ACCENT_COLORS[0].value)
+const { setAccentColor } = useTheme()
 
-    function selectColor(color) {
-      selectedColor.value = color.value
-      setAccentColor(color.value, color.rgb)
-      LocalStorage.set(ACCENT_COLOR, { value: color.value, rgb: color.rgb })
-    }
+const selectedColor = ref(ACCENT_COLORS[0].value)
 
-    onMounted(() => {
-      const savedColor = LocalStorage.getItem(ACCENT_COLOR)
-      if (savedColor) {
-        selectedColor.value = savedColor.value
-        setAccentColor(savedColor.value, savedColor.rgb)
-      }
-    })
+function selectColor(color) {
+  selectedColor.value = color.value
+  setAccentColor(color.value, color.rgb)
+  LocalStorage.set(ACCENT_COLOR, { value: color.value, rgb: color.rgb })
+}
 
-    return {
-      selectedColor,
-      selectColor,
-      ACCENT_COLORS
-    }
+onMounted(() => {
+  const savedColor = LocalStorage.getItem(ACCENT_COLOR)
+  if (savedColor) {
+    selectedColor.value = savedColor.value
+    setAccentColor(savedColor.value, savedColor.rgb)
   }
 })
 </script>

@@ -9,9 +9,7 @@
         class="q-mr-md"
         :link="link"
       />
-      <h1 class="page-title_title text-h5 text-weight-bold q-ma-none">
-        {{ displayTitle }}
-      </h1>
+      <h6 v-html="title || $t('common.title')" class="text-h6 q-my-none q-mr-sm" />
       <slot name="custom" />
       <div v-if="hasSlot" class="q-ml-auto">
         <q-btn
@@ -54,14 +52,13 @@
   </q-pull-to-refresh>
 </template>
 
-<script>
+<script setup>
 import {
   computed,
-  defineComponent,
+  useSlots,
   ref
 } from 'vue'
 import BtnBack from 'src/components/BtnBack.vue'
-import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'PageTitle'
@@ -82,28 +79,12 @@ const props = defineProps({
   },
 })
 
-const { t: $t } = useI18n()
+const slots = useSlots()
 
-const displayTitle = computed(() => props.title || $t('common.title'))
+const dialog = ref(false)
+const hasSlot = computed(() => !!slots['default'])
 
-export default defineComponent({
-  name: 'PageTitle',
-  components: {
-    BtnBack
-  },
-  setup(props, { slots }) {
-    const dialog = ref(false)
-    const hasSlot = computed(() => !!slots['default'])
-
-    function refresh() {
-      window.location.reload()
-    }
-
-    return {
-      dialog,
-      hasSlot,
-      refresh
-    }
-  }
-})
+function refresh() {
+  window.location.reload()
+}
 </script>

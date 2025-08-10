@@ -45,49 +45,27 @@
   </q-dialog>
 </template>
 
-<script>
-import {
-  defineComponent,
-  ref,
-} from 'vue'
-import { useI18n } from 'vue-i18n'
-import { usePwa } from 'src/composables/usePwa'
-import DialogWrapper from 'src/components/Dialogs/DialogWrapper.vue'
-
+<script setup>
 defineOptions({
   name: 'InstallPwaDialog'
 })
 
-const { t: $t } = useI18n()
-const { isInstallPromptAvailable } = usePwa()
-
-export default defineComponent({
-  name: 'InstallPwaDialog',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    },
+const props = defineProps({
+  opened: {
+    type: Boolean,
+    default: false
   },
-  emits: ['on-close', 'on-install'],
-  setup(props, { emit }) {
-    const { t: $t } = useI18n()
-    
-    function close() {
-      emit('on-close')
-    }
-    
-    function install() {
-      emit('on-install')
-    }
-
-    return {
-      $t,
-      close,
-      install
-    }
-  }
 })
+
+const emit = defineEmits(['on-close', 'on-install'])
+
+function close() {
+  emit('on-close')
+}
+
+function install() {
+  emit('on-install')
+}
 </script>
 
 <style lang="scss" scoped>

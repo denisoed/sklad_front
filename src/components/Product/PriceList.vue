@@ -1,5 +1,5 @@
 <template>
-  <Dropdown :title="$t('product.pricesForProduct')" outline opened>
+  <TheDropdown :title="$t('product.pricesForProduct')" outline opened>
     <template #icon>
       <q-icon name="mdi-cash" size="sm" class="q-mr-sm" />
     </template>
@@ -53,7 +53,7 @@
         </div>
       </div>
     </template>
-  </Dropdown>
+  </TheDropdown>
 </template>
 
 <script setup>
@@ -64,9 +64,8 @@ import {
 } from 'vue'
 import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
-import Dropdown from 'src/components/Dropdown'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
-import { useI18n } from 'vue-i18n'
 
 const DEFAULT_PRICE = 'DEFAULT_PRICE';
 const OTHER_PRICE = 'OTHER_PRICE';
@@ -87,7 +86,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['on-change'])
-const { t: $t } = useI18n()
 
 const selected = ref(DEFAULT_PRICE);
 const formData = reactive({

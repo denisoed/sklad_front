@@ -1,6 +1,6 @@
 <template>
   <div class="sizes-tab flex column q-gap-md">
-    <Dropdown :title="$t('sizes.configureSizes')" opened>
+    <TheDropdown :title="$t('sizes.configureSizes')" opened>
       <template #icon>
         <q-icon name="mdi-cog" size="sm" class="q-mr-sm" />
       </template>
@@ -53,7 +53,7 @@
           </div>
         </div>
       </template>
-    </Dropdown>
+    </TheDropdown>
 
     <CrudSizesModal
       :item="selectedSizes"
@@ -69,17 +69,14 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   onBeforeMount,
-  computed
 } from 'vue'
-import { useI18n } from 'vue-i18n'
 import CrudSizesModal from 'src/components/MainSettings/Sizes/CrudSizesModal.vue'
 import SizeItem from 'src/components/MainSettings/Sizes/SizeItem.vue'
-import Dropdown from 'src/components/Dropdown/index.vue'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import useSizes from 'src/modules/useSizes'
 import useProfile from 'src/modules/useProfile'
 import { CREATE_SIZES, UPDATE_SIZES } from 'src/graphql/sizes'
@@ -88,54 +85,28 @@ defineOptions({
   name: 'SizesTab'
 })
 
-const { t: $t } = useI18n()
+const selectedSizes = ref(null)
+const openedCrudSizesModal = ref(false)
 
-export default defineComponent({
-  name: 'SizesTab',
-  components: {
-    SizeItem,
-    CrudSizesModal,
-    Dropdown,
-  },
-  setup() {
-    const selectedSizes = ref(null)
-    const openedCrudSizesModal = ref(false)
+const { sizes, fetchSizes, removeSizes, loading } = useSizes()
+const { profile } = useProfile()
 
-    const { sizes, fetchSizes, removeSizes, loading } = useSizes()
-    const { profile } = useProfile()
+function onClose() {
+  selectedSizes.value = null
+  openedCrudSizesModal.value = false
+}
 
-    function onClose() {
-      selectedSizes.value = null
-      openedCrudSizesModal.value = false
-    }
+function onEdit(item) {
+  selectedSizes.value = item 
+  openedCrudSizesModal.value = true
+}
 
-    function onEdit(item) {
-      selectedSizes.value = item 
-      openedCrudSizesModal.value = true
-    }
+function onFinish() {
+  fetchSizes()
+}
 
-    function onFinish() {
-      fetchSizes()
-    }
-
-    onBeforeMount(() => {
-      fetchSizes()
-    })
-
-    return {
-      openedCrudSizesModal,
-      selectedSizes,
-      sizes,
-      profile,
-      removeSizes,
-      loading,
-      onFinish,
-      onEdit,
-      onClose,
-      CREATE_SIZES,
-      UPDATE_SIZES,
-    }
-  }
+onBeforeMount(() => {
+  fetchSizes()
 })
 </script>
 

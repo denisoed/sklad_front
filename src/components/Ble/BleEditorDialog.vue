@@ -35,7 +35,7 @@
                 (val) => !!val || $t('common.requiredField'),
               ]"
             />
-            <Dropdown
+            <TheDropdown
               :title="$t('printer.additionalSettings')"
               opened
             >
@@ -55,7 +55,7 @@
                 class="full-width"
                 enterkeyhint="done"
               />
-            </Dropdown>
+            </TheDropdown>
           </div>
           <q-separator class="full-width q-my-md" />
           <div class="flex justify-between no-wrap q-gap-md full-width">
@@ -81,69 +81,56 @@
   </q-dialog>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   reactive,
   watch,
-  toRefs,
   computed
 } from 'vue'
 import { LocalStorage } from 'quasar'
-import { useI18n } from 'vue-i18n'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 
-export default defineComponent({
-  name: 'BleEditorDialog',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    title: {
-      type: String,
-      default: null
-    },
+const emit = defineEmits(['on-close', 'on-save'])
+
+const props = defineProps({
+  opened: {
+    type: Boolean,
+    default: false
   },
-  emits: ['on-close', 'on-save'],
-  setup() {
-    const { t: $t } = useI18n()
-    const data = reactive({
-      name: null,
-      address: null,
-      height: null,
-      width: null,
-      dpi: null,
-      offset: null
-    })
+  title: {
+    type: String,
+    default: null
+  },
+})
 
-    const notValid = computed(() => {
-      return !formData.dpi || !formData.width
-    })
+const data = reactive({
+  name: null,
+  address: null,
+  height: null,
+  width: null,
+  dpi: null,
+  offset: null
+})
 
-    function close() {
-      emit('on-close')
-    }
-    
-    function save() {
-      if (!notValid.value) {
-        close()
-        emit('on-save', formData)
-      }
-    }
+const notValid = computed(() => {
+  return !formData.dpi || !formData.width
+})
 
-    watch(opened, () => {
-      if (opened.value) {
-        const savedDevice = LocalStorage.getItem('sklad-ble-device')
-        Object.assign(formData, savedDevice)
-      }
-    })
+function close() {
+  emit('on-close')
+}
 
-    return {
-      close,
-      save,
-      formData,
-      notValid,
-    }
+function save() {
+  if (!notValid.value) {
+    close()
+    emit('on-save', formData)
+  }
+}
+
+watch(opened, () => {
+  if (opened.value) {
+    const savedDevice = LocalStorage.getItem('sklad-ble-device')
+    Object.assign(formData, savedDevice)
   }
 })
 </script>

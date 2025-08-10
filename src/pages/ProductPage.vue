@@ -105,17 +105,19 @@
 
             <!-- Sklads -->
             <TheSelector
-              v-model="cloneData.sklad"
+              v-model="product.sklad"
               :title-postfix="$t('common.warehouse').toLowerCase()"
               :options="skladsOptions"
               @on-create-new="onCreateNewSklad"
               outlined
-              class="full-width"
+              class="q-mb-md"
               :label="$t('common.warehouse') + ' *'"
               :hint="$t('common.requiredField')"
               :rules="[val => val?.length || $t('common.requiredField')]"
               tabindex="1"
               clearable
+              emit-value
+              map-options
             />
 
             <!-- Categories -->
@@ -138,7 +140,7 @@
               :image="product.image"
               class="q-mb-md"
               tabindex="3"
-              hint="Обязательное поле"
+              :hint="$t('common.requiredField')"
               :rules="[val => val?.length || $t('common.requiredField')]"
               @on-change="product.image = $event"
               @clear="product.image = null"
@@ -177,7 +179,7 @@
               data-scroller="origPrice"
               v-model="product.origPrice"
               :label="$t('product.wholesalePriceRequired')"
-              hint="Обязательное поле"
+              :hint="$t('common.requiredField')"
               clear
               :rules="[val => val?.length || $t('common.requiredField')]"
               tabindex="5"
@@ -408,7 +410,6 @@ import useDraft from 'src/modules/useDraft'
 import useCategories from 'src/modules/useCategories'
 import useEventBus from 'src/modules/useEventBus'
 import { useI18n } from 'vue-i18n'
-import { ref, watch, nextTick, computed, onMounted } from 'vue'
 
 const DEFAULT_DATA = {
   id: null,
@@ -439,7 +440,7 @@ const props = defineProps({
 })
 
 const TODAY = Date.now()
-const { t: $t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const $q = useQuasar()
 const { params, query } = useRoute()
 const { replace, push } = useRouter()
@@ -624,19 +625,19 @@ function clearDraft() {
 }
 
 async function saveCost(sum, isAdd) {
-  const description = isAdd ? $t('product.sizesAddedToProduct', { name: product.name }) : $t('product.sizesRemovedFromProduct', { name: product.name })
+  const description = isAdd ? t('product.sizesAddedToProduct', { name: product.name }) : t('product.sizesRemovedFromProduct', { name: product.name })
   await createCost(description, sum)
   if (!errorCost.value) {
     history(
       isAdd ? HISTORY_UPDATE : HISTORY_DELETE,
-      $t('product.sizesOperationWithSum', { 
-        operation: isAdd ? $t('product.sizesAdded') : $t('product.sizesRemoved'),
+      t('product.sizesOperationWithSum', { 
+        operation: isAdd ? t('product.sizesAdded') : t('product.sizesRemoved'),
         name: product.name,
         sum 
       })
     )
   } else {
-    showError($t('common.error') + '. ' + $t('common.tryLater'))
+    showError(t('common.error') + '. ' + t('common.tryLater'))
   }
 }
 
@@ -670,7 +671,7 @@ async function create() {
   const { uploaded, hasError } = await handleImageUpload()
   
   if (hasError) {
-    showError($t('errors.photoUploadError'))
+    showError(t('errors.photoUploadError'))
     return
   }
 
@@ -678,7 +679,7 @@ async function create() {
     const data = prepareProductData(uploaded, isDuplicating.value, props.isEdit)
     const newProduct = await createNewProduct(data)
     if (!createProductError.value) {
-      showSuccess($t('product.createdSuccessfully'))
+      showSuccess(t('product.createdSuccessfully'))
       const productId = newProduct?.id
       clearDraft()
       if (productId) {
@@ -686,12 +687,12 @@ async function create() {
       }
     } else {
       await cleanupImageOnError(uploaded)
-      showError($t('errors.productCreateError'))
+      showError(t('errors.productCreateError'))
     }
   } catch (error) {
     console.error(error)
     await cleanupImageOnError(uploaded)
-    showError($t('errors.productCreateError'))
+    showError(t('errors.productCreateError'))
   }
 }
 
@@ -699,7 +700,7 @@ async function update() {
   const { uploaded, hasError } = await handleImageUpload()
   
   if (hasError) {
-    showError($t('errors.photoUploadError'))
+    showError(t('errors.photoUploadError'))
     return
   }
 
@@ -712,20 +713,19 @@ async function update() {
         removeImage({ id: product.imageId })
         product.imageId = null
       }
-      // Создаем глубокую копию для корректного отслеживания изменений
       Object.assign(copiedProductForDirty, {
         ...product,
         prices: [...(product.prices || [])]
       })
-      showSuccess($t('product.updateSuccess'))
+      showSuccess(t('product.updateSuccess'))
     } else {
       await cleanupImageOnError(uploaded)
-      showError($t('errors.productUpdateError'))
+      showError(t('errors.productUpdateError'))
     }
   } catch (error) {
     console.log(error)
     await cleanupImageOnError(uploaded)
-    showError($t('errors.productUpdateError'))
+    showError(t('errors.productUpdateError'))
   }
 }
 
@@ -750,19 +750,19 @@ function duplicateProduct() {
 
 function cancel(type) {
   $q.dialog({
-    title: type === 'remove' ? $t('product.deleteConfirmTitle') : $t('product.resetConfirmTitle'),
-    message: type === 'remove' ? $t('product.deleteConfirmMessage') : $t('product.resetConfirmMessage'),
+    title: type === 'remove' ? t('product.deleteConfirmTitle') : t('product.resetConfirmTitle'),
+    message: type === 'remove' ? t('product.deleteConfirmMessage') : t('product.resetConfirmMessage'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: type === 'remove' ? $t('common.delete') : $t('product.reset'),
+      label: type === 'remove' ? t('common.delete') : t('product.reset'),
       push: true
     },
     cancel: {
       color: 'white',
       textColor: 'black', 
-      label: $t('common.cancel'),
+      label: t('common.cancel'),
       push: true
     }
   }).onOk(async () => {
@@ -770,7 +770,7 @@ function cancel(type) {
       resetAll()
     } else {
       await removeProduct(params?.productId, editProduct.value?.product)
-      showSuccess($t('product.deleteSuccess'))
+      showSuccess(t('product.deleteSuccess'))
       push('/products')
     }
   })
@@ -833,19 +833,19 @@ const isDiscountToday = computed(() => {
 const isDirty = computed(() => isEqual(product, copiedProductForDirty))
 const pageTitle = computed(() => {
   if (isDuplicating.value) {
-    return $t('product.duplicating')
+    return t('product.duplicating')
   } else if (props.isEdit) {
-    return $t('product.editing')
+    return t('product.editing')
   }
-  return $t('product.creating')
+  return t('product.creating')
 })
 const submitBtnLabel = computed(() => {
   if (isDuplicating.value) {
-    return $t('product.duplicate')
+    return t('product.duplicate')
   } else if (props.isEdit) {
-    return $t('common.update')
+    return t('common.update')
   }
-  return $t('common.save')
+  return t('common.save')
 })
 
 async function hanleProductCategotyBySklad(skladId) {
@@ -869,7 +869,6 @@ watch(editProduct, (newValue) => {
       image: newValue.product.image?.url,
       imageId: newValue.product.image?.id
     })
-    // Создаем глубокую копию для корректного отслеживания изменений
     Object.assign(copiedProductForDirty, {
       ...product,
       prices: [...(product.prices || [])]

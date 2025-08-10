@@ -73,12 +73,11 @@ import {
 import { useRouter } from 'vue-router'
 import useSklads from 'src/modules/useSklads'
 import useBucket from 'src/modules/useBucket'
-import SkladsStatistics from 'src/components/Sklads/Statistics.vue'
+import SkladsStatistics from 'src/components/Sklads/SkladsStatistics.vue'
 import BucketCardHome from 'src/components/BucketCardHome.vue'
 import Draggable from 'vuedraggable'
 import useDialog from 'src/modules/useDialog'
 import { MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
-import { useI18n } from 'vue-i18n'
 
 const { push } = useRouter()
 
@@ -86,7 +85,6 @@ const { sklads } = useSklads()
 const { bucketProductsCount, loadBucketProducts } = useBucket()
 const loadingSklads = ref(true)
 const { openDialog } = useDialog()
-const { $t } = useI18n()
 
 const skladsIDs = computed(
   () => sklads.value.map(s => s.id) || []

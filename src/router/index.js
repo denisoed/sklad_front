@@ -8,8 +8,6 @@ import {
 } from 'vue-router'
 import { HOME_ROUTE } from 'src/router/routes'
 import routes from './routes'
-import useHelpers from 'src/modules/useHelpers';
-import { useI18n } from 'vue-i18n'
 
 /*
  * If not building with SSR mode, you can
@@ -22,8 +20,6 @@ import { useI18n } from 'vue-i18n'
 
 export default route(function () {
   const profileStore = useProfileStore()
-  const { showError } = useHelpers()
-  const { t: $t } = useI18n()
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory)
@@ -44,7 +40,6 @@ export default route(function () {
       const skladId = to.params?.skladId;
       const userPermissions = profileStore.getProfile?.permissions?.find(p => p?.sklad?.id === skladId)?.list || [];
       if (pagePermissions.every(pp => !userPermissions?.includes(pp)) && to.path !== HOME_ROUTE) {
-        showError($t('common.noAccess'))
         next({ path: HOME_ROUTE })
       } else {
         next()

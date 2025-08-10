@@ -1,5 +1,5 @@
 <template>
-  <Dropdown :title="$t('product.additionalSettings')" outline>
+  <TheDropdown :title="$t('product.additionalSettings')" outline>
     <template #body>
       <q-input
         v-model="comment"
@@ -18,7 +18,7 @@
         @update:model-value="$emit('update:discount-percent', $event)"
       />
     </template>
-  </Dropdown>
+  </TheDropdown>
 </template>
 
 <script setup>
@@ -30,7 +30,7 @@ import {
 import { useI18n } from 'vue-i18n'
 import InputPrice from 'src/components/InputPrice'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
-import Dropdown from 'src/components/Dropdown/index.vue'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 
 defineOptions({
   name: 'AdditionalSettings'

@@ -21,7 +21,7 @@ export const MAIN_ROUTES = [
   { path: MAIN_SETTINGS_ROUTE, component: () => import('pages/MainSettings.vue') },
   { path: BUCKET_ROUTE, component: () => import('pages/BucketPage.vue') },
   { path: PRODUCTS_ROUTE, component: () => import('pages/Products.vue') },
-  { path: STATISTIC_ROUTE, component: () => import('pages/Statistic.vue') },
+  { path: STATISTIC_ROUTE, component: () => import('src/pages/StatisticPage.vue') },
   { path: '/product/:productId', component: () => import('pages/ProductPage.vue') },
   {
     path: '/create-product',
@@ -65,7 +65,7 @@ export const SKLAD_ROUTES = [
   },
   {
     path: '/sklad/:skladId/settings',
-    component: () => import('pages/Settings.vue'),
+    component: () => import('src/pages/SettingsPage.vue'),
     meta: {
       permissions: [READ_SETTINGS]
     }
@@ -76,7 +76,7 @@ export const SKLAD_ROUTES = [
   },
   {
     path: '/sklad/:skladId/statistic',
-    component: () => import('pages/Statistic.vue'),
+    component: () => import('src/pages/StatisticPage.vue'),
     meta: {
       permissions: [READ_STATISTIC]
     }
