@@ -652,4 +652,13 @@ export default ({
     canAddCategory: 'Can add categories',
     canUpdateCategory: 'Can update categories',
   },
+  date: {
+    justNow: 'just now',
+    ago: 'ago',
+    min: { one: 'minute', few: 'minutes', many: 'minutes' },
+    hour: { one: 'hour', few: 'hours', many: 'hours' },
+    day: { one: 'day', few: 'days', many: 'days' },
+    week: { one: 'week', few: 'weeks', many: 'weeks' },
+    month: { one: 'month', few: 'months', many: 'months' },
+  },
 })

@@ -652,4 +652,13 @@ export default ({
     canAddCategory: 'Категория кошуу',
     canUpdateCategory: 'Категория жаңыртуу',
   },
+  date: {
+    justNow: 'азыр эле',
+    ago: 'мурун',
+    min: { one: 'мүнөт', few: 'мүнөт', many: 'мүнөт' },
+    hour: { one: 'саат', few: 'саат', many: 'саат' },
+    day: { one: 'күн', few: 'күн', many: 'күн' },
+    week: { one: 'жума', few: 'жума', many: 'жума' },
+    month: { one: 'ай', few: 'ай', many: 'ай' },
+  },
 })

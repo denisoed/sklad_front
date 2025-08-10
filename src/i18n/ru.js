@@ -652,4 +652,13 @@ export default ({
     canAddCategory :'Добавлять категории',
     canUpdateCategory :'Обновлять категории',
   },
+  date: {
+    justNow: 'только что',
+    ago: 'назад',
+    min: { one: 'минуту', few: 'минуты', many: 'минут' },
+    hour: { one: 'час', few: 'часа', many: 'часов' },
+    day: { one: 'день', few: 'дня', many: 'дней' },
+    week: { one: 'неделю', few: 'недели', many: 'недель' },
+    month: { one: 'месяц', few: 'месяца', many: 'месяцев' },
+  },
 })
