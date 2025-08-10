@@ -198,6 +198,7 @@ export default defineComponent({
         })
       } catch (error) {
         console.error($t('filter.sizesLoadingError'), error)
+        availableSizes.value = []
       } finally {
         loadingAvailableSizes.value = false
       }

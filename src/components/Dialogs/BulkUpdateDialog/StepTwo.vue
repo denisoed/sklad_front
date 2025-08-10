@@ -96,13 +96,10 @@ import TheSelector from 'src/components/UI/TheSelector.vue';
 import InputPrice from 'src/components/InputPrice.vue';
 import { MANAGE_CATEGORY_DIALOG, MANAGE_SKLAD_DIALOG } from 'src/config/dialogs'
 import useCategories from 'src/modules/useCategories'
-import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'BulkUpdateStepTwo'
 })
-
-const { t: $t } = useI18n()
 
 const emit = defineEmits(['on-prev', 'on-submit'])
 

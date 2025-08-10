@@ -43,7 +43,6 @@ import StepTwo from 'src/components/Dialogs/BulkRemoveDialog/StepTwo.vue';
 import SwipeToClose from 'src/components/SwipeToClose.vue';
 import useHelpers from 'src/modules/useHelpers'
 import useProduct from 'src/modules/useProduct'
-import { useBulkStore } from 'src/stores/bulk'
 
 defineOptions({
   name: 'BulkRemoveDialog',
@@ -59,11 +58,11 @@ const props = defineProps({
 const emit = defineEmits(['on-finish'])
 
 const { t: $t } = useI18n()
-const { updateProducts, removeProducts } = useBulkStore()
+const { removeProduct } = useProduct()
 const { showSuccess, showError } = useHelpers()
 
 const step = ref(1)
-const isLoading = ref(false)
+const loading = ref(false)
 
 const title = computed(() => step.value === 1 ? $t('bulk.selectedProductsForDeletion') : $t('bulk.deletion'))
 

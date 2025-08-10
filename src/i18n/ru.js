@@ -45,7 +45,7 @@ export default ({
     category: 'Категория',
     price: 'Цена',
     discount: 'Скидка',
-    quantity: 'Количество',
+    quantity: 'Кол-во',
     sizes: 'Размеры',
     payment: 'Оплата',
     cash: 'Наличными',
@@ -332,6 +332,7 @@ export default ({
     warehousesLabel: 'Склады',
     categoriesLabel: 'Категории',
     productsLabel: 'Товары',
+    countUnitsForSize: 'Кол-во единиц для размера',
   },
 
   // Main settings
@@ -617,7 +618,10 @@ export default ({
     title: 'Отзыв',
     howEasyToUse: 'Насколько легко пользоваться складом?',
     unknownError: 'Неизвестная ошибка. Попробуйте позже.',
-    feedbackSent: 'Ваш отзыв успешно отправлен!',
+    feedbackSent: 'Ваш отзыв отправлен. Спасибо!',
+    addComment: 'Добавить комментарий',
+    back: 'Назад',
+    send: 'Отправить',
   },
 
   bluetooth: {
@@ -635,6 +639,8 @@ export default ({
     promotionalPriceRequired: 'Укажите акционную цену',
     promotionalPriceLowerThanRetail: 'Акционная цена должна быть меньше Роз. цены',
     emailInvalid: 'Email не валидный',
+    fileSizeLessThan: 'Файл должен быть меньше {size} КБ.',
+    valueCannotBeMore: 'Значение не может быть больше {value}',
   },
 
   // Bulk

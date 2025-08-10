@@ -66,7 +66,7 @@ const {
 const { showSuccess, showError } = useHelpers()
 
 const step = ref(1)
-const isLoading = ref(false)
+const loading = ref(false)
 
 const title = computed(() => step.value === 1 ? $t('bulk.selectedProductsForUpdate') : $t('bulk.editing'))
 
@@ -86,7 +86,7 @@ function onHide() {
 }
 
 async function submit(data) {
-  isLoading.value = true
+  loading.value = true
   try {
     const ids = bulkStore.getBulkProducts.map(p => p.id)
     for (const id of ids) {
@@ -99,7 +99,7 @@ async function submit(data) {
     showError($t('common.error') + ', ' + $t('common.tryLater'))
   } finally {
     onHide()
-    isLoading.value = false
+    loading.value = false
   }
 }
 </script>

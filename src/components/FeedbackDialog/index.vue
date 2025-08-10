@@ -17,7 +17,7 @@
       >
         <q-card class="full-width">
           <q-card-section class="flex no-wrap column row items-center no-wrap">
-            <div class="feedback_popup-content flex column items-center q-gap-md">
+            <div class="feedback_popup-content full-width flex column items-center q-gap-md">
               
               <template v-if="!selectedRating">
                 <div class="feedback_popup-header text-subtitle1 text-center">
@@ -45,7 +45,7 @@
 
               <div
                 v-else
-                class="feedback_popup-form flex column items-center q-gap-md"
+                class="feedback_popup-form full-width flex column items-center q-gap-md"
               >
                 <div class="feedback_popup-form_text flex items-center justify-between full-width text-subtitle1">
                   <span>{{ t('feedback.addComment') }}</span>

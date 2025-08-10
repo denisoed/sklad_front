@@ -14,6 +14,7 @@
           @mousedown="onMouseDown(s)"
           @touchstart="onMouseDown(s)"
           :outline="!s.selected"
+          @contextmenu.prevent
         >
           <q-badge
             v-if="s.count > 1"

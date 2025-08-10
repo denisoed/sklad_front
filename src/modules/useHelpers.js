@@ -25,7 +25,7 @@ const useHelpers = () => {
       icon: 'mdi-check',
       message,
       position: 'bottom',
-      timeout: 4000,
+      timeout: 4000000,
       progress: true,
       actions: [
         {
