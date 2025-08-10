@@ -178,7 +178,7 @@
             <InputPrice
               data-scroller="origPrice"
               v-model="product.origPrice"
-              :label="$t('product.wholesalePriceRequired')"
+              :label="`${$t('product.originalPricePerPiece')} *`"
               :hint="$t('common.requiredField')"
               clear
               :rules="[val => val?.length || $t('common.requiredField')]"

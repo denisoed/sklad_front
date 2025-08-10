@@ -29,12 +29,12 @@
         </div>
         <div class="card-product_info">
           <div v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: sklad?.id }" class="card-product_price">
-            <span>{{ $t('product.originalPrice') }}</span>
+            <span>{{ $t('product.originalPriceShort') }}</span>
             <p v-if="origPrice"><PriceFormatter :value="origPrice" /></p>
             <p v-else>n/a</p>
           </div>
           <div class="card-product_price">
-            <span>{{ $t('product.retailPrice') }}</span>
+            <span>{{ $t('product.retailPriceShort') }}</span>
             <div v-if="newPrice" class="flex">
               <p :class="{ 'with-discount': isDiscountToday && withDiscount }"><PriceFormatter :value="newPrice" /></p>
               <p v-if="isDiscountToday && withDiscount"><PriceFormatter :value="discountPrice" /></p>

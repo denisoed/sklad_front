@@ -70,16 +70,16 @@
             <div
               v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: props.row?.sklad?.id }"
               class="text-grey-6">
-              {{ $t('product.originalPrice') }}: <PriceFormatter :value="props.row.origPrice" />
+              {{ $t('product.originalPriceShort') }}: <PriceFormatter :value="props.row.origPrice" />
             </div>
             <div v-if="props.row.withDiscount" class="text-weight-bold text-red">
                <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
-                 {{ $t('product.retailPrice') }}: <PriceFormatter :value="props.row.newPrice" />
+                 {{ $t('product.retailPriceShort') }}: <PriceFormatter :value="props.row.newPrice" />
               </div>
                {{ $t('product.promotionPriceShort') }}: <PriceFormatter :value="props.row.discountPrice" />
             </div>
             <div v-else class="text-weight-bold">
-               {{ $t('product.retailPrice') }}: <PriceFormatter :value="props.row.newPrice" />
+               {{ $t('product.retailPriceShort') }}: <PriceFormatter :value="props.row.newPrice" />
             </div>
           </div>
         </q-td>

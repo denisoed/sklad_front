@@ -12,8 +12,8 @@
     <template #header="props">
       <q-tr :props="props">
         <q-th>{{ $t('common.name') }}</q-th>
-        <q-th v-permissions="[READ_ORIGINAL_PRICE]">{{ $t('product.originalPrice') }}</q-th>
-        <q-th>{{ $t('product.retailPrice') }}</q-th>
+        <q-th v-permissions="[READ_ORIGINAL_PRICE]">{{ $t('product.originalPriceShort') }}</q-th>
+        <q-th>{{ $t('product.retailPriceShort') }}</q-th>
         <q-th>{{ $t('common.discount') }}</q-th>
         <q-th>{{ $t('common.sizes') }}</q-th>
         <q-th>{{ $t('product.saleDate') }}</q-th>
