@@ -364,7 +364,6 @@ import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import useProduct from 'src/modules/useProduct'
 import useHelpers from 'src/modules/useHelpers'
 import useSklads from 'src/modules/useSklads'
-import useCosts from 'src/modules/useCosts'
 import FilterDates from 'src/components/FilterDates.vue'
 import InputPlusMinus from 'src/components/InputPlusMinus.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
@@ -460,10 +459,6 @@ const {
   createProductError,
   createProductLoading
 } = useProduct()
-const {
-  createCost,
-  errorCost
-} = useCosts()
 const { sklads } = useSklads()
 
 const modalCountToBucket = ref(false)
@@ -622,42 +617,6 @@ async function onAddSizesToBucket(item, payload) {
 function clearDraft() {
   clearDraftAction();
   clearDuplicateData();
-}
-
-async function saveCost(sum, isAdd) {
-  const description = isAdd ? t('product.sizesAddedToProduct', { name: product.name }) : t('product.sizesRemovedFromProduct', { name: product.name })
-  await createCost(description, sum)
-  if (!errorCost.value) {
-    history(
-      isAdd ? HISTORY_UPDATE : HISTORY_DELETE,
-      t('product.sizesOperationWithSum', { 
-        operation: isAdd ? t('product.sizesAdded') : t('product.sizesRemoved'),
-        name: product.name,
-        sum 
-      })
-    )
-  } else {
-    showError(t('common.error') + '. ' + t('common.tryLater'))
-  }
-}
-
-async function handleCost() {
-  const pL = product?.sizes?.length
-  const cL = copiedProductForDirty?.sizes?.length
-  const isAdd = product.countSizes ?
-    product.countSizes > copiedProductForDirty.countSizes :
-    (!cL || pL > cL)
-  if (isAdd) {
-    const sizesLength = pL - (cL || 0)
-    const sum = ((product.countSizes - copiedProductForDirty.countSizes) || sizesLength) * product.origPrice
-    if (sum > 0) {
-      saveCost(sum, true)
-    }
-  } else {
-    const sizesLength = cL - pL
-    const sum = 0 - (((copiedProductForDirty.countSizes - product.countSizes) || sizesLength) * product.origPrice)
-    saveCost(sum, false)
-  }
 }
 
 function getTypeSizeId() {

@@ -75,6 +75,8 @@ export default ({
     product: 'Товар',
     notifications: 'Уведомления',
     noNewNotifications: 'Новых уведомлений нет',
+    amount: 'Сумма',
+    total: 'Итог',
     // Errors and success messages
     success: 'Успешно',
     error: 'Ошибка',
@@ -95,27 +97,21 @@ export default ({
 
   // Costs additions
   costs: {
-    title: 'Расходы',
-    financialExpenses: 'Финансовые расходы',
-    author: 'Автор',
-    description: 'Описание',
-    amount: 'Сумма',
-    date: 'Дата',
+    title: 'Финансовые расходы',
     removeCost: 'Удалить расход',
     removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
     exampleDescription: 'Например: На рекламу',
     exampleAmount: 'Например: 250',
-    exampleDescription: 'Пример: Бензин для доставки',
+    exampleDescription: 'Пример: На рекламу',
     exampleAmount: 'Пример: 1500',
     financialExpenses: 'Финансовые расходы',
-    trackExpensesDescription: 'Раздел поможет отслеживать расходы',
     recordAllExpensesHint: 'Старайтесь записывать все расходы, чтобы итоговый финансовый отчёт был максимально достоверным.',
-    total: 'Итог',
     whereSpent: 'Куда потратили?',
     howMuchSpent: 'Сколько потратили?',
     historyEntry: 'Описание: {description}. Сумма: {sum}',
     saveSuccess: 'Расходы сохранена!',
     deleteSuccess: 'Расход успешно удалён!',
+    description: '<b>Финансовые расходы</b> - помогут отследить какое кол-во финансов было потрачено за выбранный промежуток времени.',
   },
   
   footer: {
@@ -275,19 +271,6 @@ export default ({
       return: 'Возврат',
     }
   },
-  // Costs
-  costs: {
-    title: 'Финансовые расходы',
-    description: 'помогут отследить какое кол-во финансов было потрачено за выбранный промежуток времени.',
-    automaticRecording: 'Расходы записываются автоматически при добавлении товара.',
-    whereSpent: 'Куда потратили?',
-    howMuchSpent: 'Сколько потратили?',
-    placeholder: 'Например: На рекламу',
-    saved: 'Расходы сохранена!',
-    deleted: 'Расход успешно удалён!',
-    errorSave: 'Произошла ошибка. Попробуйте позже.',
-    errorDelete: 'Произошла ошибка. Попробуйте позже.',
-  },
 
   pwa: {
     attention: 'Внимание!',
@@ -316,7 +299,6 @@ export default ({
     cashAndCard: 'Нал:',
     cardPayment: 'Карт:',
     sum: 'сом',
-    amount: 'Сумма',
     contactsCopied: 'Почта скопирована',
     telegramCopied: 'Telegram ID скопирован',
     logout: 'Выйти',
@@ -491,7 +473,6 @@ export default ({
     },
     goal: {
       yearGoal: 'Цель на год',
-      amount: 'Сумма',
       displayOnMainPage: 'Отображается на главной странице склада',
     },
   },

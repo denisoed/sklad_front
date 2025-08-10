@@ -3,10 +3,10 @@
     <div class="container">
       <PageTitle :title="$t('costs.financialExpenses')">
         <div>
-          <q-card-section class="q-pt-none text-primary">
-            {{ $t('costs.trackExpensesDescription') }}
+          <q-card-section class="q-pt-none">
+            <span v-html="$t('costs.description')" />
           </q-card-section>
-          <q-card-section class="q-pt-none text-grey-8">
+          <q-card-section class="q-pt-none text-grey">
             {{ $t('costs.recordAllExpensesHint') }}
           </q-card-section>
         </div>
@@ -45,7 +45,7 @@
         <template #bottom-row>
           <q-tr>
             <q-td class="text-left text-bold">
-              {{ $t('costs.total') }}
+              {{ $t('common.total') }}
             </q-td>
             <q-td class="text-left text-bold" />
             <q-td class="text-right text-bold">
@@ -127,49 +127,16 @@ import { computed, ref } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import useCosts from 'src/modules/useCosts'
 import useMoney from 'src/modules/useMoney'
-import useHistory from 'src/modules/useHistory'
 import { useCurrencyInput } from 'vue-currency-input'
 import TableComp from 'src/components/TableComp.vue'
 import PageTitle from 'src/components/PageTitle.vue'
-import { DISPLAY_FORMAT, HISTORY_CREATE } from 'src/config'
+import { DISPLAY_FORMAT } from 'src/config'
 import { CAN_ADD_COST } from 'src/permissions'
 import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'Costs'
 })
-
-const { t: $t } = useI18n()
-const $q = useQuasar()
-
-const columns = computed(() => [
-  { name: 'author', label: $t('costs.author'), field: 'author', sortable: true },
-  { name: 'description', label: $t('costs.description'), field: 'description', sortable: false },
-  { name: 'amount', label: $t('costs.amount'), field: 'amount', sortable: true },
-  { name: 'date', label: $t('costs.date'), field: 'date', sortable: true }
-])
-
-function confirmRemoveCost(cost) {
-  $q.dialog({
-    title: $t('costs.removeCost'),
-    message: $t('costs.removeConfirm'),
-    cancel: true,
-    persistent: true,
-    ok: {
-      color: 'deep-orange',
-      label: $t('common.delete'),
-      push: true
-    },
-    cancel: {
-      color: 'white',
-      textColor: 'black',
-      label: $t('common.cancel'),
-      push: true
-    }
-  }).onOk(() => {
-    // handle remove
-  })
-}
 
 const { showSuccess, showError } = useHelpers()
 const { formatPrice } = useMoney()
@@ -185,14 +152,45 @@ const {
   deleteError,
   deleteLoading
 } = useCosts()
-const { history } = useHistory()
+const { t: $t } = useI18n()
+const $q = useQuasar()
+
+const columns = computed(() => [
+  {
+    name: 'fullname',
+    label: $t('common.author'),
+    field: 'fullname',
+    align: 'left',
+  },
+  {
+    name: 'description',
+    label: $t('common.description'),
+    field: 'description',
+    align: 'left',
+  },
+  {
+    name: 'sum',
+    label: $t('common.amount'),
+    align: 'left',
+    field: 'sum',
+  },
+  {
+    name: 'created_at',
+    label: $t('common.date'),
+    field: 'created_at',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: '',
+    field: 'actions',
+    align: 'right',
+  },
+])
 
 const dialog = ref(false)
 const description = ref(null)
 const sum = ref(null)
-const pagination = {
-  rowsPerPage: -1
-}
 
 const { inputRef, numberValue } = useCurrencyInput({
   currency: 'USD',
@@ -211,10 +209,6 @@ async function save() {
   if (!errorCost.value) {
     dialog.value = false
     costsRefetch()
-    history(
-      HISTORY_CREATE,
-      $t('costs.historyEntry', { description: description.value, sum: sum.value })
-    )
     showSuccess($t('costs.saveSuccess'))
     description.value = null
     sum.value = null

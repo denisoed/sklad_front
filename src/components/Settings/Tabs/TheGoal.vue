@@ -8,7 +8,7 @@
       <template #body>
         <InputPrice
           :model-value="goalValue"
-          :label="$t('settings.goal.amount')"
+          :label="$t('common.amount')"
           :hint="$t('settings.goal.displayOnMainPage')"
           clear
           :rules="[val => val?.length || $t('common.requiredField')]"
