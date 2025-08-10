@@ -270,6 +270,17 @@ export default ({
     deleteTemplateConfirm: 'Бул шаблонду өчүргүңүз келээби?',
     templateDeleted: 'Шаблон ийгиликтүү өчүрүлдү!',
   },
+  printer: {
+    requiredSettingsTitle: 'Принтердин милдеттүү орнотуулары',
+    dpi: 'Дюймдагы чекиттердин саны (DPI)',
+    dpiHint: 'Принтердин документинде көрсөтүлөт',
+    width: 'Туурасы',
+    widthHint: 'Иштөө аянтынын туурасы мм менен',
+    height: 'Бийиктиги',
+    additionalSettings: 'Кошумча орнотуулар',
+    marginFromEdge: 'Кагаздын четинен четтөө мм менен',
+    marginHint: 'Кагаздын четинен четтөөнү тууралоо үчүн',
+  },
 
   bulk: {
     selectedProducts: 'Тандалган товарлар',
@@ -314,6 +325,8 @@ export default ({
     connecting: 'Авто туташуу...',
     printerConnection: 'Принтерге туташуу',
     changesSaved: 'Өзгөртүүлөр сакталды',
+    searching: 'Түзмөктөрдү издөө...',
+    notConnected: 'Туташкан түзмөк жок',
   },
 
   // Filter
@@ -378,6 +391,8 @@ export default ({
     description: 'колдонуучулар түзгөн окуялардын тизмесин камтыйт.',
     cannotDelete: 'Тарыхты өчүрүү мүмкүн эмес.',
     recordedForAll: 'Тарых ролго көз карандысыз жазылат.',
+    filterHintBefore: 'Баскыч',
+    filterHintAfter: 'тарыхты чыпкалоого жардам берет.',
     notifications: 'Эскертүүлөр',
     noNewNotifications: 'Жаңы эскертүүлөр жок',
   },
@@ -410,12 +425,24 @@ export default ({
       autoRefill: 'Авто толтуруу',
       lang: 'Тил',
       logout: 'Чыгуу',
+      subscription: {
+        title: 'Жазылуу',
+        activeUntil: 'активдүү чейин:',
+      },
+      wallet: {
+        title: 'Капчык',
+        topUp: 'Толуктоо',
+      },
       languages: {
         russian: 'Орусча',
         kyrgyz: 'Кыргызча',
       },
       user: {
         noNameSpecified: 'Аты көрсөтүлгөн жок',
+        fullnameTitle: 'Аты',
+        fullnamePlaceholder: 'Атыңызды киргизиңиз',
+        success: 'Маалымат ийгиликтүү жаңыртылды',
+        error: 'Маалыматты жаңыртуу мүмкүн болгон жок. Кийинчерээк аракет кылыңыз',
       },
     },
     sizesTab: {
@@ -441,6 +468,7 @@ export default ({
     required: 'Милдеттүү талаа',
     promotionalPriceRequired: 'Акциялык бааны көрсөтүңүз',
     promotionalPriceLowerThanRetail: 'Акциялык баа соода баасынан төмөн болушу керек',
+    emailInvalid: 'Email туура эмес',
   },
 
   // Price Label Editor

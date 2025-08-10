@@ -1,8 +1,8 @@
 <template>
   <div class="user-tab flex column q-gap-md">
     <!-- <div class="user-tab_subscr flex items-center justify-between q-pa-md">
-      <span class="text-bold text-white">Подписка</span>
-      <span class="text-white">активна до: <span class="text-bold">{{ subscrExpiredAt }}</span></span>
+      <span class="text-bold text-white">{{ $t('mainSettings.userTab.subscription.title') }}</span>
+      <span class="text-white">{{ $t('mainSettings.userTab.subscription.activeUntil') }} <span class="text-bold">{{ subscrExpiredAt }}</span></span>
     </div> -->
     <!-- Info -->
     <div class="user-tab_info block-bg flex column q-pa-md">
@@ -58,7 +58,7 @@
           </div>
           <div class="flex items-center justify-between q-gap-md">
             <q-toggle v-model="refillWallet" :label="$t('mainSettings.userTab.autoRefill')" dense />
-            <q-btn color="primary" push>Пополнить</q-btn>
+            <q-btn color="primary" push>{{ $t('mainSettings.userTab.wallet.topUp') }}</q-btn>
           </div>
         </div>
       </template>
@@ -100,9 +100,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   reactive,
   watch,
@@ -144,98 +143,64 @@ const LANGS = computed(() => [
     value: 'ru-RU',
     flag: RU
   },
-  // {
-  //   label: $t('mainSettings.userTab.languages.kyrgyz'),
-  //   value: 'kg-KG',
-  //   flag: KG
-  // },
+  {
+    label: $t('mainSettings.userTab.languages.kyrgyz'),
+    value: 'kg-KG',
+    flag: KG
+  },
 ])
 
 defineOptions({
   name: 'UserTab'
 })
 
-const { t: $t } = useI18n()
+const { toggleTheme, isDark } = useTheme();
+const { locale, t: $t } = useI18n({ useScope: 'global' })
+const { showSuccess, showError } = useHelpers()
+const { profile, updateUser, fetchProfile, subscrHasExpired, subscrExpiredAt } = useProfile()
 
-const languageOptions = computed(() => [
-  { label: $t('mainSettings.userTab.languages.russian'), value: 'ru' },
-  { label: $t('mainSettings.userTab.languages.kyrgyz'), value: 'kg' }
-])
+const selected = ref([])
+const price = ref(1000)
+const refillWallet = ref(true)
 
-export default defineComponent({
-  name: 'UserTab',
-  components: {
-    Dropdown,
-    UserInfo
-  },
-  setup() {
-    const { toggleTheme, isDark } = useTheme();
-    const { locale, t: $t } = useI18n({ useScope: 'global' })
-    const { showSuccess, showError } = useHelpers()
-    const { profile, updateUser, fetchProfile, subscrHasExpired, subscrExpiredAt } = useProfile()
+const editable = ref(false)
+const userInfo = reactive({
+  fullname: null
+})
 
-    const selected = ref([])
-    const price = ref(1000)
-    const refillWallet = ref(true)
-    
-    const editable = ref(false)
-    const userInfo = reactive({
-      fullname: null
+function switchEdit() {
+  editable.value = !editable.value
+}
+
+async function saveUserInfo() {
+  // NOTE: add loader to btn 
+  try {
+    await updateUser(profile.value?.id, {
+      ...userInfo,
     })
-
-    function switchEdit() {
-      editable.value = !editable.value
-    }
-
-    async function saveUserInfo() {
-      // NOTE: add loader to btn 
-      try {
-        await updateUser(profile.value?.id, {
-          ...userInfo,
-        })
-        await fetchProfile()
-        showSuccess($t('mainSettings.userTab.user.success'))
-      } catch (error) {
-        showError($t('mainSettings.userTab.user.error'))
-      }
-    }
-
-    function copyTgId() {
-      if (!profile.value.email && !profile.value.telegramId) return
-      copyToClipboard(profile.value.email || profile.value.telegramId)
-      showSuccess(profile.value.email ? 'Почта скопирована' : 'Telegram ID скопирован')
-    }
-
-    watch(locale, (lang) => {
-      LocalStorage.set(I18N_LOCALE, lang)
-    })
-
-    watch(profile, (val) => {
-      userInfo.fullname = val?.fullname
-    }, { immediate: true })
-
-    watch(isDark, () => {
-      toggleTheme()
-    })
-
-    return {
-      selected,
-      profile,
-      locale,
-      LANGS,
-      isDark,
-      editable,
-      switchEdit,
-      userInfo,
-      saveUserInfo,
-      PRICES,
-      price,
-      refillWallet,
-      subscrExpiredAt,
-      subscrHasExpired,
-      copyTgId
-    }
+    await fetchProfile()
+    showSuccess($t('mainSettings.userTab.user.success'))
+  } catch (error) {
+    showError($t('mainSettings.userTab.user.error'))
   }
+}
+
+function copyTgId() {
+  if (!profile.value.email && !profile.value.telegramId) return
+  copyToClipboard(profile.value.email || profile.value.telegramId)
+  showSuccess(profile.value.email ? $t('pages.contactsCopied') : $t('pages.telegramCopied'))
+}
+
+watch(locale, (lang) => {
+  LocalStorage.set(I18N_LOCALE, lang)
+})
+
+watch(profile, (val) => {
+  userInfo.fullname = val?.fullname
+}, { immediate: true })
+
+watch(isDark, () => {
+  toggleTheme()
 })
 </script>
 

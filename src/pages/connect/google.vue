@@ -6,24 +6,20 @@
       <div class="row">
         <q-card style="box-shadow:var(--box-shadow);width:100%;max-width:346px;">
           <q-card-section class="flex items-center bg-primary">
-            <h4 class="text-h6 text-white q-my-none">Авторизация</h4>
+            <h4 class="text-h6 text-white q-my-none">{{ $t('auth.title') }}</h4>
           </q-card-section>
           <q-card-section v-if="!error">
             <div class="flex items-center">
               <q-spinner color="primary" size="sm" class="q-mr-md" />
-              <p class="q-ma-none">
-                Ожидайте окончания авторизации...
-              </p>
+              <p class="q-ma-none">{{ $t('auth.processing') }}</p>
             </div>
           </q-card-section>
           <q-card-section v-else>
             <div class="flex items-center">
-              <p class="text-deep-orange text-bold q-mb-sm">
-                Произошла ошибка :(
-              </p>
-              <p>Не удалось получить ключ авторизации.</p>
+              <p class="text-deep-orange text-bold q-mb-sm">{{ $t('auth.unexpectedError') }}</p>
+              <p>{{ $t('auth.authKeyError') }}</p>
               <div class="full-width flex items-center q-mt-sm">
-                Попробуйте еще раз
+                {{ $t('common.tryLater') }}
                 <q-btn push color="primary" icon="mdi-repeat" class="q-ml-auto" to="/auth" />
               </div>
             </div>

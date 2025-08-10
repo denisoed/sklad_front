@@ -13,7 +13,7 @@
       <ChartCard
         class="full-width"
         :title="$t('statistics.sold')"
-        :body="`${soldCount} шт`"
+        :body="`${soldCount} ${$t('common.pieces')}`"
         :descr="`${$t('statistics.for')} ${selected.label}`"
         :loading="loadingActivities"
       />

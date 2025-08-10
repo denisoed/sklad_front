@@ -7,7 +7,7 @@
     <q-card style="width: 350px">
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          Обязательные настройки принтера
+          {{ $t('printer.requiredSettingsTitle') }}
         </p>
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width q-gap-md">
@@ -20,7 +20,7 @@
               class="full-width"
               enterkeyhint="done"
               :rules="[
-                (val) => !!val || 'Поле обязательно для заполнения',
+                (val) => !!val || $t('common.requiredField'),
               ]"
             />
             <q-input
@@ -32,7 +32,7 @@
               class="full-width"
               enterkeyhint="done"
               :rules="[
-                (val) => !!val || 'Поле обязательно для заполнения',
+                (val) => !!val || $t('common.requiredField'),
               ]"
             />
             <Dropdown

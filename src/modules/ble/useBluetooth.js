@@ -1,5 +1,6 @@
 import { Platform, LocalStorage } from 'quasar'
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useBleStore } from 'src/stores/ble'
 import { storeToRefs } from 'pinia'
 import useCordovaBle from 'src/modules/ble/useCordovaBle'
@@ -24,6 +25,7 @@ const useBluetooth = () => {
     cordovaBleWrite
   } = useCordovaBle()
   const { showError } = useHelpers()
+  const { t: $t } = useI18n()
   const bleStore = useBleStore()
   const { device } = storeToRefs(bleStore)
 
@@ -51,7 +53,7 @@ const useBluetooth = () => {
         }
       })
     } else {
-      showError('Ваш браузер не поддерживает блютуз')
+      showError($t('bluetooth.notSupported'))
       bleStore.setScanning(false)
     }
   }

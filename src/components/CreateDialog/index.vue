@@ -33,6 +33,7 @@ import {
 } from 'vue';
 import useFeedback from 'src/modules/useFeedback'
 import useHelpers from 'src/modules/useHelpers'
+import { useI18n } from 'vue-i18n'
 
 import verybadImg from 'src/assets/feedback/verybad.svg';
 import badImg from 'src/assets/feedback/bad.svg';
@@ -73,6 +74,7 @@ export default defineComponent({
   setup() {
     const { createFeedback, errorFeedback } = useFeedback()
     const { showSuccess, showError } = useHelpers()
+    const { t: $t } = useI18n()
 
     const isPopupOpen = ref(false);
     const selectedRating = ref(null);
@@ -88,9 +90,9 @@ export default defineComponent({
         sending.value = true;
         await createFeedback({ rating: selectedRating.value, comment: comment.value })
         if (errorFeedback.value) {
-          showError('Неизвестная ошибка. Попробуйте позже.')
+          showError($t('feedback.unknownError'))
         } else {
-          showSuccess('Ваш отзыв успешно отправлен!')
+          showSuccess($t('feedback.feedbackSent'))
         }
       } finally {
         sending.value = false;

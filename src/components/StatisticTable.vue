@@ -11,13 +11,13 @@
   >
     <template #header="props">
       <q-tr :props="props">
-        <q-th>Название</q-th>
-        <q-th v-permissions="[READ_ORIGINAL_PRICE]">Опт Цена</q-th>
-        <q-th>Роз Цена</q-th>
-        <q-th>Скидка</q-th>
-        <q-th>Размеры</q-th>
-        <q-th>Дата продажи</q-th>
-        <q-th v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right">Возврат товара</q-th>
+        <q-th>{{ $t('common.name') }}</q-th>
+        <q-th v-permissions="[READ_ORIGINAL_PRICE]">{{ $t('product.originalPrice') }}</q-th>
+        <q-th>{{ $t('product.retailPrice') }}</q-th>
+        <q-th>{{ $t('common.discount') }}</q-th>
+        <q-th>{{ $t('common.sizes') }}</q-th>
+        <q-th>{{ $t('product.saleDate') }}</q-th>
+        <q-th v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right">{{ $t('product.returnProduct') }}</q-th>
       </q-tr>
     </template>
     <template #body="props">
@@ -41,7 +41,7 @@
           <template v-else>-</template>
         </q-td>
         <q-td class="text-right">
-          {{ props.row.countSizes ? `${props.row.countSizes} шт` : props.row.size }}
+          {{ props.row.countSizes ? `${props.row.countSizes} ${$t('common.pieces')}` : props.row.size }}
         </q-td>
         <q-td class="text-right">
           {{ props.row.created_at }}
@@ -68,18 +68,18 @@
             />
           </template>
           <template v-else>
-            <span class="text-grey">Удалён со склада</span>
+            <span class="text-grey">{{ $t('product.deletedFromWarehouse') }}</span>
           </template>
         </q-td>
       </q-tr>
     </template>
     <template #bottom>
-      <div class="text-subtitle2">Продано единиц: <b>{{ soldCount }}</b></div>
+      <div class="text-subtitle2">{{ $t('product.soldUnits') }} <b>{{ soldCount }}</b></div>
     </template>
     <template #bottom-row>
       <q-tr>
         <q-td class="text-left text-bold">
-          Итог
+          {{ $t('common.total') }}
         </q-td>
         <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right text-bold">
           {{ origPriceTotal }}

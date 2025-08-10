@@ -99,6 +99,9 @@ export default ({
   },
   
   auth: {
+    title: 'Авторизация',
+    processing: 'Ожидайте окончания авторизации...',
+    unexpectedError: 'Произошла ошибка :(',
     success: 'Вы вошли в систему',
     error: 'Логин или пароль не верный',
     loginSuccess: 'Вы вошли в систему',
@@ -285,6 +288,8 @@ export default ({
     description: 'содержит список событий созданых пользователями.',
     cannotDelete: 'Историю невозможно удалить.',
     recordedForAll: 'История записывается независимо от роли.',
+    filterHintBefore: 'Кнопка',
+    filterHintAfter: 'поможет отфильтровать историю.',
     notifications: 'Уведомления',
     noNewNotifications: 'Новых уведомлений нет',
   },
@@ -350,12 +355,24 @@ export default ({
       autoRefill: 'Автопополнение',
       lang: 'Язык',
       logout: 'Выйти',
+      subscription: {
+        title: 'Подписка',
+        activeUntil: 'активна до:',
+      },
+      wallet: {
+        title: 'Кошелёк',
+        topUp: 'Пополнить',
+      },
       languages: {
         russian: 'Русский',
         kyrgyz: 'Кыргызча',
       },
       user: {
         noNameSpecified: 'Имя не указано',
+        fullnameTitle: 'Имя',
+        fullnamePlaceholder: 'Введите имя',
+        success: 'Данные успешно обновлены',
+        error: 'Не удалось обновить данные. Попробуйте позже',
       },
     },
     sizesTab: {
@@ -423,6 +440,7 @@ export default ({
 
   // Printer settings
   printer: {
+    requiredSettingsTitle: 'Обязательные настройки принтера',
     dpi: 'Кол-во точек на дюйм(DPI)',
     dpiHint: 'Указано в документации принтера',
     width: 'Ширина',
@@ -650,6 +668,16 @@ export default ({
   // Feedback additions
   feedback: {
     howEasyToUse: 'Насколько легко пользоваться складом?',
+    unknownError: 'Неизвестная ошибка. Попробуйте позже.',
+    feedbackSent: 'Ваш отзыв успешно отправлен!',
+  },
+  bluetooth: {
+    notSupported: 'Ваш браузер не поддерживает блютуз',
+    connecting: 'Авто подключение...',
+    printerConnection: 'Подключение к принтеру',
+    changesSaved: 'Изменения сохранены',
+    searching: 'Поиск устройств...',
+    notConnected: 'Нет подключенных устройств',
   },
 
   // Validation messages
@@ -657,5 +685,6 @@ export default ({
     required: 'Обязательное поле',
     promotionalPriceRequired: 'Укажите акционную цену',
     promotionalPriceLowerThanRetail: 'Акционная цена должна быть меньше Роз. цены',
+    emailInvalid: 'Email не валидный',
   },
 })

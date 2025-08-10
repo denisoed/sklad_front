@@ -42,7 +42,7 @@
         />
         <q-inner-loading
           :showing="loading"
-          label={$t('common.waiting')}
+          :label="$t('common.waiting')"
           color="primary"
         />
       </div>
@@ -116,7 +116,7 @@ export default defineComponent({
         align: 2
       })
       addTextField({
-        data: `Цена: ${formatPrice(product.newPrice)}`,
+        data: `${$t('common.price')}: ${formatPrice(product.newPrice)}`,
         positionY: 270,
         align: 2,
       });

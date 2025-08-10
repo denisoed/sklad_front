@@ -1,7 +1,7 @@
 <template>
   <div class="ble flex column q-gap-md block-bg">
     <div class="flex items-center justify-between q-gap-md">
-      <h6 class="q-ma-none text-grey-5 text-subtitle1">Подключение к принтеру</h6>
+      <h6 class="q-ma-none text-grey-5 text-subtitle1">{{ $t('bluetooth.printerConnection') }}</h6>
       <q-icon v-if="bluetoothConnected" size="sm" color="primary" name="mdi-printer-check" />
       <q-icon v-else size="sm" color="deep-orange" name="mdi-printer-off" />
     </div>
@@ -15,7 +15,7 @@
             >
               {{ device?.name }}
             </span>
-            <span v-if="bluetoothAutoConnecting" class="text-grey-5 text-caption">Авто подключение...</span>
+            <span v-if="bluetoothAutoConnecting" class="text-grey-5 text-caption">{{ $t('bluetooth.connecting') }}</span>
           </div>
           <q-btn
             v-if="bluetoothDevice?.id === device?.id"
@@ -29,7 +29,7 @@
               <q-list style="min-width: 100px">
                 <q-item clickable v-close-popup>
                   <q-item-section @click="openedBleEditorDialog = true">
-                    Редактировать
+                    {{ $t('common.update') }}
                   </q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup>
@@ -37,7 +37,7 @@
                     class="text-deep-orange"
                     @click="disconnectDevice(device.id)"
                   >
-                    Удалить
+                    {{ $t('common.delete') }}
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -57,7 +57,7 @@
         </li>
       </ul>
       <span v-else class="text-grey-5 text-center text-subtitle2 q-my-md">
-        {{ bluetoothScanning ? 'Поиск устройств...' : 'Нет подключенных устройств' }}
+        {{ bluetoothScanning ? $t('bluetooth.searching') : $t('bluetooth.notConnected') }}
       </span>
     </div>
 
@@ -151,7 +151,7 @@ export default defineComponent({
           ...payload,
         }
         LocalStorage.set('sklad-ble-device', newData)
-        showSuccess('Изменения сохранены')
+        showSuccess($t('bluetooth.changesSaved'))
       }
     }
 

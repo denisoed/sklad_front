@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-center q-mx-auto q-gap-sm q-mt-sm">
     <div class="flex column items-start">
-      <p class="full-width btn-sizes-list_desc q-mb-sm">Чтобы выбрать несколько единиц, удерживайте нужный размер пару секунд.</p>
+      <p class="full-width btn-sizes-list_desc q-mb-sm">{{ $t('pages.selectMultiple') }}</p>
       <div class="flex q-gap-sm">
         <q-btn
           v-for="(s, i) of listSizes.sort((a, b) => a.size - b.size)"
@@ -26,8 +26,8 @@
       </div>
       <q-separator class="full-width q-my-sm" />
       <div class="flex full-width justify-between">
-        <span>Указано размеров:</span>
-        <b>{{ countSizes }}шт</b>
+        <span>{{ $t('pages.sizesCountSpecified') }}</span>
+        <b>{{ countSizes }}{{ $t('common.pieces') }}</b>
       </div>
     </div>
     <SizeCountDialog

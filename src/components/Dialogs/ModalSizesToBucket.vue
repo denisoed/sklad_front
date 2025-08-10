@@ -16,7 +16,7 @@
         <p
           class="full-width text-left text-bold q-mb-none text-subtitle1"
         >
-          {{ title || 'Добавить товар в корзину' }}
+          {{ title || $t('bucket.addToBasketTitle') }}
         </p>
 
         <q-separator class="full-width q-my-sm" />
@@ -28,7 +28,7 @@
             class="full-width"
           >
             <div class="full-width flex column q-gap-sm q-mb-sm">
-              <p class="q-mb-none">Оплата</p>
+              <p class="q-mb-none">{{ $t('common.payment') }}</p>
               <PriceList
                 :prices="prices"
                 :default-price="newPrice"
@@ -54,12 +54,12 @@
               />
 
               <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
-                <p class="q-mb-none">Итоговая сумма:</p>
+                <p class="q-mb-none">{{ $t('common.totalSum') }}:</p>
                 <span class="text-bold">{{ formatPrice(totalSum) }}</span>
               </div>
             </div>
 
-            <p class="q-mb-sm">Размеры</p>
+            <p class="q-mb-sm">{{ $t('common.sizes') }}</p>
             <div
               class="btn-sizes_list"
             >
@@ -74,7 +74,7 @@
                 :disable="!all && !s.has"
                 @click="setSizeV2([s], !selectedSizes.some(sz => sz.size === s.size), !!s.count)"
               >
-                <span>{{ s.size }} <sup v-if="getCountSizes(s.count, s.countSelected) > 1">{{ getCountSizes(s.count, s.countSelected) > 1 ? `(${getCountSizes(s.count, s.countSelected)} шт)` : '' }}</sup></span>
+                <span>{{ s.size }} <sup v-if="getCountSizes(s.count, s.countSelected) > 1">{{ getCountSizes(s.count, s.countSelected) > 1 ? `(${getCountSizes(s.count, s.countSelected)} ${$t('common.pieces')})` : '' }}</sup></span>
                 <q-badge
                   v-if="s.countSelected"
                   color="red"
@@ -112,7 +112,7 @@
             <InputPlusMinus
               :max="selectedSize.count"
               :model-value="selectedSize.countSelected"
-              :label="`Кол-во шт для размера: <b>${selectedSize.size}</b>`"
+              :label="`${$t('bucket.quantityForSale')}: <b>${selectedSize.size}</b>`"
               class="q-my-auto"
               @update:model-value="onChangeCount"
             />
@@ -351,7 +351,7 @@ function getCountSize(size, sizes) {
 
 function submit() {
   if (localPercentageDiscount.value && Number(localDiscountPrice.value) > 100) {
-    return showError('Скидка не должна быть больше 100%')
+    return showError($t('validation.promotionalPriceLowerThanRetail'))
   }
   if (useForSale.value) {
     emit('submit', {

@@ -4,13 +4,14 @@
       <PageTitle :title="title">
         <div>
           <q-card-section class="q-pt-none text-primary">
-            <b>История</b> - содержит список событий созданых пользователями.
+            <b>{{ $t('history.title') }}</b> - {{ $t('history.description') }}
           </q-card-section>
           <q-card-section class="q-pt-none">
             <ul>
-              <li>Историю невозможно удалить.</li>
-              <li>История записывается независимо от роли.</li>
-              <li>Кнопка "<q-icon color="primary" size="sm" name="search" />" поможет отфильтровать историю.
+              <li>{{ $t('history.cannotDelete') }}</li>
+              <li>{{ $t('history.recordedForAll') }}</li>
+              <li>
+                {{ $t('history.filterHintBefore') }} "<q-icon color="primary" size="sm" name="search" />" {{ $t('history.filterHintAfter') }}
               </li>
             </ul>
           </q-card-section>

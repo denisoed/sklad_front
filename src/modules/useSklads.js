@@ -178,7 +178,7 @@ const useSklads = () => {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('common.reloadPage'))
     }
   }
 
@@ -201,14 +201,14 @@ const useSklads = () => {
           permissions: permissions?.map(p => ({ sklad: p.sklad.id, list: p.list  }))
         });
         fetchSklad()
-        showSuccess('Список участников обновлен!')  
+        showSuccess($t('warehouse.participantsUpdated'))  
       } catch (error) {
         showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
       } finally {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('common.reloadPage'))
     }
   }
 
