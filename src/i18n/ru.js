@@ -359,6 +359,7 @@ export default ({
       languages: {
         russian: 'Русский',
         kyrgyz: 'Кыргызча',
+        english: 'English',
       },
       user: {
         noNameSpecified: 'Имя не указано',

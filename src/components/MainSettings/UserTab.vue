@@ -115,6 +115,7 @@ import useHelpers from 'src/modules/useHelpers'
 import useTheme from 'src/modules/useTheme'
 import RU from 'src/assets/russia.png'
 import KG from 'src/assets/kyrgyzstan.png'
+import EN from 'src/assets/united-states.png'
 import { I18N_LOCALE } from 'src/config'
 import { useI18n } from 'vue-i18n'
 
@@ -156,6 +157,11 @@ const LANGS = computed(() => [
     label: $t('mainSettings.userTab.languages.kyrgyz'),
     value: 'kg-KG',
     flag: KG
+  },
+  {
+    label: $t('mainSettings.userTab.languages.english'),
+    value: 'en-US',
+    flag: EN
   },
 ])
 
