@@ -9,10 +9,10 @@ export default function useProductHistory() {
   const { difference } = useHelpers()
 
   /**
-   * Создает запись в истории для создания товара
-   * @param {Object} product - созданный товар
-   * @param {string} productId - ID товара
-   * @param {Object} sklad - склад
+   * Creates a history entry for product creation
+   * @param {Object} product - created product
+   * @param {string} productId - product ID
+   * @param {Object} sklad - warehouse
    */
   function createProductHistory(product, productId, sklad) {
     createHistory({
@@ -35,16 +35,16 @@ export default function useProductHistory() {
   }
 
   /**
-   * Создает записи в истории для обновления товара
-   * @param {Object} oldData - старые данные товара
-   * @param {Object} newData - новые данные товара
-   * @param {string} productId - ID товара
-   * @param {Object} sklad - склад
+   * Creates history entries for product update
+   * @param {Object} oldData - old product data
+   * @param {Object} newData - new product data
+   * @param {string} productId - product ID
+   * @param {Object} sklad - warehouse
    */
   function createUpdateHistory(oldData, newData, productId, sklad) {
     const fields = []
 
-    // Проверяем изменения в названии
+    // Check changes in name
     if (oldData.name !== newData.name) {
       fields.push({
         name: oldData.name,
@@ -54,7 +54,7 @@ export default function useProductHistory() {
       })
     }
 
-    // Проверяем изменения в цвете
+    // Check changes in color
     if (oldData.color !== newData.color) {
       fields.push({
         name: oldData.name,
@@ -64,7 +64,7 @@ export default function useProductHistory() {
       })
     }
 
-    // Проверяем изменения в оптовой цене
+    // Check changes in original price
     if (oldData.origPrice !== newData.origPrice) {
       fields.push({
         name: oldData.name,
@@ -74,7 +74,7 @@ export default function useProductHistory() {
       })
     }
 
-    // Проверяем изменения в розничной цене
+    // Check changes in retail price
     if (oldData.newPrice !== newData.newPrice) {
       fields.push({
         name: oldData.name,
@@ -84,7 +84,7 @@ export default function useProductHistory() {
       })
     }
 
-    // Проверяем изменения в количестве размеров
+    // Check changes in count of sizes
     if (oldData.countSizes !== newData.countSizes) {
       fields.push({
         name: oldData.name,
@@ -94,7 +94,7 @@ export default function useProductHistory() {
       })
     }
 
-    // Проверяем изменения в размерах
+    // Check changes in sizes
     const oldSizes = oldData.sizes.map(s => s.size)
     const newSizes = newData.sizes.map(s => s.size)
     
@@ -118,7 +118,7 @@ export default function useProductHistory() {
       }
     }
 
-    // Создаем записи в истории для каждого изменения
+    // Create history entries for each change
     fields.forEach(field => {
       createHistory({
         productId: +productId || null,
@@ -135,10 +135,10 @@ export default function useProductHistory() {
   }
 
   /**
-   * Создает запись в истории для удаления товара
-   * @param {Object} product - удаленный товар
-   * @param {string} productId - ID товара
-   * @param {Object} sklad - склад
+   * Creates a history entry for product deletion
+   * @param {Object} product - deleted product
+   * @param {string} productId - product ID
+   * @param {Object} sklad - warehouse
    */
   function createDeleteHistory(product, productId, sklad) {
     createHistory({

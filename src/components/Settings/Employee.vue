@@ -1,7 +1,7 @@
 <template>
   <div class="full-width">
     <div class="flex items-center q-mb-md">
-      <h6 class=" text-subtitle1 q-my-none">Участники склада</h6>
+      <h6 class=" text-subtitle1 q-my-none">{{ $t('warehouse.participants') }}</h6>
       <q-btn
         icon="mdi-plus"
         round
@@ -11,15 +11,13 @@
       />
     </div>
     <q-table
-      :rows="rows"
+      :rows="users"
       :columns="columns"
-      :loading="loadingActivities"
-      :pagination="pagination"
-      row-key="name"
-      separator="cell"
-      class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
+      row-key="id"
+      flat
+      :no-data-label="$t('settings.employee.noPeopleAdded')"
+      :rows-per-page-options="[0]"
       hide-pagination
-      no-data-label="Люди не добавлены"
     >
       <template #body="props">
         <q-tr :props="props">
@@ -70,6 +68,7 @@ import {
   toRefs,
   ref
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useQuasar } from 'quasar'
 import useSklads from 'src/modules/useSklads'
 import NewEmployee from 'src/components/Settings/NewEmployee.vue'
@@ -86,6 +85,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const { t: $t } = useI18n()
     const $q = useQuasar()
     const { users } = toRefs(props)
     const {
@@ -101,7 +101,7 @@ export default defineComponent({
       return [
         {
           name: 'name',
-          label: 'Имя',
+          label: $t('common.name'),
           align: 'left',
           field: 'name'
         },
@@ -119,7 +119,7 @@ export default defineComponent({
         // },
         {
           name: 'action',
-          label: 'Действия',
+          label: $t('common.actions'),
           align: 'right',
           field: 'action'
         },
@@ -128,19 +128,19 @@ export default defineComponent({
 
     function remove(user) {
       $q.dialog({
-        title: `Удалить ${user.name} из склада?`,
-        message: 'После удаления человека из склада, он больше не будет иметь доступ к складу.',
+        title: $t('settings.employee.removeEmployee'),
+        message: $t('settings.employee.removeDescription'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('common.delete'),
           push: true
         },
         cancel: {
           color: 'white',
-          textColor: 'black', 
-          label: 'Отмена',
+          textColor: 'black',
+          label: $t('common.cancel'),
           push: true
         }
       }).onOk(() => {

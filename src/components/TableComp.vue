@@ -9,8 +9,8 @@
       row-key="name"
       separator="cell"
       class="table full-width block-bg border-radius-sm"
-      no-data-label="Нет данных"
-      rows-per-page-label="Записей на странице"
+      :no-data-label="$t('common.noData')"
+      :rows-per-page-label="$t('common.recordsPerPage')"
     >
       <template #top-row="props">
         <slot v-bind="props" name="top-row" />
@@ -25,56 +25,44 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   onBeforeMount,
 } from 'vue'
 import FilterDates from 'src/components/FilterDates.vue'
 
-export default defineComponent({
-  name: 'TableComp',
-  components: {
-    FilterDates,
+const emit = defineEmits(['on-change'])
+
+const props = defineProps({
+  rows: {
+    type: Array,
+    default: () => []
   },
-  emits: ['on-change'],
-  props: {
-    rows: {
-      type: Array,
-      default: () => []
-    },
-    columns: {
-      type: Array,
-      default: () => []
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    isFilters: {
-      type: Boolean,
-      default: true
-    },
+  columns: {
+    type: Array,
+    default: () => []
   },
-  setup(props, { emit }) {
-    const pagination = {
-      rowsPerPage: 10,
-    }
-
-    function onChange(args) {
-      emit('on-change', args)
-    }
-
-    onBeforeMount(() => {
-      onChange();
-    });
-
-    return {
-      pagination,
-      onChange,
-    }
-  }
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  isFilters: {
+    type: Boolean,
+    default: true
+  },
 })
+
+const pagination = {
+  rowsPerPage: 10,
+}
+
+function onChange(args) {
+  emit('on-change', args)
+}
+
+onBeforeMount(() => {
+  onChange();
+});
 </script>
 
 <style lang="scss">

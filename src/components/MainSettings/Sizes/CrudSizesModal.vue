@@ -14,7 +14,7 @@
         </div>
         <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            {{ item ? $t('update') : $t('create') }} {{ title }}
+            {{ item ? $t('common.update') : $t('create') }} {{ title }}
           </p>
           <q-separator class="full-width q-mt-sm" />
           <div class="flex justify-center q-gap-md full-width q-mt-md">
@@ -41,7 +41,7 @@
                   outlined
                   dense
                   class="full-width"
-                  placeholder="Название размера"
+                  :placeholder="$t('mainSettings.sizesTab.sizesSettings.modal.inputSizesPlaceholder')"
                   enterkeyhint="done"
                 />
                 <q-btn
@@ -112,6 +112,7 @@ import {
 import useHelpers from 'src/modules/useHelpers'
 import { useMutation } from '@vue/apollo-composable'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'CrubSizesModal',
@@ -158,6 +159,7 @@ export default defineComponent({
     })
 
     const { showSuccess, showError } = useHelpers()
+    const { t: $t } = useI18n()
 
     const {
       mutate: create,
@@ -209,9 +211,9 @@ export default defineComponent({
       })
       if (!createError.value) {
         emit('on-create-new', data)
-        showSuccess('Новые размеры созданы!')
+         showSuccess($t('sizes.created'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
     }
     
@@ -228,9 +230,9 @@ export default defineComponent({
         }
       })
       if (!updateError.value) {
-        showSuccess('Размеры обновлены!')
+         showSuccess($t('sizes.updated'))
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
     }
 
@@ -243,7 +245,7 @@ export default defineComponent({
             await createToDB()
           }
         } catch (error) {
-          showError('Неизвестная ошибка. Проблемы на сервере.')
+          showError($t('common.unknownError') + '. ' + $t('common.serverError'))
         } finally {
           close()
           emit('finished')

@@ -2,16 +2,16 @@ import { SKLAD_DRAFT_KEY } from 'src/config'
 
 export default function useDraft() {
   /**
-   * Сохраняет черновик товара в localStorage
-   * @param {Object} product - объект товара для сохранения
+   * Save draft of product to localStorage
+   * @param {Object} product - product object to save
    */
   function saveDraft(product) {
     localStorage.setItem(SKLAD_DRAFT_KEY, JSON.stringify(product))
   }
 
   /**
-   * Загружает черновик товара из localStorage
-   * @returns {Object|null} черновик товара или null
+   * Load draft of product from localStorage
+   * @returns {Object|null} draft of product or null
    */
   function loadDraft() {
     const draft = localStorage.getItem(SKLAD_DRAFT_KEY)
@@ -19,15 +19,15 @@ export default function useDraft() {
   }
 
   /**
-   * Очищает черновик товара из localStorage
+   * Clear draft of product from localStorage
    */
   function clearDraft() {
     localStorage.removeItem(SKLAD_DRAFT_KEY)
   }
 
   /**
-   * Проверяет, есть ли сохраненный черновик
-   * @returns {boolean} true если черновик существует
+   * Check if draft of product exists in localStorage
+   * @returns {boolean} true if draft exists
    */
   function hasDraft() {
     return !!localStorage.getItem(SKLAD_DRAFT_KEY)

@@ -6,13 +6,13 @@ const useSpeechRecognition = () => {
   const isApiAvailable = Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
   
-  // Создаем новый экземпляр для каждого использования
+  // Create a new instance for each use
   let recognition = null
   let finishCallback = null
   let isDestroyed = ref(false)
   let recognitionTimeout = null
-  let shouldContinueRecording = null // Callback для проверки, нужно ли продолжать запись
-  let accumulatedText = '' // Накопленный текст из предыдущих сессий
+  let shouldContinueRecording = null // Callback to check if recording should continue
+  let accumulatedText = '' // Accumulated text from previous sessions
   let currentSessionText = '' // Текст текущей сессии
 
   function initializeRecognition() {

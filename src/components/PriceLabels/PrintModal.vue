@@ -12,9 +12,9 @@
       <q-card class="full-width">
         <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            Ценник
+            {{ $t('printing.priceLabel') }}
           </p>
-          <div>Пример ценника</div>
+          <div>{{ $t('printing.templateExampleTitle') }}</div>
           <div class="flex justify-center full-width q-mt-md">
             <q-btn
               style="width: 100px;"
@@ -67,7 +67,7 @@ export default defineComponent({
       try {
         // Print
       } catch (error) {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       } finally {
         close()
         emit('finished')

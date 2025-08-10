@@ -105,7 +105,7 @@ export default defineComponent({
       if (val?.product) {
         push(decodedLink.value)
       } else {
-        showError('Товар не найден')
+        showError($t('products.notFound'))
         close()
       }
     })

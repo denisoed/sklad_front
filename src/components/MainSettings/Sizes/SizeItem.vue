@@ -27,7 +27,9 @@
 <script>
 import {
   defineComponent,
+  ref
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useQuasar } from 'quasar'
 import { useMutation } from '@vue/apollo-composable'
 import { UPDATE_SIZES } from 'src/graphql/sizes'
@@ -42,7 +44,7 @@ export default defineComponent({
     },
     name: {
       type: String,
-      default: 'Название размеров' 
+      default: 'Size names'
     },
     list: {
       type: Array,
@@ -55,6 +57,7 @@ export default defineComponent({
   },
   emits: ['on-edit', 'on-update'],
   setup(props, { emit }) {
+    const { t: $t } = useI18n()
     const $q = useQuasar()
     const { showSuccess, showError } = useHelpers()
     
@@ -72,33 +75,33 @@ export default defineComponent({
       if (props.disable) return
 
       $q.dialog({
-        title: `Удалить размер "${sizeToRemove.size}"?`,
-        message: 'Вы уверены, что хотите удалить этот размер?',
+        title: $t('mainSettings.sizesTab.deleteSize'),
+        message: $t('mainSettings.sizesTab.deleteConfirm'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('common.delete'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('common.cancel'),
           push: true
         }
       }).onOk(async () => {
         try {
-          // Создаем новый список без удаляемого размера
+          // Create a new list without the removed size
           const newList = props.list.filter(item => item.size !== sizeToRemove.size)
           
-          // Если список станет пустым, показываем предупреждение
+          // If the list becomes empty, show warning
           if (newList.length === 0) {
-            showError('Нельзя удалить все размеры. Используйте кнопку редактирования для удаления всего набора размеров.')
+            showError($t('sizes.cannotDeleteAllSizes'))
             return
           }
 
-          // Формируем данные точно так же, как в CrudSizesModal
+          // Form data exactly as in CrudSizesModal
           const sizesString = newList.map(item => item.size).join(', ')
           const formattedList = sizesString.split(',').map(s => ({ size: s?.trim() }))
 
@@ -111,13 +114,13 @@ export default defineComponent({
           })
           
           if (!updateError.value) {
-            showSuccess('Размер успешно удален!')
+            showSuccess($t('sizes.sizeDeleted'))
             emit('on-update')
           } else {
-            showError('Произошла ошибка при удалении размера.')
+            showError($t('sizes.errorDeletingSize'))
           }
         } catch (error) {
-          showError('Произошла ошибка при удалении размера.')
+          showError($t('sizes.errorDeletingSize'))
         }
       })
     }

@@ -7,17 +7,17 @@
     separator="cell"
     class="statistic-table block-bg full-width q-mb-sm border-radius-sm"
     hide-pagination
-    no-data-label="Нет данных"
+    :no-data-label="$t('common.noData')"
   >
     <template #header="props">
       <q-tr :props="props">
-        <q-th>Название</q-th>
-        <q-th v-permissions="[READ_ORIGINAL_PRICE]">Опт Цена</q-th>
-        <q-th>Роз Цена</q-th>
-        <q-th>Скидка</q-th>
-        <q-th>Размеры</q-th>
-        <q-th>Дата продажи</q-th>
-        <q-th v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right">Возврат товара</q-th>
+        <q-th>{{ $t('common.name') }}</q-th>
+        <q-th v-permissions="[READ_ORIGINAL_PRICE]">{{ $t('product.originalPriceShort') }}</q-th>
+        <q-th>{{ $t('product.retailPriceShort') }}</q-th>
+        <q-th>{{ $t('common.discount') }}</q-th>
+        <q-th>{{ $t('common.sizes') }}</q-th>
+        <q-th>{{ $t('product.saleDate') }}</q-th>
+        <q-th v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right">{{ $t('product.returnProduct') }}</q-th>
       </q-tr>
     </template>
     <template #body="props">
@@ -41,7 +41,7 @@
           <template v-else>-</template>
         </q-td>
         <q-td class="text-right">
-          {{ props.row.countSizes ? `${props.row.countSizes} шт` : props.row.size }}
+          {{ props.row.countSizes ? `${props.row.countSizes} ${$t('common.pieces')}` : props.row.size }}
         </q-td>
         <q-td class="text-right">
           {{ props.row.created_at }}
@@ -55,7 +55,7 @@
               text-color="primary"
               size="sm"
               class="q-mr-md"
-              title="Перейти в товар"
+              :title="$t('statistics.goToProduct')"
               :to="`/sklad/${props.row?.product?.sklad?.id}/product/${props.row?.product?.id}`"
             />
             <q-btn
@@ -63,23 +63,23 @@
               round
               color="deep-orange"
               size="sm"
-              title="Возврат товара на склад"
+              :title="$t('statistics.returnToWarehouse')"
               @click="$emit('return-product', props.row)"
             />
           </template>
           <template v-else>
-            <span class="text-grey">Удалён со склада</span>
+            <span class="text-grey">{{ $t('product.deletedFromWarehouse') }}</span>
           </template>
         </q-td>
       </q-tr>
     </template>
     <template #bottom>
-      <div class="text-subtitle2">Продано единиц: <b>{{ soldCount }}</b></div>
+      <div class="text-subtitle2">{{ $t('product.soldUnits') }} <b>{{ soldCount }}</b></div>
     </template>
     <template #bottom-row>
       <q-tr>
         <q-td class="text-left text-bold">
-          Итог
+          {{ $t('common.total') }}
         </q-td>
         <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right text-bold">
           {{ origPriceTotal }}
@@ -98,68 +98,57 @@
   </q-table>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
 import PriceFormatter from 'src/components/PriceFormatter.vue'
-import {
-  READ_ORIGINAL_PRICE,
-  READ_STATISTIC_TABLE_ACTIONS
-} from 'src/permissions'
+import { READ_ORIGINAL_PRICE, READ_STATISTIC_TABLE_ACTIONS } from 'src/permissions'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
-export default defineComponent({
-  name: 'StatisticTable',
-  components: {
-    PriceFormatter
+defineOptions({
+  name: 'StatisticTable'
+})
+
+defineProps({
+  listActivities: {
+    type: Array,
+    default: () => []
   },
-  props: {
-    listActivities: {
-      type: Array,
-      default: () => []
-    },
-    loadingActivities: {
-      type: Boolean,
-      default: false
-    },
-    soldCount: {
-      type: Number,
-      default: 0
-    },
-    origPriceTotal: {
-      type: String,
-      default: ''
-    },
-    newPriceTotal: {
-      type: String,
-      default: ''
-    },
-    discountTotal: {
-      type: String,
-      default: ''
-    }
+  loadingActivities: {
+    type: Boolean,
+    default: false
   },
-  emits: ['return-product'],
-  setup() {
-    const router = useRouter()
-
-    const pagination = {
-      rowsPerPage: -1,
-    }
-
-    const handleRowClick = (event, row) => {
-      if (row?.product?.sklad?.id && row?.product?.id) {
-        router.push(`/sklad/${row.product.sklad.id}/product/${row.product.id}`)
-      }
-    }
-
-    return {
-      pagination,
-      handleRowClick,
-      READ_ORIGINAL_PRICE,
-      READ_STATISTIC_TABLE_ACTIONS
-    }
+  soldCount: {
+    type: Number,
+    default: 0
+  },
+  origPriceTotal: {
+    type: String,
+    default: ''
+  },
+  newPriceTotal: {
+    type: String,
+    default: ''
+  },
+  discountTotal: {
+    type: String,
+    default: ''
   }
 })
+
+defineEmits(['return-product'])
+
+useI18n()
+const router = useRouter()
+
+const pagination = {
+  rowsPerPage: -1
+}
+
+function handleRowClick(event, row) {
+  if (row?.product?.sklad?.id && row?.product?.id) {
+    router.push(`/sklad/${row.product.sklad.id}/product/${row.product.id}`)
+  }
+}
 </script>
 
 <style lang="scss">

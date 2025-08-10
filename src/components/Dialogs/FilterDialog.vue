@@ -15,14 +15,14 @@
         </div>
         <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl">
           
-          <!-- Фильтр по размерам -->
+          <!-- Size filter -->
           <div v-if="availableSizes.length" class="full-width">
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Размеры
+              {{ $t('sizes.title') }}
             </p>
             <div v-if="loadingAvailableSizes" class="text-center q-py-md">
               <q-spinner size="20px" />
-              <span class="q-ml-sm">Загрузка размеров...</span>
+              <span class="q-ml-sm">{{ $t('sizes.loading') }}</span>
             </div>
             <div v-else-if="availableSizes.length" class="sizes-grid">
               <q-btn
@@ -39,48 +39,41 @@
               />
             </div>
             <div v-else class="text-grey-6 text-center q-py-md">
-              Размеры не найдены
+              {{ $t('sizes.notFound') }}
             </div>
             <q-separator class="full-width q-my-md" />
           </div>
           
-          <!-- Ценовой диапазон -->
+          <!-- Price range -->
           <div class="full-width q-mb-md">
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Ценовой диапазон (розничная цена)
+              {{ $t('filter.priceRange') }}
             </p>
             <div class="flex q-gap-sm">
-              <q-input
-                v-model.number="localFilters.priceFrom"
-                type="number"
+              <InputPrice
+                v-model="localFilters.priceFrom"
                 outlined
                 dense
-                label="От"
-                suffix="сом"
-                style="flex: 1"
-                clearable
-                enterkeyhint="done"
+                :label="$t('filter.from')"
+                :suffix="$t('filter.currency')"
+                class="q-mr-sm"
               />
-              <q-input
-                v-model.number="localFilters.priceTo"
-                type="number"
+              <InputPrice
+                v-model="localFilters.priceTo"
                 outlined
                 dense
-                label="До"
-                suffix="сом"
-                style="flex: 1"
-                clearable
-                enterkeyhint="done"
+                :label="$t('filter.to')"
+                :suffix="$t('filter.currency')"
               />
             </div>
           </div>
           
           <q-separator class="full-width q-mb-md" />
           
-          <!-- Цветовой фильтр -->
+          <!-- Color filter -->
           <div class="flex items-center no-wrap column full-width q-gap-sm q-mb-md">
             <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-              Фильтр по цвету
+              {{ $t('filter.colorFilter') }}
             </p>
             <ColorPicker
               ref="colorPickerRef"
@@ -93,23 +86,23 @@
           
           <q-separator class="full-width q-mb-md" />
           
-          <!-- Фильтры по состоянию товара -->
+          <!-- Product status filter -->
           <div class="full-width q-mb-md">
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
-              Состояние товара
+              {{ $t('filter.productStatus') }}
             </p>
             <div class="flex column q-gap-sm">
               <q-checkbox
                 v-model="localFilters.withDiscount"
-                label="Со скидкой"
-                dense
+                :label="$t('filter.withDiscount')"
+                color="primary"
               />
             </div>
           </div>
           
           <q-separator class="full-width q-mb-md" />
           
-          <!-- Управление -->
+          <!-- Controls -->
           <div class="flex justify-between no-wrap q-gap-md full-width">
             <q-btn
               style="height:40px;"
@@ -139,132 +132,113 @@
   </q-dialog>
 </template>
 
-<script>
-import { defineComponent, ref, reactive, onMounted, watch } from 'vue'
+<script setup>
+import { ref, reactive, onMounted, watch } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
 import useSizes from 'src/modules/useSizes'
+import { useI18n } from 'vue-i18n'
+import InputPrice from 'src/components/InputPrice.vue'
 
-export default defineComponent({
-  name: 'FilterDialog',
-  components: {
-    ColorPicker,
-    SwipeToClose
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
   },
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false
-    },
-    filters: {
-      type: Object,
-      required: true
-    }
-  },
-  emits: ['update:modelValue', 'apply', 'clear'],
-  setup(props, { emit }) {
-    const colorPickerRef = ref(null)
-    const availableSizes = ref([])
-    const loadingAvailableSizes = ref(false)
-    const { sizes, fetchSizes } = useSizes()
-
-    const localFilters = reactive({ 
-      ...props.filters,
-      colors: props.filters.colors || []
-    })
-
-    watch(() => props.filters, (newFilters) => {
-      Object.assign(localFilters, newFilters)
-      // Убеждаемся, что массив цветов инициализирован
-      if (!localFilters.colors) {
-        localFilters.colors = []
-      }
-    }, { deep: true })
-
-    async function fetchAvailableSizes() {
-      try {
-        loadingAvailableSizes.value = true
-        await fetchSizes()
-        const sizesSet = new Set()
-        sizes.value?.forEach(sizeGroup => {
-          sizeGroup.list?.forEach(sizeItem => {
-            if (sizeItem.size) {
-              sizesSet.add(sizeItem.size)
-            }
-          })
-        })
-        availableSizes.value = Array.from(sizesSet).sort((a, b) => {
-          const aIsNumber = !isNaN(a)
-          const bIsNumber = !isNaN(b)
-          if (aIsNumber && bIsNumber) return Number(a) - Number(b)
-          if (aIsNumber) return -1
-          if (bIsNumber) return 1
-          return a.localeCompare(b)
-        })
-      } catch (error) {
-        console.error('Ошибка загрузки размеров:', error)
-        availableSizes.value = []
-      } finally {
-        loadingAvailableSizes.value = false
-      }
-    }
-
-    function toggleSize(size) {
-      const index = localFilters.sizes.indexOf(size)
-      if (index === -1) {
-        localFilters.sizes.push(size)
-      } else {
-        localFilters.sizes.splice(index, 1)
-      }
-    }
-
-    function setColorName(colors) {
-      if (Array.isArray(colors)) {
-        // Мультивыбор - массив цветов
-        localFilters.colors = colors
-        localFilters.color = colors.length > 0 ? colors[0].color : null
-        localFilters.colorName = colors.length > 0 ? colors[0].name : null
-      } else {
-        // Одиночный выбор (для обратной совместимости)
-        localFilters.color = colors?.color
-        localFilters.colorName = colors?.name
-        localFilters.colors = colors ? [colors] : []
-      }
-    }
-
-    function apply() {
-      emit('apply', localFilters)
-      emit('update:modelValue', false)
-    }
-
-    function clear() {
-      colorPickerRef.value?.clear()
-      // Очищаем локальные фильтры
-      localFilters.sizes = []
-      localFilters.priceFrom = null
-      localFilters.priceTo = null
-      localFilters.color = null
-      localFilters.colorName = null
-      localFilters.colors = []
-      localFilters.withDiscount = false
-      emit('clear')
-      emit('update:modelValue', false)
-    }
-
-    onMounted(fetchAvailableSizes)
-
-    return {
-      localFilters,
-      colorPickerRef,
-      availableSizes,
-      loadingAvailableSizes,
-      toggleSize,
-      apply,
-      clear,
-      setColorName
-    }
+  filters: {
+    type: Object,
+    required: true
   }
 })
+
+const emit = defineEmits(['update:modelValue', 'apply', 'clear'])
+
+const { t: $t } = useI18n()
+const colorPickerRef = ref(null)
+const availableSizes = ref([])
+const loadingAvailableSizes = ref(false)
+const { sizes, fetchSizes } = useSizes()
+
+const localFilters = reactive({ 
+  ...props.filters,
+  colors: props.filters.colors || []
+})
+
+watch(() => props.filters, (newFilters) => {
+  Object.assign(localFilters, newFilters)
+  if (!localFilters.colors) {
+    localFilters.colors = []
+  }
+}, { deep: true })
+
+async function fetchAvailableSizes() {
+  try {
+    loadingAvailableSizes.value = true
+    await fetchSizes()
+    const sizesSet = new Set()
+    sizes.value?.forEach(sizeGroup => {
+      sizeGroup.list?.forEach(sizeItem => {
+        if (sizeItem.size) {
+          sizesSet.add(sizeItem.size)
+        }
+      })
+    })
+    availableSizes.value = Array.from(sizesSet).sort((a, b) => {
+      const aIsNumber = !isNaN(a)
+      const bIsNumber = !isNaN(b)
+      if (aIsNumber && bIsNumber) return Number(a) - Number(b)
+      if (aIsNumber) return -1
+      if (bIsNumber) return 1
+      return a.localeCompare(b)
+    })
+  } catch (error) {
+    console.error($t('filter.sizesLoadingError'), error)
+    availableSizes.value = []
+  } finally {
+    loadingAvailableSizes.value = false
+  }
+}
+
+function toggleSize(size) {
+  const index = localFilters.sizes.indexOf(size)
+  if (index === -1) {
+    localFilters.sizes.push(size)
+  } else {
+    localFilters.sizes.splice(index, 1)
+  }
+}
+
+function setColorName(colors) {
+  if (Array.isArray(colors)) {
+    localFilters.colors = colors
+    localFilters.color = colors.length > 0 ? colors[0].color : null
+    localFilters.colorName = colors.length > 0 ? colors[0].name : null
+  } else {
+    localFilters.color = colors?.color
+    localFilters.colorName = colors?.name
+    localFilters.colors = colors ? [colors] : []
+  }
+}
+
+function apply() {
+  emit('apply', localFilters)
+  emit('update:modelValue', false)
+}
+
+function clear() {
+  colorPickerRef.value?.clear()
+  localFilters.sizes = []
+  localFilters.priceFrom = null
+  localFilters.priceTo = null
+  localFilters.color = null
+  localFilters.colorName = null
+  localFilters.colors = []
+  localFilters.withDiscount = false
+  emit('clear')
+  emit('update:modelValue', false)
+}
+
+onMounted(fetchAvailableSizes)
 </script>
 
 <style lang="scss" scoped>

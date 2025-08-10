@@ -9,8 +9,8 @@
             <h4 class="text-h6 text-white q-my-none">{{ title }}</h4>
           </q-card-section>
           <q-card-section>
-            <h6 class="q-my-sm">Пробный период истек!</h6>
-            <p>Чтобы разблокировать аккаунт, пожалуйста, оформите подписку.</p>
+            <h6 class="q-my-sm">{{ $t('blocked.trialExpired') }}</h6>
+            <p>{{ $t('blocked.unlockAccount') }}</p>
           </q-card-section>
           <q-card-actions class="q-px-md q-pb-lg">
             <q-btn
@@ -30,39 +30,33 @@
   </q-page>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref, computed } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import { useRouter } from 'vue-router'
 import { HOME_ROUTE } from 'src/router/routes'
+import { useI18n } from 'vue-i18n'
 
-export default defineComponent({
-  name: 'BlockedPage',
-  setup() {
-    const title = 'Аккаунт заблокирован'
-    const btnLabel = 'Оформить'
-    const isLoading = ref(false)
-
-    const { push } = useRouter()
-
-    const { showSuccess } = useHelpers()
-
-    async function submit() {
-      try {
-        isLoading.value = true
-        showSuccess('Подписка оформлена!')
-        push(HOME_ROUTE)
-      } finally {
-        isLoading.value = false
-      }
-    }
-
-    return {
-      title,
-      btnLabel,
-      submit,
-      isLoading,
-    }
-  }
+defineOptions({
+  name: 'Blocked'
 })
+
+const { t: $t } = useI18n()
+const btnLabel = computed(() => $t('blocked.checkout'))
+
+const title = $t('blocked.subscriptionExpired')
+const isLoading = ref(false)
+
+const { push } = useRouter()
+const { showSuccess } = useHelpers()
+
+async function submit() {
+  try {
+    isLoading.value = true
+    showSuccess($t('blocked.subscriptionIssued'))
+    push(HOME_ROUTE)
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>

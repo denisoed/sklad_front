@@ -11,16 +11,16 @@
 
     <div class="voice-placeholder q-mb-md">
       <span v-if="!isApiAvailable" class="text-red q-mb-md">
-        Распознавание речи недоступно в вашем браузере
+        {{ $t('voiceOverlay.recognitionUnavailable') }}
       </span>
       <span v-else-if="!hasStartedRecording" class="text-bold">
-        Зажмите кнопку ниже, чтобы начать запись
+        {{ $t('voiceOverlay.pressButtonToStart') }}
       </span>
-      <span v-else-if="!recognizedText" class="text-bold">Говорите...</span>
+      <span v-else-if="!recognizedText" class="text-bold">{{ $t('voiceOverlay.speakNow') }}</span>
       <span v-else>{{ recognizedText }}</span>
     </div>
     
-    <!-- Кнопка записи -->
+    <!-- Recording button -->
     <div class="record-button-container">
       <q-btn
         v-if="isApiAvailable"
@@ -45,13 +45,23 @@
 
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import useSpeechRecognition from '../modules/useSpeechRecognition'
 import useHelpers from '../modules/useHelpers'
 
-const emit = defineEmits(['close', 'result'])
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits(['update:modelValue', 'submit', 'close'])
+
+const { t: $t } = useI18n()
 const { showError } = useHelpers()
 
-// Константы
+// Constants
 const TIMEOUTS = {
   RETRY_DELAY: 300,
   RESULT_DELAY: 150,
@@ -81,7 +91,7 @@ const isShowVoiceOverlay = ref(true)
 // Guard to prevent duplicate close event emission
 let hasEmittedClose = false
 
-// Аудио контекст и связанные переменные
+// Audio context and related variables
 let audioContext = null
 let analyser = null
 let dataArray = null
@@ -90,7 +100,7 @@ let animationId = null
 let stream = null
 let isAudioInitialized = false
 
-// Создаем экземпляр распознавания речи
+// Create an instance of speech recognition
 const speechRecognition = useSpeechRecognition()
 const {
   isRecording,
@@ -105,7 +115,7 @@ const {
   restore
 } = speechRecognition
 
-// Устанавливаем callback для проверки, нужно ли продолжать запись
+// Set callback to check if recording should continue
 setShouldContinueCallback(() => isUserPressingButton.value)
 
 // Create a reusable finish handler to rebind after restore()
@@ -114,7 +124,7 @@ const finishHandler = (finalText) => {
     return
   }
   recognizedText.value = finalText
-  // Не убираем лоадер при получении результата - только при закрытии
+  // Do not remove loader on result - only on close
 }
 
 // Register finish handler initially
@@ -122,24 +132,24 @@ onFinish(finishHandler)
 
 // Cleanup function without event emission
 async function cleanup() {
-  // Блокируем все колбэки для предотвращения перезапуска
+  // Block all callbacks to prevent restart
   setShouldContinueCallback(() => false)
   
-  // Сбрасываем все состояния
+  // Reset all states
   isUserPressingButton.value = false
   
-  // Принудительно останавливаем запись
+  // Force stop recording
   if (isRecording.value) {
     stopRecord()
   }
   
-  // Ждем завершения остановки записи
+  // Wait for recording to finish
   await new Promise(resolve => setTimeout(resolve, 100))
   
-  // Полная очистка аудио ресурсов
+  // Full audio resource cleanup
   await stopAudio()
   
-  // Уничтожаем экземпляр распознавания речи
+  // Destroy speech recognition instance
   destroy()
   
 
@@ -173,25 +183,25 @@ function handleRetry() {
   // Reset close flag to allow proper closing after retry
   hasEmittedClose = false
   
-  // Полная очистка состояний
+  // Full state reset
   recognizedText.value = ''
   hasStartedRecording.value = false
   isUserPressingButton.value = false
   isProcessing.value = false
   
-  // Блокируем продолжение записи на время сброса
+  // Block recording continuation during reset
   setShouldContinueCallback(() => false)
   
   if (isRecording.value) {
     stopRecord()
   }
   
-  // Сбрасываем накопленный текст в модуле речи
+  // Reset accumulated text in the speech module
   resetAccumulatedText()
   
   setTimeout(() => {
     isRetrying.value = false
-    // Восстанавливаем callback после сброса
+    // Rebind callback after reset
     setShouldContinueCallback(() => isUserPressingButton.value)
   }, TIMEOUTS.RETRY_DELAY)
 }
@@ -203,13 +213,13 @@ async function handlePointerDown(event) {
   hasStartedRecording.value = true
   isUserPressingButton.value = true
 
-  // Очищаем текст при начале новой записи
+  // Clear text on new recording start
   if (!isRecording.value) {
     recognizedText.value = ''
     resetAccumulatedText()
   }
 
-  // Готовим аудио-визуализацию по требованию
+  // Prepare audio visualization on demand
   if (!isAudioInitialized) {
     try {
       await startAudio()
@@ -231,7 +241,7 @@ async function handlePointerDown(event) {
   }
 }
 
-// Получение результата для отправки
+// Get result for submission
 function getResult() {
   return (transcript.value || recognizedText.value || '').trim()
 }
@@ -244,13 +254,13 @@ function submitIfNeededAndClose() {
   handleClose()
 }
 
-// Общая логика завершения записи
+// General recording finish logic
 async function finishRecording(isCancel = false) {
   isUserPressingButton.value = false
   isProcessing.value = true
 
   if (isCancel) {
-    // Блокируем продолжение записи при отмене
+    // Block recording continuation on cancellation
     setShouldContinueCallback(() => false)
     await handleClose()
     return
@@ -262,7 +272,7 @@ async function finishRecording(isCancel = false) {
 
   await stopAudio()
 
-  // Небольшая задержка, чтобы дать доехать финальным результатам
+  // Small delay to allow final results to arrive
   setTimeout(() => {
     submitIfNeededAndClose()
   }, TIMEOUTS.RESULT_DELAY)
@@ -283,7 +293,7 @@ async function handlePointerCancel(event) {
 
 async function handlePointerLeave(event) {
   if (event) event.preventDefault()
-  // Если палец/курсор ушел за пределы, считаем как отпускание
+  // If finger/cursor leaves, consider it as a release
   if (isUserPressingButton.value) {
     await handlePointerUp(event)
   }
@@ -326,11 +336,11 @@ function drawBars() {
     ctx.restore()
     animationId = requestAnimationFrame(drawBars)
   } catch (error) {
-    console.error('Ошибка при отрисовке визуализации:', error)
+    console.error('Error during visualization drawing:', error)
   }
 }
 
-// Получение аудио constraints для разных платформ
+// Get audio constraints for different platforms
 function getAudioConstraints() {
   return {
     audio: {
@@ -345,7 +355,7 @@ function getAudioConstraints() {
   }
 }
 
-// Создание и настройка AudioContext
+// Create and configure AudioContext
 function createAudioContext() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext
   return new AudioContextClass({
@@ -353,7 +363,7 @@ function createAudioContext() {
   })
 }
 
-// Настройка анализатора аудио
+// Setup audio analyzer
 function setupAnalyser(audioContext) {
   const analyser = audioContext.createAnalyser()
   analyser.fftSize = AUDIO_CONFIG.FFT_SIZE
@@ -361,63 +371,62 @@ function setupAnalyser(audioContext) {
   return analyser
 }
 
-// Обработка ошибок доступа к микрофону с информативными сообщениями
+// Handle microphone access errors with informative messages
 function handleMicrophoneError(error) {
   const errorName = error.name || error.constructor?.name || 'UnknownError'
   
   switch (errorName) {
     case 'NotAllowedError':
-    case 'PermissionDeniedError':
-      showError('Доступ к микрофону запрещен. Разрешите доступ к микрофону в настройках браузера.')
+      showError($t('voice.microphoneError'))
       break
-    case 'PermissionDismissedError':
-      showError('Диалог разрешений закрыт. Попробуйте снова и разрешите доступ к микрофону.')
+    case 'PermissionDeniedError':
+      showError($t('voice.dialogClosed'))
       break
     case 'NotFoundError':
     case 'DevicesNotFoundError':
-      showError('Микрофон не найден. Подключите микрофон или проверьте настройки устройства.')
+      showError($t('voice.micNotFound'))
       break
     case 'NotReadableError':
     case 'TrackStartError':
-      showError('Микрофон используется другим приложением. Закройте другие приложения, использующие микрофон.')
+      showError($t('voice.micInUse'))
       break
     case 'OverconstrainedError':
     case 'ConstraintNotSatisfiedError':
-      showError('Микрофон не поддерживает требуемые параметры записи.')
+      showError($t('voice.micNotSupported'))
       break
     case 'SecurityError':
-      showError('Запись голоса недоступна в небезопасном контексте. Используйте HTTPS.')
+      showError($t('voice.micInUse'))
       break
     case 'TypeError':
-      showError('Ошибка конфигурации микрофона. Обратитесь в техподдержку.')
+      showError($t('voice.configError'))
       break
     default:
-      showError('Не удалось получить доступ к микрофону. Проверьте подключение и настройки.')
+      showError($t('voice.accessError'))
   }
 }
 
 async function startAudio() {
-  // Полная очистка перед новой инициализацией
+  // Full cleanup before new initialization
   if (isAudioInitialized) {
     await stopAudio()
   }
 
   try {
-    // Запрашиваем доступ к микрофону
+    // Request microphone access
     stream = await navigator.mediaDevices.getUserMedia(getAudioConstraints())
     
-    // Создаем новый AudioContext для каждой сессии
+    // Create a new AudioContext for each session
     audioContext = createAudioContext()
     
     if (audioContext.state === 'suspended') {
       await audioContext.resume()
     }
     
-    // Настраиваем анализатор
+    // Setup analyzer
     analyser = setupAnalyser(audioContext)
     dataArray = new Uint8Array(analyser.frequencyBinCount)
     
-    // Подключаем источник
+    // Connect source
     source = audioContext.createMediaStreamSource(stream)
     source.connect(analyser)
     
@@ -427,11 +436,11 @@ async function startAudio() {
     drawBars()
     
   } catch (e) {
-    console.error('Ошибка доступа к микрофону:', e)
+    console.error('Microphone access error:', e)
     await stopAudio()
-    // Показываем информативную ошибку пользователю в зависимости от типа ошибки
+    // Show informative error to user based on error type
     handleMicrophoneError(e)
-    // Закрываем overlay при ошибке доступа к микрофону
+    // Close overlay on microphone access error
     await handleClose()
     // Re-throw error to signal failure to callers
     throw e
@@ -440,13 +449,13 @@ async function startAudio() {
 
 async function stopAudio() {
   try {
-    // Останавливаем анимацию
+    // Stop animation
     if (animationId) {
       cancelAnimationFrame(animationId)
       animationId = null
     }
     
-    // Отключаем source от analyser
+    // Disconnect source from analyser
     if (source) {
       try { 
         source.disconnect() 
@@ -457,50 +466,50 @@ async function stopAudio() {
           })
         }
       } catch (error) { 
-        console.error('Ошибка отключения source:', error) 
+        console.error('Error disconnecting source:', error) 
       }
       source = null
     }
     
-    // Закрываем AudioContext принудительно
+    // Force close AudioContext
     if (audioContext) {
       try { 
         if (audioContext.state !== 'closed') {
-          // На iOS нужно сначала suspend, потом close
+          // On iOS, first suspend, then close
           if (audioContext.state === 'running') {
             await audioContext.suspend()
           }
           await audioContext.close() 
         }
       } catch (error) { 
-        console.error('Ошибка закрытия AudioContext:', error) 
+        console.error('Error closing AudioContext:', error) 
       }
       audioContext = null
     }
     
-    // Принудительно останавливаем все треки медиа потока
+    // Force stop all media stream tracks
     if (stream) {
       stream.getTracks().forEach(track => {
         try {
           track.stop()
           track.enabled = false
-          // Дополнительная очистка для iOS
+          // Additional cleanup for iOS
           if (track.readyState !== 'ended') {
             track.stop()
           }
         } catch (error) {
-          console.error('Ошибка остановки трека:', error)
+          console.error('Error stopping track:', error)
         }
       })
       stream = null
     }
     
-    // Сбрасываем все связанные переменные
+    // Reset all related variables
     analyser = null
     dataArray = null
     isAudioInitialized = false
     
-    // Дополнительная очистка canvas
+    // Additional canvas cleanup
     if (canvasRef.value) {
       const canvas = canvasRef.value
       const ctx = canvas.getContext('2d')
@@ -508,18 +517,18 @@ async function stopAudio() {
     }
     
   } catch (error) {
-    console.error('Ошибка при остановке аудио:', error)
+    console.error('Error during audio stop:', error)
   }
 }
 
-// Следим за изменениями transcript для обновления отображения
+// Watch transcript changes to update display
 watch(transcript, (newText) => {
   if (newText) {
     recognizedText.value = newText
   }
 })
 
-// Дополнительная защита - принудительная очистка при закрытии вкладки/браузера
+// Additional protection - forced cleanup on tab/browser close
 function handleBeforeUnload() {
   setShouldContinueCallback(() => false)
   if (isRecording.value) {
@@ -528,25 +537,25 @@ function handleBeforeUnload() {
   destroy()
 }
 
-// Обработчик смены видимости вкладки
+// Visibility change handler for tab
 function handleVisibilityChange() {
   if (document.hidden) {
-    // Если вкладка скрылась и overlay открыт - принудительно закрываем
+    // If tab is hidden and overlay is open - force close
     handleClose()
   }
 }
 
-// Инициализация компонента при монтировании
+// Component initialization on mount
 onMounted(async () => {
   // Reset close flag for component reuse scenarios
   hasEmittedClose = false
   isShowVoiceOverlay.value = true
   
-  // Устанавливаем обработчики событий
+  // Set event listeners
   window.addEventListener('beforeunload', handleBeforeUnload)
   document.addEventListener('visibilitychange', handleVisibilityChange)
   
-  // Инициализируем состояние
+  // Initialize state
   recognizedText.value = ''
   hasStartedRecording.value = false
   isRetrying.value = false
@@ -576,11 +585,11 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(async () => {
-  // Очищаем обработчики событий
+  // Clear event listeners
   window.removeEventListener('beforeunload', handleBeforeUnload)
   document.removeEventListener('visibilitychange', handleVisibilityChange)
   
-  // Выполняем только очистку ресурсов без эмиссии события
+  // Perform only resource cleanup without event emission
   await cleanup()
 })
 </script>

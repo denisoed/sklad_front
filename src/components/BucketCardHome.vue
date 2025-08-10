@@ -1,7 +1,7 @@
 <template>
   <div class="bucket-section">
     <div class="bucket-card-header">
-      <h6 class="text-subtitle1 q-mt-none q-mb-sm">Заказы</h6>
+      <h6 class="text-subtitle1 q-mt-none q-mb-sm">{{ $t('bucket.orders') }}</h6>
     </div>
     <div class="bucket-card block-bg" @click="push('/bucket')" v-ripple>
       <div class="bucket-card-content">
@@ -12,13 +12,13 @@
           </div>
         </div>
         <div class="bucket-card-info">
-          <h6 class="bucket-card-title">Корзина</h6>
+          <h6 class="bucket-card-title">{{ $t('bucket.title') }}</h6>
           <p class="bucket-card-description">
             <span v-if="bucketProductsCount > 0">
-              {{ bucketProductsCount }} {{ bucketProductsCount === 1 ? 'товар' : bucketProductsCount < 5 ? 'товара' : 'товаров' }} в корзине
+              {{ bucketProductsCount }} {{ bucketProductsCount === 1 ? $t('bucket.item') : bucketProductsCount < 5 ? $t('bucket.items2') : $t('bucket.items5') }} {{ $t('bucket.inBucket') }}
             </span>
             <span v-else>
-              Корзина пуста
+              {{ $t('bucket.emptyBasket') }}
             </span>
           </p>
         </div>

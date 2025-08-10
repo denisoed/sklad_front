@@ -14,7 +14,7 @@
         v-model="selectedFilters.search"
         outlined
         debounce="800"
-        label="Поиск по названию"
+        :label="$t('filter.searchByName')"
         class="full-width block-bg border-radius-sm"
         dense
         :autofocus="autofocus"
@@ -30,7 +30,7 @@
             icon="mic"
             size="sm"
             @click="showVoiceOverlay = true"
-            aria-label="Голосовой поиск"
+            :aria-label="$t('voice.search')"
           />
         </template>
       </q-input>

@@ -3,58 +3,46 @@
     <q-card style="width: 350px">
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          Создание шаблона
+          {{ $t('printing.createTemplate') }}
         </p>
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width">
-            <q-select outlined v-model="formData.type" emit-value map-options clearable :options="TYPES"
-              class="q-mb-md" label="Тип шаблона" behavior="menu">
-              <template v-slot:prepend>
-                <q-icon name="mdi-attachment" />
-              </template>
-              <template v-slot:option="scope">
-                <q-item v-if="!scope.opt.group" v-bind="scope.itemProps" v-on="scope.itemEvents">
-                  <q-item-section>
-                    <q-item-label class="flex">
-                      <div class="q-pa-sm q-mr-sm"
-                        :style="`border-radius:100%;opacity:0.5;background: ${scope.opt.color};`" />
-                      <span>{{ scope.opt.label }}</span>
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            <q-select
+              v-model="formData.type"
+              :options="templateTypes"
+              outlined
+              class="q-mb-md"
+              :label="$t('printing.templateType')"
+              behavior="menu"
+            />
+            
             <q-input
+              ref="nameRef"
               v-model="formData.name"
               outlined
-              clearable
-              label="Название шаблона"
-              class="full-width q-mb-md"
-              enterkeyhint="done"
+              class="q-mb-md"
+              :label="$t('printing.templateName')"
+              :rules="[val => val?.length || $t('common.requiredField')]"
             />
-            <div class="flex no-wrap">
+            
+            <div class="flex full-width q-gap-md q-mb-md">
               <q-input
                 v-model="formData.width"
                 outlined
-                clearable
                 type="number"
-                label="Ширина"
-                class="q-mr-md"
-                min="1"
-                hint="миллиметры"
-                style="flex: 1;"
-                enterkeyhint="done"
+                class="col"
+                :label="$t('printing.width')"
+                :hint="$t('printing.millimeters')"
+                :rules="[val => val?.length || $t('common.requiredField')]"
               />
               <q-input
-                v-model="formData.height"
+                v-model="data.height"
                 outlined
-                clearable
                 type="number"
-                label="Высота"
-                hint="миллиметры"
-                min="1"
-                style="flex: 1;"
-                enterkeyhint="done"
+                class="col"
+                :label="$t('printing.height')"
+                :hint="$t('printing.millimeters')"
+                :rules="[val => val?.length || $t('common.requiredField')]"
               />
             </div>
           </div>
@@ -72,90 +60,84 @@
   </q-dialog>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   reactive,
   watch,
-  toRefs
+  toRefs,
+  computed
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-export default defineComponent({
-  name: 'NewTemplate',
-  props: {
-    selected: {
-      type: Object,
-      default: null,
-    },
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
+const props = defineProps({
+  selected: {
+    type: Object,
+    default: null,
   },
-  emits: ['close', 'on-create', 'on-delete'],
-  setup(props, { emit }) {
-    const { selected } = toRefs(props)
-    const formData = reactive({
-      id: null,
-      type: null,
-      name: null,
-      width: null,
-      height: null,
-    })
+  opened: {
+    type: Boolean,
+    default: false
+  },
+  isLoading: {
+    type: Boolean,
+    default: false
+  },
+})
+const emit = defineEmits(['close', 'on-create', 'on-delete'])
 
-    const TYPES = [
-      {
-        label: 'Ценник',
-        value: 'price-label',
-        color: 'rgb(0 0 255 / 50%)',
-      },
-    ]
+const { selected } = toRefs(props)
+const formData = reactive({
+  id: null,
+  type: null,
+  name: null,
+  width: null,
+  height: null,
+})
 
-    function close() {
-      emit('close')
-    }
+const TYPES = [
+  {
+    label: $t('printing.priceLabel'),
+    value: 'price-label',
+    color: 'rgb(0 0 255 / 50%)',
+  },
+]
 
-    function submit() {
-      emit('on-create', {
-        type: formData.type,
-        name: formData.name,
-        width: formData.width,
-        height: formData.height,
-      })
-    }
+const { t: $t } = useI18n()
 
-    function remove() {
-      emit('on-delete', formData.id)
-    }
+const templateTypes = computed(() => [
+  { label: $t('printing.priceLabel'), value: 'price-label' }
+])
 
-    function clear() {
-      formData.id = null
-      formData.type = null
-      formData.name = null
-      formData.width = null
-      formData.height = null
-    }
+function close() {
+  emit('close')
+}
 
-    watch(selected, (newVal) => {
-      formData.id = newVal?.id
-      formData.type = newVal?.type
-      formData.name = newVal?.name
-      formData.width = newVal?.width
-      formData.height = newVal?.height
-    })
+function submit() {
+  emit('on-create', {
+    type: formData.type,
+    name: formData.name,
+    width: formData.width,
+    height: formData.height,
+  })
+}
 
-    return {
-      close,
-      submit,
-      TYPES,
-      formData,
-      clear,
-      remove,
-    }
-  }
+function remove() {
+  emit('on-delete', formData.id)
+}
+
+function clear() {
+  formData.id = null
+  formData.type = null
+  formData.name = null
+  formData.width = null
+  formData.height = null
+}
+
+watch(selected, (newVal) => {
+  formData.id = newVal?.id
+  formData.type = newVal?.type
+  formData.name = newVal?.name
+  formData.width = newVal?.width
+  formData.height = newVal?.height
 })
 </script>

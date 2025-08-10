@@ -1,13 +1,13 @@
 <template>
   <div class="sizes-tab flex column q-gap-md">
-    <Dropdown title="Настроить размеры" opened>
+    <TheDropdown :title="$t('sizes.configureSizes')" opened>
       <template #icon>
         <q-icon name="mdi-cog" size="sm" class="q-mr-sm" />
       </template>
       <template #body>
         <div class="flex column">
           <div class="flex items-center justify-between q-mb-md">
-            <span class="text-subtitle2">Конфигурации размеров</span>
+            <span class="text-subtitle2">{{ $t('settings.sizesConfigurations') }}</span>
             <q-btn 
               color="primary" 
               round 
@@ -18,6 +18,13 @@
             </q-btn>
           </div>
           
+          <TheSelector
+            v-model="selectedSizes"
+            :title="$t('mainSettings.sizesTab.sizes')"
+            :options="sizesOptions"
+            @on-create-new="onCreateNew"
+          />
+
           <div v-if="sizes?.length" class="q-gap-sm flex column">
             <div
               style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
@@ -38,18 +45,15 @@
             <q-separator class="q-mb-md full-width" />
             <span v-if="loading" class="text-grey-6">
               <q-icon size="sm" name="mdi-loading" class="mdi-spin q-mr-sm" />
-              Загрузка...
+              {{ $t('pages.loading') }}
             </span>
             <div v-else class="flex column items-start text-left">
-              <span class="text-subtitle2">Список пуст</span>
-              <p class="q-mb-none text-grey-5 text-caption q-mt-xs">
-                Создавайте и управляйте списком размеров под разные товары
-              </p>
+              {{ $t('pages.listIsEmpty') }}
             </div>
           </div>
         </div>
       </template>
-    </Dropdown>
+    </TheDropdown>
 
     <CrudSizesModal
       :item="selectedSizes"
@@ -60,70 +64,49 @@
       @close="onClose"
       @remove="removeSizes"
       @finished="onFinish"
-      title="размеры"
+      :title="$t('mainSettings.sizesTab.sizes')"
     />
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
-  onBeforeMount
+  onBeforeMount,
 } from 'vue'
 import CrudSizesModal from 'src/components/MainSettings/Sizes/CrudSizesModal.vue'
 import SizeItem from 'src/components/MainSettings/Sizes/SizeItem.vue'
-import Dropdown from 'src/components/Dropdown/index.vue'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import useSizes from 'src/modules/useSizes'
 import useProfile from 'src/modules/useProfile'
 import { CREATE_SIZES, UPDATE_SIZES } from 'src/graphql/sizes'
 
-export default defineComponent({
-  name: 'SizesTab',
-  components: {
-    SizeItem,
-    CrudSizesModal,
-    Dropdown,
-  },
-  setup() {
-    const selectedSizes = ref(null)
-    const openedCrudSizesModal = ref(false)
+defineOptions({
+  name: 'SizesTab'
+})
 
-    const { sizes, fetchSizes, removeSizes, loading } = useSizes()
-    const { profile } = useProfile()
+const selectedSizes = ref(null)
+const openedCrudSizesModal = ref(false)
 
-    function onClose() {
-      selectedSizes.value = null
-      openedCrudSizesModal.value = false
-    }
+const { sizes, fetchSizes, removeSizes, loading } = useSizes()
+const { profile } = useProfile()
 
-    function onEdit(item) {
-      selectedSizes.value = item 
-      openedCrudSizesModal.value = true
-    }
+function onClose() {
+  selectedSizes.value = null
+  openedCrudSizesModal.value = false
+}
 
-    function onFinish() {
-      fetchSizes()
-    }
+function onEdit(item) {
+  selectedSizes.value = item 
+  openedCrudSizesModal.value = true
+}
 
-    onBeforeMount(() => {
-      fetchSizes()
-    })
+function onFinish() {
+  fetchSizes()
+}
 
-    return {
-      openedCrudSizesModal,
-      selectedSizes,
-      sizes,
-      profile,
-      removeSizes,
-      loading,
-      onFinish,
-      onEdit,
-      onClose,
-      CREATE_SIZES,
-      UPDATE_SIZES,
-    }
-  }
+onBeforeMount(() => {
+  fetchSizes()
 })
 </script>
 

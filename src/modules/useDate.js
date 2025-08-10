@@ -1,11 +1,13 @@
 import moment from 'moment'
 import { FILTER_FORMAT } from 'src/config'
+import { useI18n } from 'vue-i18n'
 
 // Cache for formatTimeAgo results
 const timeAgoCache = new Map()
 const CACHE_DURATION = 60000 // 1 minute cache
 
 const useDate = () => {
+  const { t: $t, locale } = useI18n({ useScope: 'global' })
   function getCurrentWeek() {
     const currentDate = moment();
     const weekStart = currentDate.clone().startOf('isoWeek');
@@ -38,47 +40,25 @@ const useDate = () => {
   }
 
   function pluralize(value, type) {
-    if (type === 'min') {
-      if (value <= 1) return 'минуту'
-      if (value > 1 && value <= 4) return 'минуты'
-      return 'минут'
-    }
-    if (type === 'hour') {
-      if (value <= 1) return 'час'
-      if (value > 1 && value <= 4) return 'часа'
-      return 'часов'
-    }
-    if (type === 'day') {
-      if (value <= 1) return 'день'
-      if (value > 1 && value <= 4) return 'дня'
-      return 'дней'
-    }
-    if (type === 'week') {
-      if (value <= 1) return 'неделю'
-      if (value > 1 && value <= 4) return 'недели'
-      return 'недель'
-    }
-    if (type === 'month') {
-      if (value <= 1) return 'месяц'
-      if (value > 1 && value <= 4) return 'месяца'
-      return 'месяцев'
-    }
+    const key = value <= 1 ? 'one' : (value > 1 && value <= 4 ? 'few' : 'many')
+    return $t(`date.${type}.${key}`)
   }
 
   // Optimized formatTimeAgo with caching
   function formatTimeAgo(dateString) {
     const now = Date.now()
-    
+    const cacheKey = `${locale.value}__${dateString}`
+
     // Check cache first
-    if (timeAgoCache.has(dateString)) {
-      const cached = timeAgoCache.get(dateString)
+    if (timeAgoCache.has(cacheKey)) {
+      const cached = timeAgoCache.get(cacheKey)
       if (now - cached.timestamp < CACHE_DURATION) {
         return cached.result
       } else {
-        timeAgoCache.delete(dateString)
+        timeAgoCache.delete(cacheKey)
       }
     }
-    
+
     const date = new Date(dateString);
     const diffMilliseconds = now - date.getTime();
     const minutes = Math.floor(diffMilliseconds / (60 * 1000));
@@ -86,34 +66,34 @@ const useDate = () => {
     const days = Math.floor(diffMilliseconds / (24 * 60 * 60 * 1000));
     const weeks = Math.floor(diffMilliseconds / (7 * 24 * 60 * 60 * 1000));
     const months = Math.floor(diffMilliseconds / (30 * 24 * 60 * 60 * 1000));
-    
+
     let result
     if (minutes < 1) {
-      result = 'только что';
+      result = $t('date.justNow');
     } else if (minutes < 60) {
-      result = `${minutes} ${pluralize(minutes, 'min')} назад`;
+      result = `${minutes} ${pluralize(minutes, 'min')} ${$t('date.ago')}`;
     } else if (hours < 24) {
-      result = `${hours} ${pluralize(hours, 'hour')} назад`;
+      result = `${hours} ${pluralize(hours, 'hour')} ${$t('date.ago')}`;
     } else if (days < 7) {
-      result = `${days} ${pluralize(days, 'day')} назад`;
+      result = `${days} ${pluralize(days, 'day')} ${$t('date.ago')}`;
     } else if (weeks < 4) {
-      result = `${weeks} ${pluralize(weeks, 'week')} назад`;
+      result = `${weeks} ${pluralize(weeks, 'week')} ${$t('date.ago')}`;
     } else {
-      result = `${months} ${pluralize(months, 'month')} назад`;
+      result = `${months} ${pluralize(months, 'month')} ${$t('date.ago')}`;
     }
-    
+
     // Cache the result
-    timeAgoCache.set(dateString, {
+    timeAgoCache.set(cacheKey, {
       result,
       timestamp: now
     })
-    
+
     // Limit cache size to prevent memory leaks
     if (timeAgoCache.size > 500) {
       const firstKey = timeAgoCache.keys().next().value
       timeAgoCache.delete(firstKey)
     }
-    
+
     return result
   }
 

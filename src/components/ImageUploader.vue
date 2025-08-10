@@ -25,7 +25,7 @@
     >
       <span>
         <q-icon name="mdi-image-plus" class="q-mr-sm" />
-        Загрузите фото
+        {{ $t('common.uploadPhoto') }}
       </span>
     </q-file>
     
@@ -149,7 +149,7 @@ export default defineComponent({
         const compressedImage = await imageCompression(image, options)
         const fileSize = (compressedImage.size / 1000)
         if (fileSize >= MAX_SIZE) {
-          showError(`File size must be less than ${MAX_SIZE} KB.`)
+          showError($t('validation.fileSizeLessThan', { size: MAX_SIZE }))
           return
         }
         emit('on-change', compressedImage)

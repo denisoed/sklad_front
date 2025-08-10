@@ -1,14 +1,14 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Категории товаров">
+      <PageTitle :title="$t('category.productCategories')">
         <div>
           <q-card-section class="q-pt-none">
-            На этой странице находятся товары разбитые по категориям. Категории обеспечивают более удобный визуальный поиск.
+            {{ $t('category.pageDescription') }}
           </q-card-section>
           <q-card-section class="q-pt-none text-primary">
-            <p class="text-caption">
-              Чтобы удалить или отредактировать категорию, удерживайте её несколько секунд.
+            <p class="text-warning">
+              {{ $t('category.deleteHint') }}
             </p>
           </q-card-section>
         </div>
@@ -19,7 +19,7 @@
           v-if="!categories.length"
         >
           <span>
-            Категории не найдены!
+            {{ $t('category.notFound') }}
           </span>
         </h6>
         <router-link
@@ -66,28 +66,28 @@
             name="mdi-loading"
             class="mdi-spin q-mr-sm "
           />
-          Загрузка...
+          {{ $t('pages.loading') }}
         </span>
         <div v-else class="flex column items-center">
           <span>
             <q-icon size="sm" name="mdi-cart-outline" class="q-mr-sm text-grey-5" />
-            Список пуст
+            {{ $t('pages.listIsEmpty') }}
           </span>
           <p class="q-mt-md text-subtitle2">
-            Категории помогут разделять <br> товары по группам
+            {{ $t('category.helpText') }}
           </p>
         </div>
       </h6>
       <div class="flex column items-center q-mt-md">
         <q-btn
-          v-permissions="[CAN_ADD_CATEGORY]"
+          v-permissions="{ permissions: [CAN_ADD_CATEGORY] }"
           color="primary"
           push
           :loading="categoriesLoading"
           @click="openManageCategoryDialog"
           style="z-index: 2;"
         >
-          Добавить категорию
+          {{ $t('category.addCategory') }}
         </q-btn>
       </div>
     </div>
@@ -96,16 +96,16 @@
 
 <script setup>
 import {
-  ref,
   onBeforeMount,
-  onBeforeUnmount
+  onBeforeUnmount,
+  ref
 } from 'vue'
-import PageTitle from 'src/components/PageTitle.vue'
 import { useRoute } from 'vue-router'
-import { CAN_ADD_CATEGORY } from 'src/permissions'
+import PageTitle from 'src/components/PageTitle.vue'
 import useDialog from 'src/modules/useDialog'
 import { MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
 import useCategories from 'src/modules/useCategories'
+import { CAN_ADD_CATEGORY } from 'src/permissions'
 
 const { categories, categoriesLoading, fetchCategories } = useCategories()
 const { params } = useRoute()

@@ -36,9 +36,9 @@
         <q-item-section avatar>
           <q-icon name="feedback" />
         </q-item-section>
-        <q-item-section>
-          Отзыв
-        </q-item-section>
+          <q-item-section>
+            {{ $t('feedback.title') }}
+          </q-item-section>
       </q-item>
     </FeedbackDialog>
     
@@ -54,7 +54,7 @@
           <q-img src="~assets/logo.svg" class="drawer-install-logo" />
         </q-item-section>
         <q-item-section>
-          <span>Установить</span>
+            <span>{{ $t('common.install') }}</span>
         </q-item-section>
       </q-item>
       <template v-for="(item, index) in MENU_LIST_BOTTOM" :key="index">
@@ -83,8 +83,10 @@
 <script>
 import {
   defineComponent,
+  computed,
 } from 'vue'
 import { copyToClipboard } from 'quasar';
+import { useI18n } from 'vue-i18n'
 import UserInfo from 'src/components/UserInfo.vue'
 import FeedbackDialog from 'src/components/FeedbackDialog/index.vue'
 import useProfile from 'src/modules/useProfile'
@@ -94,7 +96,7 @@ import useHelpers from 'src/modules/useHelpers'
 const MENU_LIST = [
   // {
   //   icon: 'mdi-account-group-outline',
-  //   label: 'Контакты',
+  //   label: $t('pages.contacts'),
   //   separator: false,
   //   disable: true,
   //   to: '/contacts'
@@ -102,7 +104,7 @@ const MENU_LIST = [
   // {
   //   icon: 'mdi-book-open-page-variant',
   //   iconColor: 'primary',
-  //   label: 'Блог',
+  //   label: $t('pages.posts'),
   //   separator: false,
   //   disable: false,
   //   to: '/posts'
@@ -116,6 +118,7 @@ export default defineComponent({
     FeedbackDialog,
   },
   setup() {
+    const { t: $t } = useI18n()
     const { profile } = useProfile()
     const { logout, revokeToken } = useJwtMethods()
     const { showSuccess } = useHelpers()
@@ -125,10 +128,10 @@ export default defineComponent({
       logout()
     }
 
-    const MENU_LIST_BOTTOM = [
+    const MENU_LIST_BOTTOM = computed(() => [
       {
         icon: 'settings',
-        label: 'Настройки',
+        label: $t('common.settings'),
         separator: false,
         disable: false,
         to: '/main-settings',
@@ -137,18 +140,18 @@ export default defineComponent({
       {
         icon: 'mdi-logout',
         color: 'deep-orange',
-        label: 'Выйти',
+        label: $t('mainSettings.userTab.logout'),
         separator: false,
         disable: false,
         visible: !window?.Telegram?.WebApp?.initData,
         action: changeAccount
       }
-    ]
+    ])
 
     function copyTgId() {
       if (!profile.value.email && !profile.value.telegramId) return
       copyToClipboard(profile.value.email || profile.value.telegramId)
-      showSuccess(profile.value.email ? 'Почта скопирована' : 'Telegram ID скопирован')
+      showSuccess(profile.value.email ? $t('pages.contactsCopied') : $t('pages.telegramCopied'))
     }
 
     return {

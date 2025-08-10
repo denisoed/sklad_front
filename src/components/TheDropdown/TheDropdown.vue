@@ -2,7 +2,7 @@
   <div class="dropdown block-bg" :class="{ 'dropdown--outline': outline }">
     <div @click="toggle" class="dropdown_header flex items-center q-pa-md cursor-pointer">
       <slot name="icon" />
-      <span v-html="title" class="text-bold" />
+      <span v-html="title || $t('common.title')" class="text-bold" />
       <div class="dropdown_header-arrow q-ml-auto">
         <q-icon name="mdi-chevron-down" :class="{ 'mdi-rotate-180': isOpen }" size="sm" />
       </div>
@@ -13,43 +13,37 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref } from 'vue'
 
-export default defineComponent({
-  name: 'DropDown',
-  props: {
-    title: {
-      type: String,
-      default: 'Заголовок'
-    },
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    outline: {
-      type: Boolean,
-      default: false
-    }
+defineOptions({
+  name: 'TheDropdown'
+})
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: null
   },
-  setup(props) {
-    const isOpen = ref(props.opened)
-
-    function close() {
-      isOpen.value = false
-    }
-
-    function toggle() {
-      isOpen.value = !isOpen.value
-    }
-
-    return {
-      isOpen,
-      close,
-      toggle
-    }
+  opened: {
+    type: Boolean,
+    default: false
+  },
+  outline: {
+    type: Boolean,
+    default: false
   }
 })
+
+const isOpen = ref(props.opened)
+
+function close() {
+  isOpen.value = false
+}
+
+function toggle() {
+  isOpen.value = !isOpen.value
+}
 </script>
 
 <style lang="scss" scoped>

@@ -12,7 +12,7 @@
       @mousedown="onMouseDown(s)"
       @touchstart="onMouseDown(s)"
     />
-    <p class="full-width btn-sizes-list_desc text-center q-mb-none">Чтобы удалить размер, удерживайте его несколько секунд.</p>
+    <p class="full-width btn-sizes-list_desc text-center q-mb-none">{{ $t('pages.deleteSize') }}</p>
   </div>
 </template>
 

@@ -66,7 +66,7 @@ export default defineComponent({
   props: {
     label: {
       type: String,
-      default: 'Поля для ввода чисел'
+      default: null
     },
     hint: {
       type: String,

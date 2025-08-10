@@ -1,18 +1,18 @@
 <template>
   <div class="full-width q-mt-md">
-    <h6 class="q-mt-none q-mb-md text-grey-5 text-subtitle1">Подключение к принтеру</h6>
+    <h6 class="q-mt-none q-mb-md text-grey-5 text-subtitle1">{{ $t('printing.printerConnection') }}</h6>
     <h6 v-if="!listTemplates.length" class="full-width flex column items-center text-center text-grey-5 q-ma-none">
       <span v-if="loadingTemplates">
         <q-icon size="sm" name="mdi-loading" class="mdi-spin q-mr-sm " />
-        Загрузка...
+        {{ $t('pages.loading') }}
       </span>
       <div v-else class="flex column items-center">
         <span>
           <q-icon size="sm" name="mdi-printer-alert" class="q-mr-sm text-grey-5" />
-          Список пуст
+          {{ $t('pages.listIsEmpty') }}
         </span>
         <p class="q-mt-md text-subtitle2 " style="max-width:350px;">
-          Для создания шаблона, воспользуйтесь кнопкой "Создать шаблон", под этим описанием.
+          {{ instructionText }}
         </p>
       </div>
     </h6>
@@ -43,7 +43,7 @@
     </div>
     <div class="flex column items-center q-mt-lg">
       <q-btn color="primary" push outline @click="openedNewTemplateModal = true">
-        Создать шаблон
+        {{ $t('printing.createTemplate') }}
       </q-btn>
     </div>
 
@@ -74,6 +74,7 @@ import useHelpers from 'src/modules/useHelpers'
 import { useRoute } from 'vue-router'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import NewTemplate from 'src/components/Settings/NewTemplate.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'SettingsPrint',
@@ -99,6 +100,7 @@ export default defineComponent({
       refetch: refetchTemplates
     } = useQuery(PRINT_TEMPLATES)
     const { showSuccess, showError } = useHelpers()
+    const { t: $t } = useI18n()
 
     const openedNewTemplateModal = ref(false)
     const selectedTemplate = ref(null)
@@ -121,29 +123,29 @@ export default defineComponent({
       if (!errorCreateTemplate.value) {
         refetchTemplates()
         openedNewTemplateModal.value = false
-        showSuccess('Шаблон создан!')
+        showSuccess($t('printing.templateCreated'))
         close()
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('common.error') + '. ' + $t('common.tryLater'))
       }
       close()
     }
 
     async function onDelete(id) {
       $q.dialog({
-        title: 'Удалить шаблон?',
-        message: 'Вы уверены, что хотите удалить этот шаблон?',
+        title: $t('printing.deleteTemplate'),
+        message: $t('printing.deleteTemplateConfirm'),
         cancel: true,
         persistent: true,
         ok: {
           color: 'deep-orange',
-          label: 'Удалить',
+          label: $t('common.delete'),
           push: true
         },
         cancel: {
           color: 'white',
           textColor: 'black',
-          label: 'Отмена',
+          label: $t('common.cancel'),
           push: true
         }
       }).onOk(async () => {
@@ -151,10 +153,10 @@ export default defineComponent({
         if (!errorDeleteTemplate.value) {
           refetchTemplates()
           openedNewTemplateModal.value = false
-          showSuccess('Шаблон успешно удалён!')
+          showSuccess($t('printing.templateDeleted'))
           close()
         } else {
-          showError('Произошла ошибка. Попробуйте позже.')
+          showError($t('common.error') + '. ' + $t('common.tryLater'))
         }
         close()
       })
@@ -166,6 +168,7 @@ export default defineComponent({
     )
 
     const listTemplates = computed(() => templates.value?.printTemplates || [])
+    const instructionText = computed(() => $t('printing.createTemplateInstruction'))
 
     return {
       openedNewTemplateModal,
@@ -178,7 +181,8 @@ export default defineComponent({
       listTemplates,
       loadingTemplates,
       selectedTemplate,
-      params
+      params,
+      instructionText
     }
   }
 })

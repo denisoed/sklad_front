@@ -1,7 +1,7 @@
 <template>
   <div class="subscr-expired flex items-center justify-between q-pa-md">
-    <span class="text-bold text-white">Подписка истекла</span>
-    <q-btn push color="deep-orange">Продлить</q-btn>
+    <span class="text-bold text-white">{{ $t('blocked.subscriptionExpired') }}</span>
+    <q-btn push color="deep-orange">{{ $t('blocked.extend') }}</q-btn>
   </div>
 </template>
 

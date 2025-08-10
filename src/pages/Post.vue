@@ -11,7 +11,7 @@
         >
           <q-icon name="mdi-arrow-left" />
         </q-btn>
-        <div class="updated-at">Обновлено: {{ postResult?.updated_at }}</div>
+        <div class="updated-at">{{ $t('pages.updated') }}: {{ postResult?.updated_at }}</div>
       </div>
       <h1 class="q-my-none">{{ postResult?.title }}</h1>
       <VMarkdownView

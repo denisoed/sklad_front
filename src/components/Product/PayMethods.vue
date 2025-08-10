@@ -1,5 +1,5 @@
 <template>
-  <Dropdown title="Способы оплаты" outline>
+  <TheDropdown :title="$t('product.paymentMethods')" outline>
     <template #icon>
       <q-icon name="mdi-format-list-checks" size="sm" class="q-mr-sm" />
     </template>
@@ -7,30 +7,30 @@
       <div class="pay-methods flex column q-gap-md">
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === PAY_CASH }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">Наличными</div>
+            <div class="pay-methods_title">{{ $t('bucket.paymentMethod') }}</div>
             <q-radio v-model="selected" :val="PAY_CASH" dense />
           </label>
           <div v-if="selected === PAY_CASH" class="pay-methods_body">
-            <p>Этот товар будет оплачен наличными</p>
+            <p>{{ $t('bucket.cashDescription') }}</p>
           </div>
         </div>
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === PAY_CARD }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">Картой</div>
+            <div class="pay-methods_title">{{ $t('bucket.paymentCard') }}</div>
             <q-radio v-model="selected" :val="PAY_CARD" dense />
           </label>
           <div v-if="selected === PAY_CARD" class="pay-methods_body">
-            <p>Этот товар будет оплачен картой</p>
+            <p>{{ $t('bucket.cardDescription') }}</p>
           </div>
         </div>
         <div v-if="false" class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === PAY_BOTH }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">Смешанная оплата</div>
+            <div class="pay-methods_title">{{ $t('bucket.mixed') }}</div>
             <q-radio v-model="selected" :val="PAY_BOTH" dense />
           </label>
           <div v-if="selected === PAY_BOTH" class="pay-methods_body flex column q-mt-sm">
             <div class="flex column">
-              <p>Наличными</p>
+              <p>{{ $t('bucket.paymentMethod') }}</p>
               <InputPrice
                 :model-value="formData.cashSum"
                 @update:model-value="onChangeCashSum"
@@ -39,13 +39,13 @@
                 dense
                 tabindex="2"
                 :rules="[
-                  () => formData.cashSum <= sum || `Значение не может быть больше ${sum - formData.cardSum}`
+                  () => formData.cashSum <= sum || `${$t('validation.valueCannotBeMore')} ${sum - formData.cardSum}`
                 ]"
                 icon="mdi-cash-multiple"
               />
             </div>
             <div class="flex column">
-              <p>Картой</p>
+              <p>{{ $t('bucket.paymentCard') }}</p>
               <InputPrice
                 :model-value="cardSumTotal"
                 class="q-mt-xs q-pb-none"
@@ -59,7 +59,7 @@
         </div>
       </div>
     </template>
-  </Dropdown>
+  </TheDropdown>
 </template>
 
 <script setup>
@@ -71,7 +71,7 @@ import {
 } from 'vue'
 import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
-import Dropdown from 'src/components/Dropdown'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 
 const PAY_CASH = 'PAY_CASH';
 const PAY_CARD = 'PAY_CARD';

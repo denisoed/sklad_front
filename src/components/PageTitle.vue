@@ -9,7 +9,7 @@
         class="q-mr-md"
         :link="link"
       />
-      <h6 v-html="title" class="text-h6 q-my-none q-mr-sm" />
+      <h6 v-html="title || $t('common.title')" class="text-h6 q-my-none q-mr-sm" />
       <slot name="custom" />
       <div v-if="hasSlot" class="q-ml-auto">
         <q-btn
@@ -29,7 +29,7 @@
         <q-dialog v-model="dialog">
           <q-card class="full-width">
             <q-card-section>
-              <div class="text-h6">Инфо</div>
+              <div class="text-h6">{{ $t('pages.info') }}</div>
             </q-card-section>
             <slot />
             <q-btn
@@ -52,46 +52,39 @@
   </q-pull-to-refresh>
 </template>
 
-<script>
+<script setup>
 import {
   computed,
-  defineComponent,
+  useSlots,
   ref
 } from 'vue'
 import BtnBack from 'src/components/BtnBack.vue'
 
-export default defineComponent({
-  name: 'PageTitle',
-  components: {
-    BtnBack
-  },
-  props: {
-    title: {
-      type: String,
-      default: 'Заголовок'
-    },
-    hideBackBtn: {
-      type: Boolean,
-      default: false
-    },
-    link: {
-      type: String,
-      default: null,
-    },
-  },
-  setup(props, { slots }) {
-    const dialog = ref(false)
-    const hasSlot = computed(() => !!slots['default'])
-
-    function refresh() {
-      window.location.reload()
-    }
-
-    return {
-      dialog,
-      hasSlot,
-      refresh
-    }
-  }
+defineOptions({
+  name: 'PageTitle'
 })
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: null
+  },
+  hideBackBtn: {
+    type: Boolean,
+    default: false
+  },
+  link: {
+    type: String,
+    default: null,
+  },
+})
+
+const slots = useSlots()
+
+const dialog = ref(false)
+const hasSlot = computed(() => !!slots['default'])
+
+function refresh() {
+  window.location.reload()
+}
 </script>

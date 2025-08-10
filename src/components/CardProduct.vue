@@ -5,7 +5,7 @@
   >
     <div v-if="withDiscount" class="discount_has">C</div>
     <div v-if="isDiscountToday" class="discount_banner">
-      Сегодня скидочный день
+      {{ $t('product.hasPromotion') }}
       <q-icon class="mdi mdi-alert-circle q-ml-auto" color="white" size="xs" />
     </div>
     <div class="flex column full-width">
@@ -25,16 +25,16 @@
         <div class="card-product_title">
           <span class="text-primary">#{{ id }}</span>
           <p v-if="name">{{ name }}</p>
-          <p v-else><span>Не указано</span></p>
+          <p v-else><span>{{ $t('common.notSpecified') }}</span></p>
         </div>
         <div class="card-product_info">
           <div v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: sklad?.id }" class="card-product_price">
-            <span>Опт. цена</span>
+            <span>{{ $t('product.originalPriceShort') }}</span>
             <p v-if="origPrice"><PriceFormatter :value="origPrice" /></p>
             <p v-else>n/a</p>
           </div>
           <div class="card-product_price">
-            <span>Розн. цена</span>
+            <span>{{ $t('product.retailPriceShort') }}</span>
             <div v-if="newPrice" class="flex">
               <p :class="{ 'with-discount': isDiscountToday && withDiscount }"><PriceFormatter :value="newPrice" /></p>
               <p v-if="isDiscountToday && withDiscount"><PriceFormatter :value="discountPrice" /></p>
@@ -42,7 +42,7 @@
             <p v-else>n/a</p>
           </div>
           <div class="card-product_color">
-            <span>Цвет</span>
+            <span>{{ $t('common.color') }}</span>
             <div
               v-if="color"
               :style="`background-color: ${color};`"
@@ -51,19 +51,19 @@
           </div>
         </div>
         <div v-if="useNumberOfSizes" class="card-product_sizes">
-          <span>Количество:</span>
+          <span>{{ $t('common.quantity') }}:</span>
           <p
             v-if="countSizes"
             class="text-primary"
           >
-            {{ countSizes }} шт
+            {{ countSizes }} {{ $t('common.pieces') }}
           </p>
-          <p v-else class="text-deep-orange">Не указано</p>
+          <p v-else class="text-deep-orange">{{ $t('common.notSpecified') }}</p>
         </div>
         <div v-else class="card-product_sizes">
-          <span>Размеры:</span>
+          <span>{{ $t('common.sizes') }}:</span>
           <SizeCount v-if="sizes && sizes.length" :sizes="sizes" />
-          <p v-else class="text-deep-orange">Не указаны</p>
+          <p v-else class="text-deep-orange">{{ $t('common.notSpecifiedSizes') }}</p>
         </div>
       </router-link>
     </div>

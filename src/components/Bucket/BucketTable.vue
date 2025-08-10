@@ -50,7 +50,7 @@
           <div class="text-caption text-grey-6">#{{ props.row.product?.id }}</div>
           <div class="text-weight-medium">{{ props.row.product?.name }}</div>
           <div v-if="props.row.product?.color" class="flex items-center q-gutter-xs q-mt-xs">
-            <span class="text-caption text-grey-6">Цвет:</span>
+            <span class="text-caption text-grey-6">{{ $t('common.color') }}:</span>
             <ColorDisplay :color="props.row.product?.color" size="16px" />
           </div>
         </q-td>
@@ -72,7 +72,7 @@
               />
             </div>
             <div v-if="props.row.discount" class="text-caption text-red">
-              Скидка: 
+              {{ $t('common.discount') }}: 
               <template v-if="props.row.percentageDiscount">
                 {{ props.row.discount }}%
               </template>
@@ -81,7 +81,7 @@
               </template>
             </div>
             <div class="text-weight-bold">
-              Итого:
+              {{ $t('common.total') }}:
               <PriceFormatter :value="getTotalSum(props.row)" />
             </div>
           </div>
@@ -91,17 +91,17 @@
         <q-td key="payment" :props="props" class="cursor-pointer" @click="goToProduct(props.row)">
           <div class="payment-column">
             <div v-if="props.row.payCash && props.row.payCard" class="text-caption">
-              <div>Нал: <PriceFormatter :value="props.row.cashSum || 0" /></div>
-              <div>Карт: <PriceFormatter :value="props.row.cardSum || 0" /></div>
+              <div>{{ $t('common.cash') }}: <PriceFormatter :value="props.row.cashSum || 0" /></div>
+              <div>{{ $t('common.card') }}: <PriceFormatter :value="props.row.cardSum || 0" /></div>
             </div>
             <div v-else-if="props.row.payCash" class="text-caption">
-              Наличными
+              {{ $t('common.cash') }}
             </div>
             <div v-else-if="props.row.payCard" class="text-caption">
-              Картой
+              {{ $t('common.card') }}
             </div>
             <div v-else class="text-caption text-grey-6">
-              Не указано
+              {{ $t('common.notSpecified') }}
             </div>
           </div>
         </q-td>
@@ -143,7 +143,7 @@
               size="sm"
               icon="mdi-keyboard-return"
               text-color="deep-orange"
-              @click="removeFromBucket(props.row)"
+              @click="confirmRemove(props.row)"
             />
           </div>
         </q-td>
@@ -153,15 +153,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useQuasar } from 'quasar'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
 import { getTotalSum } from 'src/components/Bucket/utils'
 
-const props = defineProps({
+defineOptions({
+  name: 'BucketTable'
+})
+
+defineProps({
   bucketProducts: {
     type: Array,
     default: () => []
@@ -176,45 +181,49 @@ const emit = defineEmits([
   'openImagePreview',
   'remove',
   'update:checkedSaleProducts',
-  'openModalCountToBucket'
+  'openModalCountToBucket',
+  'remove-from-bucket'
 ])
 
 const router = useRouter()
+const { t: $t } = useI18n()
 const $q = useQuasar()
 const highlightRowId = ref(null)
 
-const goToProduct = (bucketProduct) => {
+function goToProduct(bucketProduct) {
   if (bucketProduct?.product?.id) {
     router.push(`/product/${bucketProduct.product.id}`)
   }
 }
 
-function removeFromBucket(bucketProduct) {
+function confirmRemove(bucketProduct) {
   $q.dialog({
-    title: 'Вернуть товар на склад?',
-    message: 'Товар будет возвращен на склад. Вы сможете добавить его в корзину позже.',
+    title: $t('bucket.returnToWarehouse'),
+    message: $t('bucket.returnDescription'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: 'Вернуть',
+      label: $t('bucket.return'),
       push: true
     },
     cancel: {
       color: 'white',
-      textColor: 'black', 
-      label: 'Отмена',
+      textColor: 'black',
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(() => {
-    emit('remove', bucketProduct.product, { 
-      id: bucketProduct.id, 
-      ...(bucketProduct.product?.useNumberOfSizes ? { countSizes: bucketProduct.countSizes } : { sizes: bucketProduct.sizes })
+    emit('remove', bucketProduct.product, {
+      id: bucketProduct.id,
+      ...(bucketProduct.product?.useNumberOfSizes
+        ? { countSizes: bucketProduct.countSizes }
+        : { sizes: bucketProduct.sizes })
     })
   })
 }
 
-const columns = [
+const columns = computed(() => [
   {
     name: 'select',
     label: '',
@@ -224,53 +233,53 @@ const columns = [
   },
   {
     name: 'image',
-    label: 'Фото',
+    label: $t('common.image'),
     field: 'image',
     align: 'center',
     style: 'width: 60px'
   },
   {
     name: 'name',
-    label: 'Информация',
+    label: $t('common.information'),
     field: 'name',
     align: 'left',
     sortable: true
   },
   {
     name: 'sizes',
-    label: 'Размеры/Кол-во',
+    label: `${$t('common.sizes')}/${$t('common.counts')}`,
     field: 'sizes',
     align: 'left'
   },
   {
     name: 'price',
-    label: 'Цена',
+    label: $t('common.price'),
     field: 'price',
     align: 'left',
     style: 'width: 120px'
   },
   {
     name: 'payment',
-    label: 'Оплата',
+    label: $t('common.payment'),
     field: 'payment',
     align: 'left',
     style: 'width: 100px'
   },
   {
     name: 'comment',
-    label: 'Комментарий',
+    label: $t('common.comment'),
     field: 'comment',
     align: 'left',
     style: 'width: 120px'
   },
   {
     name: 'actions',
-    label: 'Действия',
+    label: $t('common.actions'),
     field: 'actions',
     align: 'center',
     style: 'width: 150px'
   }
-]
+])
 </script>
 
 <style lang="scss" scoped>

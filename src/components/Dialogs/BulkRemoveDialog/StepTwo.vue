@@ -1,7 +1,7 @@
 <template>
   <div class="flex column q-gap-md">
     <q-separator />
-    <div class="text-subtitle1">При удалении товаров, они <span class="text-deep-orange">пропадут со склада навсегда!</span></div>
+    <div class="text-subtitle1">{{ $t('pages.deleteConfirmMessage') }}</div>
     <q-separator />
     <div class="flex no-wrap sjustify-end q-gap-md">
       <q-btn

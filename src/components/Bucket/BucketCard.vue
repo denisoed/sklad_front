@@ -6,7 +6,7 @@
       v-if="discount"
       class="bucket-card_discount"
     >
-      Скидка: <template v-if="percentageDiscount">{{ discount }}%</template><template v-else><PriceFormatter :value="discount" />c</template>
+      {{ $t('common.discount') }}: <template v-if="percentageDiscount">{{ discount }}%</template><template v-else><PriceFormatter :value="discount" /></template>
     </div>
     <router-link
       class="bucket-card_content"
@@ -30,47 +30,47 @@
       </div>
 
       <div class="bucket-card_color full-width flex justify-between">
-        <span>Цвет</span>
+        <span>{{ $t('common.color') }}</span>
         <div
           :style="`background-color: ${color};`"
         />
       </div>
       
       <div v-if="sklad" class="bucket-card_sklad full-width flex justify-between q-mr-sm">
-        <span>Склад:</span>
+        <span>{{ $t('common.warehouse') }}:</span>
         <p>{{ sklad?.name }}</p>
       </div>
 
       <div v-if="useNumberOfSizes" class="bucket-card_sizes full-width flex justify-between">
-        <span>Кол-во:</span>
+        <span>{{ $t('common.quantity') }}:</span>
         <p
           v-if="countSizes"
           class="text-primary"
         >
-          {{ countSizes }} шт
+          {{ countSizes }} {{ $t('common.pieces') }}
         </p>
-        <p v-else class="text-deep-orange">Не указано</p>
+        <p v-else class="text-deep-orange">{{ $t('common.notSpecified') }}</p>
       </div>
 
       <div v-else class="bucket-card_sizes full-width flex justify-between">
-        <span>Размеры:</span>
+        <span>{{ $t('common.sizes') }}:</span>
         <SizeCount v-if="sizes && sizes.length" :sizes="sizes" />
-        <p v-else>Не увазаны</p>
+        <p v-else>{{ $t('product.sizesNotSpecified') }}</p>
       </div>
 
       <!-- Pay method -->
       <div v-if="payMethod" class="bucket-card_pay-method full-width flex justify-between q-mb-sm">
-        <span>Оплата:</span>
+        <span>{{ $t('common.payment') }}:</span>
         <p>{{ payMethod }}</p>
       </div>
 
       <div v-if="comment" class="bucket-card_comment full-width flex justify-between q-mb-xs">
-        <span>Коммент:</span>
+        <span>{{ $t('bucket.comment') }}:</span>
         <p>{{ comment }}</p>
       </div>
 
       <div class="full-width flex justify-between items-center bucket-card_price ">
-        <span class="q-mr-xs">Итог:</span>
+        <span class="q-mr-xs">{{ $t('common.total') }}:</span>
         <div class="flex row no-wrap">
           <p><PriceFormatter :value="totalSum" /></p>
         </div>
@@ -112,6 +112,7 @@
 
 <script setup>
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import {
   computed,
   ref,
@@ -204,6 +205,7 @@ const props = defineProps({
 const emit = defineEmits(['update', 'remove', 'on-checked'])
 
 const $q = useQuasar()
+const { t: $t } = useI18n()
 const {
   id,
   payCard,
@@ -219,27 +221,27 @@ const checked = ref(true)
 
 const payMethod = computed(() => {
   if (payCash.value && payCard.value)
-    return `Нал: ${formatPrice(cashSum.value || 0)} + Карт: ${formatPrice(cardSum.value || 0)}`
-  if (payCash.value) return 'Наличными'
-  if (payCard.value) return 'Картой'
+    return `${$t('common.cashShort')}: ${formatPrice(cashSum.value || 0)} + ${$t('common.cardShort')}: ${formatPrice(cardSum.value || 0)}`
+  if (payCash.value) return $t('common.cash')
+  if (payCard.value) return $t('common.card')
   return null
 })
 
 function removeFromBucket(payload) {
   $q.dialog({
-    title: 'Удалить этот товар из корзины?',
-    message: 'При удалении товара из корзины, он будет возвращен на склад.',
+    title: $t('bucket.removeFromBasket'),
+    message: $t('bucket.removeDescription'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: 'Удалить',
+      label: $t('common.delete'),
       push: true
     },
     cancel: {
       color: 'white',
       textColor: 'black', 
-      label: 'Отмена',
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(() => {

@@ -20,6 +20,7 @@ import { useRoute } from 'vue-router'
 import { useLazyQuery } from '@vue/apollo-composable'
 import useProfile from 'src/modules/useProfile'
 import { useHistoriesStore } from 'src/stores/histories'
+import { useI18n } from 'vue-i18n'
 
 const VIEWED_HISTORY = 'sklad_viewed_history'
 
@@ -30,6 +31,7 @@ const useHistory = () => {
   const historiesStore = useHistoriesStore()
   const { params } = useRoute()
   const { profile } = useProfile()
+  const { t: $t, locale } = useI18n({ useScope: 'global' })
   const {
     load,
     result: historyRes,
@@ -83,74 +85,91 @@ const useHistory = () => {
     localStorage.setItem(VIEWED_HISTORY, moment.utc().format(DATE_TIME_FORMAT))
   }
 
-  // Optimized getDescription with caching
+  // Optimized getDescription with caching and i18n
   function getDescription(action, json) {
-    // Create cache key from action and json
-    const cacheKey = `${action}_${JSON.stringify(json)}`
-    
+    const currentLocale = (locale && locale.value) ? locale.value : 'ru-RU'
+    // Create cache key from locale, action and json
+    const cacheKey = `${currentLocale}_${action}_${JSON.stringify(json)}`
+
     // Check cache first
     if (descriptionCache.has(cacheKey)) {
       return descriptionCache.get(cacheKey)
     }
-    
+
     // Generate description
     let description = ''
-    
+
+    const productPrefix = json?.name
+      ? $t('history.descriptionTemplates.productPrefix', { name: json.name })
+      : ''
+
+    const sizesList = Array.isArray(json?.sizes) ? json.sizes.join(', ') : ''
+    const count = json?.countSizes || 0
+    const pieces = $t('common.pieces')
+    const origPrice = json?.origPrice || 0
+    const newPrice = json?.newPrice || 0
+
     const descrs = {
-      [HISTORY_SOLD]: json?.sizes?.length ?
-        `${json.name ? `Товар: ${json.name}. ` : ''}Проданы размеры: ${json?.sizes.join(', ')}` :
-        `${json.name ? `Товар: ${json.name}. ` : ''}Продано: ${json?.countSizes || 0}шт`,
-      [HISTORY_RETURN]: json?.sizes?.length ?
-        `Размеры: ${json?.sizes.join(', ')} - вернули обратно в товар` :
-        `${json?.countSizes || 0}шт - вернули обратно в товар`,
-      [HISTORY_DELETE]: `Удален товар: ${json?.name}`,
-      [HISTORY_CREATE]: `${json?.name} - цена: ${json?.origPrice || 0}/${json?.newPrice || 0}, ${json?.sizes?.length ? `размеры: ${json?.sizes.join(', ')}` : `кол-во: ${json?.countSizes}шт`}`,
+      [HISTORY_SOLD]: json?.sizes?.length
+        ? $t('history.descriptionTemplates.soldWithSizes', {
+            productPrefix,
+            sizes: sizesList,
+          })
+        : $t('history.descriptionTemplates.soldWithoutSizes', {
+            productPrefix,
+            count,
+            pieces,
+          }),
+      [HISTORY_RETURN]: json?.sizes?.length
+        ? $t('history.descriptionTemplates.returnWithSizes', {
+            sizes: sizesList,
+          })
+        : $t('history.descriptionTemplates.returnWithoutSizes', {
+            count,
+            pieces,
+          }),
+      [HISTORY_DELETE]: $t('history.descriptionTemplates.delete', { name: json?.name }),
+      [HISTORY_CREATE]: json?.sizes?.length
+        ? $t('history.descriptionTemplates.createdWithSizes', {
+            name: json?.name,
+            origPrice,
+            newPrice,
+            sizes: sizesList,
+          })
+        : $t('history.descriptionTemplates.createdWithCount', {
+            name: json?.name,
+            origPrice,
+            newPrice,
+            count,
+            pieces,
+          }),
       [HISTORY_UPDATE]: (() => {
-        const texts = {
-          name: {
-            label: 'Обновлено название',
-            value: `${json.old} -> ${json.new}`
-          },
-          color: {
-            label: 'Обновлён цвет',
-            value: `${json.old} -> ${json.new}`
-          },
-          origPrice: {
-            label: 'Обновлена опт цена',
-            value: `${json.old} -> ${json.new}`
-          },
-          newPrice: {
-            label: 'Обновлена роз цена',
-            value: `${json.old} -> ${json.new}`
-          },
-          countSizes: {
-            label: 'Обновлено кол-во',
-            value: `${json.old} -> ${json.new}`
-          },
-          removedSizes: {
-            label: 'Удалены размеры',
-            value: json.sizes
-          },
-          addedSizes: {
-            label: 'Добавлены размеры',
-            value: json.sizes
-          },
-        }
-        return `${texts[json?.type]?.label}: ${texts[json?.type]?.value}`
+        const type = json?.type
+        const labelKey = `history.descriptionTemplates.update.${type}`
+        const label = $t(labelKey)
+
+        const value = (type === 'removedSizes' || type === 'addedSizes')
+          ? json?.sizes
+          : $t('history.descriptionTemplates.update.valueArrow', {
+              old: json?.old,
+              new: json?.new,
+            })
+
+        return `${label}: ${value}`
       })(),
     }
-    
+  
     description = descrs[action] || ''
-    
+
     // Cache the result
     descriptionCache.set(cacheKey, description)
-    
+
     // Limit cache size to prevent memory leaks
     if (descriptionCache.size > 1000) {
       const firstKey = descriptionCache.keys().next().value
       descriptionCache.delete(firstKey)
     }
-    
+
     return description
   }
 

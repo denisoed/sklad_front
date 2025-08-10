@@ -12,14 +12,14 @@
             <q-checkbox :model-value="selected" @update:model-value="toggleOption(opt)" />
           </q-item-section>
           <q-item-section>
-            <q-item-label v-html="opt.label" />
+            <q-item-label>{{ opt.label }}</q-item-label>
           </q-item-section>
         </q-item>
       </template>
       <template #no-option>
         <div class="q-pa-md">
           <div class="text-grey-6 text-center q-mb-md">
-            Список пуст
+            {{ $t('pages.listIsEmpty') }}
           </div>
           <q-btn
             push
@@ -28,7 +28,7 @@
             icon="mdi-plus"
             @click="emit('on-create-new')"
           >
-            Создать {{ titlePostfix }}
+            {{ $t('create') }} {{ titlePostfix }}
           </q-btn>
         </div>
       </template>
@@ -49,7 +49,7 @@
             icon="mdi-plus"
             @click="emit('on-create-new')"
           >
-            Создать {{ titlePostfix }}
+            {{ $t('create') }} {{ titlePostfix }}
           </q-btn>
         </div>
       </template>
@@ -63,6 +63,9 @@ import {
   toRefs,
   watch
 } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   modelValue: {

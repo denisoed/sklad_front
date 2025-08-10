@@ -37,12 +37,14 @@
 import { defineComponent, ref, computed } from 'vue';
 import { Platform } from 'quasar';
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ButtonMenu',
 
   setup() {
     const { push } = useRouter()
+    const { t: $t } = useI18n()
 
     const showSubbuttons = ref(false);
 
@@ -61,7 +63,7 @@ export default defineComponent({
             showTorchButton: true, // iOS and Android
             torchOn: true, // Android, launch with the torch switched on (if available)
             saveHistory: true, // Android, save scan history (default false)
-            prompt: "Поместите qr-code в область сканирования", // Android
+            prompt: $t('scanner.qrPrompt'), // Android
             resultDisplayDuration: 500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
             formats: "QR_CODE", // default: all but PDF_417 and RSS_EXPANDED
             orientation: "portrait", // Android only (portrait|landscape), default unset so it rotates with the device

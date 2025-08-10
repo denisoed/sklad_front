@@ -1,5 +1,5 @@
 <template>
-  <Dropdown title="Дополнительно" outline>
+  <TheDropdown :title="$t('product.additionalSettings')" outline>
     <template #icon>
       <q-icon name="mdi-cog-outline" size="sm" class="q-mr-sm" />
     </template>
@@ -10,14 +10,14 @@
           outlined
           class="full-width"
           dense
-          label="Комментарий"
+          :label="$t('product.additionalComment')"
           clearable
           enterkeyhint="done"
         />
         <div class="flex no-wrap items-center q-gap-sm">
           <InputPrice
             v-model="localDiscountPrice"
-            label="Доп. скидка"
+            :label="$t('product.additionalDiscount')"
             clear
             class="full-width"
             dense
@@ -32,7 +32,7 @@
         </div>
       </div>
     </template>
-  </Dropdown>
+  </TheDropdown>
 </template>
 
 <script setup>
@@ -41,9 +41,16 @@ import {
   watch,
   toRefs
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import InputPrice from 'src/components/InputPrice'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
-import Dropdown from 'src/components/Dropdown/index.vue'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
+
+defineOptions({
+  name: 'AdditionalSettings'
+})
+
+const { t: $t } = useI18n()
 
 const DISCOUNT_TABS = [
   {

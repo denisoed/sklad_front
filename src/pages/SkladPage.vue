@@ -5,8 +5,8 @@
       <BlockLink
         v-if="useMinSizes && countProductsWithMinSizes"
         v-permissions="[READ_PRODUCTS_WITH_MIN_SIZES]"
-        title="Остатки"
-        caption="Товары, которых мало"
+        :title="$t('pages.remainingStock')"
+        :caption="$t('warehouse.lowStockProducts')"
         icon="mdi-cart-arrow-up"
         :to="productsWithMinSizesLink"
         accent-color="rgb(255 0 0 / 30%)"
@@ -20,15 +20,15 @@
       </BlockLink>
       <BlockLink
         v-permissions="[READ_CATEGORIES]"
-        title="Категории"
-        caption="Категории товаров"
+        :title="$t('category.title')"
+        :caption="$t('category.productCategories')"
         icon="mdi-folder-outline"
         :to="categoriesLink"
         accent-color="rgb(255 0 255 / 20%)"
       />
       <BlockLink
-        title="Товары"
-        caption="Товары на складе"
+        :title="$t('product.title')"
+        :caption="$t('warehouse.warehouseProducts')"
         icon="mdi-cube-outline"
         :to="productsLink"
         accent-color="rgb(0 0 255 / 20%)"
@@ -36,16 +36,16 @@
       <div v-permissions="[READ_HISTORY, READ_SETTINGS]" class="flex no-wrap full-width q-gap-md">
         <BlockLink
           v-permissions="[READ_HISTORY]"
-          title="История"
-          caption="Активность на складе"
+          :title="$t('history.title')"
+          :caption="$t('warehouse.warehouseActivity')"
           icon="mdi-history"
           :to="historyLink"
           accent-color="rgb(38 236 227 / 20%)"
         />
         <BlockLink
           v-permissions="[READ_SETTINGS]"
-          title="Настройки"
-          caption="Настройки склада"
+          :title="$t('common.settings')"
+          :caption="$t('warehouse.warehouseSettings')"
           icon="mdi-cog-outline"
           :to="settingsLink"
           accent-color="rgb(255 95 95 / 20%)"
@@ -53,8 +53,8 @@
       </div>
       <BlockLink
         v-permissions="[READ_COST]"
-        title="Расходы"
-        caption="Траты по складу"
+        :title="$t('costs.title')"
+        :caption="$t('warehouse.warehouseCosts')"
         icon="mdi-cash"
         :to="costsLink"
         accent-color="rgb(255 255 0 / 20%)"
@@ -81,12 +81,15 @@ import {
   READ_PRODUCTS_WITH_MIN_SIZES,
   READ_CATEGORIES
 } from 'src/permissions'
+import { useI18n } from 'vue-i18n'
 
 defineOptions({
   name: 'SkladPage',
 })
 
-const { sklad } = useSklads()
+const { t: $t } = useI18n()
+
+const { sklad, formattedLinkTo } = useSklads()
 const { params } = useRoute()
 
 const qrModalOpened = ref(false)

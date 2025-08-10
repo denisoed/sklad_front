@@ -5,10 +5,10 @@
       class="flex column"
       style="width: 100%; max-width: 500px;"
     >
-      <PageTitle title="Остатки">
+      <PageTitle :title="$t('pages.remainingStock')">
         <q-card-section class="q-pt-none">
-          На этой странице отображаются товары, количество которых менее <span class="text-bold">{{ minCountSizes }} шт</span>.<br /><br />
-          <span class="text-grey-5">Это можно регулировать в настройках, в разделе "Размеры"</span>
+          {{ $t('pages.lowStockWarning') }} <span class="text-bold">{{ minCountSizes }} {{ $t('common.pieces') }}</span>.<br /><br />
+          <span class="text-grey-5">{{ $t('settings.minStockDescription') }}</span>
         </q-card-section>
         <q-card-section>
           <q-btn
@@ -18,7 +18,7 @@
             class="full-width"
             :to="`/sklad/${sklad?.id}/settings?tab=sizes`"
           >
-            Поменять настройки
+            {{ $t('pages.changeSettings') }}
           </q-btn>
         </q-card-section>
       </PageTitle>
@@ -67,13 +67,13 @@
             name="mdi-cart-outline"
             class="q-mr-sm text-grey-5"
           />
-          Список пуст
+          {{ $t('pages.listIsEmpty') }}
         </span>
       </h6>
     </div>
     <ProductControls
       :show="Boolean(bulkProducts?.length)"
-      :title="`Выбрано: ${bulkProducts?.length}`"
+      :title="`${$t('pages.selected')}: ${bulkProducts?.length}`"
       @on-close="onCloseBulk"
       @on-finish-update="onFinishBulk"
       @on-finish-remove="onFinishBulk"
@@ -86,6 +86,7 @@ import {
   computed,
   onBeforeMount,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CardProduct from 'src/components/CardProduct.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import useProduct from 'src/modules/useProduct'
@@ -97,6 +98,12 @@ import {
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk';
 import { useProductsStore } from 'src/stores/products'
+
+defineOptions({
+  name: 'ProductsWithMinSizes'
+})
+
+const { t: $t } = useI18n()
 
 const bulkStore = useBulkStore()
 const productsStore = useProductsStore()

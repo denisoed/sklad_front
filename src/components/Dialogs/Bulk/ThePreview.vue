@@ -53,27 +53,43 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed } from 'vue';
+<script setup>
+import { computed } from 'vue'
 import TableComp from 'src/components/TableComp.vue'
-import { useBulkStore } from 'src/stores/bulk';
+import { useBulkStore } from 'src/stores/bulk'
+import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 
-const COLUMNS = [
+defineOptions({
+  name: 'BulkPreview'
+})
+
+defineProps({
+  nextIcon: {
+    type: String,
+    default: 'mdi-arrow-right'
+  }
+})
+
+const emit = defineEmits(['on-next'])
+
+const { t: $t } = useI18n()
+const COLUMNS = computed(() => [
   {
     name: 'image',
-    label: 'Фото',
+    label: $t('common.image'),
     field: 'image',
     align: 'left',
   },
   {
     name: 'name',
-    label: 'Название',
+    label: $t('common.name'),
     field: 'name',
     align: 'left',
   },
   {
     name: 'color',
-    label: 'Цвет',
+    label: $t('common.color'),
     field: 'color',
     align: 'left',
   },
@@ -83,48 +99,27 @@ const COLUMNS = [
     field: 'actions',
     align: 'right',
   },
-]
+])
 
-export default defineComponent({
-  name: 'BulkPreview',
-  components: {
-    TableComp,
-  },
-  props: {
-    nextIcon: {
-      type: String,
-      default: 'mdi-arrow-right',
-    }
-  },
-  emits: ['on-next'],
-  setup(props, { emit }) {
-    const bulkStore = useBulkStore();
+const bulkStore = useBulkStore()
+storeToRefs(bulkStore)
 
-    const rows = computed(() => {
-      return bulkStore.getBulkProducts.map(s => ({
-        id: s.id,
-        image: s.image,
-        name: s.name,
-        color: s.color
-      }));
-    })
-
-    function remove(id) {
-      bulkStore.removeBulkProduct(id)
-    }
-
-    function next() {
-      emit('on-next')
-    }
-
-    return {
-      COLUMNS,
-      remove,
-      next,
-      rows,
-    }
-  }
+const rows = computed(() => {
+  return bulkStore.getBulkProducts.map(s => ({
+    id: s.id,
+    image: s.image,
+    name: s.name,
+    color: s.color
+  }))
 })
+
+function remove(id) {
+  bulkStore.removeBulkProduct(id)
+}
+
+function next() {
+  emit('on-next')
+}
 </script>
 
 <style lang="scss" scoped>

@@ -16,13 +16,13 @@
           <p
             class="full-width text-left text-bold q-mb-none text-subtitle1"
           >
-            {{ title || 'Добавить товар в корзину' }}
+            {{ title || $t('bucket.addToBasketTitle') }}
           </p>
 
           <q-separator class="full-width q-my-sm" />
 
           <div class="full-width flex column q-gap-sm q-mb-sm">
-            <p class="q-mb-none">Оплата</p>
+            <p class="q-mb-none">{{ $t('common.payment') }}</p>
             <PriceList
               :prices="prices"
               :default-price="newPrice"
@@ -46,7 +46,7 @@
               @on-change="onAdditionalSettingsChange"
             />
             <div class="full-width flex justify-between q-gap-sm total-sum bg-deep-orange q-mt-sm q-px-sm">
-              <p class="q-mb-none">Итоговая сумма:</p>
+              <p class="q-mb-none">{{ $t('common.totalSum') }}:</p>
               <span class="text-bold">{{ formatPrice(totalSum) }}</span>
             </div>
           </div>
@@ -56,8 +56,8 @@
               v-model="selectedCount"
               :max="max"
               :min="1"
-              label="Кол-во товара для продажи"
-              :tooltip-plus-text="`Минимальное количество: ${min}`"
+              :label="$t('bucket.quantityForSale')"
+              :tooltip-plus-text="$t('pages.minimumQuantity', { min })"
               class="q-my-auto"
             />
             <q-separator class="full-width q-my-md" />

@@ -4,13 +4,14 @@
       <PageTitle :title="title">
         <div>
           <q-card-section class="q-pt-none text-primary">
-            <b>История</b> - содержит список событий созданых пользователями.
+            <span v-html="$t('history.description')" />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <ul>
-              <li>Историю невозможно удалить.</li>
-              <li>История записывается независимо от роли.</li>
-              <li>Кнопка "<q-icon color="primary" size="sm" name="search" />" поможет отфильтровать историю.
+              <li>{{ $t('history.cannotDelete') }}</li>
+              <li>{{ $t('history.recordedForAll') }}</li>
+              <li>
+                {{ $t('history.filterHintBefore') }} "<q-icon color="primary" size="sm" name="search" />" {{ $t('history.filterHintAfter') }}
               </li>
             </ul>
           </q-card-section>
@@ -30,7 +31,7 @@
         separator="cell"
         class="histories-table block-bg full-width q-mb-sm q-mt-md border-radius-sm"
         hide-pagination
-        no-data-label="Нет данных"
+        :no-data-label="$t('common.noData')"
       >
         <template #body="props">
           <q-tr
@@ -43,7 +44,7 @@
               :props="props"
               :style="`background-color: ${props.row.actionColor}1A`"
             >
-              {{ HISTORY_ACTIONS[props.row.action] }}
+              {{ $t(`history.actions.${props.row.action}`) }}
             </q-td>
             <q-td key="fullname" :props="props">
               {{ props.row.fullname }}
@@ -84,14 +85,10 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import moment from 'moment'
-import {
-  computed,
-  defineComponent,
-  onBeforeMount,
-  ref
-} from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import FilterHistory from 'src/components/FilterHistory.vue'
 import useSklads from 'src/modules/useSklads'
 import useHistory from 'src/modules/useHistory'
@@ -100,128 +97,102 @@ import { useRoute, useRouter } from 'vue-router'
 import FilterDates from 'src/components/FilterDates.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import {
-  HISTORY_ACTIONS,
-  HISTORY_ACTIONS_COLORS,
   FILTER_FORMAT
 } from 'src/config'
 
-const columns = [
+defineOptions({
+  name: 'History'
+})
+
+const { t: $t } = useI18n()
+const route = useRoute()
+const { push } = useRouter()
+const { params, query } = route
+
+const title = computed(() =>
+  query?.product
+    ? `${$t('history.productHistory')} ${query.product}`
+    : $t('history.title')
+)
+
+const columns = computed(() => [
   {
     name: 'action',
-    label: 'Событие',
+    label: $t('common.event'),
     align: 'left',
     field: 'action',
   },
   {
     name: 'fullname',
-    label: 'Автор',
+    label: $t('common.author'),
     field: 'fullname',
     align: 'left',
   },
   {
     name: 'productId',
-    label: 'Товар',
+    label: $t('common.product'),
     field: 'productId',
     align: 'left',
   },
   {
     name: 'description',
-    label: 'Описание',
+    label: $t('common.description'),
     field: 'description',
     align: 'left',
   },
   {
     name: 'created_at',
-    label: 'Дата',
+    label: $t('common.date'),
     field: 'created_at',
     align: 'left',
   },
-]
+])
 
-export default defineComponent({
-  name: 'HistoryPage',
-  components: {
-    FilterDates,
-    FilterHistory,
-    PageTitle,
-  },
-  setup() {
-    const { push } = useRouter()
-    const { params, query } = useRoute()
-    const { formatTimeAgo } = useDate()
-    const TODAY = Date.now()
-    const {
-      fetchHistory,
-      fetchHistoryLoading,
-      historyResult,
-      getDescription
-    } = useHistory()
-    const {
-      sklad,
-    } = useSklads()
+const { formatTimeAgo } = useDate()
+const TODAY = Date.now()
+const { fetchHistory, fetchHistoryLoading, historyResult, getDescription } = useHistory()
+const { sklad } = useSklads()
 
-    const openedFilterHistory = ref(false)
-    const selectedDates = ref([moment.utc(TODAY).local().format(FILTER_FORMAT)])
-    const selectedFilters = ref({})
-    const isDateModal = ref(false)
-    const pagination = {
-      rowsPerPage: -1,
-    }
+const openedFilterHistory = ref(false)
+const selectedDates = ref([moment.utc(TODAY).local().format(FILTER_FORMAT)])
+const selectedFilters = ref({})
+const pagination = {
+  rowsPerPage: -1
+}
 
-    const skladUsers = computed(() => sklad.value?.users || [])
-    const title = computed(() => query?.product ? `История по товару ${query?.product}` : 'История')
+const skladUsers = computed(() => sklad.value?.users || [])
+const historyRows = computed(() => {
+  return historyResult.value.map(h => ({
+    ...h,
+    description: getDescription(h.action, h.json)
+  }))
+})
 
-    const historyRows = computed(() => {
-      return historyResult.value.map(h => ({
-        ...h,
-        description: getDescription(h.action, h.json)
-      }));
-    })
+function loadHistories(filters = {}) {
+  fetchHistory({
+    skladId: +params?.skladId || null,
+    dates: selectedDates.value,
+    ...(params?.productId && { productId: params.productId }),
+    ...selectedFilters.value,
+    ...filters
+  })
+}
 
-    function loadHistories(filters = {}) {
-      fetchHistory({
-        skladId: +params?.skladId || null,
-        dates: selectedDates.value,
-        ...(params?.productId && { productId: params.productId }),
-        ...selectedFilters.value,
-        ...filters
-      })
-    }
+function onChangeDates(dates = []) {
+  selectedDates.value = dates
+  loadHistories(dates)
+}
 
-    function onChangeDates(dates = []) {
-      selectedDates.value = dates
-      loadHistories(dates)
-    }
-    
-    function onSearch(filters) {
-      selectedFilters.value = {
-        action: filters?.actions?.map(f => f.value) || [],
-        users_permissions_user: filters?.people?.map(f => f.value) || [],
-      }
-      loadHistories({ dates: selectedDates.value, ...selectedFilters.value })
-    }
-
-    onBeforeMount(() => {
-      loadHistories()
-    })
-
-    return {
-      columns,
-      historyRows,
-      fetchHistoryLoading,
-      isDateModal,
-      onSearch,
-      title,
-      pagination,
-      HISTORY_ACTIONS,
-      onChangeDates,
-      skladUsers,
-      openedFilterHistory,
-      HISTORY_ACTIONS_COLORS,
-      formatTimeAgo,
-      push
-    }
+function onSearch(filters) {
+  selectedFilters.value = {
+    action: filters?.actions?.map(f => f.value) || [],
+    users_permissions_user: filters?.people?.map(f => f.value) || []
   }
+  loadHistories({ dates: selectedDates.value, ...selectedFilters.value })
+}
+
+onBeforeMount(() => {
+  loadHistories()
 })
 </script>
 

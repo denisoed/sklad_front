@@ -177,6 +177,14 @@ h6 {
   overflow: hidden;
 }
 
+.q-notification__badge--top-left, .q-notification__badge--bottom-left {
+  left: 0;
+}
+
+.q-notification__badge--top-left, .q-notification__badge--top-right {
+  top: 14px;
+}
+
 .q-btn {
   text-transform: initial;
 }

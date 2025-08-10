@@ -51,7 +51,7 @@
           <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
           <div class="text-weight-medium">{{ props.row.name }}</div>
           <div v-if="props.row.color" class="flex items-center q-gutter-xs q-mt-xs">
-            <span class="text-caption text-grey-6">Цвет:</span>
+            <span class="text-caption text-grey-6">{{ $t('common.color') }}:</span>
             <ColorDisplay :color="props.row.color" size="16px" />
           </div>
         </q-td>
@@ -70,16 +70,16 @@
             <div
               v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: props.row?.sklad?.id }"
               class="text-grey-6">
-              Опт. цена: <PriceFormatter :value="props.row.origPrice" />
+              {{ $t('product.originalPriceShort') }}: <PriceFormatter :value="props.row.origPrice" />
             </div>
             <div v-if="props.row.withDiscount" class="text-weight-bold text-red">
-              <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
-                Розн. цена: <PriceFormatter :value="props.row.newPrice" />
+               <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
+                 {{ $t('product.retailPriceShort') }}: <PriceFormatter :value="props.row.newPrice" />
               </div>
-              Акц. цена: <PriceFormatter :value="props.row.discountPrice" />
+               {{ $t('product.promotionPriceShort') }}: <PriceFormatter :value="props.row.discountPrice" />
             </div>
             <div v-else class="text-weight-bold">
-              Розн. цена: <PriceFormatter :value="props.row.newPrice" />
+               {{ $t('product.retailPriceShort') }}: <PriceFormatter :value="props.row.newPrice" />
             </div>
           </div>
         </q-td>
@@ -114,107 +114,93 @@
   </q-table>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ColorDisplay from 'src/components/ColorDisplay.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 import SizeCount from 'src/components/SizeCount.vue'
-import {
-  CAN_SELL_PRODUCT,
-  CAN_UPDATE_PRODUCT,
-  READ_ORIGINAL_PRICE
-} from 'src/permissions'
+import { CAN_SELL_PRODUCT, CAN_UPDATE_PRODUCT, READ_ORIGINAL_PRICE } from 'src/permissions'
 
-export default defineComponent({
-  name: 'ProductsTable',
-  components: {
-    ColorDisplay,
-    PriceFormatter,
-    SizeCount
-  },
-  props: {
-    products: {
-      type: Array,
-      default: () => []
-    },
-    bulkProducts: {
-      type: Array,
-      default: () => []
-    }
-  },
-  emits: [
-    'openImagePreview',
-    'addCountToBucket',
-    'addSizesToBucket',
-    'update:bulkProducts',
-    'openCountModal',
-    'openSizesModal'
-  ],
-  setup() {
-    const router = useRouter()
-    const highlightRowId = ref(null)
-    
-    const goToProduct = (product) => {
-      if (product?.sklad?.id && product?.id) {
-        router.push(`/sklad/${product.sklad.id}/product/${product.id}`)
-      }
-    }
-    
-    const columns = [
-      {
-        name: 'select',
-        label: '',
-        field: 'select',
-        align: 'center',
-        style: 'width: 50px'
-      },
-      {
-        name: 'image',
-        label: 'Картинка',
-        field: 'image',
-        align: 'center',
-        style: 'width: 60px'
-      },
-      {
-        name: 'name',
-        label: 'Информация',
-        field: 'name',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'sizes',
-        label: 'Размеры/Кол-во',
-        field: 'sizes',
-        align: 'left'
-      },
-      {
-        name: 'price',
-        label: 'Цена',
-        field: 'price',
-        align: 'left',
-        style: 'width: 120px'
-      },
-      {
-        name: 'actions',
-        label: 'Действия',
-        field: 'actions',
-        align: 'center',
-        style: 'width: 120px'
-      }
-    ]
+defineOptions({
+  name: 'ProductsTable'
+})
 
-    return {
-      columns,
-      highlightRowId,
-      goToProduct,
-      CAN_SELL_PRODUCT,
-      CAN_UPDATE_PRODUCT,
-      READ_ORIGINAL_PRICE
-    }
+defineProps({
+  products: {
+    type: Array,
+    default: () => []
+  },
+  bulkProducts: {
+    type: Array,
+    default: () => []
   }
 })
+
+defineEmits([
+  'openImagePreview',
+  'addCountToBucket',
+  'addSizesToBucket',
+  'update:bulkProducts',
+  'openCountModal',
+  'openSizesModal'
+])
+
+const { t: $t } = useI18n()
+const router = useRouter()
+
+const highlightRowId = ref(null)
+
+const columns = computed(() => [
+  {
+    name: 'select',
+    label: '',
+    field: 'select',
+    align: 'center',
+    style: 'width: 50px'
+  },
+  {
+    name: 'image',
+    label: $t('common.image'),
+    field: 'image',
+    align: 'center',
+    style: 'width: 60px'
+  },
+  {
+    name: 'name',
+    label: $t('common.information'),
+    field: 'name',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'sizes',
+    label: `${$t('common.sizes')}/${$t('common.counts')}`,
+    field: 'sizes',
+    align: 'left'
+  },
+  {
+    name: 'price',
+    label: $t('common.price'),
+    field: 'price',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'actions',
+    label: $t('common.actions'),
+    field: 'actions',
+    align: 'center',
+    style: 'width: 120px'
+  }
+])
+
+function goToProduct(product) {
+  if (product?.sklad?.id && product?.id) {
+    router.push(`/sklad/${product.sklad.id}/product/${product.id}`)
+  }
+}
 </script>
 
 <style lang="scss" scoped>

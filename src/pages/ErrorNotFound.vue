@@ -6,25 +6,17 @@
       </div>
 
       <div class="text-h4" style="opacity:.4">
-        Страница не найдена...
+        {{ $t('error.pageNotFound') }}
       </div>
 
       <q-btn
         color="primary"
-        @click="onBack"
+        push
         unelevated
         to="/"
-        label="Вернуться на главную"
+        :label="$t('common.backToHome')"
         no-caps
       />
     </div>
   </div>
 </template>
-
-<script>
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'ErrorNotFound'
-})
-</script>

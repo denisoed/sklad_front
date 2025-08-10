@@ -20,8 +20,8 @@ export const HEADER_ROUTES = [
 export const MAIN_ROUTES = [
   { path: MAIN_SETTINGS_ROUTE, component: () => import('pages/MainSettings.vue') },
   { path: BUCKET_ROUTE, component: () => import('pages/BucketPage.vue') },
-  { path: PRODUCTS_ROUTE, component: () => import('pages/Products.vue') },
-  { path: STATISTIC_ROUTE, component: () => import('pages/Statistic.vue') },
+  { path: PRODUCTS_ROUTE, component: () => import('src/pages/ProductsPage.vue') },
+  { path: STATISTIC_ROUTE, component: () => import('src/pages/StatisticPage.vue') },
   { path: '/product/:productId', component: () => import('pages/ProductPage.vue') },
   {
     path: '/create-product',
@@ -32,7 +32,7 @@ export const MAIN_ROUTES = [
 export const SKLAD_ROUTES = [
   { path: '/sklad/:skladId', component: () => import('src/pages/SkladPage.vue') },
   { path: '/sklad/:skladId/categories', component: () => import('src/pages/CategoriesPage.vue') },
-  { path: '/sklad/:skladId/categories/:categoryId', component: () => import('pages/Products.vue') },
+  { path: '/sklad/:skladId/categories/:categoryId', component: () => import('src/pages/ProductsPage.vue') },
   { path: '/sklad/:skladId/product/:productId', component: () => import('pages/ProductPage.vue') },
   { path: '/sklad/:skladId/bucket', component: () => import('pages/BucketPage.vue') },
   {
@@ -44,28 +44,28 @@ export const SKLAD_ROUTES = [
   },
   {
     path: '/sklad/:skladId/history',
-    component: () => import('pages/History.vue'),
+    component: () => import('src/pages/HistoryPage.vue'),
     meta: {
       permissions: [READ_HISTORY]
     }
   },
   {
     path: '/sklad/:skladId/history/:productId',
-    component: () => import('pages/History.vue'),
+    component: () => import('src/pages/HistoryPage.vue'),
     meta: {
       permissions: [READ_HISTORY]
     }
   },
   {
     path: '/sklad/:skladId/costs',
-    component: () => import('pages/Costs.vue'),
+    component: () => import('src/pages/CostsPage.vue'),
     meta: {
       permissions: [READ_COST]
     }
   },
   {
     path: '/sklad/:skladId/settings',
-    component: () => import('pages/Settings.vue'),
+    component: () => import('src/pages/SettingsPage.vue'),
     meta: {
       permissions: [READ_SETTINGS]
     }
@@ -76,7 +76,7 @@ export const SKLAD_ROUTES = [
   },
   {
     path: '/sklad/:skladId/statistic',
-    component: () => import('pages/Statistic.vue'),
+    component: () => import('src/pages/StatisticPage.vue'),
     meta: {
       permissions: [READ_STATISTIC]
     }
@@ -110,7 +110,7 @@ export const AUTH_ROUTES = [
   { path: RESET_PASSWORD_ROUTE, component: () => import('pages/ResetPassword.vue') },
   { path: CONFIRM_ROUTE, component: () => import('pages/Confirm.vue') },
   { path: CONFIRM_REG_ROUTE, component: () => import('pages/ConfirmReg.vue') },
-  { path: BLOCKED_ROUTE, component: () => import('pages/Blocked.vue') },
+  { path: BLOCKED_ROUTE, component: () => import('src/pages/BlockedPage.vue') },
   { path: CONNECT_GOOGLE_ROUTE, component: () => import('pages/connect/google.vue') },
   { path: POST_ROUTE, component: () => import('pages/Post.vue') },
   { path: POSTS_ROUTE, component: () => import('pages/Posts.vue') },

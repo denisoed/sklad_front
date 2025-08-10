@@ -24,11 +24,14 @@ import '@khmyznikov/pwa-install'
 import InstallPwaDialog from 'src/components/Dialogs/InstallPwaDialog.vue'
 import useKeyboardHandler from 'src/modules/useKeyboardHandler'
 import GlobalDialogs from 'src/components/Dialogs/GlobalDialogs.vue'
+import useTheme from 'src/modules/useTheme'
 
 const telegram = window?.Telegram?.WebApp;
 const offline = ref(false);
 const pwaInstallerRef = ref();
 const instalTgPwaDialog = ref(false);
+
+const { initAccentColor } = useTheme();
 
 useKeyboardHandler();
 
@@ -64,6 +67,9 @@ onMounted(() => {
   });
 
   document.addEventListener('click', vibrate);
+
+  // Initialize accent color from localStorage
+  initAccentColor();
 
   // TODO: temporary disable
   // openInstallPwaOnlyTelegram();

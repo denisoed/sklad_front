@@ -11,15 +11,15 @@
           <div class="flex">
             <q-img src="icons/favicon-128x128.png" class="install-pwa_logo q-mr-sm" />
             <div class="flex column items-start">
-              <div class="text-subtitle1">Sklad</div>
-              <p class="q-ma-none">Версия 0.0.2</p>
+              <div class="text-subtitle1">{{ $t('app.name') }}</div>
+              <p class="q-ma-none">{{ $t('app.version', { version: '0.0.2' }) }}</p>
             </div>
           </div>
           <q-separator class="full-width q-my-md" />
-          <div class="flex">
-            <h6 class="flex q-ma-none q-mb-sm">Внимание!</h6>
+          <div class="flex column no-wrap">
+            <h6 class="flex q-ma-none q-mb-sm">{{ $t('pwa.attention') }}</h6>
             <p class="q-ma-none text-subtitle2">
-              Если вам неудобно использовать Sklad через Telegram, вы можете установить его на рабочий стол как полноценное приложение. Это позволит быстро и удобно получать доступ к складу без необходимости каждый раз открывать Telegram.
+              {{ $t('pwa.installDescription') }}
             </p>
           </div>
           <q-separator class="full-width q-my-md" />
@@ -27,7 +27,7 @@
             <q-btn
               class="button-size q-mr-auto"
               color="grey"
-              label="Не устанавливать"
+              :label="$t('common.notInstall')"
               push
               @click="close"
             />
@@ -35,7 +35,7 @@
               class="button-size"
               color="primary"
               push
-              label="Установить"
+              :label="$t('common.install')"
               @click="install"
             />
           </div>
@@ -45,35 +45,27 @@
   </q-dialog>
 </template>
 
-<script>
-import {
-  defineComponent,
-} from 'vue'
-
-export default defineComponent({
-  name: 'InstallPwaDialog',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    },
-  },
-  emits: ['on-close', 'on-install'],
-  setup(props, { emit }) {
-    function close() {
-      emit('on-close')
-    }
-    
-    function install() {
-      emit('on-install')
-    }
-
-    return {
-      close,
-      install
-    }
-  }
+<script setup>
+defineOptions({
+  name: 'InstallPwaDialog'
 })
+
+const props = defineProps({
+  opened: {
+    type: Boolean,
+    default: false
+  },
+})
+
+const emit = defineEmits(['on-close', 'on-install'])
+
+function close() {
+  emit('on-close')
+}
+
+function install() {
+  emit('on-install')
+}
 </script>
 
 <style lang="scss" scoped>

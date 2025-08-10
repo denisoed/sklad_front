@@ -36,13 +36,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import BulkPreview from 'src/components/Dialogs/Bulk/Preview.vue';
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import BulkPreview from 'src/components/Dialogs/Bulk/ThePreview.vue';
 import StepTwo from 'src/components/Dialogs/BulkRemoveDialog/StepTwo.vue';
 import SwipeToClose from 'src/components/SwipeToClose.vue';
 import useHelpers from 'src/modules/useHelpers'
 import useProduct from 'src/modules/useProduct'
-import { useBulkStore } from 'src/stores/bulk'
 
 defineOptions({
   name: 'BulkRemoveDialog',
@@ -55,18 +55,16 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['on-finish', 'on-error'])
+const emit = defineEmits(['on-finish'])
 
-const bulkStore = useBulkStore()
+const { t: $t } = useI18n()
+const { removeProduct } = useProduct()
 const { showSuccess, showError } = useHelpers()
-const {
-  removeProduct,
-} = useProduct()
 
-const step = ref(1);
-const loading = ref(false);
+const step = ref(1)
+const loading = ref(false)
 
-const title = computed(() => step.value === 1 ? 'Выбранные товары' : 'Удаление')
+const title = computed(() => step.value === 1 ? $t('bulk.selectedProductsForDeletion') : $t('bulk.deletion'))
 
 function remove() {}
 
@@ -89,11 +87,10 @@ async function submit() {
     for (const p of bulkStore.getBulkProducts) {
       await removeProduct(p.id, p)
     }
-    showSuccess('Товары успешно удалены!')
+    showSuccess($t('bulk.productsDeleted'))
     emit('on-finish')
   } catch (error) {
-    showError('Произошла ошибка, попробуйте позже...')
-    emit('on-error')
+    showError($t('common.error') + ', ' + $t('common.tryLater'))
   } finally {
     onHide()
     loading.value = false;

@@ -1,8 +1,8 @@
 <template>
   <div class="user-tab flex column q-gap-md">
     <!-- <div class="user-tab_subscr flex items-center justify-between q-pa-md">
-      <span class="text-bold text-white">Подписка</span>
-      <span class="text-white">активна до: <span class="text-bold">{{ subscrExpiredAt }}</span></span>
+      <span class="text-bold text-white">{{ $t('mainSettings.userTab.subscription.title') }}</span>
+      <span class="text-white">{{ $t('mainSettings.userTab.subscription.activeUntil') }} <span class="text-bold">{{ subscrExpiredAt }}</span></span>
     </div> -->
     <!-- Info -->
     <div class="user-tab_info block-bg flex column q-pa-md">
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <!-- <Dropdown :title="`${$t('mainSettings.userTab.wallet.title')}: <span class='text-green'>0 KGS</span>`">
+    <!-- <TheDropdown :title="`${$t('mainSettings.userTab.wallet.title')}: <span class='text-green'>0 KGS</span>`">
       <template #icon>
         <q-icon name="mdi-wallet-outline" size="sm" class="q-mr-sm" />
       </template>
@@ -57,14 +57,14 @@
             </label>
           </div>
           <div class="flex items-center justify-between q-gap-md">
-            <q-toggle v-model="refillWallet" label="Автопополнение" dense />
-            <q-btn color="primary" push>Пополнить</q-btn>
+            <q-toggle v-model="refillWallet" :label="$t('mainSettings.userTab.autoRefill')" dense />
+            <q-btn color="primary" push>{{ $t('mainSettings.userTab.wallet.topUp') }}</q-btn>
           </div>
         </div>
       </template>
-    </Dropdown> -->
+    </TheDropdown> -->
 
-    <Dropdown :title="$t('mainSettings.userTab.lang')">
+    <TheDropdown :title="$t('mainSettings.userTab.lang')">
       <template #icon>
         <q-icon name="mdi-earth" size="sm" class="q-mr-sm" />
       </template>
@@ -77,9 +77,9 @@
           </label>
         </div>
       </template>
-    </Dropdown>
+    </TheDropdown>
 
-    <!-- <Dropdown :title="$t('mainSettings.userTab.theme.title')">
+    <!-- <TheDropdown :title="$t('mainSettings.userTab.theme.title')">
       <template #icon>
         <q-icon name="mdi-theme-light-dark" size="sm" class="q-mr-sm" />
       </template>
@@ -90,33 +90,43 @@
           <q-toggle v-model="isDark" class="q-ml-auto" />
         </label>
       </template>
-    </Dropdown> -->
+    </TheDropdown> -->
 
-    <!-- <Dropdown :title="$t('mainSettings.userTab.info')">
+    <!-- <TheDropdown :title="$t('mainSettings.userTab.info')">
       <template #icon>
         <q-icon name="mdi-account-question-outline" size="sm" class="q-mr-sm" />
       </template>
-    </Dropdown> -->
+    </TheDropdown> -->
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   reactive,
-  watch
+  watch,
+  computed
 } from 'vue'
 import { LocalStorage, copyToClipboard } from 'quasar';
-import Dropdown from 'src/components/Dropdown/index.vue'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import UserInfo from 'src/components/UserInfo.vue'
 import useProfile from 'src/modules/useProfile'
 import useHelpers from 'src/modules/useHelpers'
 import useTheme from 'src/modules/useTheme'
 import RU from 'src/assets/russia.png'
 import KG from 'src/assets/kyrgyzstan.png'
+import EN from 'src/assets/united-states.png'
 import { I18N_LOCALE } from 'src/config'
 import { useI18n } from 'vue-i18n'
+
+defineOptions({
+  name: 'UserTab'
+})
+
+const { toggleTheme, isDark } = useTheme();
+const { locale, t: $t } = useI18n({ useScope: 'global' })
+const { showSuccess, showError } = useHelpers()
+const { profile, updateUser, fetchProfile, subscrHasExpired, subscrExpiredAt } = useProfile()
 
 const PRICES = [
   {
@@ -137,93 +147,66 @@ const PRICES = [
   },
 ]
 
-const LANGS = [
+const LANGS = computed(() => [
   {
-    label: 'Русский',
+    label: $t('mainSettings.userTab.languages.russian'),
     value: 'ru-RU',
     flag: RU
   },
-  // {
-  //   label: 'Кыргызча',
-  //   value: 'kg-KG',
-  //   flag: KG
-  // },
-]
-
-export default defineComponent({
-  name: 'UserTab',
-  components: {
-    Dropdown,
-    UserInfo
+  {
+    label: $t('mainSettings.userTab.languages.kyrgyz'),
+    value: 'kg-KG',
+    flag: KG
   },
-  setup() {
-    const { toggleTheme, isDark } = useTheme();
-    const { locale, t: $t } = useI18n({ useScope: 'global' })
-    const { showSuccess, showError } = useHelpers()
-    const { profile, updateUser, fetchProfile, subscrHasExpired, subscrExpiredAt } = useProfile()
+  {
+    label: $t('mainSettings.userTab.languages.english'),
+    value: 'en-US',
+    flag: EN
+  },
+])
 
-    const selected = ref([])
-    const price = ref(1000)
-    const refillWallet = ref(true)
-    
-    const editable = ref(false)
-    const userInfo = reactive({
-      fullname: null
+const selected = ref([])
+const price = ref(1000)
+const refillWallet = ref(true)
+
+const editable = ref(false)
+const userInfo = reactive({
+  fullname: null
+})
+
+function switchEdit() {
+  editable.value = !editable.value
+}
+
+async function saveUserInfo() {
+  // NOTE: add loader to btn 
+  try {
+    await updateUser(profile.value?.id, {
+      ...userInfo,
     })
-
-    function switchEdit() {
-      editable.value = !editable.value
-    }
-
-    async function saveUserInfo() {
-      // NOTE: add loader to btn 
-      try {
-        await updateUser(profile.value?.id, {
-          ...userInfo,
-        })
-        await fetchProfile()
-        showSuccess($t('mainSettings.userTab.user.success'))
-      } catch (error) {
-        showError($t('mainSettings.userTab.user.error'))
-      }
-    }
-
-    function copyTgId() {
-      if (!profile.value.email && !profile.value.telegramId) return
-      copyToClipboard(profile.value.email || profile.value.telegramId)
-      showSuccess(profile.value.email ? 'Почта скопирована' : 'Telegram ID скопирован')
-    }
-
-    watch(locale, (lang) => {
-      LocalStorage.set(I18N_LOCALE, lang)
-    })
-
-    watch(profile, (val) => {
-      userInfo.fullname = val?.fullname
-    }, { immediate: true })
-
-    watch(isDark, () => {
-      toggleTheme()
-    })
-
-    return {
-      selected,
-      profile,
-      locale,
-      LANGS,
-      isDark,
-      editable,
-      switchEdit,
-      userInfo,
-      saveUserInfo,
-      PRICES,
-      price,
-      refillWallet,
-      subscrExpiredAt,
-      subscrHasExpired,
-      copyTgId
-    }
+    await fetchProfile()
+    showSuccess($t('mainSettings.userTab.user.success'))
+  } catch (error) {
+    showError($t('mainSettings.userTab.user.error'))
   }
+}
+
+function copyTgId() {
+  if (!profile.value.email && !profile.value.telegramId) return
+  copyToClipboard(profile.value.email || profile.value.telegramId)
+  showSuccess(profile.value.email ? $t('pages.contactsCopied') : $t('pages.telegramCopied'))
+}
+
+watch(locale, (lang) => {
+  LocalStorage.set(I18N_LOCALE, lang)
+})
+
+watch(profile, (val) => {
+  userInfo.fullname = val?.fullname
+}, { immediate: true })
+
+watch(isDark, () => {
+  toggleTheme()
 })
 </script>
 

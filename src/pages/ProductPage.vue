@@ -25,7 +25,7 @@
                   >
                     <div class="flex items-center">
                       <q-icon name="mdi-content-duplicate" class="q-mr-sm" size="xs" />
-                      <span>Дублировать</span>
+                      <span>{{ $t('product.duplicate') }}</span>
                     </div>
                   </q-item-section>
                 </q-item>
@@ -39,7 +39,7 @@
                   <q-item-section>
                     <div class="flex no-wrap items-center">
                       <q-icon name="mdi-history" class="q-mr-sm" size="xs" />
-                      История товара
+                      {{ $t('product.productHistory') }}
                     </div>
                   </q-item-section>
                 </q-item>
@@ -54,7 +54,7 @@
                   >
                     <div class="flex items-center">
                       <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
-                      <span class="text-deep-orange">Удалить этот товар</span>
+                      <span class="text-deep-orange">{{ $t('product.deleteThisProduct') }}</span>
                     </div>
                   </q-item-section>
                 </q-item>
@@ -74,7 +74,7 @@
             name="mdi-loading"
             class="mdi-spin q-mr-sm "
           />
-          Загрузка...
+          {{ $t('pages.loading') }}
         </span>
       </h6>
 
@@ -91,7 +91,7 @@
               class="flex items-center border-radius-sm q-pa-sm q-mb-md q-px-md"
               style="background-color: rgb(255 255 0 / 8%);"
             >
-              <span>Дублируется товар: <strong>#{{ duplicatedFromID }}</strong></span>
+              <span>{{ $t('product.duplicatingProduct', { id: duplicatedFromID }) }}</span>
               <q-icon name="mdi-content-duplicate" class="q-ml-auto" color="primary" size="sm" />
             </div>
             <div
@@ -99,25 +99,25 @@
               class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
               style="background-color: rgb(255 0 0 / 8%);border-radius: 3px;"
             >
-              <span class="q-mr-sm">На этот товар действует акция</span>
+              <span class="q-mr-sm">{{ $t('product.hasPromotion') }}</span>
               <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
             </div>
 
             <!-- Sklads -->
             <TheSelector
               v-model="product.sklad"
-              title-postfix="склад"
+              :title-postfix="$t('common.warehouse').toLowerCase()"
               :options="skladsOptions"
               @on-create-new="onCreateNewSklad"
               outlined
               class="q-mb-md"
-              label="Склад *"
-              hint="Привязать товар к складу"
+              :label="$t('common.warehouse') + ' *'"
+              :hint="$t('common.requiredField')"
+              :rules="[val => val?.length || $t('common.requiredField')]"
               tabindex="1"
               clearable
               emit-value
               map-options
-              :rules="[() => !!product.sklad || 'Обязательное поле']"
             />
 
             <!-- Categories -->
@@ -128,8 +128,8 @@
               @on-create-new="onCreateNewCategory"
               outlined
               class="q-mb-md"
-              label="Категория товара"
-              hint="Привязать товар к категории"
+              :label="$t('product.categoryLabel')"
+              :hint="$t('product.categoryHint')"
               tabindex="2"
               clearable
               emit-value
@@ -140,8 +140,8 @@
               :image="product.image"
               class="q-mb-md"
               tabindex="3"
-              hint="Обязательное поле"
-              :rules="[val => val?.length || 'Обязательное поле']"
+              :hint="$t('common.requiredField')"
+              :rules="[val => val?.length || $t('common.requiredField')]"
               @on-change="product.image = $event"
               @clear="product.image = null"
             />
@@ -151,9 +151,9 @@
                 <q-input
                   v-model="product.name"
                   outlined
-                  label="Название товара *"
-                  hint="Обязательное поле"
-                  :rules="[val => val?.length || 'Обязательное поле']"
+                  :label="$t('product.productNameRequired')"
+                  :hint="$t('validation.required')"
+                  :rules="[val => val?.length || $t('validation.required')]"
                   tabindex="4"
                   class="full-width"
                   data-scroller="name"
@@ -165,7 +165,7 @@
                 class="articul"
                 v-model="product.id"
                 outlined
-                label="Артикул(ID)"
+                :label="$t('product.articleId')"
                 readonly
                 enterkeyhint="done"
               />
@@ -178,10 +178,10 @@
             <InputPrice
               data-scroller="origPrice"
               v-model="product.origPrice"
-              label="Оптовая цена за 1 шт *"
-              hint="Обязательное поле"
+              :label="`${$t('product.originalPricePerPiece')} *`"
+              :hint="$t('common.requiredField')"
               clear
-              :rules="[val => val?.length || 'Обязательное поле']"
+              :rules="[val => val?.length || $t('common.requiredField')]"
               tabindex="5"
             />
           </div>
@@ -198,31 +198,31 @@
           >
             <q-checkbox
               v-model="product.withDiscount"
-              label="Установить акционную цену"
+              :label="$t('product.setPromotionalPrice')"
               class="full-width"
             />
             <div v-if="product.withDiscount" class="col-12 q-pa-sm">
               <template v-if="product.discountDays">
                 <p v-if="!isDiscountToday" class="flex items-center no-wrap q-px-sm product-page_discount-not-today">
-                  <span class="q-mr-sm">На сегодня акции нет</span>
+                  <span class="q-mr-sm">{{ $t('product.noPromotionToday') }}</span>
                   <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="xs" />
                 </p>
                 <InputPrice
                   v-model="product.discountPrice"
-                  label="Акционная цена за 1 шт"
+                  :label="$t('product.promotionalPricePerUnit')"
                   clear
                   tabindex="7"
                   :rules="[
-                    val => val?.length || 'Укажите акционную цену',
-                    val => +val !== 0 || 'Укажите акционную цену',
-                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || 'Акционная цена должна быть меньше Роз. цены'
+                    val => val?.length || $t('validation.promotionalPriceRequired'),
+                    val => +val !== 0 || $t('validation.promotionalPriceRequired'),
+                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || $t('validation.promotionalPriceLowerThanRetail')
                   ]"
                 />
               </template>
               <div class="flex items-center no-wrap q-px-md q-py-sm product-page_discount">
                 <div v-if="product.discountDays" class="q-mr-sm product-page_discount-dates">
                   <p class="q-mr-md q-mb-sm">
-                    Акция на даты:
+                    {{ $t('product.promotionDates') }}
                   </p>
                   <div class="flex q-gap-xs">
                     <q-chip
@@ -237,7 +237,7 @@
                     </q-chip>
                   </div>
                 </div>
-                <p v-else class="q-mr-md q-mb-none">Выставить акционную цену на определенные даты</p>
+                <p v-else class="q-mr-md q-mb-none">{{ $t('product.setPromotionalPrice') }}</p>
                 <FilterDates
                   class="q-ml-auto"
                   :with-buttons="false"
@@ -258,17 +258,17 @@
                 <q-checkbox
                   :model-value="!product.useNumberOfSizes"
                   @update:model-value="product.useNumberOfSizes = !$event"
-                  label="Использовать размеры"
+                  :label="$t('product.useSizes')"
                 />
               </div>
               <h6
                 class="q-ma-none q-px-sm  text-subtitle2 text-grey-5"
               >
-                Этот параметр позволяет использовать размеры для товара
+                {{ $t('product.sizesDescription') }}
               </h6>
               <div v-if="product.useNumberOfSizes" class="q-pa-sm">
                 <q-separator />
-                <p class="q-mt-md q-mb-sm">Количество:</p>
+                <p class="q-mt-md q-mb-sm">{{ $t('common.quantity') }}:</p>
                 <InputPlusMinus
                   v-model="product.countSizes"
                   :max="1000000"
@@ -291,7 +291,7 @@
                     to="/main-settings?tab=sizes"
                     push
                   >
-                    Настроить размеры
+                    {{ $t('sizes.configureSizes') }}
                   </q-btn>
                 </div>
               </div>
@@ -364,7 +364,6 @@ import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import useProduct from 'src/modules/useProduct'
 import useHelpers from 'src/modules/useHelpers'
 import useSklads from 'src/modules/useSklads'
-import useCosts from 'src/modules/useCosts'
 import FilterDates from 'src/components/FilterDates.vue'
 import InputPlusMinus from 'src/components/InputPlusMinus.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
@@ -409,6 +408,7 @@ import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
 import useCategories from 'src/modules/useCategories'
 import useEventBus from 'src/modules/useEventBus'
+import { useI18n } from 'vue-i18n'
 
 const DEFAULT_DATA = {
   id: null,
@@ -439,6 +439,7 @@ const props = defineProps({
 })
 
 const TODAY = Date.now()
+const { t } = useI18n({ useScope: 'global' })
 const $q = useQuasar()
 const { params, query } = useRoute()
 const { replace, push } = useRouter()
@@ -458,10 +459,6 @@ const {
   createProductError,
   createProductLoading
 } = useProduct()
-const {
-  createCost,
-  errorCost
-} = useCosts()
 const { sklads } = useSklads()
 
 const modalCountToBucket = ref(false)
@@ -622,38 +619,6 @@ function clearDraft() {
   clearDuplicateData();
 }
 
-async function saveCost(sum, isAdd) {
-  const description = isAdd ? `Добавлены размеры в товар: ${product.name}`: `Убраны размеры из товара: ${product.name}`
-  await createCost(description, sum)
-  if (!errorCost.value) {
-    history(
-      isAdd ? HISTORY_UPDATE : HISTORY_DELETE,
-      `${isAdd ? 'Добавлены размеры в товар' : 'Убраны размеры из товара'}: ${product.name}. Сумма: ${sum}`
-    )
-  } else {
-    showError('Произошла ошибка. Попробуйте позже.')
-  }
-}
-
-async function handleCost() {
-  const pL = product?.sizes?.length
-  const cL = copiedProductForDirty?.sizes?.length
-  const isAdd = product.countSizes ?
-    product.countSizes > copiedProductForDirty.countSizes :
-    (!cL || pL > cL)
-  if (isAdd) {
-    const sizesLength = pL - (cL || 0)
-    const sum = ((product.countSizes - copiedProductForDirty.countSizes) || sizesLength) * product.origPrice
-    if (sum > 0) {
-      saveCost(sum, true)
-    }
-  } else {
-    const sizesLength = cL - pL
-    const sum = 0 - (((copiedProductForDirty.countSizes - product.countSizes) || sizesLength) * product.origPrice)
-    saveCost(sum, false)
-  }
-}
-
 function getTypeSizeId() {
   if (isDuplicating.value) {
     return product.typeSize?.id
@@ -665,7 +630,7 @@ async function create() {
   const { uploaded, hasError } = await handleImageUpload()
   
   if (hasError) {
-    showError('Не удалось загрузить фото. Проблемы на сервере.')
+    showError(t('errors.photoUploadError'))
     return
   }
 
@@ -673,17 +638,20 @@ async function create() {
     const data = prepareProductData(uploaded, isDuplicating.value, props.isEdit)
     const newProduct = await createNewProduct(data)
     if (!createProductError.value) {
-      showSuccess('Товар успешно создан!')
+      showSuccess(t('product.createdSuccessfully'))
+      const productId = newProduct?.id
       clearDraft()
-      replace(`/products?product=${newProduct.id}`)
+      if (productId) {
+        await replace(`/product/${productId}?edit=true`)
+      }
     } else {
       await cleanupImageOnError(uploaded)
-      showError('Не удалось создать продукт. Проблемы на сервере.')
+      showError(t('errors.productCreateError'))
     }
   } catch (error) {
     console.error(error)
     await cleanupImageOnError(uploaded)
-    showError('Не удалось создать продукт. Проблемы на сервере.')
+    showError(t('errors.productCreateError'))
   }
 }
 
@@ -691,7 +659,7 @@ async function update() {
   const { uploaded, hasError } = await handleImageUpload()
   
   if (hasError) {
-    showError('Не удалось загрузить фото. Проблемы на сервере.')
+    showError(t('errors.photoUploadError'))
     return
   }
 
@@ -704,20 +672,19 @@ async function update() {
         removeImage({ id: product.imageId })
         product.imageId = null
       }
-      // Создаем глубокую копию для корректного отслеживания изменений
       Object.assign(copiedProductForDirty, {
         ...product,
         prices: [...(product.prices || [])]
       })
-      showSuccess('Продукт успешно обновлён!')
+      showSuccess(t('product.updateSuccess'))
     } else {
       await cleanupImageOnError(uploaded)
-      showError('Не удалось обновить продукт. Проблемы на сервере.')
+      showError(t('errors.productUpdateError'))
     }
   } catch (error) {
     console.log(error)
     await cleanupImageOnError(uploaded)
-    showError('Не удалось обновить продукт. Проблемы на сервере.')
+    showError(t('errors.productUpdateError'))
   }
 }
 
@@ -742,19 +709,19 @@ function duplicateProduct() {
 
 function cancel(type) {
   $q.dialog({
-    title: type === 'remove' ? 'Удалить этот товар?' : 'Сбосить введенные значения?',
-    message: type === 'remove' ? 'При удалении товара, он пропадет со склада навсегда!' : 'Всё что Вы ввели будет стёрто!',
+    title: type === 'remove' ? t('product.deleteConfirmTitle') : t('product.resetConfirmTitle'),
+    message: type === 'remove' ? t('product.deleteConfirmMessage') : t('product.resetConfirmMessage'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: type === 'remove' ? 'Удалить' : 'Сбросить',
+      label: type === 'remove' ? t('common.delete') : t('product.reset'),
       push: true
     },
     cancel: {
       color: 'white',
       textColor: 'black', 
-      label: 'Отмена',
+      label: t('common.cancel'),
       push: true
     }
   }).onOk(async () => {
@@ -762,7 +729,7 @@ function cancel(type) {
       resetAll()
     } else {
       await removeProduct(params?.productId, editProduct.value?.product)
-      showSuccess('Товар успешно удалён!')
+      showSuccess(t('product.deleteSuccess'))
       push('/products')
     }
   })
@@ -825,19 +792,19 @@ const isDiscountToday = computed(() => {
 const isDirty = computed(() => isEqual(product, copiedProductForDirty))
 const pageTitle = computed(() => {
   if (isDuplicating.value) {
-    return 'Дублирование товара'
+    return t('product.duplicating')
   } else if (props.isEdit) {
-    return 'Редактирование товара'
+    return t('product.editing')
   }
-  return 'Создание товара'
+  return t('product.creating')
 })
 const submitBtnLabel = computed(() => {
   if (isDuplicating.value) {
-    return 'Дублировать'
+    return t('product.duplicate')
   } else if (props.isEdit) {
-    return 'Обновить'
+    return t('common.update')
   }
-  return 'Сохранить'
+  return t('common.save')
 })
 
 async function hanleProductCategotyBySklad(skladId) {
@@ -861,7 +828,6 @@ watch(editProduct, (newValue) => {
       image: newValue.product.image?.url,
       imageId: newValue.product.image?.id
     })
-    // Создаем глубокую копию для корректного отслеживания изменений
     Object.assign(copiedProductForDirty, {
       ...product,
       prices: [...(product.prices || [])]

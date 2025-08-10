@@ -3,8 +3,8 @@
     <div class="q-mb-md">
       <InputPrice
         :model-value="retailPrice"
-        label="Розничная цена за 1 шт"
-        hint="Можно указать позже"
+        :label="$t('product.retailPricePerPiece')"
+        :hint="$t('product.canSpecifyLater')"
         clear
         @update:model-value="onRetailPriceChange"
       />
@@ -16,7 +16,7 @@
       <div class="flex items-center justify-between no-wrap q-pr-sm">
         <q-checkbox
           v-model="showAdditionalPrices"
-          label="Доп. розничные цены"
+          :label="$t('product.additionalRetailPrices')"
           class="full-width"
           @update:model-value="onShowAdditionalPricesChange"
         />
@@ -36,14 +36,14 @@
             <q-input
               v-model="price.name"
               outlined
-              label="Название"
+              :label="$t('product.priceName')"
               class="full-width"
               enterkeyhint="done"
               @update:model-value="(value) => onAdditionalPriceNameChange(index, value)"
             />
             <InputPrice
-              v-model="price.price"
-              label="Цена"
+              v-model="price.value"
+              :label="$t('common.price')"
               clear
               :icon="false"
               class="full-width"
@@ -59,11 +59,10 @@
             />
           </div>
         </div>
-        
-        <!-- Кнопка добавления новой цены -->
+
         <q-btn
           icon="mdi-plus"
-          label="Добавить цену"
+          :label="$t('product.addPrice')"
           color="primary"
           push
           class="full-width"
@@ -72,11 +71,10 @@
       </div>
     </div>
 
-    <!-- Диалог с информацией о дополнительных ценах -->
     <q-dialog v-model="showInfoDialog">
       <q-card style="min-width: 350px">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Доп. розничные цены</div>
+          <div class="text-h6">{{ $t('product.additionalRetailPrices') }}</div>
           <q-space />
           <q-btn
             round
@@ -94,17 +92,7 @@
         </q-card-section>
 
         <q-card-section>
-          <p class="text-subtitle2">
-            Доп. розничные цены - позволяют указать различные варианты розничных цен для одного товара. Например,
-          </p>
-          <ul class="q-mt-md">
-            <li>Цена для постоянных клиентов</li>
-            <li>Цена после 18:00</li>
-            <li>И другие варианты</li>
-          </ul>
-          <p class="text-body2 q-mt-md text-grey-5">
-            Это поможет вам лучше управлять ценообразованием и предлагать разные условия для разных категорий покупателей.
-          </p>
+          <p v-html="$t('product.additionalPricesFullDescription')" class="text-subtitle2" />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -115,9 +103,15 @@
 import {
   ref,
   watch,
-  toRefs
+  toRefs,
+  computed
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 import InputPrice from 'src/components/InputPrice.vue'
+
+defineOptions({
+  name: 'NewPriceInput'
+})
 
 const props = defineProps({
   retailPrice: {
@@ -133,6 +127,8 @@ const props = defineProps({
 const { retailPrice, additionalPrices: propAdditionalPrices } = toRefs(props)
 
 const emit = defineEmits(['on-change'])
+
+const { t: $t } = useI18n()
 
 const localRetailPrice = ref(retailPrice.value)
 const localAdditionalPrices = ref(propAdditionalPrices.value.length > 0 

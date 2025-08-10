@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import {
   SKLAD,
   SKLADS,
@@ -19,6 +20,7 @@ import { ALL_PERMISSIONS } from 'src/permissions'
 const IGNORE_PAGE_TO_REPLACE = []
 
 const useSklads = () => {
+  const { t: $t } = useI18n()
   const $q = useQuasar()
   const route = useRoute()
   const { replace } = useRouter()
@@ -68,7 +70,7 @@ const useSklads = () => {
         })
         skladStore.setSklad(data?.sklad)
       } catch (error) {;
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
       }
     } else {
       clearSklad()
@@ -92,7 +94,7 @@ const useSklads = () => {
       })
       skladStore.setSklads(data?.sklads)
     } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
     } finally {
       isLoading.value = false;
     }
@@ -111,7 +113,7 @@ const useSklads = () => {
         }
       })
     } catch (error) {
-      showError('Неизвестная ошибка. Перегрузите приложение!')
+      showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
     } finally {
       isLoading.value = false;
     }
@@ -142,14 +144,14 @@ const useSklads = () => {
           ]
         });
         fetchSklad()
-        showSuccess('Список участников обновлен!')
+        showSuccess($t('warehouse.participantsUpdated'))
       } catch (error) {
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
       } finally {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('common.reloadPage'))
     }
   }
 
@@ -169,14 +171,14 @@ const useSklads = () => {
           ]
         });
         fetchSklad()
-        showSuccess('Полномочия обновлены!')
-      } catch (error) {
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showSuccess($t('warehouse.permissionsUpdated'))
+      } catch {
+        showError($t('common.reloadPage'))
       } finally {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('common.reloadPage'))
     }
   }
 
@@ -199,41 +201,41 @@ const useSklads = () => {
           permissions: permissions?.map(p => ({ sklad: p.sklad.id, list: p.list  }))
         });
         fetchSklad()
-        showSuccess('Список участников обновлен!')  
+        showSuccess($t('warehouse.participantsUpdated'))  
       } catch (error) {
-        showError('Неизвестная ошибка. Перегрузите приложение!')
+        showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
       } finally {
         isLoading.value = false
       }
     } else {
-      showError('Перезагрузите страницу, попробуйте еще раз!')
+      showError($t('common.reloadPage'))
     }
   }
 
   function removeSklad(skladId, callback) {
     $q.dialog({
-      title: 'Удалить склад?',
-      message: 'При удалении склада, вся информация о нём будет удалена навсегда. Вы уверены?',
+      title: $t('warehouse.delete'),
+      message: $t('warehouse.deleteWarning'),
       cancel: true,
       persistent: true,
       ok: {
         color: 'deep-orange',
-        label: 'Удалить',
+        label: $t('common.delete'),
         push: true
       },
       cancel: {
         color: 'white',
         textColor: 'black', 
-        label: 'Отмена',
+        label: $t('common.cancel'),
         push: true,
       }
     }).onOk(async () => {
       await deleteSklad({ skladId });
       if (!removeSkladError.value) {
-        showSuccess('Склад успешно удалён!')
+        showSuccess($t('warehouse.deletedSuccessfully'))
         callback()
       } else {
-        showError('Неизвестная ошибка. Проблемы на сервере.')
+        showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
     })
   }

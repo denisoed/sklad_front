@@ -1,14 +1,14 @@
 <template>
   <div class="sizes-presets flex column full-width">
-    <div class="text-subtitle2">Готовые размеры</div>
+    <div class="text-subtitle2">{{ $t('sizes.readySizes') }}</div>
     <q-checkbox
-      label="Размеры детской обуви"
+      :label="$t('sizes.childrenShoes')"
     />
     <q-checkbox
-      label="Размеры женской обуви"
+      :label="$t('sizes.womenShoes')"
     />
     <q-checkbox
-      label="Размеры мужской обуви"
+      :label="$t('sizes.menShoes')"
     />
   </div>
 </template>
@@ -17,6 +17,7 @@
 import {
   defineComponent,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'SizesPresets',

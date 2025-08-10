@@ -7,7 +7,7 @@
     <q-card style="width: 350px">
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          Фильтр по истории
+          {{ $t('history.filterByHistory') }}
         </p>
         <div class="flex justify-center full-width q-mt-sm">
           <div class="flex column full-width q-gap-md">
@@ -18,7 +18,7 @@
               clearable
               use-chips
               :options="actions"
-              label="Поиск по событию"
+              :label="$t('filter.searchByEvent')"
               behavior="menu"
             >
               <template v-slot:prepend>
@@ -48,7 +48,7 @@
               clearable
               use-chips
               :options="skladUsers"
-              label="Поиск по людям"
+              :label="$t('filter.searchByPeople')"
               behavior="menu"
             >
               <template v-slot:prepend>
@@ -74,28 +74,28 @@
               v-model="formData.description"
               outlined
               clearable
-              label="Поиск по описанию"
+              :label="$t('filter.searchByDescription')"
               class="full-width"
               enterkeyhint="done"
             />
           </div>
           <q-separator class="full-width q-my-md" />
           <div class="flex justify-between no-wrap q-gap-md full-width">
-            <q-btn
+              <q-btn
               style="height:40px;"
               color="deep-orange"
-              icon="mdi-trash-can-outline"
+              icon="mdi-refresh"
               push
               @click="clear"
             />
-            <q-btn
+              <q-btn
               class="button-size q-mr-auto"
               color="grey"
               icon="mdi-close"
               push
               @click="close"
             />
-            <q-btn
+              <q-btn
               class="button-size"
               color="primary"
               icon="search"
@@ -109,15 +109,10 @@
   </q-dialog>
 </template>
 
-<script>
+<script setup>
+import { computed, reactive, toRefs } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
-  computed,
-  defineComponent,
-  reactive,
-  toRefs
-} from 'vue'
-import {
-  HISTORY_ACTIONS,
   HISTORY_CREATE,
   HISTORY_UPDATE,
   HISTORY_DELETE,
@@ -125,81 +120,76 @@ import {
   HISTORY_ACTIONS_COLORS
 } from 'src/config'
 
-export default defineComponent({
-  name: 'FilterHistory',
-  props: {
-    opened: {
-      type: Boolean,
-      default: false
-    },
-    users: {
-      type: Array,
-      default: () => []
-    },
-    title: {
-      type: String,
-      default: null
-    },
+defineOptions({
+  name: 'FilterHistory'
+})
+
+const props = defineProps({
+  opened: {
+    type: Boolean,
+    default: false
   },
-  emits: ['close', 'save', 'on-search'],
-  setup(props, { emit }) {
-    const { users } = toRefs(props)
-    const formData = reactive({
-      description: null,
-      actions: null,
-      people: null,
-    })
-
-    const actions = [
-      {
-        label: HISTORY_ACTIONS[HISTORY_CREATE],
-        value: HISTORY_CREATE,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_CREATE],
-      },
-      {
-        label: HISTORY_ACTIONS[HISTORY_UPDATE],
-        value: HISTORY_UPDATE,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_UPDATE],
-      },
-      {
-        label: HISTORY_ACTIONS[HISTORY_DELETE],
-        value: HISTORY_DELETE,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_DELETE],
-      },
-      {
-        label: HISTORY_ACTIONS[HISTORY_SOLD],
-        value: HISTORY_SOLD,
-        color: HISTORY_ACTIONS_COLORS[HISTORY_SOLD],
-      },
-    ]
-    const skladUsers = computed(
-      () => users.value.map(u => ({ label: u.fullname, email: u.email, value: u.id }))
-    )
-
-    function close() {
-      emit('close')
-    }
-    
-    function search() {
-      close()
-      emit('on-search', formData)
-    }
-    
-    function clear() {
-      formData.description = null
-      formData.actions = null
-      formData.people = null
-      search()
-    }
-
-    return {
-      close,
-      search,
-      actions,
-      formData,
-      clear,
-      skladUsers,
-    }
+  users: {
+    type: Array,
+    default: () => []
+  },
+  title: {
+    type: String,
+    default: null
   }
 })
+
+const emit = defineEmits(['close', 'save', 'on-search'])
+
+const { t: $t } = useI18n()
+
+const { users } = toRefs(props)
+const formData = reactive({
+  description: null,
+  actions: null,
+  people: null
+})
+
+const actions = computed(() => [
+  {
+    label: $t(`history.actions.${HISTORY_CREATE}`),
+    value: HISTORY_CREATE,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_CREATE]
+  },
+  {
+    label: $t(`history.actions.${HISTORY_UPDATE}`),
+    value: HISTORY_UPDATE,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_UPDATE]
+  },
+  {
+    label: $t(`history.actions.${HISTORY_DELETE}`),
+    value: HISTORY_DELETE,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_DELETE]
+  },
+  {
+    label: $t(`history.actions.${HISTORY_SOLD}`),
+    value: HISTORY_SOLD,
+    color: HISTORY_ACTIONS_COLORS[HISTORY_SOLD]
+  }
+])
+
+const skladUsers = computed(() =>
+  users.value.map(u => ({ label: u.fullname, email: u.email, value: u.id }))
+)
+
+function close() {
+  emit('close')
+}
+
+function search() {
+  close()
+  emit('on-search', formData)
+}
+
+function clear() {
+  formData.description = null
+  formData.actions = null
+  formData.people = null
+  search()
+}
 </script>

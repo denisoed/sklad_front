@@ -1,5 +1,5 @@
 <template>
-  <Dropdown title="Цены на товар" outline opened>
+  <TheDropdown :title="$t('product.pricesForProduct')" outline opened>
     <template #icon>
       <q-icon name="mdi-cash" size="sm" class="q-mr-sm" />
     </template>
@@ -7,7 +7,7 @@
       <div class="pay-methods flex column q-gap-md">
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === DEFAULT_PRICE }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title q-mr-auto">Розничная цена</div>
+            <div class="pay-methods_title q-mr-auto">{{ $t('product.retailPrice') }}</div>
             <div class="flex items-center q-gap-sm">
               <div class="pay-methods_value">
                 <PriceFormatter :value="defaultPrice" />
@@ -38,7 +38,7 @@
         </div>
         <div class="pay-methods_item" :class="{ 'pay-methods_item--active': selected === OTHER_PRICE }">
           <label v-ripple class="relative-position flex items-center justify-between">
-            <div class="pay-methods_title">Другая цена</div>
+            <div class="pay-methods_title">{{ $t('product.additionalPrice') }}</div>
             <q-radio v-model="selected" :val="OTHER_PRICE" dense />
           </label>
           <div v-if="selected === OTHER_PRICE" class="pay-methods_body flex column q-gap-sm q-pb-none q-mt-md">
@@ -53,7 +53,7 @@
         </div>
       </div>
     </template>
-  </Dropdown>
+  </TheDropdown>
 </template>
 
 <script setup>
@@ -64,7 +64,7 @@ import {
 } from 'vue'
 import { debounce } from 'quasar'
 import InputPrice from 'src/components/InputPrice'
-import Dropdown from 'src/components/Dropdown'
+import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
 
 const DEFAULT_PRICE = 'DEFAULT_PRICE';
@@ -87,7 +87,6 @@ const props = defineProps({
 
 const emit = defineEmits(['on-change'])
 
-// Always default to DEFAULT_PRICE (Розничная цена)
 const selected = ref(DEFAULT_PRICE);
 const formData = reactive({
   otherPrice: null,

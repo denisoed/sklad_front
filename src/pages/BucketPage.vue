@@ -1,10 +1,10 @@
 <template>
   <q-page>
     <div class="container">
-      <PageTitle title="Товаровы на продажу">
+      <PageTitle :title="$t('bucket.salesProducts')">
         <div>
           <q-card-section class="q-pt-none">
-            На этой странице отображаются товары выбранные для продажи.
+            {{ $t('bucket.salesPageDescription') }}
           </q-card-section>
         </div>
       </PageTitle>
@@ -12,7 +12,7 @@
       <template v-if="bucketProducts && bucketProducts.length">
         <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
           <div class="flex items-center q-gap-sm">
-            <p class="q-mb-none text-subtitle2 ">Заказы</p>
+            <p class="q-mb-none text-subtitle2 ">{{ $t('bucket.orders') }}</p>
             <q-badge color="primary" :label="bucketProducts.length" />
           </div>
           
@@ -58,6 +58,7 @@
         v-else
         class="full-width text-center text-grey-5"
       >
+        {{ $t('pages.loading') }}
         <span
           v-if="bucketProductsLoading"
         >
@@ -66,7 +67,7 @@
             name="mdi-loading"
             class="mdi-spin q-mr-sm "
           />
-          Загрузка...
+          {{ $t('pages.loading') }}
         </span>
         <span
           v-else
@@ -76,13 +77,13 @@
             name="mdi-cart-outline"
             class="q-mr-sm text-grey-5"
           />
-          Корзина пуста
+          {{ $t('bucket.emptyBasket') }}
         </span>
       </h6>
       <div class="flex flex-center q-mt-lg">
         <q-btn
           v-if="bucketProducts?.length"
-          label="Продать товары"
+          :label="$t('bucket.sellProducts')"
           push
           color="primary"
           @click="toSell"
@@ -91,7 +92,7 @@
         />
         <q-btn
           v-else
-          label="Добавить товары в корзину"
+          :label="$t('bucket.addToBasket')"
           push
           color="primary"
           to="/products"
@@ -142,6 +143,7 @@
 <script setup>
 import moment from 'moment'
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
 import useHistory from 'src/modules/useHistory'
 import useSklads from 'src/modules/useSklads'
@@ -178,6 +180,7 @@ const VIEW_GRID = 'grid'
 
 const TODAY = Date.now()
 const $q = useQuasar()
+const { t: $t } = useI18n()
 const { showSuccess, showError } = useHelpers()
 const { sklads } = useSklads()
 const { profile } = useProfile()
@@ -262,9 +265,9 @@ async function update(selectedItem, newData) {
       }
     })
     await forceRefreshBucket()
-    showSuccess('Корзина обновлена')
+    showSuccess($t('bucket.updateBasket'))
   } else {
-    showError('Не удалось обновить продукт. Попробуйте позже.')
+    showError($t('bucket.errorUpdate'))
   }
   selectedProduct.value = null
 }
@@ -284,9 +287,9 @@ async function remove(product, payload) {
   })
   if (!deleteSaleProductError.value) {
     await forceRefreshBucket()
-    showSuccess('Товар возвращен на склад')
+    showSuccess($t('bucket.returnedToWarehouse'))
   } else {
-    showError('Не удалось вернуть товар на склад. Попробуйте позже.')
+    showError($t('bucket.errorReturn'))
   }
   isLoading.value = false
 }
@@ -332,19 +335,19 @@ function getNewPrice(product) {
 
 function toSell() {
   $q.dialog({
-    title: 'Вы уверены?',
-    message: 'Продать выбранные товары',
+    title: $t('common.areYouSure'),
+    message: $t('bucket.sellSelectedProducts'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'primary',
-      label: 'Продать',
+      label: $t('bucket.sell'),
       push: true,
     },
     cancel: {
       color: 'white',
       textColor: 'black', 
-      label: 'Отмена',
+      label: $t('common.cancel'),
       push: true
     }
   }).onOk(async () => {
@@ -386,9 +389,9 @@ function toSell() {
       }
       if (!updateProductError.value) {
         await forceRefreshBucket()
-        showSuccess('Товары успешно проданы!')
+        showSuccess($t('bucket.soldSuccessfully'))
       } else {
-        showError('Произошла ошибка. Попробуйте позже.')
+        showError($t('bucket.errorSell'))
       }
     } finally {
       isLoading.value = false

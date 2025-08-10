@@ -1,6 +1,6 @@
 import { LocalStorage, Dark } from 'quasar';
 import { ref } from 'vue';
-import { IS_DARK_MODE, MAIN_COLOR_DARK, MAIN_COLOR_LIGHT } from 'src/config'
+import { IS_DARK_MODE, MAIN_COLOR_DARK, MAIN_COLOR_LIGHT, ACCENT_COLOR, ACCENT_COLORS } from 'src/config'
 
 const useTheme = () => {
   const isDark = ref(LocalStorage.getItem(IS_DARK_MODE) || true)
@@ -25,6 +25,23 @@ const useTheme = () => {
     }
   }
 
+  function setAccentColor(colorValue, colorRgb) {
+    const root = document.documentElement;
+    root.style.setProperty('--q-primary', colorValue);
+    root.style.setProperty('--q-primary-rgb', colorRgb);
+  }
+
+  function initAccentColor() {
+    const savedColor = LocalStorage.getItem(ACCENT_COLOR);
+    if (savedColor) {
+      setAccentColor(savedColor.value, savedColor.rgb);
+    } else {
+      // Set default color
+      const defaultColor = ACCENT_COLORS[0];
+      setAccentColor(defaultColor.value, defaultColor.rgb);
+    }
+  }
+
   function toggleTheme() {
     Dark.toggle();
     setThemeColor();
@@ -39,6 +56,8 @@ const useTheme = () => {
   return {
     setThemeColor,
     toggleTheme,
+    setAccentColor,
+    initAccentColor,
     isDark
   }
 }
