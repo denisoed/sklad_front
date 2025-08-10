@@ -19,12 +19,13 @@
           v-model="calendarDate"
           range
           multiple
+          :locale="qDateLocale"
           :options="optionsFn"
         >
           <div class="row items-center no-wrap justify-end q-gap-xs">
             <q-btn :label="$t('common.cancel')" rounded color="grey" flat v-close-popup />
             <q-btn :label="$t('common.clear')" rounded color="deep-orange" flat @click="clear" />
-            <q-btn label="OK" rounded color="primary" flat @click="filterByCalendar" v-close-popup />
+            <q-btn :label="$t('common.ok')" rounded color="primary" flat @click="filterByCalendar" v-close-popup />
           </div>
           <p class="text-grey q-mt-md q-mb-none text-caption">{{ $t('filter.doubleClickHint') }}</p>
         </q-date>
@@ -65,7 +66,7 @@ const props = defineProps({
 
 const emit = defineEmits(['on-change'])
 
-const { t: $t } = useI18n()
+const { t: $t, tm } = useI18n()
 const { getBetweenDays, getCurrentWeek, getCurrentMonth } = useDate()
 
 const TABS = computed(() => [
@@ -82,6 +83,17 @@ const TABS = computed(() => [
     value: MONTH
   },
 ])
+
+const qDateLocale = computed(() => ({
+  /* starting with Sunday */
+  days: tm('calendar.days'),
+  daysShort: tm('calendar.daysShort'),
+  months: tm('calendar.months'),
+  monthsShort: tm('calendar.monthsShort'),
+  firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
+  format24h: true,
+  pluralDay: $t('calendar.pluralDay')
+}))
 
 const calendarDate = ref(props.selectedToday ? moment().startOf(DAY).format(FILTER_FORMAT) : null)
 const localSelectedTab = ref(props.selectedTab)

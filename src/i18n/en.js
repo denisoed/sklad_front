@@ -38,6 +38,7 @@ export default ({
     },
   },
   common: {
+    ok: 'OK',
     clear: 'Clear',
     uploadPhoto: 'Upload photo',
     sizes: 'Sizes',
@@ -100,6 +101,13 @@ export default ({
     reloadApp: 'Reload app',
     reloadPage: 'Reload page and try again',
     noAccess: 'No access',
+  },
+  calendar: {
+    days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    daysShort: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    monthsShort: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    pluralDay: 'days',
   },
   voiceOverlay: {
     recognitionUnavailable: 'Speech recognition service is not available in your browser',
