@@ -54,7 +54,7 @@
 import { LocalStorage } from 'quasar'
 import { defineComponent, ref, computed } from 'vue';
 import BasicDialog from 'src/components/Dialogs/BasicDialog.vue';
-import BulkPreview from 'src/components/Dialogs/Bulk/Preview.vue';
+import BulkPreview from 'src/components/Dialogs/Bulk/ThePreview.vue';
 import useTSPL from 'src/modules/ble/useTSPL'
 import useBluetooth from 'src/modules/ble/useBluetooth'
 import useHelpers from 'src/modules/useHelpers'

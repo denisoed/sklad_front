@@ -353,6 +353,7 @@ export default ({
   mainSettings: {
     title: 'Основные Настройки',
     userTab: {
+      title: 'Профиль',
       autoRefill: 'Автопополнение',
       lang: 'Язык',
       logout: 'Выйти',
@@ -377,9 +378,17 @@ export default ({
       },
     },
     sizesTab: {
+      title: 'Размеры',
       sizes: 'размеры',
       deleteSize: 'Удалить размер',
       deleteConfirm: 'Вы уверены, что хотите удалить эти размеры?',
+    },
+    appearanceTab: {
+      title: 'Внешний вид',
+      accentColors: {
+        title: 'Цветовая схема',
+        description: 'Выберите цветовую схему для склада',
+      },
     },
   },
 

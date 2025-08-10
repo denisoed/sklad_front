@@ -38,7 +38,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import BulkPreview from 'src/components/Dialogs/Bulk/Preview.vue';
+import BulkPreview from 'src/components/Dialogs/Bulk/ThePreview.vue';
 import StepTwo from 'src/components/Dialogs/BulkUpdateDialog/StepTwo.vue';
 import SwipeToClose from 'src/components/SwipeToClose.vue';
 import useHelpers from 'src/modules/useHelpers'

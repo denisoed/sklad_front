@@ -70,7 +70,7 @@
       </template>
       <template #body>
         <div class="flex column">
-          <label v-for="(l, i) of LANGS.value" :key="i" style="height: 50px;" class="flex items-center cursor-pointer q-pr-xs">
+          <label v-for="(l, i) of LANGS" :key="i" style="height: 50px;" class="flex items-center cursor-pointer q-pr-xs">
             <q-img :src="l.flag" alt="logo" style="height: 20px; max-width: 20px" class="q-mr-md" />
             <span>{{ l.label }}</span>
             <q-radio v-model="locale" dense :val="l.value" class="q-ml-auto" />
