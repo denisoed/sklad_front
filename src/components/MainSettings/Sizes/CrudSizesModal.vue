@@ -41,7 +41,7 @@
                   outlined
                   dense
                   class="full-width"
-                  :placeholder="$t('sizes.sizeName')"
+                  :placeholder="$t('mainSettings.sizesTab.sizesSettings.modal.inputSizesPlaceholder')"
                   enterkeyhint="done"
                 />
                 <q-btn

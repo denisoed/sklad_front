@@ -375,6 +375,14 @@ export default ({
       sizes: 'размеры',
       deleteSize: 'Удалить размер',
       deleteConfirm: 'Вы уверены, что хотите удалить эти размеры?',
+      sizesSettings: {
+        modal: {
+          inputNameLabel: 'Название',
+          inputNameHint: 'Например: Для одежды или для обуви',
+          inputSizesLabel: 'Список размеров',
+          inputSizesPlaceholder: 'Например: S, M, L, XL, XXL',
+        }
+      }
     },
     appearanceTab: {
       title: 'Внешний вид',

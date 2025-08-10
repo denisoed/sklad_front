@@ -44,7 +44,7 @@ const useSizes = () => {
   function removeSizes(size) {
     $q.dialog({
       title: `${$t('common.delete')} "${size.name}"?`,
-      message: $t('mainSettings.sizesTab.sizesSettings.deleteConfirm'),
+      message: $t('mainSettings.sizesTab.deleteConfirm'),
       cancel: true,
       persistent: true,
       ok: {
