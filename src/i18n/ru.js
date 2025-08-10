@@ -51,12 +51,13 @@ export default ({
     update: 'Обновить',
     title: 'Заголовок',
     backToHome: 'Вернуться на главную',
-    image: 'Изображение',
+    image: 'Фото',
     comment: 'Комментарий',
     information: 'Информация',
     counts: 'Кол-во',
     actions: 'Действия',
     per: 'за',
+    areYouSure: 'Вы уверены?',
 
     // Errors and success messages
     success: 'Успешно',
@@ -177,9 +178,8 @@ export default ({
     quantityForSale: 'Кол-во товара для продажи',
     salesProducts: 'Товары на продажу',
     salesPageDescription: 'На этой странице отображаются товары выбранные для продажи.',
-  },
-
-  
+    sellSelectedProducts: 'Продать выбранные товары',
+  },  
 
   // Warehouse
   warehouse: {

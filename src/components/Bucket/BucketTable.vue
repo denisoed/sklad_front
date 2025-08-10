@@ -224,12 +224,61 @@ function confirmRemove(bucketProduct) {
 }
 
 const columns = computed(() => [
-  { name: 'photo', label: $t('statistics.photo'), field: 'image', sortable: false },
-  { name: 'info', label: $t('bucket.information'), field: 'name', sortable: false },
-  { name: 'price', label: $t('common.price'), field: 'price', sortable: false },
-  { name: 'payment', label: $t('common.payment'), field: 'payment', sortable: false },
-  { name: 'comment', label: $t('bucket.comment'), field: 'comment', sortable: false },
-  { name: 'actions', label: $t('statistics.actions'), field: 'actions', sortable: false }
+  {
+    name: 'select',
+    label: '',
+    field: 'select',
+    align: 'center',
+    style: 'width: 50px'
+  },
+  {
+    name: 'image',
+    label: $t('common.image'),
+    field: 'image',
+    align: 'center',
+    style: 'width: 60px'
+  },
+  {
+    name: 'name',
+    label: $t('common.information'),
+    field: 'name',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'sizes',
+    label: `${$t('common.sizes')}/${$t('common.counts')}`,
+    field: 'sizes',
+    align: 'left'
+  },
+  {
+    name: 'price',
+    label: $t('common.price'),
+    field: 'price',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'payment',
+    label: $t('common.payment'),
+    field: 'payment',
+    align: 'left',
+    style: 'width: 100px'
+  },
+  {
+    name: 'comment',
+    label: $t('common.comment'),
+    field: 'comment',
+    align: 'left',
+    style: 'width: 120px'
+  },
+  {
+    name: 'actions',
+    label: $t('common.actions'),
+    field: 'actions',
+    align: 'center',
+    style: 'width: 150px'
+  }
 ])
 </script>
 

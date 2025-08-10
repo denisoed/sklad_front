@@ -167,7 +167,6 @@ const { profile } = useProfile()
 const {
   loadBucketProducts,
   forceRefreshBucket,
-  bucketProductsLoading,
   bucketProducts
 } = useBucket()
 const {
@@ -247,7 +246,7 @@ async function update(selectedItem, newData) {
     await forceRefreshBucket()
     showSuccess($t('bucket.updateBasket'))
   } else {
-          showError($t('bucket.errorUpdate'))
+    showError($t('bucket.errorUpdate'))
   }
   selectedProduct.value = null
 }
@@ -269,7 +268,7 @@ async function remove(product, payload) {
     await forceRefreshBucket()
     showSuccess($t('bucket.returnToWarehouse'))
   } else {
-          showError($t('bucket.errorReturn'))
+    showError($t('bucket.errorReturn'))
   }
   isLoading.value = false
 }
@@ -371,7 +370,7 @@ function toSell() {
         await forceRefreshBucket()
         showSuccess($t('bucket.soldSuccessfully'))
       } else {
-                  showError($t('bucket.errorSell'))
+        showError($t('bucket.errorSell'))
       }
     } finally {
       isLoading.value = false
