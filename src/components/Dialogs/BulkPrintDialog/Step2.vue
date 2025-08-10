@@ -1,10 +1,10 @@
 <template>
   <div class="flex column q-gap-md">
     <q-separator />
-    Пример ценника. Печатаем?
+    {{ $t('printing.templateExampleTitle') }}
     <div class="flex column bulk-print-example">
       <div class="bulk-print-example_block flex items-center justify-center column q-mx-auto">
-        <span>Название товара</span>
+        <span>{{ $t('product.priceName') }}</span>
         <QRCodeVue3
           value="Simple QR code"
           :width="80"
@@ -15,7 +15,7 @@
           }"
         />
         <div class="flex">
-          <span class="q-mr-xs">Цена:</span><b>0000</b>
+          <span class="q-mr-xs">{{ $t('common.price') }}:</span><b>0000</b>
         </div>
       </div>
     </div>

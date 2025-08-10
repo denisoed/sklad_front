@@ -14,6 +14,7 @@ export default ({
   
   // Common actions
   common: {
+    pieces: 'шт',
     save: 'Сактоо',
     cancel: 'Жокко чыгаруу',
     delete: 'Өчүрүү',
@@ -208,6 +209,7 @@ export default ({
     warehouseName: 'Кампанын аталышы',
     minStock: 'Калдыктар',
     minStockDescription: 'Эгер товардагы өлчөмдөр көрсөтүлгөн маанидан аз же барабар болсо, ал кампанын башкы барагындагы "Калдыктар" бөлүмүнө кирет',
+    sizesConfigurations: 'Өлчөмдөр конфигурациялары',
     employee: {
       noPeopleAdded: 'Адамдар кошулган жок',
       removeEmployee: 'Кызматкерди өчүрүү',
@@ -289,6 +291,7 @@ export default ({
     send: 'Жөнөтүү',
     unknownError: 'Белгисиз ката. Кийинчерээк аракет кылыңыз.',
     feedbackSent: 'Сиздин пикириңиз ийгиликтүү жөнөтүлдү!',
+    howEasyToUse: 'Складды колдонуу канчалык жеңил?',
   },
 
   voice: {
@@ -329,6 +332,11 @@ export default ({
     errorLoadingSizes: 'Өлчөмдөрдү жүктөө катасы:',
     doubleClickHint: 'Датага эки жолу басуу бир күндүк жыйынтыкты берет.',
     sizesLoadingError: 'Өлчөмдөрдү жүктөө катасы:',
+  },
+
+  // Sizes
+  sizes: {
+    configureSizes: 'Өлчөмдөрдү тууралоо',
   },
 
   statistics: {
@@ -389,6 +397,7 @@ export default ({
     changeSettings: 'Тууралоолорду өзгөртүү',
     listIsEmpty: 'Тизме бош',
     selected: 'Тандалды',
+    loading: 'Жүктөлүүдө...'
   },
 
   // Blocked page

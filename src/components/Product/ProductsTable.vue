@@ -51,7 +51,7 @@
           <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
           <div class="text-weight-medium">{{ props.row.name }}</div>
           <div v-if="props.row.color" class="flex items-center q-gutter-xs q-mt-xs">
-            <span class="text-caption text-grey-6">Цвет:</span>
+            <span class="text-caption text-grey-6">{{ $t('common.color') }}:</span>
             <ColorDisplay :color="props.row.color" size="16px" />
           </div>
         </q-td>
@@ -70,16 +70,16 @@
             <div
               v-permissions="{ permissions: [READ_ORIGINAL_PRICE], skladId: props.row?.sklad?.id }"
               class="text-grey-6">
-              Опт. цена: <PriceFormatter :value="props.row.origPrice" />
+              {{ $t('product.originalPrice') }}: <PriceFormatter :value="props.row.origPrice" />
             </div>
             <div v-if="props.row.withDiscount" class="text-weight-bold text-red">
-              <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
-                Розн. цена: <PriceFormatter :value="props.row.newPrice" />
+               <div v-if="props.row.withDiscount" class="text-caption text-strike text-grey-6">
+                 {{ $t('product.retailPrice') }}: <PriceFormatter :value="props.row.newPrice" />
               </div>
-              Акц. цена: <PriceFormatter :value="props.row.discountPrice" />
+               {{ $t('product.promotionalPricePerUnit') }}: <PriceFormatter :value="props.row.discountPrice" />
             </div>
             <div v-else class="text-weight-bold">
-              Розн. цена: <PriceFormatter :value="props.row.newPrice" />
+               {{ $t('product.retailPrice') }}: <PriceFormatter :value="props.row.newPrice" />
             </div>
           </div>
         </q-td>

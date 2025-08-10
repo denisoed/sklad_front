@@ -14,6 +14,7 @@ export default ({
   
   // Common actions
   common: {
+    pieces: 'шт',
     save: 'Сохранить',
     cancel: 'Отмена',
     delete: 'Удалить',
@@ -47,6 +48,7 @@ export default ({
     update: 'Обновить',
     title: 'Заголовок',
     backToHome: 'Вернуться на главную',
+
     
     // Errors and success messages
     success: 'Успешно',
@@ -232,6 +234,7 @@ export default ({
     warehouseName: 'Название склада',
     minStock: 'Остатки',
     minStockDescription: 'Если размеров в товаре окажется меньше или равно указанному значению, он попадёт в раздел "Остатки" на главной странице склада',
+    sizesConfigurations: 'Конфигурации размеров',
     employee: {
       noPeopleAdded: 'Люди не добавлены',
       removeEmployee: 'Удалить сотрудника',
@@ -624,6 +627,7 @@ export default ({
     description: 'Мы рады, что вы присоединились к нам. Теперь управление вашими товарами и продажами станет проще и удобнее.',
     loading: 'Подождите...',
     error: 'Упс. Попробуйте позже.',
+    bannerAlt: 'Добро пожаловать в Sklad'
   },
 
   // Price Label Editor
@@ -635,6 +639,17 @@ export default ({
     actions: 'Действия',
     layers: 'Слои',
     addText: 'Добавить текст',
+  },
+
+  // App
+  app: {
+    name: 'Sklad',
+    version: 'Версия {version}'
+  },
+
+  // Feedback additions
+  feedback: {
+    howEasyToUse: 'Насколько легко пользоваться складом?',
   },
 
   // Validation messages

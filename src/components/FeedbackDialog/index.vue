@@ -21,7 +21,7 @@
               
               <template v-if="!selectedRating">
                 <div class="feedback_popup-header text-subtitle1 text-center">
-                  Насколько легко пользоваться складом?
+                  {{ t('feedback.howEasyToUse') }}
                 </div>
   
                 <div class="feedback_popup-body" :class="{ selectedRating }">

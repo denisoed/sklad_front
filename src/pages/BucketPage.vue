@@ -315,8 +315,8 @@ function getNewPrice(product) {
 
 function toSell() {
   $q.dialog({
-    title: 'Вы уверены?',
-    message: 'Продать выбранные товары',
+    title: $t('common.areYouSure'),
+    message: $t('bucket.sellSelectedProducts'),
     cancel: true,
     persistent: true,
     ok: {

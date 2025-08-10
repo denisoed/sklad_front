@@ -8,7 +8,7 @@
       <SwipeToClose direction="right" @on-close="dialog = false">
         <q-card class="notify-list_wrap" style="width: 300px;">
           <q-card-section class="flex items-center q-pb-none">
-            <div class="text-subtitle1">Уведомления</div>
+            <div class="text-subtitle1">{{ $t('history.notifications') }}</div>
             <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup />
           </q-card-section>
           <q-card-section v-if="historyRows?.length" class="notify-list_items">
@@ -28,8 +28,8 @@
                   <div
                     class="notify-list_item-type absolute-top-right q-ma-sm text-black border-radius-sm q-px-xs q-py-none"
                     :style="{ backgroundColor: h.actionColor }"
-                  >{{ HISTORY_ACTIONS[h.action] }}</div>
-                  <div class="notify-list_item-sklad text-grey q-mb-xs">Склад: <b>{{ h.skladName }}</b></div>
+                  >{{ $t(`history.action.${HISTORY_ACTIONS[h.action]}`) }}</div>
+                  <div class="notify-list_item-sklad text-grey q-mb-xs">{{ $t('common.warehouse') }}: <b>{{ h.skladName }}</b></div>
                   <div class="notify-list_item-sklad text-grey q-mb-xs">ID: {{ h.productId ? `#${h.productId}` : '-' }}</div>
                   <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
                   <div class="flex justify-between items-center">
@@ -42,7 +42,7 @@
           </q-card-section>
           <q-card-section v-else class="flex column items-center q-pt-xl">
             <q-icon name="mdi-history" size="md" color="grey" />
-            <div class="text-grey q-mt-sm">Новых уведомлений нет</div>
+            <div class="text-grey q-mt-sm">{{ $t('history.noNewNotifications') }}</div>
           </q-card-section>
         </q-card>
       </SwipeToClose>

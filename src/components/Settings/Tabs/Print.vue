@@ -1,10 +1,10 @@
 <template>
   <div class="full-width q-mt-md">
-    <h6 class="q-mt-none q-mb-md text-grey-5 text-subtitle1">Подключение к принтеру</h6>
+    <h6 class="q-mt-none q-mb-md text-grey-5 text-subtitle1">{{ $t('printing.printerConnection') }}</h6>
     <h6 v-if="!listTemplates.length" class="full-width flex column items-center text-center text-grey-5 q-ma-none">
       <span v-if="loadingTemplates">
         <q-icon size="sm" name="mdi-loading" class="mdi-spin q-mr-sm " />
-        Загрузка...
+        {{ $t('pages.loading') }}
       </span>
       <div v-else class="flex column items-center">
         <span>
@@ -43,7 +43,7 @@
     </div>
     <div class="flex column items-center q-mt-lg">
       <q-btn color="primary" push outline @click="openedNewTemplateModal = true">
-        Создать шаблон
+        {{ $t('printing.createTemplate') }}
       </q-btn>
     </div>
 

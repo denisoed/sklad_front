@@ -9,8 +9,8 @@
             <h4 class="text-h6 text-white q-my-none">{{ title }}</h4>
           </q-card-section>
           <q-card-section>
-            <h6 class="q-my-sm">Пробный период истек!</h6>
-            <p>Чтобы разблокировать аккаунт, пожалуйста, оформите подписку.</p>
+            <h6 class="q-my-sm">{{ $t('blocked.trialExpired') }}</h6>
+            <p>{{ $t('blocked.unlockAccount') }}</p>
           </q-card-section>
           <q-card-actions class="q-px-md q-pb-lg">
             <q-btn
@@ -48,7 +48,7 @@ const btnLabel = computed(() => $t('blocked.checkout'))
 export default defineComponent({
   name: 'BlockedPage',
   setup() {
-    const title = 'Аккаунт заблокирован'
+    const title = $t('blocked.subscriptionExpired')
     const isLoading = ref(false)
 
     const { push } = useRouter()
@@ -58,7 +58,7 @@ export default defineComponent({
     async function submit() {
       try {
         isLoading.value = true
-        showSuccess('Подписка оформлена!')
+        showSuccess($t('blocked.subscriptionIssued'))
         push(HOME_ROUTE)
       } finally {
         isLoading.value = false

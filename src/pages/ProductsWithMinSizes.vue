@@ -7,7 +7,7 @@
     >
       <PageTitle :title="$t('pages.remainingStock')">
         <q-card-section class="q-pt-none">
-          На этой странице отображаются товары, количество которых менее <span class="text-bold">{{ minCountSizes }} шт</span>.<br /><br />
+          {{ $t('pages.lowStockWarning') }} <span class="text-bold">{{ minCountSizes }} {{ $t('common.pieces') }}</span>.<br /><br />
           <span class="text-grey-5">{{ $t('settings.minStockDescription') }}</span>
         </q-card-section>
         <q-card-section>

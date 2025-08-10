@@ -11,8 +11,8 @@
           <div class="flex">
             <q-img src="icons/favicon-128x128.png" class="install-pwa_logo q-mr-sm" />
             <div class="flex column items-start">
-              <div class="text-subtitle1">Sklad</div>
-              <p class="q-ma-none">Версия 0.0.2</p>
+              <div class="text-subtitle1">{{ $t('app.name') }}</div>
+              <p class="q-ma-none">{{ $t('app.version', { version: '0.0.2' }) }}</p>
             </div>
           </div>
           <q-separator class="full-width q-my-md" />

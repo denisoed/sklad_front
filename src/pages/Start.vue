@@ -5,7 +5,7 @@
     <div class="container container-full-height q-px-md">
       <q-img
         src="~/assets/start-banner.png"
-        alt="Welcome to team"
+        :alt="$t('start.bannerAlt')"
         class="start-page_banner"
         spinner-size="sm"
       />

@@ -1,20 +1,20 @@
 <template>
   <div class="container items-start">
-    <h6 class="text-subtitle1 q-mt-md q-mb-sm">Отчеты по всем складам</h6>
+    <h6 class="text-subtitle1 q-mt-md q-mb-sm">{{ $t('statistics.reportsAllWarehouses') }}</h6>
     <SwitchTabs :tabs="TABS" :selected-tab="2" @on-change="onChange" />
     <div class="flex full-width no-wrap q-gap-md q-my-md">
       <ChartCard
         class="full-width"
         :title="$t('statistics.earned')"
         :body="formatPrice(priceTotal)"
-        :descr="`за ${selected.label}`"
+        :descr="`${$t('statistics.for')} ${selected.label}`"
         :loading="loadingActivities"
       />
       <ChartCard
         class="full-width"
         :title="$t('statistics.sold')"
         :body="`${soldCount} шт`"
-        :descr="`за ${selected.label}`"
+        :descr="`${$t('statistics.for')} ${selected.label}`"
         :loading="loadingActivities"
       />
     </div>

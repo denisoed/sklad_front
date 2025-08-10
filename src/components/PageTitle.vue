@@ -31,7 +31,7 @@
         <q-dialog v-model="dialog">
           <q-card class="full-width">
             <q-card-section>
-              <div class="text-h6">Инфо</div>
+              <div class="text-h6">{{ $t('pages.info') }}</div>
             </q-card-section>
             <slot />
             <q-btn

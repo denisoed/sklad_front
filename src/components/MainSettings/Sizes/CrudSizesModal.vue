@@ -14,7 +14,7 @@
         </div>
         <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            {{ item ? $t('update') : $t('create') }} {{ title }}
+            {{ item ? $t('common.update') : $t('create') }} {{ title }}
           </p>
           <q-separator class="full-width q-mt-sm" />
           <div class="flex justify-center q-gap-md full-width q-mt-md">
@@ -211,7 +211,7 @@ export default defineComponent({
       })
       if (!createError.value) {
         emit('on-create-new', data)
-        showSuccess('Новые размеры созданы!')
+         showSuccess($t('sizes.created'))
       } else {
         showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
@@ -230,7 +230,7 @@ export default defineComponent({
         }
       })
       if (!updateError.value) {
-        showSuccess('Размеры обновлены!')
+         showSuccess($t('sizes.updated'))
       } else {
         showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }

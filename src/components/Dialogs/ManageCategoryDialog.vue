@@ -43,7 +43,7 @@
             @keyup.enter="submit"
           />
           <div class="flex full-width flex-start">
-            <p class="full-width text-left q-mb-sm">Выберите цвет для визуального отличия</p>
+            <p class="full-width text-left q-mb-sm">{{ $t('category.selectColor') }}</p>
             <ColorPicker
               :selected="formData.color"
               @on-change="onColorChange"

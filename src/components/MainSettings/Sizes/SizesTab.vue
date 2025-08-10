@@ -1,13 +1,13 @@
 <template>
   <div class="sizes-tab flex column q-gap-md">
-    <Dropdown title="Настроить размеры" opened>
+    <Dropdown :title="$t('sizes.configureSizes')" opened>
       <template #icon>
         <q-icon name="mdi-cog" size="sm" class="q-mr-sm" />
       </template>
       <template #body>
         <div class="flex column">
           <div class="flex items-center justify-between q-mb-md">
-            <span class="text-subtitle2">Конфигурации размеров</span>
+            <span class="text-subtitle2">{{ $t('settings.sizesConfigurations') }}</span>
             <q-btn 
               color="primary" 
               round 
@@ -45,7 +45,7 @@
             <q-separator class="q-mb-md full-width" />
             <span v-if="loading" class="text-grey-6">
               <q-icon size="sm" name="mdi-loading" class="mdi-spin q-mr-sm" />
-              Загрузка...
+              {{ $t('pages.loading') }}
             </span>
             <div v-else class="flex column items-start text-left">
               {{ $t('pages.listIsEmpty') }}
