@@ -52,7 +52,7 @@ export const SKLAD_PWA_INSTALLED = 'sklad_pwa_installed'
 export const ACCENT_COLOR = 'sklad_accent_color'
 
 // Telegram
-export const DEV_TG_INIT_DATA_UNSAFE = process.env.DEV_TG_INIT_DATA_UNSAFE
+export const DEV_TG_INIT_DATA = process.env.DEV_TG_INIT_DATA
 
 // LINKS
 export const CONNECT_GOOGLE = `${process.env.API_URL}/connect/google`
