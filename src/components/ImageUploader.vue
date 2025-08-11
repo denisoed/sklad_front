@@ -1,8 +1,10 @@
 <template>
   <div
-    class="image-uploader"
-    :class="`image-uploader--${size} ${circle ? 'image-uploader--circle' : ''}`"
-    v-ripple
+    class="image-uploader border-radius-md"
+    :class="{
+      'image-uploader--sm': size === 'sm',
+      'image-uploader--circle': circle,
+    }"
   >
     <q-img
       v-if="imagePreview"
@@ -15,46 +17,57 @@
       class="cursor-pointer absolute-top-left full-width full-height"
     />
 
-    <q-file
-      v-else
-      outlined
-      :model-value="imagePreview"
-      :hint="hint || undefined"
-      :rules="rules"
-      @update:model-value="onChangeImage"
-    >
-      <span>
-        <q-icon name="mdi-image-plus" class="q-mr-sm" />
-        {{ $t('common.uploadPhoto') }}
-      </span>
-    </q-file>
-    
+    <template v-else>
+      <div class="full-width full-height" v-ripple>
+        <q-file
+          outlined
+          :model-value="imagePreview"
+          :hint="hint || undefined"
+          :rules="rules"
+          @update:model-value="onChangeImage"
+        >
+          <span>
+            <q-icon name="mdi-image-plus" class="q-mr-sm" />
+            {{ $t('common.uploadPhoto') }}
+          </span>
+        </q-file>
+      </div>
+      
+      <!-- Hidden camera input -->
+      <input
+        ref="cameraInput"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        @change="onCameraSelected"
+        style="display: none;"
+      />
+  
+      <!-- Open camera button (mobile only) -->
+      <q-btn
+        v-if="isMobile"
+        round
+        push
+        color="primary"
+        class="absolute-bottom-right image-uploader_camera-button"
+        @click.stop="openCamera"
+      >
+        <q-icon name="mdi-camera" color="white" />
+      </q-btn>
+    </template>
+
     <div
       v-if="imagePreview"
-      class="flex column absolute-top-right q-mr-md q-mt-md"
+      class="flex column absolute-bottom-right q-mr-sm q-mb-sm"
     >
       <q-btn
         round
         push
-        color="white"
-        size="sm"
-        @click="zoomImage"
-      >
-        <q-icon
-          name="mdi-eye"
-          color="black"
-        />
-      </q-btn>
-      <q-btn
-        round
-        push
-        class="q-mt-md"
         color="deep-orange"
-        size="sm"
         @click="clear"
       >
         <q-icon
-          name="mdi-image-remove"
+          name="mdi-trash-can-outline"
           color="white"
         />
       </q-btn>
@@ -80,6 +93,7 @@ import useHelpers from 'src/modules/useHelpers'
 import imageCompression from 'browser-image-compression'
 import useImage from 'src/modules/useImage'
 import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
+import { useQuasar } from 'quasar'
 import {
   defineComponent,
   ref,
@@ -118,6 +132,7 @@ export default defineComponent({
   },
   emits: ['on-change'],
   setup(props, { emit }) {
+    const $q = useQuasar()
     const { image } = toRefs(props)
     const { showError } = useHelpers()
     const {
@@ -127,6 +142,8 @@ export default defineComponent({
     const imagePreview = ref(image.value)
     const isLoading = ref(false)
     const dialog = ref(false)
+    const cameraInput = ref(null)
+    const isMobile = $q.platform.is.mobile
 
     // ---------- Methods ---------- //
     async function zoomImage() {
@@ -160,6 +177,21 @@ export default defineComponent({
       }
     }
 
+    function openCamera() {
+      if (cameraInput.value) {
+        cameraInput.value.click()
+      }
+    }
+
+    async function onCameraSelected(event) {
+      const fileList = event?.target?.files
+      const file = fileList && fileList[0]
+      if (!file) return
+      await onChangeImage(file)
+      // reset input to allow selecting the same file again
+      event.target.value = null
+    }
+
     watch(image, async (newValue) => {
       if (!newValue) return
       if (typeof newValue === 'string') {
@@ -178,6 +210,10 @@ export default defineComponent({
       zoomImage,
       dialog,
       clear,
+      cameraInput,
+      openCamera,
+      onCameraSelected,
+      isMobile,
     }
   },
 })
@@ -187,11 +223,16 @@ export default defineComponent({
   .image-uploader {
     width: 100%;
     height: 210px;
-    border-radius: 4px;
     overflow: hidden;
     text-align: center;
     position: relative;
     overflow: hidden;
+
+    &_camera-button {
+      bottom: 32px;
+      right: 12px;
+      z-index: 10;
+    }
 
     .q-file {
       width: 100%;
@@ -209,7 +250,7 @@ export default defineComponent({
         &::after {
           border-width: 2px;
           border-style: dashed;
-          border-radius: var(--border-radius);
+          border-radius: var(--border-radius-md);
         }
 
         .q-field__append {
@@ -222,7 +263,7 @@ export default defineComponent({
       span {
         font-size: 16px;
         font-weight: bold;
-        opacity: 0.3;
+        opacity: 0.5;
         display: flex;
         align-items: center;
         pointer-events: none;

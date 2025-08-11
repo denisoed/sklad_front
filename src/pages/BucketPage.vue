@@ -58,7 +58,6 @@
         v-else
         class="full-width text-center text-grey-5"
       >
-        {{ $t('pages.loading') }}
         <span
           v-if="bucketProductsLoading"
         >
