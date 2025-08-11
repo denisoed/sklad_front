@@ -107,7 +107,7 @@
             <ImageUploader
               :image="product.image"
               class="q-mb-md"
-              tabindex="3"
+              tabindex="1"
               :hint="$t('common.requiredField')"
               :rules="[val => val?.length || $t('common.requiredField')]"
               @on-change="onChangeImage"
@@ -125,7 +125,7 @@
               :label="$t('common.warehouse') + ' *'"
               :hint="$t('common.requiredField')"
               :rules="[val => val?.length || $t('common.requiredField')]"
-              tabindex="1"
+              tabindex="2"
               clearable
               emit-value
               map-options
@@ -141,7 +141,7 @@
               class="q-mb-md"
               :label="$t('product.categoryLabel')"
               :hint="$t('product.categoryHint')"
-              tabindex="2"
+              tabindex="3"
               clearable
               emit-value
               map-options
