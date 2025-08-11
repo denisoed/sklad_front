@@ -2,7 +2,7 @@
   <div class="user_info flex items-center">
     <q-avatar 
       v-if="telegramAvatar"
-      size="45"
+      size="45px"
     >
       <q-img 
         :src="telegramAvatar"

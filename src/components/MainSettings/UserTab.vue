@@ -65,7 +65,7 @@
       </template>
     </TheDropdown> -->
 
-    <TheDropdown :title="$t('mainSettings.userTab.lang')">
+    <TheDropdown :title="$t('mainSettings.userTab.lang')" opened>
       <template #icon>
         <q-icon name="mdi-earth" size="sm" class="q-mr-sm" />
       </template>
