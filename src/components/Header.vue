@@ -9,6 +9,7 @@
         <UserInfo
           :fullname="profile?.fullname"
           :telegram-id="profile?.telegramId"
+          :telegram-avatar="profile?.telegramAvatar"
           :email="profile?.email"
           class="q-mx-auto"
           @click="goToProfile"

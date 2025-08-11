@@ -10,6 +10,7 @@
         <UserInfo
           :fullname="profile?.fullname"
           :telegram-id="profile?.telegramId"
+          :telegram-avatar="profile?.telegramAvatar"
           :email="profile?.email"
           @click="copyTgId"
         />
