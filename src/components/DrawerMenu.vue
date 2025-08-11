@@ -3,6 +3,7 @@
     <UserInfo
       :fullname="profile?.fullname"
       :telegram-id="profile?.telegramId"
+      :telegram-avatar="profile?.telegramAvatar"
       :email="profile?.email"
       class="q-mr-auto q-mb-lg q-px-xs"
       @click="copyTgId"

@@ -467,6 +467,7 @@ export const USER = gql`
         type
       }
       telegramId
+      telegramAvatar
       expiredAt
       onboarded
       permissions {

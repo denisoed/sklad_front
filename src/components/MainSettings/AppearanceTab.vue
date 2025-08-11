@@ -1,6 +1,6 @@
 <template>
   <div class="appearance-tab flex column q-gap-md">
-    <TheDropdown :title="$t('mainSettings.appearanceTab.accentColors.title')">
+    <TheDropdown :title="$t('mainSettings.appearanceTab.accentColors.title')" opened>
       <template #icon>
         <q-icon name="mdi-palette" size="sm" class="q-mr-sm" />
       </template>

@@ -1,6 +1,15 @@
 <template>
   <div class="user_info flex items-center">
-    <div v-html="avatar" class="user_info-avatar block-bg q-pa-xs" />
+    <q-avatar 
+      v-if="telegramAvatar"
+      size="45px"
+    >
+      <q-img 
+        :src="telegramAvatar"
+        spinner-size="sm"
+      />
+    </q-avatar>
+    <div v-else v-html="avatar" class="user_info-avatar block-bg q-pa-xs" />
     <div class="flex column q-ml-sm">
       <div class="user_info-name text-bold text-subtitle1 q-mb-xs truncate">{{ fullname || $t('mainSettings.userTab.user.noNameSpecified') }}</div>
       <div v-if="telegramId" class="user_info-telegram-id text-grey truncate">ID: {{ telegramId }}</div>
@@ -27,6 +36,10 @@ const props = defineProps({
   },
   telegramId: {
     type: Number,
+    default: null
+  },
+  telegramAvatar: {
+    type: String,
     default: null
   }
 })
