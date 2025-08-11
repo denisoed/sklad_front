@@ -24,7 +24,7 @@ export default boot(async () => {
       telegram.expand()
       telegram.disableVerticalSwipes()
       const { telegramAuth } = useJwtMethods()
-      await telegramAuth(DEV_TG_INIT_DATA || JSON.stringify(telegram.initData), 'tg')
+      await telegramAuth(DEV_TG_INIT_DATA || telegram.initData, 'tg')
       telegram.ready()
     } catch (error) {
       console.error('Telegram auth error:', error)
