@@ -1,7 +1,10 @@
 <template>
   <div
-    class="image-uploader"
-    :class="`image-uploader--${size} ${circle ? 'image-uploader--circle' : ''}`"
+    class="image-uploader border-radius-sm"
+    :class="{
+      'image-uploader--sm': size === 'sm',
+      'image-uploader--circle': circle,
+    }"
     v-ripple
   >
     <q-img
@@ -187,7 +190,6 @@ export default defineComponent({
   .image-uploader {
     width: 100%;
     height: 210px;
-    border-radius: 4px;
     overflow: hidden;
     text-align: center;
     position: relative;
@@ -209,7 +211,7 @@ export default defineComponent({
         &::after {
           border-width: 2px;
           border-style: dashed;
-          border-radius: var(--border-radius);
+          border-radius: var(--border-radius-md);
         }
 
         .q-field__append {
@@ -222,7 +224,7 @@ export default defineComponent({
       span {
         font-size: 16px;
         font-weight: bold;
-        opacity: 0.3;
+        opacity: 0.5;
         display: flex;
         align-items: center;
         pointer-events: none;

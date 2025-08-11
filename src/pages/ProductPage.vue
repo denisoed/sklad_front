@@ -103,6 +103,17 @@
               <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
             </div>
 
+            <!-- Image -->
+            <ImageUploader
+              :image="product.image"
+              class="q-mb-md"
+              tabindex="3"
+              :hint="$t('common.requiredField')"
+              :rules="[val => val?.length || $t('common.requiredField')]"
+              @on-change="onChangeImage"
+              @clear="() => onChangeImage(null)"
+            />
+
             <!-- Sklads -->
             <TheSelector
               v-model="product.sklad"
@@ -134,16 +145,6 @@
               clearable
               emit-value
               map-options
-            />
-
-            <ImageUploader
-              :image="product.image"
-              class="q-mb-md"
-              tabindex="3"
-              :hint="$t('common.requiredField')"
-              :rules="[val => val?.length || $t('common.requiredField')]"
-              @on-change="product.image = $event"
-              @clear="product.image = null"
             />
 
             <div class="flex no-wrap q-gap-md">
@@ -308,30 +309,28 @@
           </div>
         </div>
 
-        <div class="row q-mt-md">
-          <div class="col-12 flex">
-            <div v-if="isEdit" v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: product?.sklad }">
-              <q-btn
-                icon="mdi-basket-plus-outline"
-                push
-                color="deep-orange"
-                mr="auto"
-                :disable="!product?.countSizes && !product?.sizes?.length"
-                @click="product?.useNumberOfSizes ? modalCountToBucket = true : modalSizesToBucket = true"
-              />
-            </div>
+        <div class="product-page_controls row q-mt-md">
+          <div v-if="isEdit" v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: product?.sklad }">
             <q-btn
-              v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
-              type="submit"
-              :label="submitBtnLabel"
+              icon="mdi-basket-plus-outline"
               push
-              color="primary"
-              class="q-ml-auto"
-              :disable="(isDirty || createProductLoading || updateProductLoading)"
-              :loading="uploadImageLoading || createProductLoading || updateProductLoading"
-              tabindex="8"
+              color="deep-orange"
+              mr="auto"
+              :disable="!product?.countSizes && !product?.sizes?.length"
+              @click="product?.useNumberOfSizes ? modalCountToBucket = true : modalSizesToBucket = true"
             />
           </div>
+          <q-btn
+            v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
+            type="submit"
+            :label="submitBtnLabel"
+            push
+            color="primary"
+            class="q-ml-auto"
+            :disable="(isDirty || createProductLoading || updateProductLoading)"
+            :loading="uploadImageLoading || createProductLoading || updateProductLoading"
+            tabindex="8"
+          />
         </div>
       </q-form>
     </div>
@@ -694,7 +693,6 @@ async function onValidationError(ref) {
 }
 
 async function submit(type) {
-  // handleCost()
   if (type === 'create') {
     return create()
   }
@@ -746,6 +744,10 @@ function setCategoryFromParams() {
 
 function setDiscount({ dates }) {
   product.discountDays = dates
+}
+
+function onChangeImage(image) {
+  product.image = image
 }
 
 function loadData() {
@@ -871,7 +873,11 @@ onBeforeUnmount(() => {
       background-color: rgba($color: red, $alpha: 0.1);
       border-radius: 3px;
     }
+  }
 
+  .product-page_controls {
+    position: sticky;
+    bottom: 100px;
   }
 
   .speech-recog {
