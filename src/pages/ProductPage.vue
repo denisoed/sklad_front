@@ -329,17 +329,28 @@
               @click="product?.useNumberOfSizes ? modalCountToBucket = true : modalSizesToBucket = true"
             />
           </div>
-          <q-btn
-            v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
-            type="submit"
-            :label="submitBtnLabel"
-            push
-            color="primary"
-            class="q-ml-auto"
-            :disable="(isDirty || createProductLoading || updateProductLoading)"
-            :loading="uploadImageLoading || createProductLoading || updateProductLoading"
-            tabindex="8"
-          />
+          <div class="flex items-center q-gap-sm q-ml-auto">
+            <q-btn
+              v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
+              type="submit"
+              :label="submitBtnLabel"
+              push
+              color="primary"
+              :disable="(isDirty || createProductLoading || updateProductLoading)"
+              :loading="uploadImageLoading || createProductLoading || updateProductLoading"
+              tabindex="8"
+            />
+            <q-btn
+              v-if="isEdit"
+              class="q-ml-auto"
+              text-color="primary"
+              style="background-color: var(--block-bg);"
+              icon="mdi-microphone"
+              push
+              round
+              @click="voiceCreateOpen = true"
+            />
+          </div>
         </div>
       </q-form>
     </div>
