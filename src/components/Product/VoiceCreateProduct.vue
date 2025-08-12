@@ -185,12 +185,7 @@ function extractFields(text) {
     }
   }
 
-  // Fallback: if only a phrase said without keys, consider it as name
-  if (!result.name && !result.category && !result.sklad) {
-    result.name = text
-  }
-
-  // No fallback for countSizes: if there was no explicit countSizes key, do not infer from bare numbers
+  // No fallback behavior: values are set only if spoken with explicit key synonyms
 
   return result
 }
