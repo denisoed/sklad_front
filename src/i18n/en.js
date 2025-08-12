@@ -121,6 +121,11 @@ export default ({
     hint: 'Say a key and a value. Example: "склад обувь, категория кроссовки, название Nike Air Force white forty one"',
     sayKeys: 'Keys: склад, категория, название',
   },
+  fuzy: {
+    warehouse: ['warehouse'],
+    category: ['category'],
+    name: ['name', 'title'],
+  },
   costs: {
     title: 'Financial expenses',
     removeCost: 'Delete expense',
@@ -457,6 +462,8 @@ export default ({
     lowStock: 'Low stock',
     inStock: 'In stock',
     doubleClickHint: 'Double-clicking the date will return results for a single day',
+    from: 'from',
+    to: 'to',
   },
   scanner: {
     qrPrompt: 'Place QR code in the scanning area',
@@ -491,7 +498,6 @@ export default ({
     originalPrice: 'Wholesale price',
     originalPriceShort: 'Whsl. price',
     originalPricePerPiece: 'Wholesale price per 1 pc',
-    discountPrice: 'Set promotional price',
     useSizes: 'Use sizes',
     sizesList: 'Sizes:',
     sizesNotSpecified: 'Not specified',
@@ -528,6 +534,7 @@ export default ({
     selectWarehouseHint: 'Select warehouse for product',
     articleId: 'Article (ID)',
     setPromotionalPrice: 'Set promotional price',
+    selectPromotionDates: 'Select dates for promotion',
     promotionalPricePerUnit: 'Promotional price per 1 pc',
     promotionPriceShort: 'Promo price',
     sizesDescription: 'This option allows you to use sizes for a product',

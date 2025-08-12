@@ -78,7 +78,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'apply'])
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, tm } = useI18n({ useScope: 'global' })
 
 const showVoiceOverlay = ref(true)
 const isSubmitting = ref(false)
@@ -86,10 +86,15 @@ const recognizedText = ref('')
 const showInfo = ref(false)
 
 // Minimal set of checkpoints for MVP. Only name will be applied per task requirements
+const getSynonyms = (path) => {
+  const value = tm(path)
+  return Array.isArray(value) ? value.map((s) => String(s).toLowerCase()) : []
+}
+
 const checkpoints = [
-  { key: 'warehouse', title: t('common.warehouse'), synonyms: ['склад'] },
-  { key: 'category', title: t('common.category'), synonyms: ['категория'] },
-  { key: 'name', title: t('common.name'), synonyms: ['название', 'наименование', 'имя'] },
+  { key: 'warehouse', title: t('common.warehouse'), synonyms: getSynonyms('fuzy.warehouse') },
+  { key: 'category', title: t('common.category'), synonyms: getSynonyms('fuzy.category') },
+  { key: 'name', title: t('common.name'), synonyms: getSynonyms('fuzy.name') },
 ]
 
 const parsed = reactive({
@@ -116,7 +121,7 @@ function onVoiceResult(text) {
   })
 }
 
-// Very lightweight ru-text parser: "ключ ... значение"; stops value on next known key word
+// Very lightweight ru-text parser: "key ... value"; stops value on next known key word
 function extractFields(text) {
   const result = {}
   if (!text) return result

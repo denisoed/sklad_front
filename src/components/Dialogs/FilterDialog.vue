@@ -49,21 +49,18 @@
             <p class="full-width text-left text-bold q-mb-sm text-subtitle1">
               {{ $t('filter.priceRange') }}
             </p>
-            <div class="flex q-gap-sm">
+            <div class="flex q-gap-sm no-wrap">
               <InputPrice
                 v-model="localFilters.priceFrom"
                 outlined
                 dense
                 :label="$t('filter.from')"
-                :suffix="$t('filter.currency')"
-                class="q-mr-sm"
               />
               <InputPrice
                 v-model="localFilters.priceTo"
                 outlined
                 dense
                 :label="$t('filter.to')"
-                :suffix="$t('filter.currency')"
               />
             </div>
           </div>

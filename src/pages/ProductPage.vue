@@ -64,7 +64,7 @@
           <q-btn
             v-if="!isEdit"
             class="q-ml-auto"
-            color="primary"
+            text-color="primary"
             icon="mdi-microphone"
             push
             round
@@ -247,7 +247,7 @@
                     </q-chip>
                   </div>
                 </div>
-                <p v-else class="q-mr-md q-mb-none">{{ $t('product.setPromotionalPrice') }}</p>
+                <p v-else class="q-mr-md q-mb-none">{{ $t('product.selectPromotionDates') }}</p>
                 <FilterDates
                   class="q-ml-auto"
                   :with-buttons="false"

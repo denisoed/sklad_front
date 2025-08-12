@@ -48,12 +48,11 @@
         v-if="isMobile"
         round
         push
-        color="primary"
+        text-color="primary"
+        icon="mdi-camera"
         class="absolute-bottom-right image-uploader_camera-button"
         @click.stop="openCamera"
-      >
-        <q-icon name="mdi-camera" color="white" />
-      </q-btn>
+      />
     </template>
 
     <div
