@@ -117,7 +117,8 @@ export default ({
     speakNow: 'Speak now...',
   },
   voiceCreate: {
-    title: 'Create product by voice',
+    createTitle: 'Create product by voice',
+    editTitle: 'Edit product by voice',
     button: 'Create by voice',
     hint: 'Say a key and a value. Example: "warehouse shoes, category sneakers, name Nike Air Force, wholesale price 1200, retail price 1800, quantity 5"',
     sayKeys: 'Keys: warehouse, category, name, color, wholesale price, retail price, quantity',

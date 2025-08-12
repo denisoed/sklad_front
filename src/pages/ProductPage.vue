@@ -61,15 +61,6 @@
               </q-list>
             </q-menu>
           </q-btn>
-          <q-btn
-            v-if="!isEdit"
-            class="q-ml-auto"
-            text-color="primary"
-            icon="mdi-microphone"
-            push
-            round
-            @click="voiceCreateOpen = true"
-          />
         </template>
       </PageTitle>
 
@@ -329,9 +320,11 @@
               @click="product?.useNumberOfSizes ? modalCountToBucket = true : modalSizesToBucket = true"
             />
           </div>
-          <div class="flex items-center q-gap-sm q-ml-auto">
+          <div
+            v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
+            class="flex items-center q-gap-sm q-ml-auto"
+          >
             <q-btn
-              v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
               type="submit"
               :label="submitBtnLabel"
               push
@@ -341,7 +334,6 @@
               tabindex="8"
             />
             <q-btn
-              v-if="isEdit"
               class="q-ml-auto"
               text-color="primary"
               style="background-color: var(--block-bg);"
@@ -358,6 +350,7 @@
     <VoiceCreateProduct
       v-model="voiceCreateOpen"
       :product="product"
+      :title="isEdit ? $t('voiceCreate.editTitle') : $t('voiceCreate.createTitle')"
       @apply="onVoiceCreateApply"
     />
 

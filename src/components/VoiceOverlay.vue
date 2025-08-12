@@ -11,7 +11,7 @@
 
     <slot name="header" />
 
-    <div class="voice-placeholder q-mb-md">
+    <div class="voice-placeholder q-mb-md text-warning">
       <span v-if="!isApiAvailable" class="text-red q-mb-md">
         {{ $t('voiceOverlay.recognitionUnavailable') }}
       </span>
@@ -62,10 +62,15 @@ const props = defineProps({
   autoClose: {
     type: Boolean,
     default: true
+  },
+  // Emit interim results while holding record button, in milliseconds (0 disables)
+  throttleMs: {
+    type: Number,
+    default: 0
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'submit', 'close'])
+const emit = defineEmits(['result', 'close'])
 
 const { t: $t } = useI18n()
 const { showError } = useHelpers()
@@ -108,6 +113,9 @@ let source = null
 let animationId = null
 let stream = null
 let isAudioInitialized = false
+// Throttled interim result emission
+let throttleTimerId = null
+let lastThrottledResult = ''
 
 // Create an instance of speech recognition
 const speechRecognition = useSpeechRecognition()
@@ -160,6 +168,8 @@ async function cleanup() {
   
   // Reset all states
   isUserPressingButton.value = false
+  // Stop throttled emission
+  stopThrottledEmit()
   
   // Force stop recording
   if (isRecording.value) {
@@ -211,6 +221,7 @@ function handleRetry() {
   hasStartedRecording.value = false
   isUserPressingButton.value = false
   isProcessing.value = false
+  lastThrottledResult = ''
   
   // Block recording continuation during reset
   setShouldContinueCallback(() => false)
@@ -235,6 +246,8 @@ async function handlePointerDown(event) {
   
   hasStartedRecording.value = true
   isUserPressingButton.value = true
+  // Start emitting interim results on throttle, if enabled
+  startThrottledEmit()
 
   // Clear text on new recording start
   if (!isRecording.value) {
@@ -270,6 +283,32 @@ function getResult() {
   return normalizeThousandSeparators(raw)
 }
 
+// Throttled emission helpers
+function emitInterimResultIfChanged() {
+  const resultToSend = getResult()
+  if (!resultToSend) return
+  if (resultToSend === lastThrottledResult) return
+  lastThrottledResult = resultToSend
+  emit('result', resultToSend)
+}
+
+function startThrottledEmit() {
+  if (!props.throttleMs || props.throttleMs <= 0) return
+  stopThrottledEmit()
+  lastThrottledResult = ''
+  throttleTimerId = setInterval(() => {
+    if (!isUserPressingButton.value) return
+    emitInterimResultIfChanged()
+  }, props.throttleMs)
+}
+
+function stopThrottledEmit() {
+  if (throttleTimerId) {
+    clearInterval(throttleTimerId)
+    throttleTimerId = null
+  }
+}
+
 function submitIfNeededAndClose() {
   const resultToSend = getResult()
   if (resultToSend) {
@@ -287,6 +326,8 @@ function submitIfNeededAndClose() {
 async function finishRecording(isCancel = false) {
   isUserPressingButton.value = false
   isProcessing.value = true
+  // Stop interim emissions
+  stopThrottledEmit()
 
   if (isCancel) {
     // Block recording continuation on cancellation
@@ -484,6 +525,8 @@ async function startAudio() {
 
 async function stopAudio() {
   try {
+    // Stop interim emissions when audio stops
+    stopThrottledEmit()
     // Stop animation
     if (animationId) {
       cancelAnimationFrame(animationId)
@@ -680,7 +723,7 @@ onBeforeUnmount(async () => {
   color: #fff;
   margin-bottom: 24px;
   border-radius: 16px;
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: rgba(0, 0, 0, 0.90);
   backdrop-filter: blur(6px);
   padding: 16px;
   width: 90%;

@@ -5,6 +5,7 @@
         <VoiceOverlay
           v-if="showVoiceOverlay"
           :auto-close="false"
+          :throttle-ms="1000"
           @result="onVoiceResult"
           @close="close"
         >
@@ -13,7 +14,7 @@
             <div class="helper-panel block-bg border-radius-md with-bg q-mb-md q-pa-md">
               <div class="helper-header flex items-center">
                 <q-icon name="mdi-microphone" color="primary" size="sm" class="q-mr-sm" />
-                <div class="text-subtitle2 text-weight-bold">{{ $t('voiceCreate.title') }}</div>
+                <div class="text-subtitle2 text-weight-bold">{{ title }}</div>
                 <q-space />
                 <q-btn
                   push
@@ -30,9 +31,9 @@
                 <div class="text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
               </div>
               
-              <div v-else class="voice-create-checkpoints q-gutter-y-sm q-mt-md">
+              <div v-else ref="checkpointsRef" class="voice-create-checkpoints q-gutter-y-sm q-mt-md q-pb-xs">
                 <div
-                  v-for="cp in sortedCheckpoints"
+                  v-for="cp in checkpoints"
                   :key="cp.key"
                   class="checkpoint flex items-center q-px-sm q-py-xs border-radius-sm"
                   :class="{ done: !!parsed[cp.key] }"
@@ -72,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from 'vue'
+import { ref, reactive, watch, computed, nextTick } from 'vue'
 import Fuse from 'fuse.js'
 import { useI18n } from 'vue-i18n'
 import useCategories from 'src/modules/useCategories'
@@ -88,7 +89,11 @@ const props = defineProps({
   product: {
     type: Object,
     default: () => ({}),
-  }
+  },
+  title: {
+    type: String,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'apply'])
@@ -132,15 +137,23 @@ const isDirty = computed(() => {
   return Object.keys(parsed).some((key) => parsed[key] !== '')
 })
 
-  // Sort checkpoints so that unfilled ones go first while preserving relative order within groups
-  const sortedCheckpoints = computed(() => {
-    return [...checkpoints].sort((a, b) => {
-      const aDone = Boolean(parsed[a.key])
-      const bDone = Boolean(parsed[b.key])
-      if (aDone === bDone) return 0
-      return aDone ? 1 : -1
-    })
-  })
+// Auto scroll to bottom when first five fields are filled
+const checkpointsRef = ref(null)
+const isFirstFiveFilled = computed(() => {
+  const keys = ['sklad', 'category', 'name', 'color', 'origPrice']
+  const filledCount = keys.reduce((acc, k) => acc + (parsed[k] !== '' ? 1 : 0), 0)
+  return filledCount >= 4
+})
+
+watch(isFirstFiveFilled, async (filled) => {
+  if (filled && !showInfo.value) {
+    await nextTick()
+    const el = checkpointsRef.value
+    if (el) {
+      el.scrollTop = el.scrollHeight
+    }
+  }
+})
 
 function close() {
   emit('update:modelValue', false)
@@ -175,12 +188,13 @@ function initializeFromProduct() {
   const skladName = p?.sklad ? findNameById(sklads, p.sklad) : ''
   const categoryName = p?.category ? findNameById(allUserCategories, p.category) : ''
   const countSizesNum = Number(p?.countSizes)
+  const colorKey = COLORS.find(c => c.color === p?.color)?.nameKey
 
   Object.assign(parsed, {
     sklad: skladName || '',
     category: categoryName || '',
     name: p?.name ? String(p.name).trim() : '',
-    color: p?.colorName ? String(p.colorName).trim() : '',
+    color: colorKey ? t(colorKey) : '',
     origPrice: p?.origPrice != null && p.origPrice !== '' ? String(p.origPrice) : '',
     newPrice: p?.newPrice != null && p.newPrice !== '' ? String(p.newPrice) : '',
     countSizes: Number.isFinite(countSizesNum) && countSizesNum > 0 ? String(countSizesNum) : '',
@@ -361,7 +375,7 @@ watch(
 }
 
 .helper-panel.with-bg {
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.90);
   color: #fff;
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255,255,255,0.12);
