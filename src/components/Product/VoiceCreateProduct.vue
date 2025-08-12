@@ -33,10 +33,14 @@
               
               <div v-else ref="checkpointsRef" class="voice-create-checkpoints q-gutter-y-sm q-mt-md q-pb-xs">
                 <div
-                  v-for="cp in checkpoints"
+                  v-for="cp in visibleCheckpoints"
                   :key="cp.key"
                   class="checkpoint flex items-center q-px-sm q-py-xs border-radius-sm"
-                  :class="{ done: !!parsed[cp.key] }"
+                  :class="[
+                    { done: !!parsed[cp.key] },
+                    cp.key === 'sklad' ? { error: skladError && !parsed[cp.key] } :
+                    (cp.key === 'category' ? { error: categoryError && !parsed[cp.key] } : {})
+                  ]"
                 >
                   <q-icon :name="parsed[cp.key] ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'" :color="parsed[cp.key] ? 'primary' : 'grey-6'" size="18px" class="q-mr-sm" />
                   <div class="ellipsis">
@@ -106,6 +110,9 @@ const showVoiceOverlay = ref(true)
 const isSubmitting = ref(false)
 const recognizedText = ref('')
 const showInfo = ref(false)
+const selectedSkladId = ref(null)
+const skladError = ref(false)
+const categoryError = ref(false)
 
 // Minimal set of checkpoints for MVP. Only name will be applied per task requirements
 const getSynonyms = (path) => {
@@ -137,6 +144,14 @@ const isDirty = computed(() => {
   return Object.keys(parsed).some((key) => parsed[key] !== '')
 })
 
+// Hide category checkpoint until warehouse is set
+const visibleCheckpoints = computed(() => {
+  if (!parsed.sklad) {
+    return checkpoints.filter((c) => c.key !== 'category')
+  }
+  return checkpoints
+})
+
 // Auto scroll to bottom when first five fields are filled
 const checkpointsRef = ref(null)
 const isFirstFiveFilled = computed(() => {
@@ -161,6 +176,9 @@ function close() {
 
 function reset() {
   Object.assign(parsed, { sklad: '', category: '', name: '', color: '', origPrice: '', newPrice: '', countSizes: '' })
+  selectedSkladId.value = null
+  skladError.value = false
+  categoryError.value = false
 }
 
 function toggleInfo() {
@@ -170,10 +188,45 @@ function toggleInfo() {
 function onVoiceResult(text) {
   recognizedText.value = (text || '').trim()
   const next = extractFields(recognizedText.value)
-  Object.keys(next).forEach((key) => {
-    if (next[key]) {
-      parsed[key] = next[key]
+
+  // Apply sklad first and reset category if sklad changed
+  if (next.sklad) {
+    const match = matchSkladByName(next.sklad)
+    if (match?.id) {
+      parsed.sklad = match.name
+      selectedSkladId.value = match.id
+      parsed.category = ''
+      skladError.value = false
+      categoryError.value = false
+    } else {
+      // Clear current value and mark as error if not found
+      parsed.sklad = ''
+      selectedSkladId.value = null
+      skladError.value = true
+      selectedSkladId.value = null
+      parsed.category = ''
+      categoryError.value = false
     }
+  }
+
+  // Apply remaining fields (category may come in same utterance)
+  Object.keys(next).forEach((key) => {
+    if (key === 'sklad') return
+    // Do not allow setting category before warehouse is set
+    if (key === 'category') {
+      if (!parsed.sklad || !selectedSkladId.value) return
+      const match = matchCategoryByName(next.category, selectedSkladId.value)
+      if (match?.id) {
+        parsed.category = match.name
+        categoryError.value = false
+      } else {
+        // Clear current value and mark as error if not found
+        parsed.category = ''
+        categoryError.value = true
+      }
+      return
+    }
+    if (next[key]) parsed[key] = next[key]
   })
 }
 
@@ -199,6 +252,9 @@ function initializeFromProduct() {
     newPrice: p?.newPrice != null && p.newPrice !== '' ? String(p.newPrice) : '',
     countSizes: Number.isFinite(countSizesNum) && countSizesNum > 0 ? String(countSizesNum) : '',
   })
+  selectedSkladId.value = p?.sklad || null
+  skladError.value = false
+  categoryError.value = false
 }
 
 // Very lightweight ru-text parser: "key ... value"; stops value on next known key word
@@ -242,6 +298,29 @@ function extractFields(text) {
   // No fallback behavior: values are set only if spoken with explicit key synonyms
 
   return result
+}
+
+function matchSkladByName(value) {
+  const normalize = (str) => String(str || '')
+    .toLowerCase()
+    .replace(/ё/g, 'е')
+    .trim()
+  const list = (sklads.value || []).map((x) => ({ ...x, _n: normalize(x?.name) }))
+  const fuse = new Fuse(list, { includeScore: true, threshold: 0.4, ignoreLocation: true, keys: ['_n'] })
+  const [first] = fuse.search(normalize(value))
+  return first?.item
+}
+
+function matchCategoryByName(value, skladId) {
+  const normalize = (str) => String(str || '')
+    .toLowerCase()
+    .replace(/ё/g, 'е')
+    .trim()
+  const available = (allUserCategories.value || []).filter((x) => x?.sklad?.id === skladId)
+  const list = available.map((x) => ({ ...x, _n: normalize(x?.name) }))
+  const fuse = new Fuse(list, { includeScore: true, threshold: 0.4, ignoreLocation: true, keys: ['_n'] })
+  const [first] = fuse.search(normalize(value))
+  return first?.item
 }
 
 function extractInteger(str) {
@@ -310,11 +389,18 @@ async function prepareData(data) {
     const match = first?.item
     if (match?.id) {
       result.sklad = match.id
+      // Keep for category filtering if needed
+      selectedSkladId.value = match.id
     }
   }
 
-  if (data?.category && allUserCategories?.value?.length) {
-    const list = (allUserCategories.value || []).map((x) => ({ ...x, _n: normalize(x?.name) }))
+  if (data?.category && allUserCategories?.value?.length && result.sklad) {
+    // If sklad resolved, filter categories by selected warehouse
+    const selectedSkladId = result.sklad || null
+    const availableCategories = (allUserCategories.value || []).filter((x) =>
+      selectedSkladId ? x?.sklad?.id === selectedSkladId : true
+    )
+    const list = availableCategories.map((x) => ({ ...x, _n: normalize(x?.name) }))
     const fuse = new Fuse(list, fuseOptions)
     const q = normalize(data.category)
     const [first] = fuse.search(q)
@@ -344,7 +430,6 @@ async function confirm() {
   isSubmitting.value = true
   try {
     const payload = await prepareData(parsed)
-    console.log('payload', payload)
     emit('apply', payload)
     close()
   } catch (e) {
@@ -391,6 +476,10 @@ watch(
   &.done {
     border-color: var(--q-primary);
     background: rgba(25, 118, 210, 0.06);
+  }
+  &.error {
+    border-color: #e53935;
+    background: rgba(229, 57, 53, 0.06);
   }
 }
 

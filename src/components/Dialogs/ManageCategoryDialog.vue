@@ -117,7 +117,6 @@ const route = useRoute()
 
 const selectedCategory = ref(null)
 const dialogRef = ref()
-const skladId = ref(null)
 
 const {
   mutate: deleteCategory,
@@ -209,7 +208,7 @@ async function save() {
     } catch (error) {
       showError($t('common.unknownError') + '. ' + $t('common.serverError'))
     } finally {
-      await fetchCategories({ sklad: skladId.value })
+      await fetchCategories({ sklad: formData.sklad })
       close()
     }
   }
@@ -235,7 +234,7 @@ function remove() {
   }).onOk(async () => {
     await deleteCategory({ id: selectedCategory.value.id })
     if (!deleteCategoryError.value) {
-      await fetchCategories({ sklad: skladId.value })
+      await fetchCategories({ sklad: formData.sklad })
       showSuccess($t('category.categorySuccessfullyDeleted'))
       close()
       // NOTE: add to history
@@ -246,13 +245,9 @@ function remove() {
 }
 
 function onBeforeShow() {
-  skladId.value = route.params?.skladId
   selectedCategory.value = dialogRef.value.slotData?.category
-
-  if (selectedCategory.value) {
-    formData.name = selectedCategory.value?.name
-    formData.color = selectedCategory.value?.color
-    formData.sklad = selectedCategory.value?.sklad?.id || dialogRef.value.slotData?.skladId
-  }
+  formData.name = selectedCategory.value?.name
+  formData.color = selectedCategory.value?.color || '#000000'
+  formData.sklad = selectedCategory.value?.sklad?.id || dialogRef.value.slotData?.skladId || route.params?.skladId
 }
 </script>
