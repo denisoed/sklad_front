@@ -9,6 +9,8 @@
       class="absolute-top-right q-mt-md q-mr-md"
     />
 
+    <slot name="header" />
+
     <div class="voice-placeholder q-mb-md">
       <span v-if="!isApiAvailable" class="text-red q-mb-md">
         {{ $t('voiceOverlay.recognitionUnavailable') }}
@@ -38,6 +40,8 @@
         @contextmenu.prevent
       />
     </div>
+
+    <slot name="footer" />
     
     <canvas ref="canvasRef" class="voice-canvas" width="480" height="240"></canvas>
   </div>
@@ -53,6 +57,11 @@ const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false
+  },
+  // If false, overlay will NOT auto-close after recording stops
+  autoClose: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -251,7 +260,12 @@ function submitIfNeededAndClose() {
   if (resultToSend) {
     emit('result', resultToSend)
   }
-  handleClose()
+  if (props.autoClose) {
+    handleClose()
+  } else {
+    // Keep overlay open for subsequent recordings
+    isProcessing.value = false
+  }
 }
 
 // General recording finish logic
@@ -262,8 +276,14 @@ async function finishRecording(isCancel = false) {
   if (isCancel) {
     // Block recording continuation on cancellation
     setShouldContinueCallback(() => false)
-    await handleClose()
-    return
+    if (props.autoClose) {
+      await handleClose()
+      return
+    } else {
+      await stopAudio()
+      isProcessing.value = false
+      return
+    }
   }
 
   if (isRecording.value) {
@@ -620,12 +640,7 @@ onBeforeUnmount(async () => {
   align-items: center;
   justify-content: center;
 }
-.record-button-container {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 2;
-}
+
 .record-button {
   width: 80px;
   height: 80px;

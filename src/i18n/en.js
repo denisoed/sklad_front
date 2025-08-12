@@ -101,6 +101,7 @@ export default ({
     reloadApp: 'Reload app',
     reloadPage: 'Reload page and try again',
     noAccess: 'No access',
+    confirm: 'Confirm',
   },
   calendar: {
     days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
@@ -113,6 +114,12 @@ export default ({
     recognitionUnavailable: 'Speech recognition service is not available in your browser',
     pressButtonToStart: 'Hold the button to start recording',
     speakNow: 'Speak now...',
+  },
+  voiceCreate: {
+    title: 'Create product by voice',
+    button: 'Create by voice',
+    hint: 'Say a key and a value. Example: "склад обувь, категория кроссовки, название Nike Air Force white forty one"',
+    sayKeys: 'Keys: склад, категория, название',
   },
   costs: {
     title: 'Financial expenses',

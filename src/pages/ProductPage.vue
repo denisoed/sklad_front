@@ -61,6 +61,15 @@
               </q-list>
             </q-menu>
           </q-btn>
+          <q-btn
+            v-if="!isEdit"
+            class="q-ml-auto"
+            color="primary"
+            icon="mdi-microphone"
+            push
+            round
+            @click="voiceCreateOpen = true"
+          />
         </template>
       </PageTitle>
 
@@ -335,6 +344,11 @@
       </q-form>
     </div>
 
+    <VoiceCreateProduct
+      v-model="voiceCreateOpen"
+      @apply="onVoiceCreateApply"
+    />
+
     <ModalCountToBucket
       v-if="product?.useNumberOfSizes"
       v-model="modalCountToBucket"
@@ -380,6 +394,7 @@ import {
   watch,
   onBeforeUnmount,
 } from 'vue'
+import VoiceCreateProduct from 'src/components/Product/VoiceCreateProduct.vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import TheSelector from 'src/components/UI/TheSelector.vue'
 import ImageUploader from 'src/components/ImageUploader.vue'
@@ -496,6 +511,7 @@ const { categories: categoriesResult, fetchCategories } = useCategories()
 
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
+const voiceCreateOpen = ref(false)
 
 function onChangeSizes(sizes) {
   product.sizes = sizes.list
@@ -731,6 +747,12 @@ function cancel(type) {
       push('/products')
     }
   })
+}
+
+function onVoiceCreateApply(payload) {
+  if (payload?.name) {
+    product.name = payload.name
+  }
 }
 
 function setCategoryFromParams() {
