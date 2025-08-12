@@ -78,6 +78,7 @@ import { useI18n } from 'vue-i18n'
 import useCategories from 'src/modules/useCategories'
 import useSklads from 'src/modules/useSklads'
 import VoiceOverlay from 'src/components/VoiceOverlay.vue'
+import { COLORS } from 'src/modules/useColors'
 
 const props = defineProps({
   modelValue: {
@@ -111,6 +112,7 @@ const checkpoints = [
   { key: 'sklad', title: t('common.warehouse'), synonyms: getSynonyms('fuzy.warehouse') },
   { key: 'category', title: t('common.category'), synonyms: getSynonyms('fuzy.category') },
   { key: 'name', title: t('common.name'), synonyms: getSynonyms('fuzy.name') },
+  { key: 'color', title: t('common.color'), synonyms: getSynonyms('fuzy.color') },
   { key: 'origPrice', title: t('product.originalPrice'), synonyms: getSynonyms('fuzy.wholesalePrice') },
   { key: 'newPrice', title: t('product.retailPrice'), synonyms: getSynonyms('fuzy.retailPrice') },
   { key: 'countSizes', title: t('common.quantity'), synonyms: getSynonyms('fuzy.quantity') },
@@ -120,6 +122,7 @@ const parsed = reactive({
   sklad: '',
   category: '',
   name: '',
+  color: '',
   origPrice: '',
   newPrice: '',
   countSizes: '',
@@ -134,7 +137,7 @@ function close() {
 }
 
 function reset() {
-  Object.assign(parsed, { sklad: '', category: '', name: '', origPrice: '', newPrice: '', countSizes: '' })
+  Object.assign(parsed, { sklad: '', category: '', name: '', color: '', origPrice: '', newPrice: '', countSizes: '' })
 }
 
 function toggleInfo() {
@@ -167,6 +170,7 @@ function initializeFromProduct() {
     sklad: skladName || '',
     category: categoryName || '',
     name: p?.name ? String(p.name).trim() : '',
+    color: p?.colorName ? String(p.colorName).trim() : '',
     origPrice: p?.origPrice != null && p.origPrice !== '' ? String(p.origPrice) : '',
     newPrice: p?.newPrice != null && p.newPrice !== '' ? String(p.newPrice) : '',
     countSizes: Number.isFinite(countSizesNum) && countSizesNum > 0 ? String(countSizesNum) : '',
@@ -296,6 +300,19 @@ async function prepareData(data) {
     }
   }
 
+  // Color fuzzy by localized name of COLORS.nameKey
+  if (data?.color) {
+    const list = (COLORS || []).map((x) => ({ ...x, _n: normalize(t(x?.nameKey)), _label: t(x?.nameKey) }))
+    const fuse = new Fuse(list, fuseOptions)
+    const q = normalize(data.color)
+    const [first] = fuse.search(q)
+    const match = first?.item
+    if (match?.color) {
+      result.color = match.color
+      result.colorName = t(match.nameKey)
+    }
+  }
+
   return result
 }
 
@@ -303,6 +320,7 @@ async function confirm() {
   isSubmitting.value = true
   try {
     const payload = await prepareData(parsed)
+    console.log('payload', payload)
     emit('apply', payload)
     close()
   } catch (e) {

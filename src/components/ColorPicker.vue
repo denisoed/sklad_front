@@ -63,7 +63,8 @@
 <script setup>
 import {
   reactive,
-  toRefs
+  toRefs,
+  watch
 } from 'vue'
 import useColors, { COLORS } from '../modules/useColors'
 
@@ -125,6 +126,11 @@ function handlerClick(c) {
     emit('on-change', pick)
   }
 }
+
+watch(selected, (v) => {
+  pick.color = v
+  pick.nameKey = findColorByHex(v)?.nameKey || ''
+})
 </script>
 
 <style lang="scss" scoped>
