@@ -247,7 +247,7 @@ function remove() {
 function onBeforeShow() {
   selectedCategory.value = dialogRef.value.slotData?.category
   formData.name = selectedCategory.value?.name
-  formData.color = selectedCategory.value?.color
+  formData.color = selectedCategory.value?.color || '#000000'
   formData.sklad = selectedCategory.value?.sklad?.id || dialogRef.value.slotData?.skladId || route.params?.skladId
 }
 </script>
