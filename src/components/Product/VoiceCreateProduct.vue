@@ -142,8 +142,17 @@ function extractFields(text) {
     const { key, s, idx } = order[i]
     const nextIdx = i + 1 < order.length ? order[i + 1].idx : text.length
     const slice = text.slice(idx + s.length, nextIdx)
-    const value = slice.replace(/[\:\-–—]/, ' ').trim().replace(/^\s+|\s+$/g, '')
+    // Normalize separators globally, trim
+    let value = slice.replace(/[\:\-–—]/g, ' ').trim()
     if (value) {
+      // If value actually starts with another known key synonym, treat as empty (no value provided)
+      const cleanStart = value.toLowerCase().replace(/^[\s\:\-–—]+/, '')
+      const startsWithOtherKey = allSynonyms.some(({ key: otherKey, s: synonym }) =>
+        otherKey !== key && cleanStart.startsWith(synonym)
+      )
+      if (startsWithOtherKey) {
+        continue
+      }
       if (key === 'quantity') {
         const num = extractInteger(value)
         if (num != null) result[key] = String(num)
