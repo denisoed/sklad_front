@@ -57,7 +57,7 @@
                   color="primary"
                   class="full-width"
                   :label="$t('common.confirm')"
-                  :disable="!parsed.name || isSubmitting"
+                  :disable="!isDirty || isSubmitting"
                   :loading="isSubmitting"
                   push
                   @click="confirm"
@@ -73,7 +73,10 @@
 
 <script setup>
 import { ref, reactive, watch, computed } from 'vue'
+import Fuse from 'fuse.js'
 import { useI18n } from 'vue-i18n'
+import useCategories from 'src/modules/useCategories'
+import useSklads from 'src/modules/useSklads'
 import VoiceOverlay from 'src/components/VoiceOverlay.vue'
 
 const props = defineProps({
@@ -86,6 +89,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'apply'])
 
 const { t, tm } = useI18n({ useScope: 'global' })
+const { sklads } = useSklads()
+const { allUserCategories } = useCategories()
 
 const showVoiceOverlay = ref(true)
 const isSubmitting = ref(false)
@@ -215,35 +220,66 @@ function extractPrice(str) {
   return Number.isFinite(asNumber) && asNumber >= 0 ? asNumber : null
 }
 
+async function prepareData(data) {
+  const normalize = (str) =>
+    String(str || '')
+      .toLowerCase()
+      .replace(/ё/g, 'е')
+      .trim()
+
+  const fuseOptions = {
+    includeScore: true,
+    threshold: 0.4,
+    ignoreLocation: true,
+    keys: ['_n']
+  }
+
+  const result = {}
+
+  if (data?.name) {
+    result.name = String(data.name).trim()
+  }
+
+  if (data?.countSizes) {
+    const num = Number(data.countSizes)
+    if (Number.isFinite(num)) result.countSizes = num
+  }
+
+  if (data?.sklad && sklads?.value?.length) {
+    const list = (sklads.value || []).map((x) => ({ ...x, _n: normalize(x?.name) }))
+    const fuse = new Fuse(list, fuseOptions)
+    const q = normalize(data.sklad)
+    const [first] = fuse.search(q)
+    const match = first?.item
+    if (match?.id) {
+      result.sklad = match.id
+    }
+  }
+
+  if (data?.category && allUserCategories?.value?.length) {
+    const list = (allUserCategories.value || []).map((x) => ({ ...x, _n: normalize(x?.name) }))
+    const fuse = new Fuse(list, fuseOptions)
+    const q = normalize(data.category)
+    const [first] = fuse.search(q)
+    const match = first?.item
+    if (match?.id) {
+      result.category = match.id
+    }
+  }
+
+  return result
+}
+
 async function confirm() {
-  if (!parsed.name) return
   isSubmitting.value = true
   try {
-    // Mocked server request as required: returns only name
-    const payload = await mockServer(parsed)
+    const payload = await prepareData(parsed)
     emit('apply', payload)
     close()
   } catch (e) {
-    // no-op for mock
   } finally {
     isSubmitting.value = false
   }
-}
-
-function mockServer(data) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const countSizes = extractInteger(data.countSizes)
-      const origPrice = extractPrice(data.origPrice)
-      const newPrice = extractPrice(data.newPrice)
-      resolve({
-        name: data.name,
-        ...(countSizes != null ? { countSizes } : {}),
-        ...(origPrice != null ? { origPrice } : {}),
-        ...(newPrice != null ? { newPrice } : {}),
-      })
-    }, 350)
-  })
 }
 
 watch(

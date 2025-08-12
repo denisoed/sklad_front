@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 defineOptions({
@@ -120,6 +120,10 @@ function validate(e) {
     e.preventDefault()
   }
 }
+
+watch(modelValue, (value) => {
+  count.value = value
+})
 </script>
 
 <style lang="scss">

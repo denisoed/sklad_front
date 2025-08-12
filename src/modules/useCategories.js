@@ -13,6 +13,7 @@ const useCategories = () => {
   const categoriesLoading = ref(false)
 
   const categories = computed(() => categoriesStore.getCategories)
+  const allUserCategories = computed(() => categoriesStore.getAllUserCategories)
   
   async function fetchCategories(where = {}) {
     try {
@@ -56,7 +57,8 @@ const useCategories = () => {
     categoriesLoading,
     fetchCategories,
     fetchAllUserCategories,
-    categories
+    categories,
+    allUserCategories
   }
 }
 
