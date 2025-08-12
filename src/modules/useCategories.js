@@ -13,6 +13,7 @@ const useCategories = () => {
   const categoriesLoading = ref(false)
 
   const categories = computed(() => categoriesStore.getCategories)
+  const allUserCategories = computed(() => categoriesStore.getAllUserCategories)
   
   async function fetchCategories(where = {}) {
     try {
@@ -33,10 +34,31 @@ const useCategories = () => {
     }
   }
 
+  async function fetchAllUserCategories(skladsIds) {
+    try {
+      const { data } = await apolloClient.query({
+        query: CATEGORIES,
+        variables: {
+          where: {
+            sklad: {
+              id_in: skladsIds
+            }
+          }
+        },
+        fetchPolicy: 'network-only'
+      })
+      categoriesStore.setAllUserCategories(data?.categories)
+    } catch (error) {
+      console.log(error);
+      showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
+    }
+  }
   return {
     categoriesLoading,
     fetchCategories,
-    categories
+    fetchAllUserCategories,
+    categories,
+    allUserCategories
   }
 }
 

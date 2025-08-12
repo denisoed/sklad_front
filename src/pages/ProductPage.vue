@@ -61,6 +61,15 @@
               </q-list>
             </q-menu>
           </q-btn>
+          <q-btn
+            v-if="!isEdit"
+            class="q-ml-auto"
+            text-color="primary"
+            icon="mdi-microphone"
+            push
+            round
+            @click="voiceCreateOpen = true"
+          />
         </template>
       </PageTitle>
 
@@ -238,7 +247,7 @@
                     </q-chip>
                   </div>
                 </div>
-                <p v-else class="q-mr-md q-mb-none">{{ $t('product.setPromotionalPrice') }}</p>
+                <p v-else class="q-mr-md q-mb-none">{{ $t('product.selectPromotionDates') }}</p>
                 <FilterDates
                   class="q-ml-auto"
                   :with-buttons="false"
@@ -320,20 +329,37 @@
               @click="product?.useNumberOfSizes ? modalCountToBucket = true : modalSizesToBucket = true"
             />
           </div>
-          <q-btn
-            v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
-            type="submit"
-            :label="submitBtnLabel"
-            push
-            color="primary"
-            class="q-ml-auto"
-            :disable="(isDirty || createProductLoading || updateProductLoading)"
-            :loading="uploadImageLoading || createProductLoading || updateProductLoading"
-            tabindex="8"
-          />
+          <div class="flex items-center q-gap-sm q-ml-auto">
+            <q-btn
+              v-permissions="{ permissions: [CAN_ADD_PRODUCT, CAN_UPDATE_PRODUCT], skladId: product?.sklad }"
+              type="submit"
+              :label="submitBtnLabel"
+              push
+              color="primary"
+              :disable="(isDirty || createProductLoading || updateProductLoading)"
+              :loading="uploadImageLoading || createProductLoading || updateProductLoading"
+              tabindex="8"
+            />
+            <q-btn
+              v-if="isEdit"
+              class="q-ml-auto"
+              text-color="primary"
+              style="background-color: var(--block-bg);"
+              icon="mdi-microphone"
+              push
+              round
+              @click="voiceCreateOpen = true"
+            />
+          </div>
         </div>
       </q-form>
     </div>
+
+    <VoiceCreateProduct
+      v-model="voiceCreateOpen"
+      :product="product"
+      @apply="onVoiceCreateApply"
+    />
 
     <ModalCountToBucket
       v-if="product?.useNumberOfSizes"
@@ -380,6 +406,7 @@ import {
   watch,
   onBeforeUnmount,
 } from 'vue'
+import VoiceCreateProduct from 'src/components/Product/VoiceCreateProduct.vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import TheSelector from 'src/components/UI/TheSelector.vue'
 import ImageUploader from 'src/components/ImageUploader.vue'
@@ -492,10 +519,15 @@ const {
   loading: loadingProduct,
   refetch: refetchEditProduct
 } = useLazyQuery(GET_PRODUCT)
-const { categories: categoriesResult, fetchCategories } = useCategories()
+const {
+  categories: categoriesResult,
+  fetchCategories,
+  fetchAllUserCategories
+} = useCategories()
 
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
+const voiceCreateOpen = ref(false)
 
 function onChangeSizes(sizes) {
   product.sizes = sizes.list
@@ -733,6 +765,10 @@ function cancel(type) {
   })
 }
 
+function onVoiceCreateApply(payload) {
+  Object.assign(product, payload)
+}
+
 function setCategoryFromParams() {
   if (query?.category) {
     const category = categoriesResult.value.find(c => c.id === query?.category)
@@ -752,7 +788,8 @@ function onChangeImage(image) {
 
 function loadData() {
   fetchSizes(profile.value.id)
-  
+  fetchAllUserCategories(sklads.value?.map(c => c.id))
+
   if (!params?.productId) {
     const duplicateData = loadDuplicateData()
     if (duplicateData) {

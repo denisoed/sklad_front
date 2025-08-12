@@ -9,6 +9,8 @@
       class="absolute-top-right q-mt-md q-mr-md"
     />
 
+    <slot name="header" />
+
     <div class="voice-placeholder q-mb-md">
       <span v-if="!isApiAvailable" class="text-red q-mb-md">
         {{ $t('voiceOverlay.recognitionUnavailable') }}
@@ -17,7 +19,7 @@
         {{ $t('voiceOverlay.pressButtonToStart') }}
       </span>
       <span v-else-if="!recognizedText" class="text-bold">{{ $t('voiceOverlay.speakNow') }}</span>
-      <span v-else>{{ recognizedText }}</span>
+      <span v-else class="text-bold">{{ recognizedText }}</span>
     </div>
     
     <!-- Recording button -->
@@ -38,6 +40,8 @@
         @contextmenu.prevent
       />
     </div>
+
+    <slot name="footer" />
     
     <canvas ref="canvasRef" class="voice-canvas" width="480" height="240"></canvas>
   </div>
@@ -53,6 +57,11 @@ const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false
+  },
+  // If false, overlay will NOT auto-close after recording stops
+  autoClose: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -118,12 +127,26 @@ const {
 // Set callback to check if recording should continue
 setShouldContinueCallback(() => isUserPressingButton.value)
 
+// Normalize thousand separators without touching real decimals
+function normalizeThousandSeparators(text) {
+  if (!text || typeof text !== 'string') return text
+  // Remove thin/non-breaking spaces inside digit groups like "5 000" or "5 000"
+  let result = text.replace(/\u00A0|\u202F/g, ' ')
+  // Collapse space-grouped thousands: 1 234 567 -> 1234567
+  result = result.replace(/\b(\d{1,3}(?:[ \u00A0\u202F]\d{3})+)\b/g, (m) => m.replace(/[ \u00A0\u202F]/g, ''))
+  // Collapse dot-grouped thousands: 1.234.567 -> 1234567 (does not match decimals like 12.34)
+  result = result.replace(/\b(\d{1,3}(?:\.\d{3})+)\b/g, (m) => m.replace(/\./g, ''))
+  // Collapse comma-grouped thousands: 1,234,567 -> 1234567 (does not match decimals like 12,34)
+  result = result.replace(/\b(\d{1,3}(?:,\d{3})+)\b/g, (m) => m.replace(/,/g, ''))
+  return result
+}
+
 // Create a reusable finish handler to rebind after restore()
 const finishHandler = (finalText) => {
   if (isRetrying.value) {
     return
   }
-  recognizedText.value = finalText
+  recognizedText.value = normalizeThousandSeparators(finalText)
   // Do not remove loader on result - only on close
 }
 
@@ -243,7 +266,8 @@ async function handlePointerDown(event) {
 
 // Get result for submission
 function getResult() {
-  return (transcript.value || recognizedText.value || '').trim()
+  const raw = (transcript.value || recognizedText.value || '').trim()
+  return normalizeThousandSeparators(raw)
 }
 
 function submitIfNeededAndClose() {
@@ -251,7 +275,12 @@ function submitIfNeededAndClose() {
   if (resultToSend) {
     emit('result', resultToSend)
   }
-  handleClose()
+  if (props.autoClose) {
+    handleClose()
+  } else {
+    // Keep overlay open for subsequent recordings
+    isProcessing.value = false
+  }
 }
 
 // General recording finish logic
@@ -262,8 +291,14 @@ async function finishRecording(isCancel = false) {
   if (isCancel) {
     // Block recording continuation on cancellation
     setShouldContinueCallback(() => false)
-    await handleClose()
-    return
+    if (props.autoClose) {
+      await handleClose()
+      return
+    } else {
+      await stopAudio()
+      isProcessing.value = false
+      return
+    }
   }
 
   if (isRecording.value) {
@@ -524,7 +559,7 @@ async function stopAudio() {
 // Watch transcript changes to update display
 watch(transcript, (newText) => {
   if (newText) {
-    recognizedText.value = newText
+    recognizedText.value = normalizeThousandSeparators(newText)
   }
 })
 
@@ -603,7 +638,7 @@ onBeforeUnmount(async () => {
   width: 100vw;
   height: 100vh;
   background: transparent;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(6px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -620,12 +655,7 @@ onBeforeUnmount(async () => {
   align-items: center;
   justify-content: center;
 }
-.record-button-container {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 2;
-}
+
 .record-button {
   width: 80px;
   height: 80px;
@@ -646,11 +676,12 @@ onBeforeUnmount(async () => {
   z-index: 1;
 }
 .voice-placeholder {
-  font-size: 1.2rem;
+  font-size: 16px;
   color: #fff;
   margin-bottom: 24px;
   border-radius: 16px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
   padding: 16px;
   width: 90%;
 }

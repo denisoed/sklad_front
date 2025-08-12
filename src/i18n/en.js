@@ -1,4 +1,5 @@
 export default ({
+  lang: 'en-US',
   or: 'or',
   email: 'Email',
   password: 'Password',
@@ -101,6 +102,7 @@ export default ({
     reloadApp: 'Reload app',
     reloadPage: 'Reload page and try again',
     noAccess: 'No access',
+    confirm: 'Confirm',
   },
   calendar: {
     days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
@@ -113,6 +115,21 @@ export default ({
     recognitionUnavailable: 'Speech recognition service is not available in your browser',
     pressButtonToStart: 'Hold the button to start recording',
     speakNow: 'Speak now...',
+  },
+  voiceCreate: {
+    title: 'Create product by voice',
+    button: 'Create by voice',
+    hint: 'Say a key and a value. Example: "warehouse shoes, category sneakers, name Nike Air Force, wholesale price 1200, retail price 1800, quantity 5"',
+    sayKeys: 'Keys: warehouse, category, name, color, wholesale price, retail price, quantity',
+  },
+  fuzy: {
+    warehouse: ['warehouse'],
+    category: ['category'],
+    name: ['name', 'title'],
+    color: ['color', 'colour'],
+    quantity: ['quantity', 'qty', 'pcs'],
+    wholesalePrice: ['wholesale price', 'wholesale', 'whsl price', 'purchase price'],
+    retailPrice: ['retail price', 'retail'],
   },
   costs: {
     title: 'Financial expenses',
@@ -450,6 +467,8 @@ export default ({
     lowStock: 'Low stock',
     inStock: 'In stock',
     doubleClickHint: 'Double-clicking the date will return results for a single day',
+    from: 'from',
+    to: 'to',
   },
   scanner: {
     qrPrompt: 'Place QR code in the scanning area',
@@ -484,7 +503,6 @@ export default ({
     originalPrice: 'Wholesale price',
     originalPriceShort: 'Whsl. price',
     originalPricePerPiece: 'Wholesale price per 1 pc',
-    discountPrice: 'Set promotional price',
     useSizes: 'Use sizes',
     sizesList: 'Sizes:',
     sizesNotSpecified: 'Not specified',
@@ -521,6 +539,7 @@ export default ({
     selectWarehouseHint: 'Select warehouse for product',
     articleId: 'Article (ID)',
     setPromotionalPrice: 'Set promotional price',
+    selectPromotionDates: 'Select dates for promotion',
     promotionalPricePerUnit: 'Promotional price per 1 pc',
     promotionPriceShort: 'Promo price',
     sizesDescription: 'This option allows you to use sizes for a product',

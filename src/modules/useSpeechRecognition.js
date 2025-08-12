@@ -1,7 +1,9 @@
 import { ref, onBeforeUnmount, watch } from 'vue'
 import { useSpeechRecognition as useVueUseSpeechRecognition } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
 const useSpeechRecognition = () => {
+  const { t } = useI18n({ useScope: 'global' })
   // States for backward compatibility
   const transcript = ref('')
   const isRecording = ref(false)
@@ -26,7 +28,7 @@ const useSpeechRecognition = () => {
     stop: vueUseStop,
     recognition
   } = useVueUseSpeechRecognition({
-    lang: 'ru-RU',
+    lang: t('lang'),
     interimResults: true,
     continuous: !isIOS, // iOS Safari doesn't work well with continuous=true
     maxAlternatives: 1

@@ -1,4 +1,5 @@
 export default ({
+  lang: 'ru-RU',
   or: 'или',
   email: 'Почта',
   password: 'Пароль',
@@ -101,6 +102,7 @@ export default ({
     reloadApp: 'Перегрузите приложение',
     reloadPage: 'Перезагрузите страницу, попробуйте еще раз',
     noAccess: 'Нет доступа',
+    confirm: 'Подтвердить',
   },
   calendar: {
     days: ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
@@ -113,6 +115,21 @@ export default ({
     recognitionUnavailable: 'Служба распознавания речи не доступна в вашем браузере',
     pressButtonToStart: 'Зажмите кнопку, чтобы начать запись',
     speakNow: 'Говорите...',
+  },
+  voiceCreate: {
+    title: 'Создать товар голосом',
+    button: 'Создать голосом',
+    hint: 'Произнесите ключ и значение. Например: «склад обувь, категория кроссовки, название Nike Air Force, оптовая цена 1200, розничная цена 1800, количество 5»',
+    sayKeys: 'Ключи: склад, категория, название, цвет, оптовая цена, розничная цена, количество',
+  },
+  fuzy: {
+    warehouse: ['склад'],
+    category: ['категория'],
+    name: ['название', 'наименование', 'имя'],
+    color: ['цвет', 'колер'],
+    quantity: ['количество', 'кол-во', 'шт', 'штуки', 'штук'],
+    wholesalePrice: ['оптовая цена', 'опт цена', 'опт', 'закуп', 'закупка'],
+    retailPrice: ['розничная цена', 'роз цена', 'розница', 'розн'],
   },
   costs: {
     title: 'Финансовые расходы',
@@ -450,6 +467,8 @@ export default ({
     lowStock: 'Заканчивается',
     inStock: 'В наличии',
     doubleClickHint: 'Двойное нажатие по дате вернет результат за один день',
+    from: 'от',
+    to: 'до',
   },
   scanner: {
     qrPrompt: 'Поместите qr-code в область сканирования',
@@ -484,7 +503,6 @@ export default ({
     originalPrice: 'Оптовая цена',
     originalPriceShort: 'Опт. цена',
     originalPricePerPiece: 'Оптовая цена за 1 шт',
-    discountPrice: 'Установить акционную цену',
     useSizes: 'Использовать размеры',
     sizesList: 'Размеры:',
     sizesNotSpecified: 'Не увазаны',
@@ -521,6 +539,7 @@ export default ({
     selectWarehouseHint: 'Выберите склад для товара',
     articleId: 'Артикул(ID)',
     setPromotionalPrice: 'Установить акционную цену',
+    selectPromotionDates: 'Выберите даты для акции',
     promotionalPricePerUnit: 'Акционная цена за 1 шт',
     promotionPriceShort: 'Акц. цена',
     sizesDescription: 'Этот параметр позволяет использовать размеры для товара',
@@ -578,7 +597,7 @@ export default ({
     returnError: 'Не удалось вернуть. Попробуйте позже.',
     for: 'за',
     day: 'день',
-    week: 'неделю',
+    week: 'неделя',
     month: 'месяц',
     year: 'год',
     earned: 'заработано',
@@ -666,7 +685,7 @@ export default ({
     min: { one: 'минуту', few: 'минуты', many: 'минут' },
     hour: { one: 'час', few: 'часа', many: 'часов' },
     day: { one: 'день', few: 'дня', many: 'дней' },
-    week: { one: 'неделю', few: 'недели', many: 'недель' },
+    week: { one: 'неделя', few: 'недели', many: 'недель' },
     month: { one: 'месяц', few: 'месяца', many: 'месяцев' },
   },
 })
