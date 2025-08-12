@@ -118,13 +118,16 @@ export default ({
   voiceCreate: {
     title: 'Create product by voice',
     button: 'Create by voice',
-    hint: 'Say a key and a value. Example: "склад обувь, категория кроссовки, название Nike Air Force white forty one"',
-    sayKeys: 'Keys: склад, категория, название',
+    hint: 'Say a key and a value. Example: "warehouse shoes, category sneakers, name Nike Air Force, wholesale price 1200, retail price 1800, quantity 5"',
+    sayKeys: 'Keys: warehouse, category, name, wholesale price, retail price, quantity',
   },
   fuzy: {
     warehouse: ['warehouse'],
     category: ['category'],
     name: ['name', 'title'],
+    quantity: ['quantity', 'qty', 'pcs'],
+    wholesalePrice: ['wholesale price', 'wholesale', 'whsl price', 'purchase price'],
+    retailPrice: ['retail price', 'retail'],
   },
   costs: {
     title: 'Financial expenses',

@@ -91,20 +91,21 @@ const getSynonyms = (path) => {
   return Array.isArray(value) ? value.map((s) => String(s).toLowerCase()) : []
 }
 
-// Local fallback synonyms (until i18n fuzy.* keys provided)
-const QUANTITY_SYNONYMS = ['количество', 'кол-во', 'колво', 'шт', 'штук', 'штуки', 'quantity', 'qty']
-
 const checkpoints = [
   { key: 'warehouse', title: t('common.warehouse'), synonyms: getSynonyms('fuzy.warehouse') },
   { key: 'category', title: t('common.category'), synonyms: getSynonyms('fuzy.category') },
   { key: 'name', title: t('common.name'), synonyms: getSynonyms('fuzy.name') },
-  { key: 'quantity', title: t('common.quantity'), synonyms: [...getSynonyms('fuzy.quantity'), ...QUANTITY_SYNONYMS] },
+  { key: 'originalPrice', title: t('product.originalPrice'), synonyms: getSynonyms('fuzy.wholesalePrice') },
+  { key: 'retailPrice', title: t('product.retailPrice'), synonyms: getSynonyms('fuzy.retailPrice') },
+  { key: 'quantity', title: t('common.quantity'), synonyms: getSynonyms('fuzy.quantity') },
 ]
 
 const parsed = reactive({
   warehouse: '',
   category: '',
   name: '',
+  originalPrice: '',
+  retailPrice: '',
   quantity: '',
 })
 
@@ -144,8 +145,11 @@ function extractFields(text) {
     const value = slice.replace(/[\:\-–—]/, ' ').trim().replace(/^\s+|\s+$/g, '')
     if (value) {
       if (key === 'quantity') {
-        const num = extractNumber(value)
+        const num = extractInteger(value)
         if (num != null) result[key] = String(num)
+      } else if (key === 'originalPrice' || key === 'retailPrice') {
+        const price = extractPrice(value)
+        if (price != null) result[key] = String(price)
       } else {
         result[key] = value
       }
@@ -159,14 +163,14 @@ function extractFields(text) {
 
   // Fallback for quantity: if not extracted by key, try to find a number in the whole text
   if (!result.quantity) {
-    const num = extractNumber(text)
+    const num = extractInteger(text)
     if (num != null) result.quantity = String(num)
   }
 
   return result
 }
 
-function extractNumber(str) {
+function extractInteger(str) {
   if (!str) return null
   const match = String(str).replace(/\s+/g, ' ').match(/(\d{1,7})(?:[\,\.](\d+))?/)
   if (!match) return null
@@ -174,6 +178,21 @@ function extractNumber(str) {
   // We expect integer quantities for countSizes
   const num = parseInt(intPart, 10)
   return Number.isFinite(num) && num >= 0 ? num : null
+}
+
+function extractPrice(str) {
+  if (!str) return null
+  // Find first number with optional decimal part; allow spaces as thousands separators
+  const normalized = String(str)
+    .replace(/[^0-9.,\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  const match = normalized.match(/(\d[\d\s]{0,12})([\.,](\d{1,2}))?/)
+  if (!match) return null
+  const integerPart = match[1].replace(/\s+/g, '')
+  const decimalPart = match[3] || ''
+  const asNumber = parseFloat(decimalPart ? `${integerPart}.${decimalPart}` : integerPart)
+  return Number.isFinite(asNumber) && asNumber >= 0 ? asNumber : null
 }
 
 async function confirm() {
@@ -194,8 +213,15 @@ async function confirm() {
 function mockServer(data) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const quantity = extractNumber(data.quantity)
-      resolve({ name: data.name, ...(quantity != null ? { quantity } : {}) })
+      const quantity = extractInteger(data.quantity)
+      const originalPrice = extractPrice(data.originalPrice)
+      const retailPrice = extractPrice(data.retailPrice)
+      resolve({
+        name: data.name,
+        ...(quantity != null ? { quantity } : {}),
+        ...(originalPrice != null ? { originalPrice } : {}),
+        ...(retailPrice != null ? { retailPrice } : {}),
+      })
     }, 350)
   })
 }
@@ -206,7 +232,7 @@ watch(
     if (v) {
       showVoiceOverlay.value = true
       recognizedText.value = ''
-      Object.assign(parsed, { warehouse: '', category: '', name: '', quantity: '' })
+      Object.assign(parsed, { warehouse: '', category: '', name: '', originalPrice: '', retailPrice: '', quantity: '' })
     }
   }
 )

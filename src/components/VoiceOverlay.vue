@@ -19,7 +19,7 @@
         {{ $t('voiceOverlay.pressButtonToStart') }}
       </span>
       <span v-else-if="!recognizedText" class="text-bold">{{ $t('voiceOverlay.speakNow') }}</span>
-      <span v-else>{{ recognizedText }}</span>
+      <span v-else class="text-bold">{{ recognizedText }}</span>
     </div>
     
     <!-- Recording button -->
@@ -661,7 +661,7 @@ onBeforeUnmount(async () => {
   z-index: 1;
 }
 .voice-placeholder {
-  font-size: 1.2rem;
+  font-size: 16px;
   color: #fff;
   margin-bottom: 24px;
   border-radius: 16px;
