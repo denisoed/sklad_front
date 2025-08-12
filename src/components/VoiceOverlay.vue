@@ -11,7 +11,7 @@
 
     <slot name="header" />
 
-    <div class="voice-placeholder q-mb-md">
+    <div class="voice-placeholder q-mb-md text-warning">
       <span v-if="!isApiAvailable" class="text-red q-mb-md">
         {{ $t('voiceOverlay.recognitionUnavailable') }}
       </span>
@@ -723,7 +723,7 @@ onBeforeUnmount(async () => {
   color: #fff;
   margin-bottom: 24px;
   border-radius: 16px;
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: rgba(0, 0, 0, 0.90);
   backdrop-filter: blur(6px);
   padding: 16px;
   width: 90%;

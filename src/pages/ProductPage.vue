@@ -350,6 +350,7 @@
     <VoiceCreateProduct
       v-model="voiceCreateOpen"
       :product="product"
+      :title="isEdit ? $t('voiceCreate.editTitle') : $t('voiceCreate.createTitle')"
       @apply="onVoiceCreateApply"
     />
 

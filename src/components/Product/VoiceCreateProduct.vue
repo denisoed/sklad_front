@@ -14,7 +14,7 @@
             <div class="helper-panel block-bg border-radius-md with-bg q-mb-md q-pa-md">
               <div class="helper-header flex items-center">
                 <q-icon name="mdi-microphone" color="primary" size="sm" class="q-mr-sm" />
-                <div class="text-subtitle2 text-weight-bold">{{ $t('voiceCreate.title') }}</div>
+                <div class="text-subtitle2 text-weight-bold">{{ title }}</div>
                 <q-space />
                 <q-btn
                   push
@@ -31,7 +31,7 @@
                 <div class="text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
               </div>
               
-              <div v-else ref="checkpointsRef" class="voice-create-checkpoints q-gutter-y-sm q-mt-md">
+              <div v-else ref="checkpointsRef" class="voice-create-checkpoints q-gutter-y-sm q-mt-md q-pb-xs">
                 <div
                   v-for="cp in checkpoints"
                   :key="cp.key"
@@ -89,7 +89,11 @@ const props = defineProps({
   product: {
     type: Object,
     default: () => ({}),
-  }
+  },
+  title: {
+    type: String,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'apply'])
@@ -184,12 +188,13 @@ function initializeFromProduct() {
   const skladName = p?.sklad ? findNameById(sklads, p.sklad) : ''
   const categoryName = p?.category ? findNameById(allUserCategories, p.category) : ''
   const countSizesNum = Number(p?.countSizes)
+  const colorKey = COLORS.find(c => c.color === p?.color)?.nameKey
 
   Object.assign(parsed, {
     sklad: skladName || '',
     category: categoryName || '',
     name: p?.name ? String(p.name).trim() : '',
-    color: p?.colorName ? String(p.colorName).trim() : '',
+    color: colorKey ? t(colorKey) : '',
     origPrice: p?.origPrice != null && p.origPrice !== '' ? String(p.origPrice) : '',
     newPrice: p?.newPrice != null && p.newPrice !== '' ? String(p.newPrice) : '',
     countSizes: Number.isFinite(countSizesNum) && countSizesNum > 0 ? String(countSizesNum) : '',
@@ -370,7 +375,7 @@ watch(
 }
 
 .helper-panel.with-bg {
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.90);
   color: #fff;
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255,255,255,0.12);
