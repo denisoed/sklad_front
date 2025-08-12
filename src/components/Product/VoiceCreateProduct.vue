@@ -30,9 +30,9 @@
                 <div class="text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
               </div>
               
-              <div v-else class="q-gutter-y-sm q-mt-md">
+              <div v-else class="voice-create-checkpoints q-gutter-y-sm q-mt-md">
                 <div
-                  v-for="cp in checkpoints"
+                  v-for="cp in sortedCheckpoints"
                   :key="cp.key"
                   class="checkpoint flex items-center q-px-sm q-py-xs border-radius-sm"
                   :class="{ done: !!parsed[cp.key] }"
@@ -131,6 +131,16 @@ const parsed = reactive({
 const isDirty = computed(() => {
   return Object.keys(parsed).some((key) => parsed[key] !== '')
 })
+
+  // Sort checkpoints so that unfilled ones go first while preserving relative order within groups
+  const sortedCheckpoints = computed(() => {
+    return [...checkpoints].sort((a, b) => {
+      const aDone = Boolean(parsed[a.key])
+      const bDone = Boolean(parsed[b.key])
+      if (aDone === bDone) return 0
+      return aDone ? 1 : -1
+    })
+  })
 
 function close() {
   emit('update:modelValue', false)
@@ -355,6 +365,11 @@ watch(
   color: #fff;
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255,255,255,0.12);
+}
+
+.voice-create-checkpoints {
+  max-height: 220px;
+  overflow-y: auto;
 }
 
 .checkpoint {
