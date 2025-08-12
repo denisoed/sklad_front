@@ -30,7 +30,7 @@
                 <div class="text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
               </div>
               
-              <div v-else class="q-gutter-y-sm q-mt-lg">
+              <div v-else class="q-gutter-y-sm q-mt-md">
                 <div
                   v-for="cp in checkpoints"
                   :key="cp.key"
@@ -161,11 +161,7 @@ function extractFields(text) {
     result.name = text
   }
 
-  // Fallback for quantity: if not extracted by key, try to find a number in the whole text
-  if (!result.quantity) {
-    const num = extractInteger(text)
-    if (num != null) result.quantity = String(num)
-  }
+  // No fallback for quantity: if there was no explicit quantity key, do not infer from bare numbers
 
   return result
 }
