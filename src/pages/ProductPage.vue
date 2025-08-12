@@ -753,6 +753,9 @@ function onVoiceCreateApply(payload) {
   if (payload?.name) {
     product.name = payload.name
   }
+  if (typeof payload?.quantity === 'number') {
+    product.countSizes = payload.quantity
+  }
 }
 
 function setCategoryFromParams() {

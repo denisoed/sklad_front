@@ -91,16 +91,21 @@ const getSynonyms = (path) => {
   return Array.isArray(value) ? value.map((s) => String(s).toLowerCase()) : []
 }
 
+// Local fallback synonyms (until i18n fuzy.* keys provided)
+const QUANTITY_SYNONYMS = ['количество', 'кол-во', 'колво', 'шт', 'штук', 'штуки', 'quantity', 'qty']
+
 const checkpoints = [
   { key: 'warehouse', title: t('common.warehouse'), synonyms: getSynonyms('fuzy.warehouse') },
   { key: 'category', title: t('common.category'), synonyms: getSynonyms('fuzy.category') },
   { key: 'name', title: t('common.name'), synonyms: getSynonyms('fuzy.name') },
+  { key: 'quantity', title: t('common.quantity'), synonyms: [...getSynonyms('fuzy.quantity'), ...QUANTITY_SYNONYMS] },
 ]
 
 const parsed = reactive({
   warehouse: '',
   category: '',
   name: '',
+  quantity: '',
 })
 
 function close() {
@@ -138,7 +143,12 @@ function extractFields(text) {
     const slice = text.slice(idx + s.length, nextIdx)
     const value = slice.replace(/[\:\-–—]/, ' ').trim().replace(/^\s+|\s+$/g, '')
     if (value) {
-      result[key] = value
+      if (key === 'quantity') {
+        const num = extractNumber(value)
+        if (num != null) result[key] = String(num)
+      } else {
+        result[key] = value
+      }
     }
   }
 
@@ -147,7 +157,23 @@ function extractFields(text) {
     result.name = text
   }
 
+  // Fallback for quantity: if not extracted by key, try to find a number in the whole text
+  if (!result.quantity) {
+    const num = extractNumber(text)
+    if (num != null) result.quantity = String(num)
+  }
+
   return result
+}
+
+function extractNumber(str) {
+  if (!str) return null
+  const match = String(str).replace(/\s+/g, ' ').match(/(\d{1,7})(?:[\,\.](\d+))?/)
+  if (!match) return null
+  const intPart = match[1]
+  // We expect integer quantities for countSizes
+  const num = parseInt(intPart, 10)
+  return Number.isFinite(num) && num >= 0 ? num : null
 }
 
 async function confirm() {
@@ -168,7 +194,8 @@ async function confirm() {
 function mockServer(data) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ name: data.name })
+      const quantity = extractNumber(data.quantity)
+      resolve({ name: data.name, ...(quantity != null ? { quantity } : {}) })
     }, 350)
   })
 }
@@ -179,7 +206,7 @@ watch(
     if (v) {
       showVoiceOverlay.value = true
       recognizedText.value = ''
-      Object.assign(parsed, { warehouse: '', category: '', name: '' })
+      Object.assign(parsed, { warehouse: '', category: '', name: '', quantity: '' })
     }
   }
 )

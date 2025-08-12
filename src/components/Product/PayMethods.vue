@@ -151,16 +151,16 @@ function onChangeCashSum(val) {
   }
   
   &_body {
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 16px;
-
     p {
       margin: 0;
       color: var(--text-description);
     }
   }
-
+  
   &_item {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+
     &--active {
       .pay-methods_title {
         opacity: 1;
@@ -168,10 +168,8 @@ function onChangeCashSum(val) {
     }
 
     &:last-child {
-      .pay-methods_body {
-        border: none;
-        padding-bottom: 0;
-      }
+      border-bottom: none;
+      padding-bottom: 0;
     }
   }
 }
