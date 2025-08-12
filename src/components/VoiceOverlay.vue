@@ -623,7 +623,7 @@ onBeforeUnmount(async () => {
   width: 100vw;
   height: 100vh;
   background: transparent;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(6px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -665,7 +665,8 @@ onBeforeUnmount(async () => {
   color: #fff;
   margin-bottom: 24px;
   border-radius: 16px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
   padding: 16px;
   width: 90%;
 }

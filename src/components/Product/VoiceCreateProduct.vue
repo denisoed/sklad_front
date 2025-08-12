@@ -11,16 +11,26 @@
           <template #header>
             <!-- Helper panel with checkpoints -->
             <div class="helper-panel block-bg border-radius-md with-bg q-mb-md q-pa-md">
-              <div class="helper-header flex items-center q-pb-sm">
+              <div class="helper-header flex items-center">
                 <q-icon name="mdi-microphone" color="primary" size="sm" class="q-mr-sm" />
                 <div class="text-subtitle2 text-weight-bold">{{ $t('voiceCreate.title') }}</div>
+                <q-space />
+                <q-btn
+                  push
+                  round
+                  size="sm"
+                  dense
+                  icon="mdi-information-outline"
+                  @click="toggleInfo"
+                />
               </div>
 
-              <div class="text-body2 q-mb-sm">{{ $t('voiceCreate.hint') }}</div>
-
-              <div class="q-mb-sm text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
+              <div v-if="showInfo" class="flex column q-gap-sm q-mt-md">
+                <div class="text-body2">{{ $t('voiceCreate.hint') }}</div>
+                <div class="text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
+              </div>
               
-              <div class="q-gutter-y-sm q-mb-sm">
+              <div v-else class="q-gutter-y-sm q-mt-lg">
                 <div
                   v-for="cp in checkpoints"
                   :key="cp.key"
@@ -35,7 +45,7 @@
                 </div>
               </div>
 
-              <div class="flex no-wrap">
+              <div class="flex no-wrap q-mt-lg">
                 <q-btn
                   color="primary"
                   class="full-width"
@@ -73,6 +83,7 @@ const { t } = useI18n({ useScope: 'global' })
 const showVoiceOverlay = ref(true)
 const isSubmitting = ref(false)
 const recognizedText = ref('')
+const showInfo = ref(false)
 
 // Minimal set of checkpoints for MVP. Only name will be applied per task requirements
 const checkpoints = [
@@ -91,14 +102,23 @@ function close() {
   emit('update:modelValue', false)
 }
 
+function toggleInfo() {
+  showInfo.value = !showInfo.value
+}
+
 function onVoiceResult(text) {
   recognizedText.value = (text || '').trim()
-  Object.assign(parsed, extractFields(recognizedText.value))
+  const next = extractFields(recognizedText.value)
+  Object.keys(next).forEach((key) => {
+    if (next[key]) {
+      parsed[key] = next[key]
+    }
+  })
 }
 
 // Very lightweight ru-text parser: "ключ ... значение"; stops value on next known key word
 function extractFields(text) {
-  const result = { warehouse: '', category: '', name: '' }
+  const result = {}
   if (!text) return result
 
   const allSynonyms = checkpoints.flatMap((c) => c.synonyms.map((s) => ({ key: c.key, s })))
