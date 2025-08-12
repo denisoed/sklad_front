@@ -346,12 +346,17 @@
       </q-form>
     </div>
 
-    <VoiceCreateProduct
-      v-model="voiceCreateOpen"
-      :product="product"
-      :title="isEdit ? $t('voiceCreate.editTitle') : $t('voiceCreate.createTitle')"
-      @apply="onVoiceCreateApply"
-    />
+    <transition name="fade">
+      <teleport to="body">
+        <VoiceCreateProduct
+          v-if="voiceCreateOpen"
+          :product="product"
+          :title="isEdit ? $t('voiceCreate.editTitle') : $t('voiceCreate.createTitle')"
+          @apply="onVoiceCreateApply"
+          @close="voiceCreateOpen = false"
+        />
+      </teleport>
+    </transition>
 
     <ModalCountToBucket
       v-if="product?.useNumberOfSizes"
