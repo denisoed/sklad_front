@@ -838,7 +838,7 @@ const submitBtnLabel = computed(() => {
   return t('common.save')
 })
 
-async function hanleProductCategotyBySklad(skladId) {
+async function handleProductCategotyBySklad(skladId) {
   product.category = null
   await fetchCategories({ sklad: skladId })
   product.category = editProduct.value?.product?.category?.id
@@ -878,7 +878,7 @@ watch(sklads, (val) => {
 onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
 
 watch(() => product.sklad, (skladId) => {
-  hanleProductCategotyBySklad(skladId)
+  handleProductCategotyBySklad(skladId)
 });
 
 onBeforeUnmount(() => {
