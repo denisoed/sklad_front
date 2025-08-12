@@ -84,6 +84,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  product: {
+    type: Object,
+    default: () => ({}),
+  }
 })
 
 const emit = defineEmits(['update:modelValue', 'apply'])
@@ -144,6 +148,28 @@ function onVoiceResult(text) {
     if (next[key]) {
       parsed[key] = next[key]
     }
+  })
+}
+
+function initializeFromProduct() {
+  const p = props.product || {}
+  const findNameById = (refList, id) => {
+    const arr = Array.isArray(refList?.value) ? refList.value : (Array.isArray(refList) ? refList : [])
+    const item = arr.find((x) => x?.id === id)
+    return item?.name || ''
+  }
+
+  const skladName = p?.sklad ? findNameById(sklads, p.sklad) : ''
+  const categoryName = p?.category ? findNameById(allUserCategories, p.category) : ''
+  const countSizesNum = Number(p?.countSizes)
+
+  Object.assign(parsed, {
+    sklad: skladName || '',
+    category: categoryName || '',
+    name: p?.name ? String(p.name).trim() : '',
+    origPrice: p?.origPrice != null && p.origPrice !== '' ? String(p.origPrice) : '',
+    newPrice: p?.newPrice != null && p.newPrice !== '' ? String(p.newPrice) : '',
+    countSizes: Number.isFinite(countSizesNum) && countSizesNum > 0 ? String(countSizesNum) : '',
   })
 }
 
@@ -235,6 +261,14 @@ async function prepareData(data) {
     result.name = String(data.name).trim()
   }
 
+  if (data?.origPrice !== undefined && data?.origPrice !== null && String(data.origPrice).trim() !== '') {
+    result.origPrice = String(data.origPrice).trim()
+  }
+
+  if (data?.newPrice !== undefined && data?.newPrice !== null && String(data.newPrice).trim() !== '') {
+    result.newPrice = String(data.newPrice).trim()
+  }
+
   if (data?.countSizes) {
     const num = Number(data.countSizes)
     if (Number.isFinite(num)) result.countSizes = num
@@ -283,7 +317,7 @@ watch(
     if (v) {
       showVoiceOverlay.value = true
       recognizedText.value = ''
-      Object.assign(parsed, { sklad: '', category: '', name: '', origPrice: '', newPrice: '', countSizes: '' })
+      initializeFromProduct()
     }
   }
 )

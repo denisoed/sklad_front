@@ -346,6 +346,7 @@
 
     <VoiceCreateProduct
       v-model="voiceCreateOpen"
+      :product="product"
       @apply="onVoiceCreateApply"
     />
 
