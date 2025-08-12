@@ -45,7 +45,14 @@
                 </div>
               </div>
 
-              <div class="flex no-wrap q-mt-lg">
+              <div class="flex no-wrap q-mt-lg q-gap-md">
+                <q-btn
+                  color="grey"
+                  icon="mdi-refresh"
+                  push
+                  :disable="!isDirty"
+                  @click="reset"
+                />
                 <q-btn
                   color="primary"
                   class="full-width"
@@ -65,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import VoiceOverlay from 'src/components/VoiceOverlay.vue'
 
@@ -92,25 +99,33 @@ const getSynonyms = (path) => {
 }
 
 const checkpoints = [
-  { key: 'warehouse', title: t('common.warehouse'), synonyms: getSynonyms('fuzy.warehouse') },
+  { key: 'sklad', title: t('common.warehouse'), synonyms: getSynonyms('fuzy.warehouse') },
   { key: 'category', title: t('common.category'), synonyms: getSynonyms('fuzy.category') },
   { key: 'name', title: t('common.name'), synonyms: getSynonyms('fuzy.name') },
-  { key: 'originalPrice', title: t('product.originalPrice'), synonyms: getSynonyms('fuzy.wholesalePrice') },
-  { key: 'retailPrice', title: t('product.retailPrice'), synonyms: getSynonyms('fuzy.retailPrice') },
-  { key: 'quantity', title: t('common.quantity'), synonyms: getSynonyms('fuzy.quantity') },
+  { key: 'origPrice', title: t('product.originalPrice'), synonyms: getSynonyms('fuzy.wholesalePrice') },
+  { key: 'newPrice', title: t('product.retailPrice'), synonyms: getSynonyms('fuzy.retailPrice') },
+  { key: 'countSizes', title: t('common.quantity'), synonyms: getSynonyms('fuzy.quantity') },
 ]
 
 const parsed = reactive({
-  warehouse: '',
+  sklad: '',
   category: '',
   name: '',
-  originalPrice: '',
-  retailPrice: '',
-  quantity: '',
+  origPrice: '',
+  newPrice: '',
+  countSizes: '',
+})
+
+const isDirty = computed(() => {
+  return Object.keys(parsed).some((key) => parsed[key] !== '')
 })
 
 function close() {
   emit('update:modelValue', false)
+}
+
+function reset() {
+  Object.assign(parsed, { sklad: '', category: '', name: '', origPrice: '', newPrice: '', countSizes: '' })
 }
 
 function toggleInfo() {
@@ -153,10 +168,10 @@ function extractFields(text) {
       if (startsWithOtherKey) {
         continue
       }
-      if (key === 'quantity') {
+      if (key === 'countSizes') {
         const num = extractInteger(value)
         if (num != null) result[key] = String(num)
-      } else if (key === 'originalPrice' || key === 'retailPrice') {
+      } else if (key === 'origPrice' || key === 'newPrice') {
         const price = extractPrice(value)
         if (price != null) result[key] = String(price)
       } else {
@@ -166,11 +181,11 @@ function extractFields(text) {
   }
 
   // Fallback: if only a phrase said without keys, consider it as name
-  if (!result.name && !result.category && !result.warehouse) {
+  if (!result.name && !result.category && !result.sklad) {
     result.name = text
   }
 
-  // No fallback for quantity: if there was no explicit quantity key, do not infer from bare numbers
+  // No fallback for countSizes: if there was no explicit countSizes key, do not infer from bare numbers
 
   return result
 }
@@ -218,14 +233,14 @@ async function confirm() {
 function mockServer(data) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const quantity = extractInteger(data.quantity)
-      const originalPrice = extractPrice(data.originalPrice)
-      const retailPrice = extractPrice(data.retailPrice)
+      const countSizes = extractInteger(data.countSizes)
+      const origPrice = extractPrice(data.origPrice)
+      const newPrice = extractPrice(data.newPrice)
       resolve({
         name: data.name,
-        ...(quantity != null ? { quantity } : {}),
-        ...(originalPrice != null ? { originalPrice } : {}),
-        ...(retailPrice != null ? { retailPrice } : {}),
+        ...(countSizes != null ? { countSizes } : {}),
+        ...(origPrice != null ? { origPrice } : {}),
+        ...(newPrice != null ? { newPrice } : {}),
       })
     }, 350)
   })
@@ -237,7 +252,7 @@ watch(
     if (v) {
       showVoiceOverlay.value = true
       recognizedText.value = ''
-      Object.assign(parsed, { warehouse: '', category: '', name: '', originalPrice: '', retailPrice: '', quantity: '' })
+      Object.assign(parsed, { sklad: '', category: '', name: '', origPrice: '', newPrice: '', countSizes: '' })
     }
   }
 )
