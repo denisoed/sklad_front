@@ -507,7 +507,11 @@ const {
   loading: loadingProduct,
   refetch: refetchEditProduct
 } = useLazyQuery(GET_PRODUCT)
-const { categories: categoriesResult, fetchCategories } = useCategories()
+const {
+  categories: categoriesResult,
+  fetchCategories,
+  fetchAllUserCategories
+} = useCategories()
 
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
@@ -777,7 +781,8 @@ function onChangeImage(image) {
 
 function loadData() {
   fetchSizes(profile.value.id)
-  
+  fetchAllUserCategories(sklads.value?.map(c => c.id))
+
   if (!params?.productId) {
     const duplicateData = loadDuplicateData()
     if (duplicateData) {
