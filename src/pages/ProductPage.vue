@@ -309,7 +309,7 @@
           </div>
         </div>
 
-        <div class="product-page_controls row q-mt-md">
+        <div class="product-page_controls items-center row q-mt-md">
           <div v-if="isEdit" v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: product?.sklad }">
             <q-btn
               icon="mdi-basket-plus-outline"
@@ -335,8 +335,7 @@
             />
             <q-btn
               class="q-ml-auto"
-              text-color="primary"
-              style="background-color: var(--block-bg);"
+              color="primary"
               icon="mdi-microphone"
               push
               round
