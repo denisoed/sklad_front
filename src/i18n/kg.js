@@ -1,4 +1,5 @@
 export default ({
+  lang: 'ru-RU',
   or: 'же',
   email: 'Почта',
   password: 'Сырсөз',

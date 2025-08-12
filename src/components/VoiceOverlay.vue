@@ -127,12 +127,26 @@ const {
 // Set callback to check if recording should continue
 setShouldContinueCallback(() => isUserPressingButton.value)
 
+// Normalize thousand separators without touching real decimals
+function normalizeThousandSeparators(text) {
+  if (!text || typeof text !== 'string') return text
+  // Remove thin/non-breaking spaces inside digit groups like "5 000" or "5 000"
+  let result = text.replace(/\u00A0|\u202F/g, ' ')
+  // Collapse space-grouped thousands: 1 234 567 -> 1234567
+  result = result.replace(/\b(\d{1,3}(?:[ \u00A0\u202F]\d{3})+)\b/g, (m) => m.replace(/[ \u00A0\u202F]/g, ''))
+  // Collapse dot-grouped thousands: 1.234.567 -> 1234567 (does not match decimals like 12.34)
+  result = result.replace(/\b(\d{1,3}(?:\.\d{3})+)\b/g, (m) => m.replace(/\./g, ''))
+  // Collapse comma-grouped thousands: 1,234,567 -> 1234567 (does not match decimals like 12,34)
+  result = result.replace(/\b(\d{1,3}(?:,\d{3})+)\b/g, (m) => m.replace(/,/g, ''))
+  return result
+}
+
 // Create a reusable finish handler to rebind after restore()
 const finishHandler = (finalText) => {
   if (isRetrying.value) {
     return
   }
-  recognizedText.value = finalText
+  recognizedText.value = normalizeThousandSeparators(finalText)
   // Do not remove loader on result - only on close
 }
 
@@ -252,7 +266,8 @@ async function handlePointerDown(event) {
 
 // Get result for submission
 function getResult() {
-  return (transcript.value || recognizedText.value || '').trim()
+  const raw = (transcript.value || recognizedText.value || '').trim()
+  return normalizeThousandSeparators(raw)
 }
 
 function submitIfNeededAndClose() {
@@ -544,7 +559,7 @@ async function stopAudio() {
 // Watch transcript changes to update display
 watch(transcript, (newText) => {
   if (newText) {
-    recognizedText.value = newText
+    recognizedText.value = normalizeThousandSeparators(newText)
   }
 })
 

@@ -1,4 +1,5 @@
 export default ({
+  lang: 'en-US',
   or: 'or',
   email: 'Email',
   password: 'Password',
