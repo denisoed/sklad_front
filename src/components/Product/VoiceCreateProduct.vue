@@ -1,83 +1,78 @@
 <template>
-  <teleport to="body">
-    <transition name="fade">
-      <div v-if="modelValue" class="voice-create-wrapper">
-        <VoiceOverlay
-          v-if="showVoiceOverlay"
-          :auto-close="false"
-          :throttle-ms="1000"
-          @result="onVoiceResult"
-          @close="close"
-        >
-          <template #header>
-            <!-- Helper panel with checkpoints -->
-            <div class="helper-panel block-bg border-radius-md with-bg q-mb-md q-pa-md">
-              <div class="helper-header flex items-center">
-                <q-icon name="mdi-microphone" color="primary" size="sm" class="q-mr-sm" />
-                <div class="text-subtitle2 text-weight-bold">{{ title }}</div>
-                <q-space />
-                <q-btn
-                  push
-                  round
-                  size="sm"
-                  dense
-                  icon="mdi-information-outline"
-                  @click="toggleInfo"
-                />
-              </div>
+  <div class="voice-create-wrapper">
+    <VoiceOverlay
+      :auto-close="false"
+      :throttle-ms="1000"
+      @result="onVoiceResult"
+      @close="close"
+    >
+      <template #header>
+        <!-- Helper panel with checkpoints -->
+        <div class="helper-panel block-bg border-radius-md with-bg q-mb-sm q-pa-md">
+          <div class="helper-header flex items-center">
+            <q-icon name="mdi-microphone" color="primary" size="sm" class="q-mr-sm" />
+            <div class="text-subtitle2 text-weight-bold">{{ title }}</div>
+            <q-space />
+            <q-btn
+              push
+              round
+              size="sm"
+              dense
+              icon="mdi-information-outline"
+              @click="toggleInfo"
+            />
+          </div>
 
-              <div v-if="showInfo" class="flex column q-gap-sm q-mt-md">
-                <div class="text-body2">{{ $t('voiceCreate.hint') }}</div>
-                <div class="text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
-              </div>
-              
-              <div v-else ref="checkpointsRef" class="voice-create-checkpoints q-gutter-y-sm q-mt-md q-pb-xs">
-                <div
-                  v-for="cp in visibleCheckpoints"
-                  :key="cp.key"
-                  class="checkpoint flex items-center q-px-sm q-py-xs border-radius-sm"
-                  :class="[
-                    { done: !!parsed[cp.key] },
-                    cp.key === 'sklad' ? { error: skladError && !parsed[cp.key] } :
-                    (cp.key === 'category' ? { error: categoryError && !parsed[cp.key] } : {})
-                  ]"
-                >
-                  <q-icon :name="parsed[cp.key] ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'" :color="parsed[cp.key] ? 'primary' : 'grey-6'" size="18px" class="q-mr-sm" />
-                  <div class="ellipsis">
-                    <span class="text-weight-medium">{{ cp.title }}</span>
-                    <span v-if="parsed[cp.key]" class="text-grey-6">: {{ parsed[cp.key] }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex no-wrap q-mt-lg q-gap-md">
-                <q-btn
-                  color="grey"
-                  icon="mdi-refresh"
-                  push
-                  :disable="!isDirty"
-                  @click="reset"
-                />
-                <q-btn
-                  color="primary"
-                  class="full-width"
-                  :label="$t('common.confirm')"
-                  :disable="!isDirty || isSubmitting"
-                  :loading="isSubmitting"
-                  push
-                  @click="confirm"
-                />
+          <div v-if="showInfo" class="flex column q-gap-sm q-mt-md">
+            <div class="text-body2">{{ $t('voiceCreate.hint') }}</div>
+            <div class="text-caption text-grey-6">{{ $t('voiceCreate.sayKeys') }}</div>
+          </div>
+          
+          <div v-else ref="checkpointsRef" class="voice-create-checkpoints q-gutter-y-sm q-mt-md q-pb-xs">
+            <div
+              v-for="cp in visibleCheckpoints"
+              :key="cp.key"
+              class="checkpoint flex items-center q-px-sm q-py-xs border-radius-sm"
+              :class="[
+                { done: !!parsed[cp.key] },
+                cp.key === 'sklad' ? { error: skladError && !parsed[cp.key] } :
+                (cp.key === 'category' ? { error: categoryError && !parsed[cp.key] } : {})
+              ]"
+            >
+              <q-icon :name="parsed[cp.key] ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'" :color="parsed[cp.key] ? 'primary' : 'grey-6'" size="18px" class="q-mr-sm" />
+              <div class="ellipsis">
+                <span class="text-weight-medium">{{ cp.title }}</span>
+                <span v-if="parsed[cp.key]" class="text-grey-6">: {{ parsed[cp.key] }}</span>
               </div>
             </div>
-          </template>
-        </VoiceOverlay>
-      </div>
-    </transition>
-  </teleport>
+          </div>
+
+          <div class="flex no-wrap q-mt-lg q-gap-md">
+            <q-btn
+              color="grey"
+              icon="mdi-refresh"
+              push
+              :disable="!isDirty"
+              @click="reset"
+            />
+            <q-btn
+              color="primary"
+              class="full-width"
+              :label="$t('common.confirm')"
+              :disable="!isDirty || isSubmitting"
+              :loading="isSubmitting"
+              push
+              @click="confirm"
+            />
+          </div>
+        </div>
+      </template>
+    </VoiceOverlay>
+  </div>
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed, nextTick } from 'vue'
+import { ref, reactive, watch, computed, nextTick, onMounted } from 'vue'
 import Fuse from 'fuse.js'
 import { useI18n } from 'vue-i18n'
 import useCategories from 'src/modules/useCategories'
@@ -86,10 +81,6 @@ import VoiceOverlay from 'src/components/VoiceOverlay.vue'
 import { COLORS } from 'src/modules/useColors'
 
 const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
   product: {
     type: Object,
     default: () => ({}),
@@ -100,13 +91,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'apply'])
+const emit = defineEmits(['close', 'apply'])
 
 const { t, tm } = useI18n({ useScope: 'global' })
 const { sklads } = useSklads()
 const { allUserCategories } = useCategories()
 
-const showVoiceOverlay = ref(true)
 const isSubmitting = ref(false)
 const recognizedText = ref('')
 const showInfo = ref(false)
@@ -171,7 +161,7 @@ watch(isFirstFiveFilled, async (filled) => {
 })
 
 function close() {
-  emit('update:modelValue', false)
+  emit('close', false)
 }
 
 function reset() {
@@ -438,16 +428,10 @@ async function confirm() {
   }
 }
 
-watch(
-  () => props.modelValue,
-  (v) => {
-    if (v) {
-      showVoiceOverlay.value = true
-      recognizedText.value = ''
-      initializeFromProduct()
-    }
-  }
-)
+onMounted(() => {
+  recognizedText.value = ''
+  initializeFromProduct()
+})
 </script>
 
 <style scoped lang="scss">
