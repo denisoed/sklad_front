@@ -47,11 +47,11 @@ export default defineComponent({
       default: null
     },
   },
-  emits: ['update:model-value'],
-  setup(props) {
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
     const { modelValue } = toRefs(props)
 
-    const { inputRef, formattedValue, setValue } = useCurrencyInput({
+    const { inputRef, formattedValue, numberValue, setValue } = useCurrencyInput({
       currency: 'USD',
       currencyDisplay: 'hidden',
       locale: 'en',
@@ -66,6 +66,11 @@ export default defineComponent({
 
     watch(modelValue, (value) => {
       setValue(value)
+    })
+
+    watch(numberValue, (value) => {
+      // Emit numeric value for v-model binding upstream
+      emit('update:modelValue', value)
     })
 
     return {
