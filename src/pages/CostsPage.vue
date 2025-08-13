@@ -70,13 +70,11 @@
                 enterkeyhint="done"
               />
               <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">{{ $t('costs.howMuchSpent') }}</p>
-              <q-input
-                ref="inputRef"
+              <InputPrice
                 v-model="sum"
                 outlined
                 :placeholder="$t('costs.exampleAmount')"
                 class="q-mb-md full-width"
-                enterkeyhint="done"
               />
             </div>
             <q-separator class="full-width q-mb-md" />
@@ -127,7 +125,7 @@ import { computed, ref } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import useCosts from 'src/modules/useCosts'
 import useMoney from 'src/modules/useMoney'
-import { useCurrencyInput } from 'vue-currency-input'
+import InputPrice from 'src/components/InputPrice.vue'
 import TableComp from 'src/components/TableComp.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { DISPLAY_FORMAT } from 'src/config'
@@ -192,20 +190,12 @@ const dialog = ref(false)
 const description = ref(null)
 const sum = ref(null)
 
-const { inputRef, numberValue } = useCurrencyInput({
-  currency: 'USD',
-  currencyDisplay: 'hidden',
-  hideCurrencySymbolOnFocus: false,
-  hideGroupingSeparatorOnFocus: false,
-  hideNegligibleDecimalDigitsOnFocus: false
-})
-
 function openDialog() {
   dialog.value = true
 }
 
 async function save() {
-  await createCost(description.value, numberValue.value)
+  await createCost(description.value, sum.value)
   if (!errorCost.value) {
     dialog.value = false
     costsRefetch()
