@@ -70,32 +70,44 @@ export default defineComponent({
 
     function parseNumber(val) {
       if (val === null || val === undefined || val === '') return null
-      const normalized = String(val)
-        .replace(/\s+/g, '')
-        .replace(',', '.')
-        .replace(/[^\d.]/g, '')
-      if (normalized === '' || normalized === '.') return null
-      const parts = normalized.split('.')
-      const sanitized = parts.length > 2
-        ? `${parts[0]}.${parts.slice(1).join('')}`
-        : normalized
-      const num = parseFloat(sanitized)
+      const source = String(val).replace(/\s+/g, '').replace(/'/g, '')
+      const cleaned = source.replace(/[^\d.,-]/g, '')
+      const lastDot = cleaned.lastIndexOf('.')
+      const lastComma = cleaned.lastIndexOf(',')
+      const sepIndex = Math.max(lastDot, lastComma)
+      const digitsOnly = cleaned.replace(/[^\d-]/g, '')
+      if (digitsOnly === '' || digitsOnly === '-') return null
+      if (sepIndex === -1) {
+        const num = parseFloat(digitsOnly)
+        return Number.isNaN(num) ? null : num
+      }
+      const rightPart = cleaned.slice(sepIndex + 1)
+      const fractionDigits = rightPart.replace(/\D/g, '')
+      const fracLen = fractionDigits.length
+      if (fracLen === 0) {
+        const num = parseFloat(digitsOnly)
+        return Number.isNaN(num) ? null : num
+      }
+      const intLen = digitsOnly.length - fracLen
+      const rebuilt = intLen > 0
+        ? `${digitsOnly.slice(0, intLen)}.${digitsOnly.slice(intLen)}`
+        : `0.${digitsOnly}`
+      const num = parseFloat(rebuilt)
       return Number.isNaN(num) ? null : num
     }
 
     function onInput(val) {
-      // sanitize typing (allow digits and one decimal separator)
+      // allow digits and separators; keep as typed and parse robustly
       const text = String(val || '')
-        .replace(/,/g, '.')
-        .replace(/[^\d.]/g, '')
-        .replace(/(\..*)\./g, '$1')
+        .replace(/\s+/g, '')
+        .replace(/[^\d.,-]/g, '')
       displayValue.value = text
       emit('update:modelValue', parseNumber(text))
     }
 
     function onBlur() {
       isFocused.value = false
-      displayValue.value = formatWithGrouping(displayValue.value)
+      displayValue.value = formatWithGrouping(modelValue.value)
     }
 
     function onFocus() {
