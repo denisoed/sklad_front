@@ -18,7 +18,7 @@
       <span v-else-if="!hasStartedRecording" class="text-bold">
         {{ $t('voiceOverlay.pressButtonToStart') }}
       </span>
-      <span v-else-if="isUserPressingButton" class="text-bold">{{ $t('voiceOverlay.speakNow') }}</span>
+      <span v-else-if="isUserPressingButton && !recognizedText" class="text-bold">{{ $t('voiceOverlay.speakNow') }}</span>
       <span v-else-if="recognizedText" class="text-bold">{{ recognizedText }}</span>
       <span v-else class="text-bold">{{ $t('voiceOverlay.pressButtonToStart') }}</span>
     </div>
