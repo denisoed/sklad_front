@@ -152,7 +152,7 @@ function onAdditionalPriceNameChange(index, value) {
   emitChange()
 }
 
-function onAdditionalPriceValueChange(index, value) {
+function onAdditionalPriceValueChange(index, value) {  
   const newPrices = [...localAdditionalPrices.value]
   newPrices[index] = { ...newPrices[index], price: value }
   localAdditionalPrices.value = newPrices

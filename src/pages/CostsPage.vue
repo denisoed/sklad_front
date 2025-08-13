@@ -127,7 +127,6 @@ import { computed, ref } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
 import useCosts from 'src/modules/useCosts'
 import useMoney from 'src/modules/useMoney'
-import { useCurrencyInput } from 'vue-currency-input'
 import TableComp from 'src/components/TableComp.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { DISPLAY_FORMAT } from 'src/config'
@@ -192,20 +191,27 @@ const dialog = ref(false)
 const description = ref(null)
 const sum = ref(null)
 
-const { inputRef, numberValue } = useCurrencyInput({
-  currency: 'USD',
-  currencyDisplay: 'hidden',
-  hideCurrencySymbolOnFocus: false,
-  hideGroupingSeparatorOnFocus: false,
-  hideNegligibleDecimalDigitsOnFocus: false
-})
+function parseNumber(val) {
+  if (val === null || val === undefined || val === '') return null
+  const normalized = String(val)
+    .replace(/\s+/g, '')
+    .replace(',', '.')
+    .replace(/[^\d.]/g, '')
+  if (normalized === '' || normalized === '.') return null
+  const parts = normalized.split('.')
+  const sanitized = parts.length > 2
+    ? `${parts[0]}.${parts.slice(1).join('')}`
+    : normalized
+  const num = parseFloat(sanitized)
+  return Number.isNaN(num) ? null : num
+}
 
 function openDialog() {
   dialog.value = true
 }
 
 async function save() {
-  await createCost(description.value, numberValue.value)
+  await createCost(description.value, parseNumber(sum.value))
   if (!errorCost.value) {
     dialog.value = false
     costsRefetch()

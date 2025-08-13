@@ -56,7 +56,8 @@
               @click="reset"
             />
             <q-btn
-              color="primary"
+              color="white"
+              text-color="black"
               class="full-width"
               :label="$t('common.confirm')"
               :disable="!isDirty || isSubmitting"
