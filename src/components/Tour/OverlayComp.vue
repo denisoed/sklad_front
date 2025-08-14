@@ -102,14 +102,13 @@ function onAcknowledge() {
 
 .tour-panel {
   position: absolute;
-  backdrop-filter: blur(4px);
-  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(5px);
+  background: transparent !important;
 }
 
 .tour-hole {
   position: absolute;
   border-radius: 8px;
-  outline: 2px solid rgba(255,255,255,0.8);
   pointer-events: none;
 }
 
