@@ -225,6 +225,7 @@ export default ({
   warehouse: {
     title: 'Склад',
     create: 'Создать склад',
+    addParticipant: 'Добавить участника',
     lowStockProducts: 'Товары, которых мало',
     warehouseProducts: 'Товары на складе',
     warehouseActivity: 'Активность на складе',
@@ -271,7 +272,6 @@ export default ({
     manageSizesDescription: 'Создавайте и управляйте списками размеров для разных типов товаров',
     saveChanges: 'Сохранить изменения',
     employee: {
-      noPeopleAdded: 'Люди не добавлены',
       removeEmployee: 'Удалить сотрудника',
       removeDescription: 'После удаления человека из склада, он больше не будет иметь доступ к складу.',
       hint: 'Сотрудник, к которому будут присвоины полномочия',

@@ -225,6 +225,7 @@ export default ({
   warehouse: {
     title: 'Warehouse',
     create: 'Create warehouse',
+    addParticipant: 'Add participant',
     lowStockProducts: 'Low stock products',
     warehouseProducts: 'Products in warehouse',
     warehouseActivity: 'Warehouse activity',
@@ -271,7 +272,6 @@ export default ({
     manageSizesDescription: 'Create and manage size lists for different product types',
     saveChanges: 'Save changes',
     employee: {
-      noPeopleAdded: 'No people added',
       removeEmployee: 'Remove employee',
       removeDescription: 'After removing a person from the warehouse, they will no longer have access.',
       hint: 'Employee who will be assigned permissions',

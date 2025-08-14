@@ -138,7 +138,7 @@
           </TheDropdown>
         </q-tab-panel>
         <q-tab-panel name="accesses" class="q-px-sm">
-          <Employee
+          <EmployeesTab
             :users="users"
             class="q-mt-md full-width"
           />
@@ -185,7 +185,7 @@ import {
 import { useMutation } from '@vue/apollo-composable'
 import PageTitle from 'src/components/PageTitle.vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
-import Employee from 'src/components/Settings/Employee'
+import EmployeesTab from 'src/components/Settings/EmployeesTab.vue'
 import SettingsPrint from 'src/components/Settings/Tabs/ThePrint.vue'
 import SettingsGoal from 'src/components/Settings/Tabs/TheGoal.vue'
 import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'

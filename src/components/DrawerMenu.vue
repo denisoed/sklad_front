@@ -144,7 +144,7 @@ export default defineComponent({
         label: $t('mainSettings.userTab.logout'),
         separator: false,
         disable: false,
-        visible: !window?.Telegram?.WebApp?.initData,
+        visible: false,
         action: changeAccount
       }
     ])

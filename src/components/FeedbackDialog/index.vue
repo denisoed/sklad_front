@@ -25,7 +25,7 @@
                 </div>
   
                 <div class="feedback_popup-body" :class="{ selectedRating }">
-                  <div class="feedback_popup-body_buttons flex q-gap-md">
+                  <div class="feedback_popup-body_buttons flex q-gap-md q-py-xs">
                     <q-btn
                       v-for="(b, i) in BUTTONS"
                       :key="i"
