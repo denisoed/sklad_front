@@ -11,7 +11,7 @@ export const CREATE_NEW_BUTTON = 'CREATE_NEW_BUTTON'
 // Add your keys here to keep texts in one place (can be moved to i18n later)
 export const TOUR_HINTS = {
   [CREATE_NEW_BUTTON]: {
-    text: '<div class="alert-box">Эта кнопка позволяет создать склад, категорию или товар из любого места приложения.</div><br> <span>Попробуйте создать склад</span>',
+    text: '<div class="alert-box">Эта кнопка позволяет создать склад, категорию или товар из любого места в приложении.</div><br> <span>Попробуйте...</span>',
   },
 }
 
