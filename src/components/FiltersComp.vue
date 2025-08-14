@@ -182,7 +182,7 @@ function refresh() {
 <style lang="scss" scoped>
 .filters {
   position: sticky;
-  top: 10px;
+  top: 16px;
   z-index: 10;
 
   .alert_dot {
