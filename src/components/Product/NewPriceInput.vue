@@ -65,7 +65,8 @@
         <q-btn
           icon="mdi-plus"
           :label="$t('product.addPrice')"
-          color="primary"
+          color="white"
+          text-color="black"
           push
           class="full-width"
           @click="addAdditionalPrice"

@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    more: 'More',
     ok: 'OK',
     clear: 'Clear',
     uploadPhoto: 'Upload photo',
@@ -375,6 +376,15 @@ export default ({
   },
   mainSettings: {
     title: 'Main settings',
+    experimentalTab: {
+      title: 'Labs',
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+      voiceCreate: {
+        title: 'Voice input for product',
+        description: 'Allows you to <b>create and edit</b> a product by voice. This feature is experimental and may be unstable.',
+      },
+    },
     userTab: {
       title: 'Profile',
       autoRefill: 'Auto top-up',

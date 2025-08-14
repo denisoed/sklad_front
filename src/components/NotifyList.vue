@@ -5,47 +5,53 @@
       <div v-if="hasNewHistory" class="notify-list_alert" />
     </q-btn>
     <q-dialog v-model="dialog" position="right" full-height>
-      <SwipeToClose direction="right" @on-close="dialog = false">
-        <q-card class="notify-list_wrap" style="width: 300px;">
-          <q-card-section class="flex items-center q-pb-none">
-            <div class="text-subtitle1">{{ $t('common.notifications') }}</div>
-            <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup />
-          </q-card-section>
-          <q-card-section v-if="historyRows?.length" class="notify-list_items">
-            <q-virtual-scroll
-              v-bind="virtualScrollProps"
-              class="notify-list_virtual-scroll"
+      <q-card class="notify-list_wrap" style="width: 300px;">
+        <q-card-section class="flex items-center q-pb-none">
+          <div class="text-subtitle1">{{ $t('common.notifications') }}</div>
+          <q-btn icon="mdi-chevron-right" class="q-ml-auto" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section v-if="historyRows?.length" class="notify-list_items">
+          <div class="notify-list_list q-px-md">
+            <router-link
+              v-for="h in visibleRows"
+              :key="h.virtualKey"
+              class="notify-list_item block-bg q-pa-md"
+              :style="getItemStyle(h)"
+              :class="{ 'notify-list_item--old': !h.isNew }"
+              :to="`/product/${h.productId}`"
             >
-              <template v-slot="{ item: h }">
-                <router-link
-                  :key="h.virtualKey"
-                  class="notify-list_item block-bg q-pa-md"
-                  :style="getItemStyle(h)"
-                  :class="{ 'notify-list_item--old': !h.isNew }"
-                  :to="`/product/${h.productId}`"
-                >
-                  <div v-if="h.isNew" class="notify-list_alert" />
-                  <div
-                    class="notify-list_item-type absolute-top-right q-ma-sm text-black border-radius-sm q-px-xs q-py-none"
-                    :style="{ backgroundColor: h.actionColor }"
-                  >{{ $t(`history.actions.${h.action}`) }}</div>
-                  <div class="notify-list_item-sklad text-grey q-mb-xs">{{ $t('common.warehouse') }}: <b>{{ h.skladName }}</b></div>
-                  <div class="notify-list_item-sklad text-grey q-mb-xs">ID: {{ h.productId ? `#${h.productId}` : '-' }}</div>
-                  <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
-                  <div class="flex justify-between items-center">
-                    <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
-                    <div class="notify-list_item-date text-grey-5 q-ml-auto">{{ h.formattedTime }}</div>
-                  </div>
-                </router-link>
-              </template>
-            </q-virtual-scroll>
-          </q-card-section>
-          <q-card-section v-else class="flex column items-center q-pt-xl">
-            <q-icon name="mdi-history" size="md" color="grey" />
-            <div class="text-grey q-mt-sm">{{ $t('common.noNewNotifications') }}</div>
-          </q-card-section>
-        </q-card>
-      </SwipeToClose>
+              <div v-if="h.isNew" class="notify-list_alert" />
+              <div
+                class="notify-list_item-type absolute-top-right q-ma-sm text-black border-radius-sm q-px-xs q-py-none"
+                :style="{ backgroundColor: h.actionColor }"
+              >{{ $t(`history.actions.${h.action}`) }}</div>
+              <div class="notify-list_item-sklad text-grey q-mb-xs">{{ $t('common.warehouse') }}: <b>{{ h.skladName }}</b></div>
+              <div class="notify-list_item-sklad text-grey q-mb-xs">ID: {{ h.productId ? `#${h.productId}` : '-' }}</div>
+              <div class="notify-list_item-body q-mb-xs">{{ h.description }}</div>
+              <div class="flex justify-between items-center">
+                <div class="notify-list_item-author text-grey-5">{{ h.fullname }}</div>
+                <div class="notify-list_item-date text-grey-5 q-ml-auto">{{ h.formattedTime }}</div>
+              </div>
+            </router-link>
+
+            <div v-if="hasMore" class="q-my-md flex justify-center">
+              <q-btn
+                color="primary"
+                push
+                dense
+                class="full-width"
+                @click="loadMore"
+              >
+                {{ $t('common.more') }}
+              </q-btn>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section v-else class="flex column items-center q-pt-xl">
+          <q-icon name="mdi-history" size="md" color="grey" />
+          <div class="text-grey q-mt-sm">{{ $t('common.noNewNotifications') }}</div>
+        </q-card-section>
+      </q-card>
     </q-dialog>
   </div>
 </template>
@@ -58,7 +64,6 @@ import {
 } from 'vue'
 import useHistory from 'src/modules/useHistory'
 import useDate from 'src/modules/useDate'
-import SwipeToClose from 'src/components/SwipeToClose.vue'
 
 const props = defineProps({
   history: {
@@ -71,36 +76,35 @@ const { setViewedHistory, getDescription } = useHistory()
 const { formatTimeAgo } = useDate()
 const dialog = ref(false)
 
-// Memoized history processing with pre-computed values for virtual scroll
+// Memoized history processing
 const historyRows = computed(() => {
   return props.history.map(h => ({
     ...h,
     description: getDescription(h.action, h.json),
     formattedTime: formatTimeAgo(h.created_at),
-    // Pre-compute style to avoid inline style calculations during render
     styleKey: `${h.actionColor}2A`,
-    // Ensure unique key for virtual scroll
     virtualKey: `${h.id || h.created_at || Math.random()}`
   }));
 })
 
 const hasNewHistory = computed(() => historyRows.value.some(h => h.isNew))
 
-// Memoized style function to avoid repeated calculations
 const getItemStyle = (item) => {
   return {
     borderColor: item.styleKey
   }
 }
 
-// Optimize virtual scroll performance
-const virtualScrollProps = computed(() => ({
-  items: historyRows.value,
-  itemSize: 120,
-  virtualScrollItemSize: 120,
-  virtualScrollStickySizeStart: 0,
-  virtualScrollStickySizeEnd: 0
-}))
+// Pagination state
+const page = ref(1)
+const pageSize = ref(20)
+
+const visibleRows = computed(() => historyRows.value.slice(0, page.value * pageSize.value))
+const hasMore = computed(() => visibleRows.value.length < historyRows.value.length)
+
+const loadMore = () => {
+  page.value += 1
+}
 
 watch(dialog, (val) => {
   if (val) {
@@ -133,24 +137,11 @@ watch(dialog, (val) => {
   }
 
   &_items {
-    height: 85vh;
-    overflow: hidden; // Changed from auto to hidden for virtual scroll
-    // Optimize scrolling performance
+    max-height: 85vh;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    // Hardware acceleration for smooth scrolling
-    transform: translateZ(0);
-    will-change: scroll-position;
-    // Optimize for virtual scrolling
-    contain: layout style paint;
-  }
-
-  &_virtual-scroll {
-    height: 100%;
-    // Ensure proper height for virtual scroll container
-    .q-virtual-scroll__content {
-      padding: 8px 0; // Add some padding for better visual spacing
-    }
+    padding: 8px 0;
   }
 
   &_item {

@@ -8,84 +8,122 @@
       class="mini-tabs_card"
       :class="{ 'mini-tabs_card--active': sId === s.id }"
       v-ripple
-      @click="changeTab(s.id)"
+      @click="onCardClick(s.id)"
+      @mousedown="onHoldStart(s.id)"
+      @mouseup="onHoldEnd"
+      @mouseleave="onHoldEnd"
+      @touchstart.passive="onHoldStart(s.id)"
+      @touchend="onHoldEnd"
+      @touchcancel="onHoldEnd"
+      @contextmenu.prevent
     />
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   watch,
   toRefs,
-  onMounted
+  onMounted,
+  onBeforeUnmount
 } from 'vue'
 import SmallCard from 'src/components/UI/SmallCard.vue'
 
-export default defineComponent({
-  name: 'MiniTabs',
-  components: {
-    SmallCard,
+const props = defineProps({
+  list: {
+    type: Array,
+    default: () => []
   },
-  props: {
-    list: {
-      type: Array,
-      default: () => []
-    },
-    selectedId: {
-      type: Number,
-      default: null
-    },
-    scrollToActiveTab: {
-      type: Boolean,
-      default: false
-    }
+  selectedId: {
+    type: Number,
+    default: null
   },
-  emits: ['on-change'],
-  setup(props, { emit }) {
-    const { selectedId } = toRefs(props);
-    const sId = ref(selectedId.value);
-    const containerRef = ref(null);
-
-    function changeTab(id) {
-      sId.value = id;
-      emit('on-change', id);
-    }
-
-    function scrollToActiveTab() {
-      if (!containerRef.value) return;
-      
-      const activeTab = containerRef.value.querySelector('.mini-tabs_card--active');
-      if (activeTab) {
-        const containerRect = containerRef.value.getBoundingClientRect();
-        const tabRect = activeTab.getBoundingClientRect();
-        const scrollLeft = activeTab.offsetLeft - (containerRect.width / 2) + (tabRect.width / 2);
-        containerRef.value.scrollTo({
-          left: scrollLeft,
-          behavior: 'smooth'
-        });
-      }
-    }
-
-    watch(selectedId, (id) => {
-      sId.value = id;
-    })
-
-    onMounted(() => {
-      if (props.scrollToActiveTab) {
-        setTimeout(() => {
-          scrollToActiveTab();
-        }, 1000);
-      }
-    })
-
-    return {
-      sId,
-      changeTab,
-      containerRef
-    }
+  scrollToActiveTab: {
+    type: Boolean,
+    default: false
   }
+})
+const emit = defineEmits(['on-change', 'long-press'])
+
+const { selectedId } = toRefs(props);
+const sId = ref(selectedId.value);
+const containerRef = ref(null);
+const holdTimerId = ref(null);
+const isHolding = ref(false);
+const suppressClickId = ref(null);
+const HOLD_DELAY_MS = 600;
+
+function changeTab(id) {
+  sId.value = id;
+  emit('on-change', id);
+}
+
+function onLongPress(id) {
+  emit('long-press', id);
+}
+
+function clearHoldTimer() {
+  if (holdTimerId.value) {
+    clearTimeout(holdTimerId.value);
+    holdTimerId.value = null;
+  }
+  isHolding.value = false;
+}
+
+function onHoldStart(id) {
+  clearHoldTimer();
+  isHolding.value = true;
+  holdTimerId.value = setTimeout(() => {
+    if (isHolding.value) {
+      suppressClickId.value = id;
+      onLongPress(id);
+    }
+    clearHoldTimer();
+  }, HOLD_DELAY_MS);
+}
+
+function onHoldEnd() {
+  clearHoldTimer();
+}
+
+function onCardClick(id) {
+  if (suppressClickId.value === id) {
+    suppressClickId.value = null;
+    return;
+  }
+  changeTab(id);
+}
+
+function scrollToActiveTab() {
+  if (!containerRef.value) return;
+  
+  const activeTab = containerRef.value.querySelector('.mini-tabs_card--active');
+  if (activeTab) {
+    const containerRect = containerRef.value.getBoundingClientRect();
+    const tabRect = activeTab.getBoundingClientRect();
+    const scrollLeft = activeTab.offsetLeft - (containerRect.width / 2) + (tabRect.width / 2);
+    containerRef.value.scrollTo({
+      left: scrollLeft,
+      behavior: 'smooth'
+    });
+  }
+}
+
+watch(selectedId, (id) => {
+  sId.value = id;
+})
+
+onMounted(() => {
+  if (props.scrollToActiveTab) {
+    setTimeout(() => {
+      scrollToActiveTab();
+    }, 1000);
+  }
+})
+
+onBeforeUnmount(() => {
+  clearHoldTimer();
 })
 </script>
 

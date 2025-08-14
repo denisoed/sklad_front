@@ -50,6 +50,7 @@ export const I18N_LOCALE = 'sklad_i18n_locale'
 export const IS_DARK_MODE = 'sklad_is_dark_mode'
 export const SKLAD_PWA_INSTALLED = 'sklad_pwa_installed'
 export const ACCENT_COLOR = 'sklad_accent_color'
+export const FEATURE_FLAGS = 'sklad_feature_flags'
 
 // Telegram
 export const DEV_TG_INIT_DATA = process.env.DEV_TG_INIT_DATA

@@ -15,6 +15,7 @@
         scroll-to-active-tab
         class="q-mb-md"
         @on-change="onChangeSklad"
+        @long-press="onLongPressSklad"
       />
 
       <p class="q-mb-sm text-subtitle2">{{ $t('pages.categoriesLabel') }}</p>
@@ -200,7 +201,7 @@ const countModalVisible = ref(false)
 const sizesModalVisible = ref(false)
 const selectedProduct = ref(null)
 
-const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
+const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
 
 function initFiltersFromUrl() {
   try {
@@ -372,6 +373,10 @@ function onOpenSizesModal(product) {
 
 function toggleViewMode() {
   viewMode.value = viewMode.value === VIEW_GRID ? VIEW_TABLE : VIEW_GRID
+}
+
+function onLongPressSklad(id) {
+  router.push(`/sklad/${id}`)
 }
 
 onBeforeMount(() => {

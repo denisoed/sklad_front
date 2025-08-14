@@ -45,12 +45,14 @@ import PageTitle from 'src/components/PageTitle.vue'
 import SizesTab from 'src/components/MainSettings/Sizes/SizesTab.vue'
 import UserTab from 'src/components/MainSettings/UserTab.vue'
 import AppearanceTab from 'src/components/MainSettings/AppearanceTab.vue'
+import ExperimentalTab from 'src/components/MainSettings/ExperimentalTab.vue'
 import BleIndex from 'src/components/Ble/index.vue'
 import { useI18n } from 'vue-i18n'
 
 const TAB_USER = 'user'
 const TAB_SIZES = 'sizes'
 const TAB_APPEARANCE = 'appearance'
+const TAB_EXPERIMENTAL = 'experimental'
 const TAB_PRINT = 'print'
 
 const TABS = [
@@ -73,6 +75,12 @@ const TABS = [
     hide: false
   },
   {
+    name: TAB_EXPERIMENTAL,
+    label: 'mainSettings.experimentalTab.title',
+    component: ExperimentalTab,
+    hide: false
+  },
+  {
     name: TAB_PRINT,
     label: 'mainSettings.printTab.title',
     component: BleIndex,
@@ -87,7 +95,8 @@ export default defineComponent({
     BleIndex,
     SizesTab,
     UserTab,
-    AppearanceTab
+    AppearanceTab,
+    ExperimentalTab
   },
   setup() {
     const { query } = useRoute()

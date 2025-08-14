@@ -6,7 +6,8 @@
     />
     <div class="flex no-wrap q-gap-sm">
       <q-btn
-        color="primary"
+        color="white"
+        text-color="black"
         push
         @click="minus"
         :disable="count <= min"
@@ -14,7 +15,7 @@
       >
         <q-icon
           name="mdi-minus"
-          size="16px"
+          size="18px"
         />
       </q-btn>
       <q-input
@@ -33,7 +34,8 @@
         @keyup="validate"
       />
       <q-btn
-        color="primary"
+        color="white"
+        text-color="black"
         push
         @click="plus"
         :disable="count >= max"
@@ -41,7 +43,7 @@
       >
         <q-icon
           name="mdi-plus"
-          size="16px"
+          size="18px"
         />
       </q-btn>
     </div>
