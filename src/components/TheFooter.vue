@@ -14,6 +14,7 @@
       size="lg"
       round
       dense
+      v-tour="CREATE_NEW_BUTTON"
       @click="toggleMenu"
       :class="{ 'rotate-45': isMenuOpen }"
     />
@@ -81,6 +82,7 @@ import useEventBus from 'src/modules/useEventBus'
 import { MANAGE_SKLAD_DIALOG, MANAGE_CATEGORY_DIALOG } from 'src/config/dialogs'
 import useDialog from 'src/modules/useDialog'
 import { useI18n } from 'vue-i18n'
+import { CREATE_NEW_BUTTON } from 'src/config/tour'
 
 defineOptions({
   name: 'TheFooter'
