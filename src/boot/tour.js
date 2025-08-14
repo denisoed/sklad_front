@@ -38,11 +38,19 @@ export default boot(async ({ app }) => {
     const update = () => { state.rect = getElementRect(el, cfg.padding) }
     window.addEventListener('scroll', update, { passive: true })
     window.addEventListener('resize', update)
+    // Close and persist when user clicks the highlighted element
+    const onTargetClick = () => {
+      closeAndPersist()
+    }
+    el.addEventListener('click', onTargetClick, { once: true })
     const stop = () => {
       window.removeEventListener('scroll', update)
       window.removeEventListener('resize', update)
     }
-    const unwatch = () => { stop() }
+    const unwatch = () => {
+      stop()
+      el.removeEventListener('click', onTargetClick)
+    }
     currentCleanup = unwatch
     return unwatch
   }

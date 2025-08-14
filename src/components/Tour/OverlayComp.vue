@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <transition name="fade">
-      <div v-if="visible" class="tour-overlay" @click.stop>
+      <div v-if="visible" class="tour-overlay">
         <!-- 4 panels to blur everything around the hole -->
         <div class="tour-panel" :style="topPanel"></div>
         <div class="tour-panel" :style="leftPanel"></div>
@@ -10,7 +10,7 @@
         <div class="tour-hole" :style="holeStyle"></div>
         <div class="tour-popover block-bg flex column q-gap-md" :style="popoverStyle">
           <button class="tour-close" @click="onAcknowledge" aria-label="Close" title="Закрыть">×</button>
-          <div class="tour-text">{{ text }}</div>
+          <div class="tour-text" v-html="text" />
         </div>
       </div>
     </transition>
@@ -102,13 +102,16 @@ function onAcknowledge() {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  pointer-events: auto;
+  // Allow clicks to pass through the hole area
+  pointer-events: none;
 }
 
 .tour-panel {
   position: absolute;
   backdrop-filter: blur(5px);
   background: transparent !important;
+  // Block clicks on dimmed areas
+  pointer-events: auto;
 }
 
 .tour-hole {
@@ -125,6 +128,8 @@ function onAcknowledge() {
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  // Popover should be interactive
+  pointer-events: auto;
 }
 
 .tour-text {
