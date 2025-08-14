@@ -218,7 +218,7 @@ const modalCountToBucket = ref(false)
 const modalSizesToBucket = ref(false)
 
 // View mode toggle (grid/table)
-const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_GRID)
+const viewMode = ref(localStorage.getItem('bucket-view-mode') || VIEW_TABLE)
 
 function removeItemOnce(arr, value) {
   const index = arr.map(s => s.size).indexOf(value.size)

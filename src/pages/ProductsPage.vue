@@ -201,7 +201,7 @@ const countModalVisible = ref(false)
 const sizesModalVisible = ref(false)
 const selectedProduct = ref(null)
 
-const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_GRID)
+const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
 
 function initFiltersFromUrl() {
   try {

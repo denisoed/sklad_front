@@ -25,7 +25,8 @@ import {
   ref,
   watch,
   toRefs,
-  onMounted
+  onMounted,
+  onBeforeUnmount
 } from 'vue'
 import SmallCard from 'src/components/UI/SmallCard.vue'
 
@@ -50,7 +51,7 @@ const sId = ref(selectedId.value);
 const containerRef = ref(null);
 const holdTimerId = ref(null);
 const isHolding = ref(false);
-const suppressNextClick = ref(false);
+const suppressClickId = ref(null);
 const HOLD_DELAY_MS = 600;
 
 function changeTab(id) {
@@ -75,7 +76,7 @@ function onHoldStart(id) {
   isHolding.value = true;
   holdTimerId.value = setTimeout(() => {
     if (isHolding.value) {
-      suppressNextClick.value = true;
+      suppressClickId.value = id;
       onLongPress(id);
     }
     clearHoldTimer();
@@ -87,8 +88,8 @@ function onHoldEnd() {
 }
 
 function onCardClick(id) {
-  if (suppressNextClick.value) {
-    suppressNextClick.value = false;
+  if (suppressClickId.value === id) {
+    suppressClickId.value = null;
     return;
   }
   changeTab(id);
@@ -119,6 +120,10 @@ onMounted(() => {
       scrollToActiveTab();
     }, 1000);
   }
+})
+
+onBeforeUnmount(() => {
+  clearHoldTimer();
 })
 </script>
 
