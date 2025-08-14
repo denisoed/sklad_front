@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    more: 'Көп',
     ok: 'OK',
     clear: 'Тазалоо',
     uploadPhoto: 'Сүрөт жүктөө',

@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    more: 'More',
     ok: 'OK',
     clear: 'Clear',
     uploadPhoto: 'Upload photo',
