@@ -225,6 +225,7 @@ export default ({
   warehouse: {
     title: 'Склад',
     create: 'Склад ачуу',
+    addParticipant: 'Катышуучу кошуу',
     lowStockProducts: 'Аз калган товарлар',
     warehouseProducts: 'Склад товарлары',
     warehouseActivity: 'Склад кыймылы',
@@ -271,7 +272,6 @@ export default ({
     manageSizesDescription: 'Ар түрдүү товар үчүн өлчөм тизмелерин түзүңүз жана башкарыңыз',
     saveChanges: 'Өзгөртүүлөрдү сактоо',
     employee: {
-      noPeopleAdded: 'Адамдар кошулган эмес',
       removeEmployee: 'Кызматкерди өчүрүү',
       removeDescription: 'Өчүрүлгөн кызматкер складына кире албайт.',
       hint: 'Уруксат берилген кызматкер',
