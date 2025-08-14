@@ -344,8 +344,8 @@ function toSell() {
       push: true,
     },
     cancel: {
-      color: 'white',
-      textColor: 'black', 
+      color: 'grey',
+      textColor: 'white', 
       label: $t('common.cancel'),
       push: true
     }
