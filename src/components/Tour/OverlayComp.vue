@@ -9,8 +9,8 @@
         <div class="tour-panel" :style="bottomPanel"></div>
         <div class="tour-hole" :style="holeStyle"></div>
         <div class="tour-popover block-bg flex column q-gap-md" :style="popoverStyle">
+          <button class="tour-close" @click="onAcknowledge" aria-label="Close" title="Закрыть">×</button>
           <div class="tour-text">{{ text }}</div>
-          <button class="tour-btn" @click="onAcknowledge">Понял</button>
         </div>
       </div>
     </transition>
@@ -72,18 +72,23 @@ const popoverStyle = computed(() => {
   const belowSpace = vh - (props.targetRect.y + props.targetRect.height)
   const below = belowSpace >= 120
 
+  const placeAbove = preferred === 'top' || (preferred === 'auto' && above && !below)
+
   let top = 0
   let left = Math.min(Math.max(12, midX - 160), vw - 12 - 320)
 
-  if (preferred === 'top' || (preferred === 'auto' && above && !below)) {
+  if (placeAbove) {
+    // Place popover above the target; account for its own height via translateY(-100%)
     top = Math.max(12, props.targetRect.y - margin)
   } else {
+    // Place popover below the target
     top = Math.min(vh - 12, props.targetRect.y + props.targetRect.height + margin)
   }
 
   return {
     top: `${top}px`,
     left: `${left}px`,
+    transform: placeAbove ? 'translateY(-100%)' : 'translateY(0)'
   }
 })
 
@@ -116,7 +121,6 @@ function onAcknowledge() {
   position: absolute;
   width: 320px;
   max-width: calc(100vw - 24px);
-  transform: translateY(0);
   color: #fff;
   border-radius: 16px;
   padding: 16px;
@@ -124,26 +128,33 @@ function onAcknowledge() {
 }
 
 .tour-text {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.4;
 }
 
 .fade-enter-active, .fade-leave-active { transition: opacity .15s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 
-.tour-btn {
+.tour-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 25px;
+  height: 25px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
-  background: var(--q-primary, #027be3);
-  color: #fff;
+  background: transparent;
+  color: inherit;
   border: none;
-  border-radius: 8px;
+  border-radius: 100%;
   cursor: pointer;
-  font-weight: 600;
+  font-size: 20px;
+  line-height: 1;
+  background: red;
 }
-.tour-btn:active { transform: translateY(1px); }
+.tour-close:hover { background: rgba(255, 255, 255, 0.08); }
+.tour-close:active { transform: translateY(1px); }
 </style>
 
 

@@ -11,7 +11,7 @@ export const CREATE_NEW_BUTTON = 'CREATE_NEW_BUTTON'
 // Add your keys here to keep texts in one place (can be moved to i18n later)
 export const TOUR_HINTS = {
   [CREATE_NEW_BUTTON]: {
-    text: 'Кнопка позволяет быстро создать склад, категорию или товар',
+    text: 'Эта кнопка позволяет быстро создать склад, категорию или товар',
   },
 }
 
