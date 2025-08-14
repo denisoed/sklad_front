@@ -215,6 +215,13 @@ h6 {
   text-overflow: ellipsis;
 }
 
+.alert-box {
+  background-color: rgba(var(--q-warning-rgb), 0.1);
+  padding: 8px 12px;
+  border: 1px dashed var(--q-warning);
+  border-radius: var(--border-radius-sm);
+}
+
 .body--dark {
   @include gradientBg();
   

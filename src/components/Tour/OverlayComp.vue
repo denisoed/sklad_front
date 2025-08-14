@@ -135,6 +135,7 @@ function onAcknowledge() {
 .tour-text {
   font-size: 14px;
   line-height: 1.4;
+  padding: 2px;
 }
 
 .fade-enter-active, .fade-leave-active { transition: opacity .15s ease; }
