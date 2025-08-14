@@ -22,7 +22,7 @@
         </div>
         <q-table
           v-if="users?.length"
-          :rows="users"
+          :rows="rows"
           :columns="columns"
           row-key="id"
           flat
@@ -116,7 +116,7 @@ const columns = computed(() => {
   return [
     {
       name: 'name',
-      label: $t('common.name'),
+      label: $t('mainSettings.userTab.user.fullnameTitle'),
       align: 'left',
       field: 'name'
     },
