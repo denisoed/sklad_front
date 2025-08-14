@@ -376,6 +376,15 @@ export default ({
   },
   mainSettings: {
     title: 'Основные Настройки',
+    experimentalTab: {
+      title: 'Эксперименты',
+      enabled: 'Включено',
+      disabled: 'Выключено',
+      voiceCreate: {
+        title: 'Голосовой ввод товара',
+        description: 'Позволяет <b>создавать и редактировать</b> продукт голосом. Функция экспериментальная и может работать нестабильно.',
+      },
+    },
     userTab: {
       title: 'Профиль',
       autoRefill: 'Автопополнение',

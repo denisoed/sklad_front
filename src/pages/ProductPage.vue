@@ -333,14 +333,15 @@
               :loading="uploadImageLoading || createProductLoading || updateProductLoading"
               tabindex="8"
             />
-            <q-btn
-              class="q-ml-auto"
-              color="primary"
-              icon="mdi-microphone"
-              push
-              round
-              @click="voiceCreateOpen = true"
-            />
+          <q-btn
+            v-if="isVoiceFeatureEnabled"
+            class="q-ml-auto"
+            color="primary"
+            icon="mdi-microphone"
+            push
+            round
+            @click="voiceCreateOpen = true"
+          />
           </div>
         </div>
       </q-form>
@@ -349,7 +350,7 @@
     <transition name="fade">
       <teleport to="body">
         <VoiceCreateProduct
-          v-if="voiceCreateOpen"
+          v-if="isVoiceFeatureEnabled && voiceCreateOpen"
           :product="product"
           :title="isEdit ? $t('voiceCreate.editTitle') : $t('voiceCreate.createTitle')"
           @apply="onVoiceCreateApply"
@@ -432,6 +433,7 @@ import useDraft from 'src/modules/useDraft'
 import useCategories from 'src/modules/useCategories'
 import useEventBus from 'src/modules/useEventBus'
 import { useI18n } from 'vue-i18n'
+import useFeatures from 'src/modules/useFeatures'
 
 const DEFAULT_DATA = {
   id: null,
@@ -525,6 +527,8 @@ const {
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
 const voiceCreateOpen = ref(false)
+const { isEnabled: isFeatureEnabled } = useFeatures()
+const isVoiceFeatureEnabled = computed(() => isFeatureEnabled('voiceCreate'))
 
 function onChangeSizes(sizes) {
   product.sizes = sizes.list
