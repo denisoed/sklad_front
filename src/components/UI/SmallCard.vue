@@ -18,23 +18,16 @@
   </div>
 </template>
 
-<script>
-import {
-  defineComponent
-} from 'vue'
-
-export default defineComponent({
-  name: 'SmallCard',
-  props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    color: {
-      type: String,
-      required: true,
-    },
-  }
+<script setup>
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+  color: {
+    type: String,
+    required: true,
+  },
 })
 </script>
 

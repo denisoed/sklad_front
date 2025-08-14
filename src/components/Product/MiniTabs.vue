@@ -8,14 +8,20 @@
       class="mini-tabs_card"
       :class="{ 'mini-tabs_card--active': sId === s.id }"
       v-ripple
-      @click="changeTab(s.id)"
+      @click="onCardClick(s.id)"
+      @mousedown="onHoldStart(s.id)"
+      @mouseup="onHoldEnd"
+      @mouseleave="onHoldEnd"
+      @touchstart.passive="onHoldStart(s.id)"
+      @touchend="onHoldEnd"
+      @touchcancel="onHoldEnd"
+      @contextmenu.prevent
     />
   </div>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   watch,
   toRefs,
@@ -23,68 +29,95 @@ import {
 } from 'vue'
 import SmallCard from 'src/components/UI/SmallCard.vue'
 
-export default defineComponent({
-  name: 'MiniTabs',
-  components: {
-    SmallCard,
+const props = defineProps({
+  list: {
+    type: Array,
+    default: () => []
   },
-  props: {
-    list: {
-      type: Array,
-      default: () => []
-    },
-    selectedId: {
-      type: Number,
-      default: null
-    },
-    scrollToActiveTab: {
-      type: Boolean,
-      default: false
-    }
+  selectedId: {
+    type: Number,
+    default: null
   },
-  emits: ['on-change'],
-  setup(props, { emit }) {
-    const { selectedId } = toRefs(props);
-    const sId = ref(selectedId.value);
-    const containerRef = ref(null);
+  scrollToActiveTab: {
+    type: Boolean,
+    default: false
+  }
+})
+const emit = defineEmits(['on-change', 'long-press'])
 
-    function changeTab(id) {
-      sId.value = id;
-      emit('on-change', id);
+const { selectedId } = toRefs(props);
+const sId = ref(selectedId.value);
+const containerRef = ref(null);
+const holdTimerId = ref(null);
+const isHolding = ref(false);
+const suppressNextClick = ref(false);
+const HOLD_DELAY_MS = 600;
+
+function changeTab(id) {
+  sId.value = id;
+  emit('on-change', id);
+}
+
+function onLongPress(id) {
+  emit('long-press', id);
+}
+
+function clearHoldTimer() {
+  if (holdTimerId.value) {
+    clearTimeout(holdTimerId.value);
+    holdTimerId.value = null;
+  }
+  isHolding.value = false;
+}
+
+function onHoldStart(id) {
+  clearHoldTimer();
+  isHolding.value = true;
+  holdTimerId.value = setTimeout(() => {
+    if (isHolding.value) {
+      suppressNextClick.value = true;
+      onLongPress(id);
     }
+    clearHoldTimer();
+  }, HOLD_DELAY_MS);
+}
 
-    function scrollToActiveTab() {
-      if (!containerRef.value) return;
-      
-      const activeTab = containerRef.value.querySelector('.mini-tabs_card--active');
-      if (activeTab) {
-        const containerRect = containerRef.value.getBoundingClientRect();
-        const tabRect = activeTab.getBoundingClientRect();
-        const scrollLeft = activeTab.offsetLeft - (containerRect.width / 2) + (tabRect.width / 2);
-        containerRef.value.scrollTo({
-          left: scrollLeft,
-          behavior: 'smooth'
-        });
-      }
-    }
+function onHoldEnd() {
+  clearHoldTimer();
+}
 
-    watch(selectedId, (id) => {
-      sId.value = id;
-    })
+function onCardClick(id) {
+  if (suppressNextClick.value) {
+    suppressNextClick.value = false;
+    return;
+  }
+  changeTab(id);
+}
 
-    onMounted(() => {
-      if (props.scrollToActiveTab) {
-        setTimeout(() => {
-          scrollToActiveTab();
-        }, 1000);
-      }
-    })
+function scrollToActiveTab() {
+  if (!containerRef.value) return;
+  
+  const activeTab = containerRef.value.querySelector('.mini-tabs_card--active');
+  if (activeTab) {
+    const containerRect = containerRef.value.getBoundingClientRect();
+    const tabRect = activeTab.getBoundingClientRect();
+    const scrollLeft = activeTab.offsetLeft - (containerRect.width / 2) + (tabRect.width / 2);
+    containerRef.value.scrollTo({
+      left: scrollLeft,
+      behavior: 'smooth'
+    });
+  }
+}
 
-    return {
-      sId,
-      changeTab,
-      containerRef
-    }
+watch(selectedId, (id) => {
+  sId.value = id;
+})
+
+onMounted(() => {
+  if (props.scrollToActiveTab) {
+    setTimeout(() => {
+      scrollToActiveTab();
+    }, 1000);
   }
 })
 </script>

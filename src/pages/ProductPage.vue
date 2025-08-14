@@ -103,17 +103,6 @@
               <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
             </div>
 
-            <!-- Image -->
-            <ImageUploader
-              :image="product.image"
-              class="q-mb-md"
-              tabindex="1"
-              :hint="$t('common.requiredField')"
-              :rules="[val => val?.length || $t('common.requiredField')]"
-              @on-change="onChangeImage"
-              @clear="() => onChangeImage(null)"
-            />
-
             <!-- Sklads -->
             <TheSelector
               v-model="product.sklad"
@@ -145,6 +134,17 @@
               clearable
               emit-value
               map-options
+            />
+
+            <!-- Image -->
+            <ImageUploader
+              :image="product.image"
+              class="q-mb-md"
+              tabindex="1"
+              :hint="$t('common.requiredField')"
+              :rules="[val => val?.length || $t('common.requiredField')]"
+              @on-change="onChangeImage"
+              @clear="() => onChangeImage(null)"
             />
 
             <div class="flex no-wrap q-gap-md">
