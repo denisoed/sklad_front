@@ -86,22 +86,32 @@
       >
         <div class="row">
           <div class="col-12 q-mb-md">
-            <div
-              v-if="isDuplicating"
-              class="flex items-center border-radius-sm q-pa-sm q-mb-md q-px-md"
-              style="background-color: rgb(255 255 0 / 8%);"
-            >
-              <span>{{ $t('product.duplicatingProduct', { id: duplicatedFromID }) }}</span>
-              <q-icon name="mdi-content-duplicate" class="q-ml-auto" color="primary" size="sm" />
-            </div>
-            <div
-              v-if="product.withDiscount"
-              class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
-              style="background-color: rgb(255 0 0 / 8%);border-radius: 3px;"
-            >
-              <span class="q-mr-sm">{{ $t('product.hasPromotion') }}</span>
-              <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
-            </div>
+            <template v-if="!isLoadingData">
+              <div
+                v-if="isDuplicating"
+                class="flex items-center border-radius-sm q-pa-sm q-mb-md q-px-md"
+                style="background-color: rgb(0 255 0 / 8%);"
+              >
+                <span>{{ $t('product.duplicatingProduct', { id: duplicatedFromID }) }}</span>
+                <q-icon name="mdi-content-duplicate" class="q-ml-auto" color="green-5" size="sm" />
+              </div>
+              <div
+                v-if="isDraft && !editProduct?.product?.id && !isDuplicating"
+                class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
+                style="background-color: rgb(255 255 0 / 8%);"
+              >
+                <span class="q-mr-sm">{{ $t('product.draft') }}</span>
+                <q-icon name="mdi-pencil-outline" class="q-ml-auto" color="yellow-5" size="sm" />
+              </div>
+              <div
+                v-if="product.withDiscount"
+                class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
+                style="background-color: rgb(255 0 0 / 8%);"
+              >
+                <span class="q-mr-sm">{{ $t('product.hasPromotion') }}</span>
+                <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
+              </div>
+            </template>
 
             <!-- Sklads -->
             <TheSelector
@@ -232,7 +242,7 @@
                       dense
                       outline
                       size="12px"
-                      color="primary"
+                      color="negative"
                     >
                       <span class="text-white">{{ day }}</span>
                     </q-chip>
@@ -382,7 +392,7 @@
 
 <script setup>
 import moment from 'moment'
-import { useQuasar } from 'quasar'
+import { useQuasar, debounce } from 'quasar'
 import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import useProduct from 'src/modules/useProduct'
 import useHelpers from 'src/modules/useHelpers'
@@ -496,7 +506,13 @@ const {
   applyDuplicateData
 } = useProductDuplication()
 
-const { clearDraft: clearDraftAction } = useDraft()
+const {
+  clearDraft:
+  clearDraftAction,
+  saveDraft,
+  loadDraft,
+  hasDraft
+} = useDraft()
 
 // Event bus for global communication
 const { onBus, offBus, BUS_EVENTS } = useEventBus()
@@ -520,11 +536,13 @@ const {
   fetchAllUserCategories,
   allUserCategories
 } = useCategories()
+const { isEnabled: isFeatureEnabled } = useFeatures()
 
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
 const voiceCreateOpen = ref(false)
-const { isEnabled: isFeatureEnabled } = useFeatures()
+const isLoadingData = ref(true)
+const isDraft = hasDraft()
 const isVoiceFeatureEnabled = computed(() => isFeatureEnabled('voiceCreate'))
 
 function onChangeSizes(sizes) {
@@ -787,25 +805,32 @@ function onChangeImage(image) {
   product.image = image
 }
 
-function loadData() {
-  setSkladFromParams()
-  setCategoryFromParams()
-  fetchSizes(sklads.value?.map(c => c.id))
-  fetchAllUserCategories(query?.skladId || sklads.value?.map(c => c.id))
+async function loadData() {
+  isLoadingData.value = true
+  try {
+    setSkladFromParams()
+    setCategoryFromParams()
+    fetchSizes(sklads.value?.map(c => c.id))
+    fetchAllUserCategories(query?.skladId || sklads.value?.map(c => c.id))
 
-  if (!params?.productId) {
-    const duplicateData = loadDuplicateData()
-    if (duplicateData) {
-      applyDuplicateData(product, duplicateData)
-    }
-  } else {
-    getEditProduct(
-      null,
-      { id: params?.productId },
-      {
-        fetchPolicy: 'network-only'
+    if (!params?.productId) {
+      const duplicateData = loadDuplicateData()
+      if (duplicateData) {
+        applyDuplicateData(product, duplicateData)
       }
-    )
+    } else {
+      await getEditProduct(
+        null,
+        { id: params?.productId },
+        {
+          fetchPolicy: 'network-only'
+        }
+      )
+    }
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isLoadingData.value = false
   }
 }
 
@@ -846,7 +871,7 @@ const submitBtnLabel = computed(() => {
   } else if (props.isEdit) {
     return t('common.update')
   }
-  return t('common.save')
+  return t('create')
 })
 
 async function handleProductCategotyBySklad(skladId) {
@@ -874,7 +899,14 @@ watch(editProduct, (newValue) => {
       ...product,
       prices: [...(product.prices || [])]
     })
+  } else {
+    const draft = loadDraft()
+    if (draft) {
+      Object.assign(product, draft)
+    }
   }
+}, {
+  immediate: true
 });
 
 watch(sklads, (val) => {
@@ -891,6 +923,12 @@ onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
 watch(() => product.sklad, (skladId) => {
   handleProductCategotyBySklad(skladId)
 });
+
+const debouncedWatch = debounce(() => {
+  saveDraft(product)
+}, 1000);
+
+watch(product, debouncedWatch)
 
 onBeforeUnmount(() => {
   offBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)

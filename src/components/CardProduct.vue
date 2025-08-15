@@ -3,13 +3,13 @@
     class="card-product block-bg"
     :id="id"
   >
-    <div v-if="withDiscount" class="discount_has">C</div>
-    <div v-if="isDiscountToday" class="discount_banner">
-      {{ $t('product.hasPromotion') }}
-      <q-icon class="mdi mdi-alert-circle q-ml-auto" color="white" size="xs" />
-    </div>
     <div class="flex column full-width">
       <div class="card-product_img">
+        <div v-if="withDiscount" class="discount_has">C</div>
+        <div v-if="isDiscountToday" class="discount_banner">
+          {{ $t('product.promotion') }}
+          <q-icon class="mdi mdi-alert-circle q-ml-auto" color="white" size="xs" />
+        </div>
         <q-img
           :src="image"
           spinner-size="md"
@@ -197,7 +197,7 @@ export default defineComponent({
     background-color: red;
     color: #fff;
     position: absolute;
-    top: 115px;
+    bottom: 0;
     left: 0;
     padding: 0 4px;
     z-index: 2;
@@ -215,15 +215,17 @@ export default defineComponent({
   }
 
   &_img {
-    min-height: 125px;
+    width: 220px;
+    height: 125px;
     position: relative;
     display: flex;
     align-items: flex-start;
+    overflow: hidden;
+    border-radius: var(--border-radius);
     
     .q-img {
-      width: 220px;
-      height: 125px;
-      border-radius: var(--border-radius);
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
   }

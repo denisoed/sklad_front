@@ -565,6 +565,7 @@ export default ({
     noPromotionToday: 'На сегодня акции нет',
     setPromotionDates: 'Выставить акционную цену на определенные даты',
     promotionDates: 'Акция на даты:',
+    promotion: 'Акция',
     sizesAddedToProduct: 'Добавлены размеры в товар: {name}',
     sizesRemovedFromProduct: 'Убраны размеры из товара: {name}',
     sizesAdded: 'Добавлены размеры в товар',
@@ -579,6 +580,7 @@ export default ({
     duplicating: 'Дублирование товара',
     editing: 'Редактирование товара',
     creating: 'Создание товара',
+    draft: 'Черновик',
   },
   errors: {
     photoUploadError: 'Не удалось загрузить фото. Проблемы на сервере.',
