@@ -3,11 +3,13 @@ import { ref } from 'vue';
 import { IS_DARK_MODE, MAIN_COLOR_DARK, MAIN_COLOR_LIGHT, ACCENT_COLOR, ACCENT_COLORS } from 'src/config'
 
 const useTheme = () => {
-  const isDark = ref(LocalStorage.getItem(IS_DARK_MODE))
+  const isDark = ref(typeof LocalStorage.getItem(IS_DARK_MODE) === 'boolean' ?
+    LocalStorage.getItem(IS_DARK_MODE) :
+      true
+  )
 
   function setThemeColor() {
     const content = isDark.value ? MAIN_COLOR_DARK : MAIN_COLOR_LIGHT
-    console.log('isDark.value', LocalStorage.getItem(IS_DARK_MODE))
     Dark.set(isDark.value);
     document.querySelector(
       'meta[name="theme-color"]'

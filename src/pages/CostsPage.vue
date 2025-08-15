@@ -15,7 +15,7 @@
         :rows="rows"
         :columns="columns"
         :loading="costsLoading"
-        @on-change="loadCosts"
+        @on-change="fetchCosts"
       >
         <template #body="props">
           <q-tr :props="props">
@@ -33,11 +33,19 @@
             </q-td>
             <q-td key="actions" :props="props" class="text-right">
               <q-btn
+                icon="mdi-pencil-outline"
+                round
+                color="primary"
+                size="sm"
+                class="q-mr-sm"
+                @click="editCostDialog(props.row)"
+              />
+              <q-btn
                 icon="mdi-trash-can-outline"
                 round
                 color="deep-orange"
                 size="sm"
-                @click="remove(props.row)"
+                @click="deleteCostDialog(props.row)"
               />
             </q-td>
           </q-tr>
@@ -56,48 +64,7 @@
           </q-tr>
         </template>
       </TableComp>
-      
-      <q-dialog v-model="dialog" position="bottom">
-        <q-card style="width: 350px">
-          <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
-            <div class="flex column items-center full-width">
-              <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">{{ $t('costs.whereSpent') }}</p>
-              <q-input
-                v-model="description"
-                outlined
-                :placeholder="$t('costs.exampleDescription')"
-                class="q-mb-md full-width"
-                enterkeyhint="done"
-              />
-              <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">{{ $t('costs.howMuchSpent') }}</p>
-              <InputPrice
-                v-model="sum"
-                outlined
-                :placeholder="$t('costs.exampleAmount')"
-                class="q-mb-md full-width"
-              />
-            </div>
-            <q-separator class="full-width q-mb-md" />
-            <div class="flex justify-between no-wrap q-gap-md full-width">
-              <q-btn
-                class="button-size"
-                color="grey"
-                icon="mdi-close"
-                push
-                @click="dialog = false"
-              />
-              <q-btn
-                class="button-size"
-                color="primary"
-                icon="mdi-check"
-                push
-                :loading="loadingCost"
-                @click="save"
-              />
-            </div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
+
       <div class="fixed-bottom-right q-mb-xl q-pb-md q-mr-md fixed">
         <q-btn
           v-permissions="[CAN_ADD_COST]"
@@ -107,7 +74,7 @@
           size="lg"
           push
           :loading="deleteLoading"
-          @click="openDialog"
+          @click="createCostDialog"
         >
           <q-icon
             name="mdi-cash-plus"
@@ -120,38 +87,38 @@
 
 <script setup>
 import { useQuasar } from 'quasar'
-import moment from 'moment'
-import { computed, ref } from 'vue'
 import useHelpers from 'src/modules/useHelpers'
+import moment from 'moment'
+import { computed } from 'vue'
 import useCosts from 'src/modules/useCosts'
 import useMoney from 'src/modules/useMoney'
-import InputPrice from 'src/components/InputPrice.vue'
 import TableComp from 'src/components/TableComp.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import { DISPLAY_FORMAT } from 'src/config'
 import { CAN_ADD_COST } from 'src/permissions'
 import { useI18n } from 'vue-i18n'
+import { MANAGE_COST_DIALOG } from 'src/config/dialogs'
+import useDialog from 'src/modules/useDialog'
+import { useRoute } from 'vue-router'
 
 defineOptions({
   name: 'Costs'
 })
 
+const $q = useQuasar()
+const route = useRoute()
 const { showSuccess, showError } = useHelpers()
 const { formatPrice } = useMoney()
+const { openDialog } = useDialog()
 const {
-  createCost,
-  errorCost,
-  loadingCost,
-  loadCosts,
-  costsResult,
+  fetchCosts,
+  costs: costsList,
   costsLoading,
-  costsRefetch,
+  deleteLoading,
   deleteCost,
-  deleteError,
-  deleteLoading
+  deleteError
 } = useCosts()
 const { t: $t } = useI18n()
-const $q = useQuasar()
 
 const columns = computed(() => [
   {
@@ -186,28 +153,22 @@ const columns = computed(() => [
   },
 ])
 
-const dialog = ref(false)
-const description = ref(null)
-const sum = ref(null)
-
-function openDialog() {
-  dialog.value = true
+function editCostDialog(cost) {
+  openDialog(MANAGE_COST_DIALOG, {
+    costId: cost?.id,
+    description: cost?.description,
+    sum: cost?.sum,
+    skladId: route.params?.skladId,
+  })
 }
 
-async function save() {
-  await createCost(description.value, sum.value)
-  if (!errorCost.value) {
-    dialog.value = false
-    costsRefetch()
-    showSuccess($t('costs.saveSuccess'))
-    description.value = null
-    sum.value = null
-  } else {
-    showError($t('common.error') + '. ' + $t('common.tryLater'))
-  }
+function createCostDialog() {
+  openDialog(MANAGE_COST_DIALOG, {
+    skladId: route.params?.skladId,
+  })
 }
 
-function remove(cost) {
+function deleteCostDialog(cost) {
   $q.dialog({
     title: $t('costs.removeCost'),
     message: $t('costs.removeConfirm'),
@@ -227,7 +188,7 @@ function remove(cost) {
   }).onOk(async () => {
     await deleteCost(cost.id)
     if (!deleteError.value) {
-      costsRefetch()
+      fetchCosts()
       // NOTE: add to history
       showSuccess($t('costs.deleteSuccess'))
     } else {
@@ -236,20 +197,17 @@ function remove(cost) {
   })
 }
 
-const rows = computed(() => {
-  const costs = costsResult.value?.listCosts || []
-  return costs.map(c => ({
+const rows = computed(() => costsList.value.map(c => ({
     id: c.id,
     fullname: c?.users_permissions_user?.fullname || 'n/a',
     description: c.description,
     sum: formatPrice(c.sum),
     created_at: moment(c.created_at).local().format(DISPLAY_FORMAT)
   }))
-})
+)
 
 const costsSum = computed(() => {
-  const costs = costsResult.value?.listCosts || []
-  const sumValue = costs.reduce((prev, next) => prev + next.sum, 0)
-  return formatPrice(sumValue)
+  const sumValue = costsList.value.reduce((prev, next) => prev + next.sum, 0)
+  return formatPrice(sumValue || 0)
 })
 </script>

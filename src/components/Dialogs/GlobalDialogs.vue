@@ -2,6 +2,7 @@
   <div class="dialogs">
     <ManageSkladDialog />
     <ManageCategoryDialog />
+    <ManageCostDialog />
   </div>
 </template>
 
@@ -13,5 +14,8 @@ const ManageSkladDialog = defineAsyncComponent(
 )
 const ManageCategoryDialog = defineAsyncComponent(
   () => import('src/components/Dialogs/ManageCategoryDialog.vue')
+)
+const ManageCostDialog = defineAsyncComponent(
+  () => import('src/components/Dialogs/ManageCostDialog.vue')
 )
 </script>
