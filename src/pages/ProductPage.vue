@@ -871,7 +871,7 @@ const submitBtnLabel = computed(() => {
   } else if (props.isEdit) {
     return t('common.update')
   }
-  return t('common.save')
+  return t('create')
 })
 
 async function handleProductCategotyBySklad(skladId) {
