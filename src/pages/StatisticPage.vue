@@ -103,10 +103,10 @@ import useStatistics from 'src/modules/useStatistics'
 import useProfile from 'src/modules/useProfile'
 import {
   STATISTIC_FINANCE,
-  LIST_COSTS_SUM,
   UPDATE_PRODUCT,
   DELETE_ACTIVITY
 } from 'src/graphql/types'
+import { LIST_COSTS_SUM } from 'src/graphql/costs'
 import {
   HISTORY_RETURN
 } from 'src/config'

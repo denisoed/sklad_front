@@ -1,6 +1,6 @@
 <template>
   <div class="table full-width">
-    <FilterDates v-if="isFilters" @on-change="onChange" class="q-mb-md" />
+    <FilterDates v-if="isFilters" @on-change="onChange" :selected-tab="0" class="q-mb-md" />
     <q-table
       :rows="rows"
       :columns="columns"
