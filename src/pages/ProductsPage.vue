@@ -26,34 +26,34 @@
         @on-change="onChangeCategory"
       />
         
-      <template v-if="products?.length">
-        <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
-          <div class="flex items-center q-gap-sm">
-            <p class="q-mb-none text-subtitle2">{{ $t('pages.productsLabel') }}</p>
-            <q-badge color="primary" :label="products.length" />
-          </div>
-          
-          <div class="flex items-center q-gap-sm">
-            <!-- View Mode Toggle -->
-            <q-btn
-              :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
-              @click="toggleViewMode"
-              text-color="primary"
-              push
-              round
-              size="sm"
-            />
-            <q-btn
-              icon="mdi-plus"
-              round
-              size="sm"
-              color="primary"
-              push
-              to="/create-product"
-            />
-          </div>
+      <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
+        <div class="flex items-center q-gap-sm">
+          <p class="q-mb-none text-subtitle2">{{ $t('pages.productsLabel') }}</p>
+          <q-badge color="primary" :label="products.length" />
         </div>
+        
+        <div class="flex items-center q-gap-sm">
+          <!-- View Mode Toggle -->
+          <q-btn
+            :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
+            @click="toggleViewMode"
+            text-color="primary"
+            push
+            round
+            size="sm"
+          />
+          <q-btn
+            icon="mdi-plus"
+            round
+            size="sm"
+            color="primary"
+            push
+            to="/create-product"
+          />
+        </div>
+      </div>
 
+      <template v-if="products?.length">
         <!-- Grid View -->
         <ProductsGrid
           v-if="viewMode === VIEW_GRID"
