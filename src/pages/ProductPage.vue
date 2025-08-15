@@ -517,9 +517,8 @@ const {
   refetch: refetchEditProduct
 } = useLazyQuery(GET_PRODUCT)
 const {
-  categories: categoriesResult,
-  fetchCategories,
-  fetchAllUserCategories
+  fetchAllUserCategories,
+  allUserCategories
 } = useCategories()
 
 const product = reactive({ ...DEFAULT_DATA })
@@ -768,12 +767,15 @@ function onVoiceCreateApply(payload) {
   Object.assign(product, payload)
 }
 
+function setSkladFromParams() {
+  if (query?.skladId) {
+    product.sklad = query?.skladId
+  }
+}
+
 function setCategoryFromParams() {
-  if (query?.category) {
-    const category = categoriesResult.value.find(c => c.id === query?.category)
-    if (category) {
-      product.category = category.id
-    }
+  if (query?.categoryId) {
+    product.category = query?.categoryId
   }
 }
 
@@ -786,8 +788,10 @@ function onChangeImage(image) {
 }
 
 function loadData() {
+  setSkladFromParams()
+  setCategoryFromParams()
   fetchSizes(sklads.value?.map(c => c.id))
-  fetchAllUserCategories(sklads.value?.map(c => c.id))
+  fetchAllUserCategories(query?.skladId || sklads.value?.map(c => c.id))
 
   if (!params?.productId) {
     const duplicateData = loadDuplicateData()
@@ -813,7 +817,7 @@ const skladsOptions = computed(() => {
 })
 
 const categoriesOptions = computed(() => {
-  return categoriesResult.value?.map(c => ({
+  return allUserCategories.value?.map(c => ({
     label: c.name,
     value: c.id
   }))
@@ -847,11 +851,11 @@ const submitBtnLabel = computed(() => {
 
 async function handleProductCategotyBySklad(skladId) {
   product.category = null
-  await fetchCategories({ sklad: skladId })
+  await fetchAllUserCategories(skladId)
   product.category = editProduct.value?.product?.category?.id
 }
 
-watch(categoriesResult, (newValue) => {
+watch(allUserCategories, (newValue) => {
   if (newValue?.length) {
     setCategoryFromParams()
   }
