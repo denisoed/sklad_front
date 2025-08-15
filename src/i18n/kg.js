@@ -578,6 +578,9 @@ export default ({
     productUpdateError: 'Товар жаңырган жок. Сервер ката.',
   },
   sizes: {
+    createdSuccessfully: 'Өлчөмдөр түзүлдү',
+    updatedSuccessfully: 'Өлчөмдөр жаңырды',
+    deletedSuccessfully: 'Өлчөмдөр өчүрүлдү',
     readySizes: 'Даяр өлчөмдөр',
     childrenShoes: 'Балдар бут кийим өлчөмдөрү',
     womenShoes: 'Аял бут кийим өлчөмдөрү',

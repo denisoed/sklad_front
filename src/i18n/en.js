@@ -578,6 +578,9 @@ export default ({
     productUpdateError: 'Failed to update product. Server issues.',
   },
   sizes: {
+    createdSuccessfully: 'Sizes created successfully',
+    updatedSuccessfully: 'Sizes updated successfully',
+    deletedSuccessfully: 'Sizes deleted successfully',
     readySizes: 'Ready sizes',
     childrenShoes: 'Children’s shoe sizes',
     womenShoes: 'Women’s shoe sizes',

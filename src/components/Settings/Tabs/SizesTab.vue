@@ -1,8 +1,47 @@
 <template>
   <div class="sizes-tab flex column q-gap-md">
+    <TheDropdown
+      :title="$t('pages.remainingStock')"
+    >
+      <template #icon>
+        <q-icon name="mdi-code-less-than-or-equal" size="sm" class="q-mr-sm" />
+      </template>
+      <template #body>
+        <div class="flex column">
+          <q-checkbox
+            :model-value="useMinSizes"
+            @update:model-value="emit('update:useMinSizes', $event)"
+            class="q-mb-sm"
+            dense
+          >
+            <span class="text-subtitle1">{{ $t('settings.notifyLowStock') }}</span>
+          </q-checkbox>
+          <h6
+            class="q-ma-none text-subtitle2 text-grey-5"
+          >
+            {{ $t('settings.minStockDescription') }}
+          </h6>
+          <q-input
+            v-if="useMinSizes"
+            :model-value="minSizes"
+            @update:model-value="emit('update:minSizes', $event)"
+            type="number"
+            outlined
+            min="0"
+            class="q-mt-sm"
+            :label="$t('settings.minSizesInProduct')"
+            :hint="$t('settings.valueMustBeZeroOrMore')"
+            :rules="[val => val >= 0 || $t('settings.valueMustBeZeroOrMore')]"
+            :disable="!useMinSizes"
+            enterkeyhint="done"
+          />
+        </div>
+      </template>
+    </TheDropdown>
+
     <TheDropdown :title="$t('sizes.configureSizes')" opened>
       <template #icon>
-        <q-icon name="mdi-cog" size="sm" class="q-mr-sm" />
+        <q-icon name="mdi-format-size" size="sm" class="q-mr-sm" />
       </template>
       <template #body>
         <div class="flex column">
@@ -60,7 +99,7 @@
       :opened="openedCrudSizesModal"
       :create-gql="CREATE_SIZES"
       :update-gql="UPDATE_SIZES"
-      :extend-create-params="{ users_permissions_users: profile.id }"
+      :extend-create-params="{ sklads: skladId }"
       @close="onClose"
       @remove="removeSizes"
       @finished="onFinish"
@@ -74,22 +113,37 @@ import {
   ref,
   onBeforeMount,
 } from 'vue'
-import CrudSizesModal from 'src/components/MainSettings/Sizes/CrudSizesModal.vue'
-import SizeItem from 'src/components/MainSettings/Sizes/SizeItem.vue'
+import CrudSizesModal from 'src/components/Sizes/CrudSizesModal.vue'
+import SizeItem from 'src/components/Sizes/SizeItem.vue'
 import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import useSizes from 'src/modules/useSizes'
-import useProfile from 'src/modules/useProfile'
 import { CREATE_SIZES, UPDATE_SIZES } from 'src/graphql/sizes'
 
 defineOptions({
   name: 'SizesTab'
 })
 
+const emit = defineEmits(['update:useMinSizes', 'update:minSizes'])
+
+const props = defineProps({
+  skladId: {
+    type: [String, Number],
+    required: true
+  },
+  useMinSizes: {
+    type: Boolean,
+    required: true
+  },
+  minSizes: {
+    type: Number,
+    default: null
+  },
+})
+
 const selectedSizes = ref(null)
 const openedCrudSizesModal = ref(false)
 
 const { sizes, fetchSizes, removeSizes, loading } = useSizes()
-const { profile } = useProfile()
 
 function onClose() {
   selectedSizes.value = null
@@ -102,11 +156,11 @@ function onEdit(item) {
 }
 
 function onFinish() {
-  fetchSizes()
+  fetchSizes([props.skladId])
 }
 
 onBeforeMount(() => {
-  fetchSizes()
+  fetchSizes([props.skladId])
 })
 </script>
 

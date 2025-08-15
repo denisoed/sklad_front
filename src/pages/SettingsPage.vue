@@ -81,61 +81,13 @@
         </q-tab-panel>
 
         <q-tab-panel name="sizes" class="q-px-sm">
-          <TheDropdown
-            class="q-mt-md"
-            :title="$t('pages.remainingStock')"
-            opened
-          >
-            <template #body>
-              <div class="flex column">
-                <q-checkbox
-                  v-model="formData.useMinSizes"
-                  class="q-mb-sm"
-                  dense
-                >
-                  <span class="text-subtitle1">{{ $t('settings.notifyLowStock') }}</span>
-                </q-checkbox>
-                <h6
-                  class="q-ma-none q-mb-sm text-subtitle2 text-grey-2"
-                >
-                  {{ $t('settings.minStockDescription') }}
-                </h6>
-                <q-input
-                  v-model="formData.minSizes"
-                  type="number"
-                  outlined
-                  min="0"
-                  :label="$t('settings.minSizesInProduct')"
-                  :hint="$t('settings.valueMustBeZeroOrMore')"
-                  :rules="[val => val >= 0 || $t('settings.valueMustBeZeroOrMore')]"
-                  :disable="!formData.useMinSizes"
-                  enterkeyhint="done"
-                />
-              </div>
-            </template>
-          </TheDropdown>
-          
-          <!-- Size configurations link -->
-          <TheDropdown
-            class="q-mt-md"
-            :title="$t('sizes.configureSizes')"
-          >
-            <template #body>
-              <div class="flex column">
-                <p class="text-subtitle2 text-grey-6 q-mb-md">
-                  {{ $t('settings.manageSizesDescription') }}
-                </p>
-                <q-btn
-                  color="primary"
-                  outline
-                  :label="$t('sizes.configureSizes')"
-                  icon="mdi-cog"
-                  @click="goToSizesSettings"
-                  class="full-width border-radius-sm"
-                />
-              </div>
-            </template>
-          </TheDropdown>
+          <SizesTab
+            :sklad-id="skladId"
+            :use-min-sizes="formData.useMinSizes"
+            :min-sizes="formData.minSizes"
+            @update:use-min-sizes="formData.useMinSizes = $event"
+            @update:min-sizes="formData.minSizes = $event"
+          />
         </q-tab-panel>
         <q-tab-panel name="accesses" class="q-px-sm">
           <EmployeesTab
@@ -189,12 +141,12 @@ import EmployeesTab from 'src/components/Settings/EmployeesTab.vue'
 import SettingsPrint from 'src/components/Settings/Tabs/ThePrint.vue'
 import SettingsGoal from 'src/components/Settings/Tabs/TheGoal.vue'
 import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
+import SizesTab from 'src/components/Settings/Tabs/SizesTab.vue'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
 import useProfile from 'src/modules/useProfile'
 import {
   HOME_ROUTE,
-  MAIN_SETTINGS_ROUTE
 } from 'src/router/routes'
 import { useI18n } from 'vue-i18n'
 import useHelpers from 'src/modules/useHelpers'
@@ -236,6 +188,8 @@ const isLoading = computed(
   () => removeSkladLoading.value || isLoadingSklad.value || updateSkladLoading.value
 )
 
+const skladId = computed(() => params?.skladId)
+
 const users = computed(() =>
   sklad.value?.users.filter(u => u?.id !== sklad.value?.owner?.id && u?.id !== profile.value?.id) || []
 )
@@ -270,10 +224,6 @@ function goToHomePage() {
 
 async function onRemoveSklad() {
   removeSklad(sklad.value?.id, goToHomePage)
-}
-
-function goToSizesSettings() {
-  push(`${MAIN_SETTINGS_ROUTE}?tab=sizes`)
 }
 
 function onChangeColor(data) {

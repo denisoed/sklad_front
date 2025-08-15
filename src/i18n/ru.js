@@ -578,6 +578,9 @@ export default ({
     productUpdateError: 'Не удалось обновить продукт. Проблемы на сервере.',
   },
   sizes: {
+    createdSuccessfully: 'Размеры успешно созданы',
+    updatedSuccessfully: 'Размеры успешно обновлены',
+    deletedSuccessfully: 'Размеры успешно удалены',
     readySizes: 'Готовые размеры',
     childrenShoes: 'Размеры детской обуви',
     womenShoes: 'Размеры женской обуви',

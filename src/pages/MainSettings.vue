@@ -34,23 +34,19 @@
   </q-page>
 </template>
 
-<script>
+<script setup>
 import {
-  defineComponent,
   ref,
   watch
 } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import PageTitle from 'src/components/PageTitle.vue'
-import SizesTab from 'src/components/MainSettings/Sizes/SizesTab.vue'
 import UserTab from 'src/components/MainSettings/UserTab.vue'
 import AppearanceTab from 'src/components/MainSettings/AppearanceTab.vue'
 import ExperimentalTab from 'src/components/MainSettings/ExperimentalTab.vue'
 import BleIndex from 'src/components/Ble/index.vue'
-import { useI18n } from 'vue-i18n'
 
 const TAB_USER = 'user'
-const TAB_SIZES = 'sizes'
 const TAB_APPEARANCE = 'appearance'
 const TAB_EXPERIMENTAL = 'experimental'
 const TAB_PRINT = 'print'
@@ -60,12 +56,6 @@ const TABS = [
     name: TAB_USER,
     label: 'mainSettings.userTab.title',
     component: UserTab,
-    hide: false
-  },
-  {
-    name: TAB_SIZES,
-    label: 'mainSettings.sizesTab.title',
-    component: SizesTab,
     hide: false
   },
   {
@@ -88,32 +78,13 @@ const TABS = [
   }
 ].filter(t => !t.hide)
 
-export default defineComponent({
-  name: 'MainSettingsPage',
-  components: {
-    PageTitle,
-    BleIndex,
-    SizesTab,
-    UserTab,
-    AppearanceTab,
-    ExperimentalTab
-  },
-  setup() {
-    const { query } = useRoute()
-    const { replace } = useRouter()
-    const { t: $t } = useI18n()
+const { query } = useRoute()
+const { replace } = useRouter()
 
-    const tab = ref(query?.tab || TAB_USER)
+const tab = ref(query?.tab || TAB_USER)
 
-    watch(tab, (newTab) => {
-      replace(`/main-settings?tab=${newTab}`)
-    })
-
-    return {
-      tab,
-      TABS,
-    }
-  }
+watch(tab, (newTab) => {
+  replace(`/main-settings?tab=${newTab}`)
 })
 </script>
 
