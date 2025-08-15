@@ -378,11 +378,17 @@ export default ({
     title: 'Main settings',
     experimentalTab: {
       title: 'Labs',
+      description: 'Experimental features that may be unstable.',
       enabled: 'Enabled',
       disabled: 'Disabled',
       voiceCreate: {
         title: 'Voice input for product',
-        description: 'Allows you to <b>create and edit</b> a product by voice. This feature is experimental and may be unstable.',
+        description: 'Allows you to <b>create and edit</b> a product by voice.',
+      },
+      theme: {
+        title: 'Theme',
+        dark: 'Dark',
+        light: 'Light',
       },
     },
     userTab: {

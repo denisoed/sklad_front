@@ -427,7 +427,6 @@ import {
   READ_HISTORY
 } from 'src/permissions'
 import isEqual from 'lodash.isequal'
-import useProfile from 'src/modules/useProfile'
 import useProductDuplication from 'src/modules/useProductDuplication'
 import useDraft from 'src/modules/useDraft'
 import useCategories from 'src/modules/useCategories'
@@ -469,7 +468,6 @@ const $q = useQuasar()
 const { params, query } = useRoute()
 const { replace, push } = useRouter()
 const { showSuccess, showError } = useHelpers()
-const { profile } = useProfile()
 const { openDialog } = useDialog()
 const { sizes, fetchSizes } = useSizes()
 const {
@@ -788,7 +786,7 @@ function onChangeImage(image) {
 }
 
 function loadData() {
-  fetchSizes(profile.value.id)
+  fetchSizes(sklads.value?.map(c => c.id))
   fetchAllUserCategories(sklads.value?.map(c => c.id))
 
   if (!params?.productId) {

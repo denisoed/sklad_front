@@ -80,19 +80,6 @@
       </template>
     </TheDropdown>
 
-    <!-- <TheDropdown :title="$t('mainSettings.userTab.theme.title')">
-      <template #icon>
-        <q-icon name="mdi-theme-light-dark" size="sm" class="q-mr-sm" />
-      </template>
-      <template #body>
-        <label class="flex items-center cursor-pointer">
-          <q-icon name="mdi-moon-waxing-crescent mdi-rotate-45" class="q-mr-md" />
-          <span>{{ $t('mainSettings.userTab.theme.dark')}}</span>
-          <q-toggle v-model="isDark" class="q-ml-auto" />
-        </label>
-      </template>
-    </TheDropdown> -->
-
     <!-- <TheDropdown :title="$t('mainSettings.userTab.info')">
       <template #icon>
         <q-icon name="mdi-account-question-outline" size="sm" class="q-mr-sm" />
@@ -113,7 +100,6 @@ import TheDropdown from 'src/components/TheDropdown/TheDropdown.vue'
 import UserInfo from 'src/components/UserInfo.vue'
 import useProfile from 'src/modules/useProfile'
 import useHelpers from 'src/modules/useHelpers'
-import useTheme from 'src/modules/useTheme'
 import RU from 'src/assets/russia.png'
 import KG from 'src/assets/kyrgyzstan.png'
 import EN from 'src/assets/united-states.png'
@@ -124,7 +110,6 @@ defineOptions({
   name: 'UserTab'
 })
 
-const { toggleTheme, isDark } = useTheme();
 const { locale, t: $t } = useI18n({ useScope: 'global' })
 const { showSuccess, showError } = useHelpers()
 const { profile, updateUser, fetchProfile, subscrHasExpired, subscrExpiredAt } = useProfile()
@@ -166,7 +151,6 @@ const LANGS = computed(() => [
   },
 ])
 
-const selected = ref([])
 const price = ref(1000)
 const refillWallet = ref(true)
 
@@ -205,10 +189,6 @@ watch(locale, (lang) => {
 watch(profile, (val) => {
   userInfo.fullname = val?.fullname
 }, { immediate: true })
-
-watch(isDark, () => {
-  toggleTheme()
-})
 </script>
 
 <style lang="scss" scoped>
