@@ -21,39 +21,40 @@
       <p class="q-mb-sm text-subtitle2">{{ $t('pages.categoriesLabel') }}</p>
       <MiniTabs
         :list="categories"
+        scroll-to-active-tab
         :selected-id="selectedCategoryId"
         class="mini-tabs-categories q-mb-lg"
         @on-change="onChangeCategory"
       />
         
-      <template v-if="products?.length">
-        <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
-          <div class="flex items-center q-gap-sm">
-            <p class="q-mb-none text-subtitle2">{{ $t('pages.productsLabel') }}</p>
-            <q-badge color="primary" :label="products.length" />
-          </div>
-          
-          <div class="flex items-center q-gap-sm">
-            <!-- View Mode Toggle -->
-            <q-btn
-              :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
-              @click="toggleViewMode"
-              text-color="primary"
-              push
-              round
-              size="sm"
-            />
-            <q-btn
-              icon="mdi-plus"
-              round
-              size="sm"
-              color="primary"
-              push
-              to="/create-product"
-            />
-          </div>
+      <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
+        <div class="flex items-center q-gap-sm">
+          <p class="q-mb-none text-subtitle2">{{ $t('pages.productsLabel') }}</p>
+          <q-badge color="primary" :label="products.length" />
         </div>
+        
+        <div class="flex items-center q-gap-sm">
+          <!-- View Mode Toggle -->
+          <q-btn
+            :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
+            @click="toggleViewMode"
+            text-color="primary"
+            push
+            round
+            size="sm"
+          />
+          <q-btn
+            icon="mdi-plus"
+            round
+            size="sm"
+            color="primary"
+            push
+            :to="newProductUrl"
+          />
+        </div>
+      </div>
 
+      <template v-if="products?.length">
         <!-- Grid View -->
         <ProductsGrid
           v-if="viewMode === VIEW_GRID"
@@ -185,16 +186,21 @@ const ALL_TAB = computed(() => ({
 
 const route = useRoute()
 const router = useRouter()
-const { query, params } = route
 const { sklads } = useSklads()
 const { forceRefreshBucket } = useBucket()
 const { categories: categoriesResult, fetchCategories } = useCategories()
-const { addSizesToBucket, searchProducts, addCountToBucket, products, searchLoading } = useProduct()
+const {
+  addSizesToBucket,
+  searchProducts,
+  addCountToBucket,
+  products,
+  searchLoading
+} = useProduct()
 
-const selectedSkladId = ref(params?.skladId || query?.sklad || ALL_TAB.value.id)
+const selectedSkladId = ref(route.params?.skladId || route.query?.skladId || ALL_TAB.value.id)
+const selectedCategoryId = ref(route.params?.categoryId || route.query?.categoryId || ALL_TAB.value.id)
 const imagePreviewDialog = ref(false)
 const imagePreview = ref(null)
-const selectedCategoryId = ref(params?.categoryId || ALL_TAB.value.id)
 const selectedFilters = reactive({})
 
 const countModalVisible = ref(false)
@@ -205,8 +211,8 @@ const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
 
 function initFiltersFromUrl() {
   try {
-    if (query.filters) {
-      const urlFilters = JSON.parse(decodeURIComponent(query.filters))
+    if (route.query?.filters) {
+      const urlFilters = JSON.parse(decodeURIComponent(route.query.filters))
       Object.assign(selectedFilters, urlFilters)
     }
   } catch (error) {
@@ -225,12 +231,12 @@ function saveFiltersToUrl(filters) {
   if (hasFilters) {
     router.replace({
       query: {
-        ...query,
+        ...route.query,
         filters: encodeURIComponent(JSON.stringify(filters))
       }
     })
   } else {
-    const { filters: _, ...newQuery } = query
+    const { filters: _, ...newQuery } = route.query
     router.replace({ query: newQuery })
   }
 }
@@ -246,6 +252,10 @@ const categories = computed(() => {
     ALL_TAB.value,
     ...(selectedSkladId.value === ALL_TAB.value.id ? categoriesList : skladCategories)
   ]
+})
+
+const newProductUrl = computed(() => {
+  return `/create-product?${Object.entries(route.query).map(([key, value]) => `${key}=${value}`).join('&')}`
 })
 
 async function onAddSizesToBucket(product, payload) {
@@ -280,8 +290,7 @@ async function onFinishRemove() {
 }
 
 function onScrollToCard() {
-  const id = query.product
-  const element = document.getElementById(id)
+  const element = document.getElementById(route.query?.productId)
   if (element) {
     element.scrollIntoView({
       behavior: 'smooth',
@@ -348,11 +357,22 @@ async function onSearch(filters = {}) {
 function onChangeSklad(id) {
   selectedSkladId.value = id
   selectedCategoryId.value = ALL_TAB.value.id
+  router.replace({
+    query: {
+      skladId: id,
+    }
+  })
   loadData()
 }
 
 function onChangeCategory(id) {
   selectedCategoryId.value = id
+  router.replace({
+    query: {
+      ...route.query,
+      categoryId: id
+    }
+  })
   loadData()
 }
 

@@ -378,11 +378,17 @@ export default ({
     title: 'Основные Настройки',
     experimentalTab: {
       title: 'Эксперименты',
+      description: 'Экспериментальные функции, которые могут быть нестабильными.',
       enabled: 'Включено',
       disabled: 'Выключено',
       voiceCreate: {
         title: 'Голосовой ввод товара',
-        description: 'Позволяет <b>создавать и редактировать</b> продукт голосом. Функция экспериментальная и может работать нестабильно.',
+        description: 'Позволяет <b>создавать и редактировать</b> продукт голосом.',
+      },
+      theme: {
+        title: 'Тема',
+        dark: 'Тёмная',
+        light: 'Светлая',
       },
     },
     userTab: {
@@ -578,6 +584,9 @@ export default ({
     productUpdateError: 'Не удалось обновить продукт. Проблемы на сервере.',
   },
   sizes: {
+    createdSuccessfully: 'Размеры успешно созданы',
+    updatedSuccessfully: 'Размеры успешно обновлены',
+    deletedSuccessfully: 'Размеры успешно удалены',
     readySizes: 'Готовые размеры',
     childrenShoes: 'Размеры детской обуви',
     womenShoes: 'Размеры женской обуви',

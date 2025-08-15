@@ -87,15 +87,13 @@
                 color="primary"
                 icon="mdi-check"
                 push
-                :disabled="!formData.name || !hasValidSizes"
+                :loading="isLoading"
+                :disabled="!formData.name || !hasValidSizes || isLoading"
                 @click="save"
               />
             </div>
           </div>
         </q-card-section>
-        <q-inner-loading :showing="isLoading">
-          <q-spinner size="40px" color="primary" />
-        </q-inner-loading>
       </q-card>
     </SwipeToClose>
   </q-dialog>
@@ -211,7 +209,7 @@ export default defineComponent({
       })
       if (!createError.value) {
         emit('on-create-new', data)
-         showSuccess($t('sizes.created'))
+         showSuccess($t('sizes.createdSuccessfully'))
       } else {
         showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }
@@ -230,7 +228,7 @@ export default defineComponent({
         }
       })
       if (!updateError.value) {
-         showSuccess($t('sizes.updated'))
+         showSuccess($t('sizes.updatedSuccessfully'))
       } else {
         showError($t('common.unknownError') + '. ' + $t('common.serverError'))
       }

@@ -2,7 +2,63 @@
   <q-page>
     <div class="container">
       <PageTitle :title="$t('statistics.reportsAllWarehouses')" />
-      <div v-permissions="[READ_STATISTIC_FINANCE]" class="q-mb-lg">
+      <!-- Reports -->
+      <div class="q-mb-lg">
+        <h6 class="text-h6 q-mb-md q-mt-none">{{ $t('statistics.reports') }}</h6>
+        <FilterDates @on-change="load" />
+        <div
+          class="costs_type flex items-center q-pa-md q-mb-md q-mt-md border-radius-sm"
+          style="background-color: rgb(255 0 255 / 8%);"
+        >
+          <div class="costs_type-label q-ma-none">{{ $t('statistics.cashRegister') }}</div>
+          <div class="costs_type-value q-ml-auto">
+            <span v-if="priceTotal === 0 || priceTotal">{{ formatPrice(priceTotal) }}</span>
+            <q-spinner
+              v-else
+              size="1em"
+            />
+          </div>
+        </div>
+        <div
+          class="costs_type flex items-center q-pa-md q-mb-md hidden"
+          style="background-color: rgb(255 0 0 / 8%);"
+        >
+          <div class="costs_type-label q-ma-none">{{ $t('statistics.expenses') }}</div>
+          <div class="costs_type-value q-ml-auto">
+            <span v-if="!loadingListCostsSum">{{ costsSum }}</span>
+            <q-spinner
+              v-if="loadingListCostsSum"
+              size="1em"
+            />
+          </div>
+        </div>
+        <div
+          v-permissions="[READ_NET_PRICE]"
+          class="costs_type flex items-center q-pa-md q-mb-md hidden"
+          style="background-color: rgb(0 255 0 / 8%);"
+          @click="showNetPriceTooltip = true"
+        >
+          <div class="costs_type-label q-ma-none">{{ $t('statistics.approximateIncome') }}</div>
+          <div class="costs_type-value q-ml-auto">
+            <span v-if="netProfit === 0 || netProfit">{{ netProfit }}</span>
+            <q-spinner
+              v-else
+              size="1em"
+            />
+          </div>
+        </div>
+        <StatisticTable
+          :list-activities="listActivities"
+          :loading-activities="loadingActivities"
+          :sold-count="soldCount"
+          :orig-price-total="formatPrice(origPriceTotal)"
+          :new-price-total="formatPrice(newPriceTotal)"
+          :discount-total="discountTotal"
+          @return-product="returnProduct"
+        />
+      </div>
+
+      <div v-permissions="[READ_STATISTIC_FINANCE]">
         <h6 class="text-h6 q-mb-md q-mt-none">{{ $t('statistics.finances') }}</h6>
         <div class="statistic-cards q-gap-md">
           <div
@@ -22,58 +78,6 @@
           </div>
         </div>
       </div>
-      <h6 class="text-h6 q-mb-md q-mt-none">{{ $t('statistics.reports') }}</h6>
-      <FilterDates @on-change="load" />
-      <div
-        class="costs_type flex items-center q-pa-md q-mb-md q-mt-md border-radius-sm"
-        style="background-color: rgb(255 0 255 / 8%);"
-      >
-        <div class="costs_type-label q-ma-none">{{ $t('statistics.cashRegister') }}</div>
-        <div class="costs_type-value q-ml-auto">
-          <span v-if="priceTotal === 0 || priceTotal">{{ formatPrice(priceTotal) }}</span>
-          <q-spinner
-            v-else
-            size="1em"
-          />
-        </div>
-      </div>
-      <div
-        class="costs_type flex items-center q-pa-md q-mb-md hidden"
-        style="background-color: rgb(255 0 0 / 8%);"
-      >
-        <div class="costs_type-label q-ma-none">{{ $t('statistics.expenses') }}</div>
-        <div class="costs_type-value q-ml-auto">
-          <span v-if="!loadingListCostsSum">{{ costsSum }}</span>
-          <q-spinner
-            v-if="loadingListCostsSum"
-            size="1em"
-          />
-        </div>
-      </div>
-      <div
-        v-permissions="[READ_NET_PRICE]"
-        class="costs_type flex items-center q-pa-md q-mb-md hidden"
-        style="background-color: rgb(0 255 0 / 8%);"
-        @click="showNetPriceTooltip = true"
-      >
-        <div class="costs_type-label q-ma-none">{{ $t('statistics.approximateIncome') }}</div>
-        <div class="costs_type-value q-ml-auto">
-          <span v-if="netProfit === 0 || netProfit">{{ netProfit }}</span>
-          <q-spinner
-            v-else
-            size="1em"
-          />
-        </div>
-      </div>
-      <StatisticTable
-        :list-activities="listActivities"
-        :loading-activities="loadingActivities"
-        :sold-count="soldCount"
-        :orig-price-total="formatPrice(origPriceTotal)"
-        :new-price-total="formatPrice(newPriceTotal)"
-        :discount-total="discountTotal"
-        @return-product="returnProduct"
-      />
     </div>
   </q-page>
 </template>

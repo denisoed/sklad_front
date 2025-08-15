@@ -378,11 +378,17 @@ export default ({
     title: 'Негизги баптоолор',
     experimentalTab: {
       title: 'Эксперимент',
+      description: 'Эксперименталдык функциялар, туруктуу иштебеши мүмкүн.',
       enabled: 'Иштетилди',
       disabled: 'Өчүрүлдү',
       voiceCreate: {
         title: 'Добуш менен товар киргизүү',
-        description: 'Товарды <b>добуш менен түзүүгө жана түзөтүүгө</b> мүмкүндүк берет. Бул функция эксперименталдык жана туруктуу иштебеши мүмкүн.',
+        description: 'Товарды <b>добуш менен түзүүгө жана түзөтүүгө</b> мүмкүндүк берет.',
+      },
+      theme: {
+        title: 'Тема',
+        dark: 'Күнүн',
+        light: 'Күнүн эмес',
       },
     },
     userTab: {
@@ -578,6 +584,9 @@ export default ({
     productUpdateError: 'Товар жаңырган жок. Сервер ката.',
   },
   sizes: {
+    createdSuccessfully: 'Өлчөмдөр түзүлдү',
+    updatedSuccessfully: 'Өлчөмдөр жаңырды',
+    deletedSuccessfully: 'Өлчөмдөр өчүрүлдү',
     readySizes: 'Даяр өлчөмдөр',
     childrenShoes: 'Балдар бут кийим өлчөмдөрү',
     womenShoes: 'Аял бут кийим өлчөмдөрү',

@@ -3,7 +3,6 @@ import { ref, computed } from 'vue'
 import { SIZES, DELETE_SIZES } from 'src/graphql/sizes'
 import { apolloClient } from 'src/boot/apollo'
 import useHelpers from 'src/modules/useHelpers'
-import useProfile from 'src/modules/useProfile'
 import { useSizesStore } from 'src/stores/sizes'
 import { useMutation } from '@vue/apollo-composable'
 import { useI18n } from 'vue-i18n'
@@ -19,22 +18,22 @@ const useSizes = () => {
   const $q = useQuasar()
   const { showError, showSuccess } = useHelpers()
   const sizesStore = useSizesStore()
-  const { profile } = useProfile()
 
   const sizes = computed(() => sizesStore.getSizes)
 
   const isLoading = ref(false)
 
-  async function fetchSizes() {
+  async function fetchSizes(skladsIds = []) {
     try {
       isLoading.value = true;
       const { data } = await apolloClient.query({
         query: SIZES,
-        variables: { where: { users_permissions_users: profile.value.id }},
+        variables: { where: { sklads: skladsIds }},
         fetchPolicy: 'network-only'
       })
       sizesStore.setSizes(data?.sizes)
     } catch (error) {
+      console.error(error);
       showError($t('common.unknownError') + '. ' + $t('common.reloadApp'))
     } finally {
       isLoading.value = false;
@@ -63,7 +62,7 @@ const useSizes = () => {
       if (!deleteSizesError.value) {
         fetchSizes()
         // NOTE: add to history
-        showSuccess($t('bulk.productsDeleted'))
+        showSuccess($t('sizes.deletedSuccessfully'))
       } else {
         showError($t('common.error') + '. ' + $t('common.tryLater'))
       }

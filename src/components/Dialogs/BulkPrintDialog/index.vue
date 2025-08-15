@@ -110,7 +110,7 @@ export default defineComponent({
         align: 2,
       });
       addQrCode({
-        data: `/products?product=${product.id}`,
+        data: `/products?productId=${product.id}`,
         positionY: 80,
         size: 5,
         align: 2
