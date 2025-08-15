@@ -134,6 +134,7 @@ import { ref, reactive, onMounted, watch } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
 import useSizes from 'src/modules/useSizes'
+import useSklads from 'src/modules/useSklads'
 import { useI18n } from 'vue-i18n'
 import InputPrice from 'src/components/InputPrice.vue'
 
@@ -155,6 +156,7 @@ const colorPickerRef = ref(null)
 const availableSizes = ref([])
 const loadingAvailableSizes = ref(false)
 const { sizes, fetchSizes } = useSizes()
+const { sklads } = useSklads()
 
 const localFilters = reactive({ 
   ...props.filters,
@@ -171,7 +173,7 @@ watch(() => props.filters, (newFilters) => {
 async function fetchAvailableSizes() {
   try {
     loadingAvailableSizes.value = true
-    await fetchSizes()
+    await fetchSizes(sklads.value.map(s => s.id))
     const sizesSet = new Set()
     sizes.value?.forEach(sizeGroup => {
       sizeGroup.list?.forEach(sizeItem => {

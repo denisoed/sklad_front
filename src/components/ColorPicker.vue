@@ -127,9 +127,18 @@ function handlerClick(c) {
   }
 }
 
+function clear() {
+  selectedColorsArray.length = 0
+  emit('on-change', [])
+}
+
 watch(selected, (v) => {
   pick.color = v
   pick.nameKey = findColorByHex(v)?.nameKey || ''
+})
+
+defineExpose({
+  clear
 })
 </script>
 
