@@ -565,6 +565,7 @@ export default ({
     noPromotionToday: 'No promotion today',
     setPromotionDates: 'Set promotional price for specific dates',
     promotionDates: 'Promotion for dates:',
+    promotion: 'Promotion',
     sizesAddedToProduct: 'Sizes added to product: {name}',
     sizesRemovedFromProduct: 'Sizes removed from product: {name}',
     sizesAdded: 'Sizes added to product',
@@ -579,6 +580,7 @@ export default ({
     duplicating: 'Duplicating product',
     editing: 'Editing product',
     creating: 'Creating product',
+    draft: 'Draft',
   },
   errors: {
     photoUploadError: 'Failed to upload photo. Server issues.',

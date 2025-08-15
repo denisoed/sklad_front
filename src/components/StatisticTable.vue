@@ -15,7 +15,7 @@
         <q-th v-permissions="[READ_ORIGINAL_PRICE]">{{ $t('product.originalPriceShort') }}</q-th>
         <q-th>{{ $t('product.retailPriceShort') }}</q-th>
         <q-th>{{ $t('common.discount') }}</q-th>
-        <q-th>{{ $t('common.sizes') }}</q-th>
+        <q-th>{{ $t('common.sizes') }}/{{ $t('common.quantity') }}</q-th>
         <q-th>{{ $t('product.saleDate') }}</q-th>
         <q-th v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right">{{ $t('product.returnProduct') }}</q-th>
       </q-tr>

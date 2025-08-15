@@ -565,6 +565,7 @@ export default ({
     noPromotionToday: 'Бүгүн акция жок',
     setPromotionDates: 'Белгилүү күндөргө акция коюу',
     promotionDates: 'Акция күндөрү:',
+    promotion: 'Акция',
     sizesAddedToProduct: 'Товарга өлчөмдөр кошулду: {name}',
     sizesRemovedFromProduct: 'Товардан өлчөмдөр алынды: {name}',
     sizesAdded: 'Товарга өлчөмдөр кошулду',
@@ -579,6 +580,7 @@ export default ({
     duplicating: 'Товар көчүрүү',
     editing: 'Товар түзөтүү',
     creating: 'Товар түзүү',
+    draft: 'Черновик',
   },
   errors: {
     photoUploadError: 'Сүрөт жүктөлгөн жок. Сервер ката.',
