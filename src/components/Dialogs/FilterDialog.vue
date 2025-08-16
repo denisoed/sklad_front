@@ -130,7 +130,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import SwipeToClose from 'src/components/SwipeToClose.vue'
 import useSizes from 'src/modules/useSizes'
@@ -162,13 +162,6 @@ const localFilters = reactive({
   ...props.filters,
   colors: props.filters.colors || []
 })
-
-watch(() => props.filters, (newFilters) => {
-  Object.assign(localFilters, newFilters)
-  if (!localFilters.colors) {
-    localFilters.colors = []
-  }
-}, { deep: true })
 
 async function fetchAvailableSizes() {
   try {
@@ -237,7 +230,18 @@ function clear() {
   emit('update:modelValue', false)
 }
 
-onMounted(fetchAvailableSizes)
+watch(() => props.filters, (newFilters) => {
+  Object.assign(localFilters, newFilters)
+  if (!localFilters.colors) {
+    localFilters.colors = []
+  }
+}, { deep: true })
+
+watch(sklads, (value) => {
+  if (value?.length) {
+    fetchAvailableSizes()
+  }
+})
 </script>
 
 <style lang="scss" scoped>

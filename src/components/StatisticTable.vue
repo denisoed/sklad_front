@@ -47,8 +47,9 @@
           {{ props.row.created_at }}
         </q-td>
         <q-td v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right" @click.stop>
-          <template v-if="props.row?.product?.sklad?.id && props.row?.product?.id">
+          <div v-if="props.row?.product?.sklad?.id && props.row?.product?.id" class="flex items-center justify-center q-gap-sm">
             <q-btn
+              v-if="false"
               icon="mdi-eye"
               round
               push
@@ -66,7 +67,7 @@
               :title="$t('statistics.returnToWarehouse')"
               @click="$emit('return-product', props.row)"
             />
-          </template>
+          </div>
           <template v-else>
             <span class="text-grey">{{ $t('product.deletedFromWarehouse') }}</span>
           </template>

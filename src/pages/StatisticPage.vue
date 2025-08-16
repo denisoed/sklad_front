@@ -3,7 +3,7 @@
     <div class="container">
       <PageTitle :title="$t('statistics.reportsAllWarehouses')" />
       <!-- Reports -->
-      <div class="q-mb-lg">
+      <div class="q-mb-md">
         <h6 class="text-h6 q-mb-md q-mt-none">{{ $t('statistics.reports') }}</h6>
         <FilterDates @on-change="load" />
         <div
