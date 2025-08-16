@@ -5,7 +5,12 @@
       class="costs_type flex items-center q-pa-md q-mb-md q-mt-md border-radius-sm"
       style="background-color: rgb(255 0 255 / 8%);"
     >
-      <div class="costs_type-label q-ma-none">{{ $t('statistics.cashRegister') }}</div>
+      <div class="costs_type-label flex items-center q-gap-sm q-ma-none">
+        <q-icon name="mdi-arrow-up" size="xs" />
+        <span>
+          {{ $t('statistics.cashRegister') }}
+        </span>
+      </div>
       <div class="costs_type-value q-ml-auto">
         <q-spinner
           v-if="loadingActivities"
@@ -18,7 +23,12 @@
       class="costs_type flex items-center q-pa-md q-mb-md border-radius-sm"
       style="background-color: rgb(255 0 0 / 8%);"
     >
-      <div class="costs_type-label q-ma-none">{{ $t('statistics.expenses') }}</div>
+      <div class="costs_type-label flex items-center q-gap-sm q-ma-none">
+        <q-icon name="mdi-arrow-down" size="xs" />
+        <span>
+          {{ $t('statistics.expenses') }}
+        </span>
+      </div>
       <div class="costs_type-value q-ml-auto">
         <q-spinner
           v-if="loadingListCostsSum"

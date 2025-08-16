@@ -82,21 +82,21 @@
     </template>
     <template #top-row>
       <q-tr>
-        <q-td class="text-left text-bold">
+        <q-td class="text-left text-bold accent-bg">
           {{ $t('common.total') }}
         </q-td>
-        <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right text-bold">
+        <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right text-bold accent-bg">
           {{ origPriceTotal }}
         </q-td>
-        <q-td class="text-right text-bold">
+        <q-td class="text-right text-bold accent-bg">
           {{ newPriceTotal }}
         </q-td>
-        <q-td class="text-right text-bold">
+        <q-td class="text-right text-bold accent-bg">
           {{ discountTotal }}
         </q-td>
-        <q-td class="text-right text-bold" />
-        <q-td class="text-right text-bold" />
-        <q-td v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right text-bold" />
+        <q-td class="text-right text-bold accent-bg" />
+        <q-td class="text-right text-bold accent-bg" />
+        <q-td v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right text-bold accent-bg" />
       </q-tr>
     </template>
   </q-table>
@@ -168,6 +168,10 @@ function handleRowClick(event, row) {
     &:hover {
       background-color: rgba(0, 0, 0, 0.04);
     }
+  }
+
+  .accent-bg {
+    background-color: rgba(var(--q-primary-rgb), 0.1);
   }
 }
 </style> 
