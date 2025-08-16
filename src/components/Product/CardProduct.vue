@@ -43,10 +43,7 @@
           </div>
           <div class="card-product_color">
             <span>{{ $t('common.color') }}</span>
-            <div
-              v-if="color"
-              :style="`background-color: ${color};`"
-            />
+            <ColorDisplay v-if="color" :color="color" size="16px" />
             <div v-else>n/a</div>
           </div>
         </div>
@@ -74,91 +71,78 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import moment from 'moment'
 import {
   computed,
-  defineComponent,
   toRefs
 } from 'vue'
 import { FILTER_FORMAT } from 'src/config'
 import { READ_ORIGINAL_PRICE } from 'src/permissions'
 import PriceFormatter from 'src/components/PriceFormatter.vue'
+import ColorDisplay from 'src/components/ColorDisplay.vue'
 import SizeCount from 'src/components/SizeCount.vue'
 
-export default defineComponent({
-  name: 'CardProduct',
-  components: {
-    PriceFormatter,
-    SizeCount
+const props = defineProps({
+  id: {
+    type: String,
+    default: null
   },
-  props: {
-    id: {
-      type: String,
-      default: null
-    },
-    sklad: {
-      type: String,
-      default: null
-    },
-    name: {
-      type: String,
-      default: null
-    },
-    origPrice: {
-      type: Number,
-      default: null
-    },
-    newPrice: {
-      type: Number,
-      default: null
-    },
-    discountPrice: {
-      type: Number,
-      default: null
-    },
-    discountDays: {
-      type: Array,
-      default: null
-    },
-    withDiscount: {
-      type: Boolean,
-      default: false
-    },
-    sizes: {
-      type: Array,
-      default: () => []
-    },
-    color: {
-      type: String,
-      default: null
-    },
-    image: {
-      type: String,
-      default: null
-    },
-    countSizes: {
-      type: Number,
-      default: null
-    },
-    useNumberOfSizes: {
-      type: Boolean,
-      default: false
-    },
+  sklad: {
+    type: String,
+    default: null
   },
-  setup(props) {
-    const TODAY = Date.now()
-    const { discountDays } = toRefs(props)
+  name: {
+    type: String,
+    default: null
+  },
+  origPrice: {
+    type: Number,
+    default: null
+  },
+  newPrice: {
+    type: Number,
+    default: null
+  },
+  discountPrice: {
+    type: Number,
+    default: null
+  },
+  discountDays: {
+    type: Array,
+    default: null
+  },
+  withDiscount: {
+    type: Boolean,
+    default: false
+  },
+  sizes: {
+    type: Array,
+    default: () => []
+  },
+  color: {
+    type: String,
+    default: null
+  },
+  image: {
+    type: String,
+    default: null
+  },
+  countSizes: {
+    type: Number,
+    default: null
+  },
+  useNumberOfSizes: {
+    type: Boolean,
+    default: false
+  },
+})
 
-    const isDiscountToday = computed(() => {
-      return discountDays.value?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
-    })
+const TODAY = Date.now()
+const { discountDays } = toRefs(props)
 
-    return {
-      isDiscountToday,
-      READ_ORIGINAL_PRICE
-    }
-  }
+const isDiscountToday = computed(() => {
+  return discountDays.value?.some(d => d === moment(TODAY).format(FILTER_FORMAT))
 })
 </script>
 
@@ -270,12 +254,6 @@ export default defineComponent({
   &_color {
     span {
       color: var(--text-description);
-    }
-  
-    > div {
-      width: 32px;
-      height: 16px;
-      border-radius: 3px;
     }
     
     > div {

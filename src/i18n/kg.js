@@ -39,6 +39,8 @@ export default ({
     },
   },
   common: {
+    select: 'Тап',
+    sell: 'Сатуу',
     more: 'Көп',
     ok: 'OK',
     clear: 'Тазалоо',

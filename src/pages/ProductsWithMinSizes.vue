@@ -87,7 +87,7 @@ import {
   onBeforeMount,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CardProduct from 'src/components/CardProduct.vue'
+import CardProduct from 'src/components/Product/CardProduct.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import useProduct from 'src/modules/useProduct'
 import useSklads from 'src/modules/useSklads'

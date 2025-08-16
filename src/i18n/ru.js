@@ -39,6 +39,8 @@ export default ({
     },
   },
   common: {
+    select: 'Выбрать',
+    sell: 'Продать',
     more: 'Ещё',
     ok: 'OK',
     clear: 'Очистить',

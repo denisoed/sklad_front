@@ -15,14 +15,31 @@
         :id="props.row.id"
         :class="{ 'table-row-highlight': highlightRowId === props.row.id }"
       >
-        <!-- Checkbox -->
-        <q-td key="select" :props="props" @click.stop>
-          <q-checkbox
-            v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: props.row?.sklad?.id }"
-            :model-value="bulkProducts"
-            @update:model-value="$emit('update:bulkProducts', $event)"
-            :val="props.row"
-          />
+        <!-- Actions -->
+        <q-td key="actions" :props="props" @click.stop>
+          <div class="flex flex-row no-wrap q-gutter-md justify-center">
+            <!-- View Product -->
+            <q-btn
+              round
+              push
+              size="sm"
+              icon="mdi-eye"
+              class="hidden"
+              text-color="primary"
+              :to="`/sklad/${props.row?.sklad?.id}/product/${props.row.id}`"
+            />
+            
+            <!-- Add to Basket -->
+            <q-btn
+              v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: props.row?.sklad?.id }"
+              round
+              push
+              size="sm"
+              icon="mdi-basket-plus-outline"
+              text-color="deep-orange"
+              @click="$emit(props.row.useNumberOfSizes ? 'openCountModal' : 'openSizesModal', props.row)"
+            />
+          </div>
         </q-td>
         
         <!-- Image -->
@@ -84,31 +101,14 @@
           </div>
         </q-td>
 
-        <!-- Actions -->
-        <q-td key="actions" :props="props" @click.stop>
-          <div class="flex flex-row no-wrap q-gutter-md justify-center">
-            <!-- View Product -->
-            <q-btn
-              round
-              push
-              size="sm"
-              icon="mdi-eye"
-              class="hidden"
-              text-color="primary"
-              :to="`/sklad/${props.row?.sklad?.id}/product/${props.row.id}`"
-            />
-            
-            <!-- Add to Basket -->
-            <q-btn
-              v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: props.row?.sklad?.id }"
-              round
-              push
-              size="sm"
-              icon="mdi-basket-plus-outline"
-              text-color="deep-orange"
-              @click="$emit(props.row.useNumberOfSizes ? 'openCountModal' : 'openSizesModal', props.row)"
-            />
-          </div>
+        <!-- Checkbox -->
+        <q-td key="select" :props="props" @click.stop>
+          <q-checkbox
+            v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: props.row?.sklad?.id }"
+            :model-value="bulkProducts"
+            @update:model-value="$emit('update:bulkProducts', $event)"
+            :val="props.row"
+          />
         </q-td>
       </q-tr>
     </template>
@@ -155,11 +155,11 @@ const highlightRowId = ref(null)
 
 const columns = computed(() => [
   {
-    name: 'select',
-    label: '',
-    field: 'select',
+    name: 'actions',
+    label: $t('common.sell'),
+    field: 'actions',
     align: 'center',
-    style: 'width: 50px'
+    style: 'width: 120px'
   },
   {
     name: 'image',
@@ -189,12 +189,12 @@ const columns = computed(() => [
     style: 'width: 120px'
   },
   {
-    name: 'actions',
-    label: $t('common.actions'),
-    field: 'actions',
+    name: 'select',
+    label: $t('common.select'),
+    field: 'select',
     align: 'center',
-    style: 'width: 120px'
-  }
+    style: 'width: 50px'
+  },
 ])
 
 function goToProduct(product) {

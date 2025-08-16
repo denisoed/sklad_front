@@ -39,6 +39,8 @@ export default ({
     },
   },
   common: {
+    select: 'Select',
+    sell: 'Sell',
     more: 'More',
     ok: 'OK',
     clear: 'Clear',
