@@ -539,7 +539,7 @@ export default ({
     addPrice: 'Добавить цену',
     soldUnits: 'Продано единиц:',
     deletedFromWarehouse: 'Удалён со склада',
-    returnProduct: 'Возврат товара',
+    returnProduct: 'Возврат',
     saleDate: 'Дата продажи',
     productName: 'Название товара',
     productNameRequired: 'Название товара *',
@@ -612,7 +612,7 @@ export default ({
   statistics: {
     reportsAllWarehouses: 'Отчеты по всем складам',
     returnToWarehouse: 'Вернуть на склад',
-    returnConfirm: 'Хотите вернуть на склад товары?',
+    returnConfirm: 'Хотите вернуть этот товар на склад?',
     return: 'Вернуть',
     finances: 'Финансы',
     reports: 'Сводка',

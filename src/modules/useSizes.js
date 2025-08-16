@@ -24,6 +24,7 @@ const useSizes = () => {
   const isLoading = ref(false)
 
   async function fetchSizes(skladsIds = []) {
+    if (!skladsIds?.length) return
     try {
       isLoading.value = true;
       const { data } = await apolloClient.query({

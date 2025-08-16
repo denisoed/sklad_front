@@ -539,7 +539,7 @@ export default ({
     addPrice: 'Add price',
     soldUnits: 'Units sold:',
     deletedFromWarehouse: 'Removed from warehouse',
-    returnProduct: 'Product return',
+    returnProduct: 'Return',
     saleDate: 'Sale date',
     productName: 'Product name',
     productNameRequired: 'Product name *',
@@ -612,7 +612,7 @@ export default ({
   statistics: {
     reportsAllWarehouses: 'Reports for all warehouses',
     returnToWarehouse: 'Return to warehouse',
-    returnConfirm: 'Do you want to return products to warehouse?',
+    returnConfirm: 'Do you want to return this product to warehouse?',
     return: 'Return',
     finances: 'Finances',
     reports: 'Summary',

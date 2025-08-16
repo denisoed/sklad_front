@@ -612,7 +612,7 @@ export default ({
   statistics: {
     reportsAllWarehouses: 'Бардык складдардын отчеттору',
     returnToWarehouse: 'Складга кайтаруу',
-    returnConfirm: 'Товарларды складына кайтаруу?',
+    returnConfirm: 'Бул товарды складга кайтаруу?',
     return: 'Кайтаруу',
     finances: 'Каржы',
     reports: 'Жыйынтык',
