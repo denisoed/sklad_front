@@ -7,20 +7,16 @@
   />
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
 
-export default defineComponent({
-  name: 'ColorDisplay',
-  props: {
-    color: {
-      type: String,
-      default: ''
-    },
-    size: {
-      type: String,
-      default: '20px'
-    }
+defineProps({
+  color: {
+    type: String,
+    default: ''
+  },
+  size: {
+    type: String,
+    default: '20px'
   }
 })
 </script>

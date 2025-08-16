@@ -25,7 +25,7 @@
                 </div>
   
                 <div class="feedback_popup-body" :class="{ selectedRating }">
-                  <div class="feedback_popup-body_buttons flex q-gap-md q-py-xs">
+                  <div class="feedback_popup-body_buttons flex q-gap-md">
                     <q-btn
                       v-for="(b, i) in BUTTONS"
                       :key="i"
@@ -34,10 +34,12 @@
                       round
                       @click="select(b.rating)"
                     >
-                      <q-img
-                        :src="b.src"
-                        :alt="b.alt"
-                      />
+                      <div class="feedback_popup-body_buttons_img">
+                        <q-img
+                          :src="b.src"
+                          :alt="b.alt"
+                        />
+                      </div>
                     </q-btn>
                   </div>
                 </div>
@@ -53,7 +55,7 @@
                 </div>
                 <q-input
                   v-model="comment"
-                  filled
+                  outlined
                   type="textarea"
                   :placeholder="$t('product.writeEverything')"
                   rows="4"
@@ -194,8 +196,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 .feedback {
   &_popup-body_buttons {
-    .q-img {
+    &_img {
       width: 40px;
+
+      .q-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
     }
   }
 

@@ -65,7 +65,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import CardProduct from 'src/components/CardProduct.vue'
+import CardProduct from 'src/components/Product/CardProduct.vue'
 import {
   CAN_SELL_PRODUCT,
   CAN_UPDATE_PRODUCT
