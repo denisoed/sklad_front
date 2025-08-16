@@ -102,6 +102,7 @@
     <!-- Dialog -->
     <ModalCountToBucket
       v-model="modalCountToBucket"
+      :title="$t('bucket.updateBasketTitle')"
       :selected="selectedSaleProduct?.countSizes"
       :max="selectedSaleProduct?.countSizes"
       :discount-price="selectedSaleProduct?.discount"
@@ -117,6 +118,7 @@
 
     <ModalSizesToBucket
       v-model="modalSizesToBucket"
+      :title="$t('bucket.updateBasketTitle')"
       :sizes="selectedSaleProduct?.sizes"
       :selected="selectedSaleProduct?.sizes"
       :discount-price="selectedSaleProduct?.discount"

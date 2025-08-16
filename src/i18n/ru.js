@@ -205,6 +205,7 @@ export default ({
     addToBasket: 'Добавить товары в корзину',
     soldSuccessfully: 'Товары успешно проданы',
     addToBasketTitle: 'Добавить товар в корзину',
+    updateBasketTitle: 'Обновить товар в корзине',
     removeFromBasket: 'Удалить этот товар из корзины?',
     removeDescription: 'При удалении товара из корзины, он будет возвращен на склад.',
     errorUpdate: 'Не удалось обновить продукт. Попробуйте позже.',

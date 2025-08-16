@@ -123,6 +123,7 @@
               push
               size="sm"
               icon="mdi-eye"
+              class="hidden"
               text-color="primary"
               :to="`/product/${props.row.product?.id}`"
             />

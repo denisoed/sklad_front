@@ -205,6 +205,7 @@ export default ({
     addToBasket: 'Add products to cart',
     soldSuccessfully: 'Products sold successfully',
     addToBasketTitle: 'Add product to cart',
+    updateBasketTitle: 'Update product in cart',
     removeFromBasket: 'Remove this product from cart?',
     removeDescription: 'When removing a product from the cart, it will be returned to the warehouse.',
     errorUpdate: 'Failed to update product. Try again later.',

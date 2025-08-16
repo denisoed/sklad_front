@@ -205,6 +205,7 @@ export default ({
     addToBasket: 'Товарды себетке кошуу',
     soldSuccessfully: 'Товарлар сатылды',
     addToBasketTitle: 'Товар кошуу',
+    updateBasketTitle: 'Товар жаңыртуу',
     removeFromBasket: 'Товарды себеттен өчүрөсүзбү?',
     removeDescription: 'Себеттен өчүрсөңүз, товар складына кайтарылат.',
     errorUpdate: 'Товар жаңырган жок. Кийин аракет кылыңыз.',
