@@ -12,9 +12,10 @@
       </div>
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          {{ selectedCost ? $t('common.update') : $t('costs.create') }}
+          {{ selectedCost?.costId ? $t('costs.update') : $t('costs.create') }}
         </p>
-        <div class="flex justify-center q-gap-md full-width q-mt-md">
+        <q-separator class="full-width q-mb-md q-mt-sm" />
+        <div class="flex justify-center q-gap-md full-width">
           <!-- Sklads -->
           <TheSelector
             v-model="formData.sklad"
@@ -24,7 +25,7 @@
             outlined
             class="full-width"
             :label="$t('common.warehouse') + ' *'"
-            :hint="$t('category.selectWarehouse')"
+            :hint="$t('warehouse.selectWarehouseHint')"
             tabindex="1"
             clearable
             :rules="[() => !!formData.sklad || $t('common.requiredField')]"
@@ -53,12 +54,12 @@
           <q-separator class="full-width" />
           <div class="flex justify-between no-wrap full-width q-gap-md">
             <q-btn
-              v-if="selectedCost"
+              v-if="selectedCost?.costId"
               style="height:40px;"
               color="deep-orange"
               icon="mdi-trash-can-outline"
               push
-              @click="remove(selectedCost?.costId)"
+              @click="remove(selectedCost.costId)"
             />
             <q-btn
               class="button-size q-mr-auto"

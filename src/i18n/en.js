@@ -136,6 +136,7 @@ export default ({
   costs: {
     title: 'Financial expenses',
     create: 'Create expense',
+    update: 'Update expense',
     removeCost: 'Delete expense',
     removeConfirm: 'Are you sure you want to delete this expense?',
     exampleDescription: 'Example: Advertising',
@@ -204,6 +205,7 @@ export default ({
     addToBasket: 'Add products to cart',
     soldSuccessfully: 'Products sold successfully',
     addToBasketTitle: 'Add product to cart',
+    updateBasketTitle: 'Update product in cart',
     removeFromBasket: 'Remove this product from cart?',
     removeDescription: 'When removing a product from the cart, it will be returned to the warehouse.',
     errorUpdate: 'Failed to update product. Try again later.',
@@ -241,6 +243,7 @@ export default ({
     deleteConfirm: 'Are you sure you want to delete this warehouse?',
     deletedSuccessfully: 'Warehouse deleted successfully',
     deleteWarning: 'After deleting the warehouse, all products and categories will be deleted.',
+    selectWarehouseHint: 'Select warehouse',
   },
   category: {
     title: 'Categories',

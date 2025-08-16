@@ -12,9 +12,10 @@
       </div>
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-          {{ selectedCategory ? $t('common.update') : $t('category.create') }} {{ $t('common.category').toLowerCase() }}
+          {{ selectedCategory ? $t('category.update') : $t('category.create') }}
         </p>
-        <div class="flex justify-center q-gap-md full-width q-mt-md">
+        <q-separator class="full-width q-mb-md q-mt-sm" />
+        <div class="flex justify-center q-gap-md full-width">
           <!-- Sklads -->
           <TheSelector
             v-model="formData.sklad"

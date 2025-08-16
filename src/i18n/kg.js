@@ -136,6 +136,7 @@ export default ({
   costs: {
     title: 'Чыгымдар',
     create: 'Чыгым түзүү',
+    update: 'Чыгым жаңыртуу',
     removeCost: 'Чыгымды өчүрүү',
     removeConfirm: 'Бул чыгымды өчүрөсүзбү?',
     exampleDescription: 'Мисалы: Жарнама',
@@ -204,6 +205,7 @@ export default ({
     addToBasket: 'Товарды себетке кошуу',
     soldSuccessfully: 'Товарлар сатылды',
     addToBasketTitle: 'Товар кошуу',
+    updateBasketTitle: 'Товар жаңыртуу',
     removeFromBasket: 'Товарды себеттен өчүрөсүзбү?',
     removeDescription: 'Себеттен өчүрсөңүз, товар складына кайтарылат.',
     errorUpdate: 'Товар жаңырган жок. Кийин аракет кылыңыз.',
@@ -241,6 +243,7 @@ export default ({
     deleteConfirm: 'Чын эле бул складды өчүрөсүзбү?',
     deletedSuccessfully: 'Склад өчүрүлдү',
     deleteWarning: 'Склад өчүрүлсө, бардык товар жана категория өчөт.',
+    selectWarehouseHint: 'Склад тандаңыз',
   },
   category: {
     title: 'Категориялар',

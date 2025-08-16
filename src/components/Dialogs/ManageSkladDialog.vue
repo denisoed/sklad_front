@@ -13,7 +13,8 @@
         <p class="full-width text-left text-bold q-mb-none text-subtitle1">
           {{ selectedSklad ? $t('common.update') : $t('warehouse.create') }}
         </p>
-        <div class="flex justify-center q-gap-md full-width q-mt-md">
+        <q-separator class="full-width q-mb-md q-mt-sm" />
+        <div class="flex justify-center q-gap-md full-width">
           <q-input
             v-model="formData.name"
             outlined

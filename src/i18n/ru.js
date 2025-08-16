@@ -136,6 +136,7 @@ export default ({
   costs: {
     title: 'Финансовые расходы',
     create: 'Создать расход',
+    update: 'Обновить расход',
     removeCost: 'Удалить расход',
     removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
     exampleDescription: 'Например: На рекламу',
@@ -204,6 +205,7 @@ export default ({
     addToBasket: 'Добавить товары в корзину',
     soldSuccessfully: 'Товары успешно проданы',
     addToBasketTitle: 'Добавить товар в корзину',
+    updateBasketTitle: 'Обновить товар в корзине',
     removeFromBasket: 'Удалить этот товар из корзины?',
     removeDescription: 'При удалении товара из корзины, он будет возвращен на склад.',
     errorUpdate: 'Не удалось обновить продукт. Попробуйте позже.',
@@ -241,6 +243,7 @@ export default ({
     deleteConfirm: 'Вы уверены, что хотите удалить этот склад?',
     deletedSuccessfully: 'Склад успешно удалён',
     deleteWarning: 'После удаления склада, все товары и категории будут удалены.',
+    selectWarehouseHint: 'Выберите склад',
   },
   category: {
     title: 'Категории',
