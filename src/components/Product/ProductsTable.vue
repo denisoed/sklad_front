@@ -93,6 +93,7 @@
               push
               size="sm"
               icon="mdi-eye"
+              class="hidden"
               text-color="primary"
               :to="`/sklad/${props.row?.sklad?.id}/product/${props.row.id}`"
             />
