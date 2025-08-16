@@ -241,7 +241,7 @@ watch(sklads, (value) => {
   if (value?.length) {
     fetchAvailableSizes()
   }
-})
+}, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
