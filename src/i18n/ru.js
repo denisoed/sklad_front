@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    all: 'Все',
     select: 'Выбрать',
     sell: 'Продать',
     more: 'Ещё',
@@ -292,7 +293,6 @@ export default ({
     },
   },
   products: {
-    all: 'Все',
     lowStock: 'Заканчивается',
     colors: 'Цвета',
     sizes: 'Размеры',

@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    all: 'All',
     select: 'Select',
     sell: 'Sell',
     more: 'More',
@@ -292,7 +293,6 @@ export default ({
     },
   },
   products: {
-    all: 'All',
     lowStock: 'Low stock',
     colors: 'Colors',
     sizes: 'Sizes',

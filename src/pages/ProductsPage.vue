@@ -154,7 +154,7 @@ import { useBulkStore } from 'src/stores/bulk'
 
 import FiltersComp from 'src/components/FiltersComp.vue'
 import ProductControls from 'src/components/ProductControls.vue'
-import MiniTabs from 'src/components/Product/MiniTabs.vue'
+import MiniTabs from 'src/components/MiniTabs.vue'
 import ProductsGrid from 'src/components/Product/ProductsGrid.vue'
 import ProductsTable from 'src/components/Product/ProductsTable.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
@@ -182,7 +182,7 @@ const { bulkProducts } = storeToRefs(bulkStore)
 
 const ALL_TAB = computed(() => ({
   id: 0,
-  name: $t('products.all'),
+  name: $t('common.all'),
   color: '#fff'
 }))
 

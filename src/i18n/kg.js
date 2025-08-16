@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    all: 'Баары',
     select: 'Тап',
     sell: 'Сатуу',
     more: 'Көп',
@@ -292,7 +293,6 @@ export default ({
     },
   },
   products: {
-    all: 'Баары',
     lowStock: 'Аз калган',
     colors: 'Түстөр',
     sizes: 'Өлчөмдөр',
