@@ -136,6 +136,7 @@ export default ({
   costs: {
     title: 'Чыгымдар',
     create: 'Чыгым түзүү',
+    update: 'Чыгым жаңыртуу',
     removeCost: 'Чыгымды өчүрүү',
     removeConfirm: 'Бул чыгымды өчүрөсүзбү?',
     exampleDescription: 'Мисалы: Жарнама',
@@ -241,6 +242,7 @@ export default ({
     deleteConfirm: 'Чын эле бул складды өчүрөсүзбү?',
     deletedSuccessfully: 'Склад өчүрүлдү',
     deleteWarning: 'Склад өчүрүлсө, бардык товар жана категория өчөт.',
+    selectWarehouseHint: 'Склад тандаңыз',
   },
   category: {
     title: 'Категориялар',

@@ -136,6 +136,7 @@ export default ({
   costs: {
     title: 'Финансовые расходы',
     create: 'Создать расход',
+    update: 'Обновить расход',
     removeCost: 'Удалить расход',
     removeConfirm: 'Вы уверены, что хотите удалить этот расход?',
     exampleDescription: 'Например: На рекламу',
@@ -241,6 +242,7 @@ export default ({
     deleteConfirm: 'Вы уверены, что хотите удалить этот склад?',
     deletedSuccessfully: 'Склад успешно удалён',
     deleteWarning: 'После удаления склада, все товары и категории будут удалены.',
+    selectWarehouseHint: 'Выберите склад',
   },
   category: {
     title: 'Категории',

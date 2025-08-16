@@ -136,6 +136,7 @@ export default ({
   costs: {
     title: 'Financial expenses',
     create: 'Create expense',
+    update: 'Update expense',
     removeCost: 'Delete expense',
     removeConfirm: 'Are you sure you want to delete this expense?',
     exampleDescription: 'Example: Advertising',
@@ -241,6 +242,7 @@ export default ({
     deleteConfirm: 'Are you sure you want to delete this warehouse?',
     deletedSuccessfully: 'Warehouse deleted successfully',
     deleteWarning: 'After deleting the warehouse, all products and categories will be deleted.',
+    selectWarehouseHint: 'Select warehouse',
   },
   category: {
     title: 'Categories',
