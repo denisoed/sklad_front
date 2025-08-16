@@ -195,20 +195,20 @@ watch(profile, (val) => {
 .user-tab {
   &_subscr {
     box-shadow: var(--box-shadow);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     background-color: #4158D0;
     background-image: linear-gradient(43deg, var(--q-primary) 0%, #C850C0 46%, #FFCC70 100%);
   }
 
   &_info {
     box-shadow: var(--box-shadow);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
   }
   
   &_logout {
     position: relative;
     box-shadow: var(--box-shadow);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
   }
 
   .input-title {

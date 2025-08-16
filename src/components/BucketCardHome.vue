@@ -60,7 +60,7 @@ export default defineComponent({
   
   .bucket-card {
     width: 100%;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
     cursor: pointer;
     transition: all 0.2s ease;

@@ -297,7 +297,7 @@ const columns = computed(() => [
   }
   
   :deep(.q-table) {
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
   }
 }

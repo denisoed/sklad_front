@@ -148,7 +148,7 @@ watch(dialog, (val) => {
     width: 100%;
     display: block;
     box-shadow: var(--box-shadow);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     border-right: 5px solid;
     position: relative;
     margin-bottom: 8px; // Add margin between items

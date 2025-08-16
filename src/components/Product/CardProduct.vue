@@ -150,7 +150,7 @@ const isDiscountToday = computed(() => {
 .card-product {
   display: flex;
   position: relative;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   box-shadow: var(--box-shadow);
 
   &_controls {
@@ -205,7 +205,7 @@ const isDiscountToday = computed(() => {
     display: flex;
     align-items: flex-start;
     overflow: hidden;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     
     .q-img {
       width: 100%;

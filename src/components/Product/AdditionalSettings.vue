@@ -113,7 +113,7 @@ watch(() => props.percentageDiscount, (val) => {
 
 <style lang="scss" scoped>
 .additional-settings {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
 }
 
 .discount-tabs {

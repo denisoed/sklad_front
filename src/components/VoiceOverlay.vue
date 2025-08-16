@@ -723,7 +723,7 @@ onBeforeUnmount(async () => {
   font-size: 16px;
   color: #fff;
   margin-bottom: 24px;
-  border-radius: 16px;
+  border-radius: var(--border-radius-md);
   background-color: rgba(0, 0, 0, 0.90);
   backdrop-filter: blur(6px);
   padding: 16px;

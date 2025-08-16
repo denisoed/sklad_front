@@ -282,7 +282,7 @@ export default defineComponent({
       min-width: 30px;
       height: 30px;
       min-height: 30px;
-      border-radius: 4px;
+      border-radius: var(--border-radius-xs);
 
       span {
         font-size: 16px;

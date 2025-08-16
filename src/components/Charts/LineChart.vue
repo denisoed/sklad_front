@@ -88,16 +88,16 @@ const chartOptions = computed(() => ({
 .line-chart {
   background: var(--block-bg);
   box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   
   :deep(.vue-apexcharts) {
     background: var(--block-bg);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     min-height: auto !important;
     max-height: 300px;
     
     .apexcharts-svg {
-      border-radius: var(--border-radius);
+      border-radius: var(--border-radius-sm);
     }
   }
 }

@@ -18,7 +18,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .subscr-expired {
   box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   background-color: rgb(255 0 0 / 20%);
   position: relative;
   overflow: hidden;

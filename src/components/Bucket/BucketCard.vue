@@ -258,7 +258,7 @@ watch(checked, (newValue) => {
 .bucket-card {
   display: flex;
   position: relative;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   box-shadow: var(--box-shadow);
   overflow: hidden;
 
@@ -266,7 +266,7 @@ watch(checked, (newValue) => {
     padding: 2px 6px;
     background-color: red;
     position: absolute;
-    border-bottom-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius-sm);
     top: 0;
     left: 0;
     color: #fff;
@@ -310,7 +310,7 @@ watch(checked, (newValue) => {
       min-width: 70px;
       max-width: 70px;
       background-color: #eee;
-      border-radius: 8px;
+      border-radius: var(--border-radius-sm);
     }
   }
 
@@ -322,7 +322,7 @@ watch(checked, (newValue) => {
     > div {
       width: 32px;
       height: 16px;
-      border-radius: 3px;
+      border-radius: var(--border-radius-xs);
       margin-top: 2px;
       box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, 0.2);
     }

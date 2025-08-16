@@ -184,7 +184,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   .ble {
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
     padding: 20px;
   }
@@ -192,7 +192,7 @@ export default defineComponent({
   .ble-item {
     padding: 10px;
     box-shadow: var(--box-shadow);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
   }
 
   span {

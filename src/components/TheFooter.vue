@@ -316,7 +316,7 @@ onMounted(() => {
     background: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 2px 8px;
-    border-radius: 12px;
+    border-radius: var(--border-radius-sm);
     font-size: 11px;
     font-weight: 400;
     white-space: nowrap;

@@ -186,7 +186,7 @@ watch(sklads, (val) => {
   &-card {
     width: 200px;
     min-width: 200px;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
     scroll-snap-align: start;
     display: flex;

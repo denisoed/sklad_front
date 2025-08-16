@@ -40,7 +40,7 @@ const props = defineProps({
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   box-shadow: var(--box-shadow);
   overflow: hidden;
   cursor: pointer;

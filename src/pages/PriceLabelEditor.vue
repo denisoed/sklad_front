@@ -582,7 +582,7 @@ export default defineComponent({
   position: relative;
 
   canvas {
-    border-radius: 10px;
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
     background: #fff;
   }
@@ -626,7 +626,7 @@ export default defineComponent({
 
 .price-label_elements {
   box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
 }
 
 .slide-down-enter-active {

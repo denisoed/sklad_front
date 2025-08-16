@@ -74,7 +74,7 @@ export default defineComponent({
 
   &_block {
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--border-radius-sm);
     background: #fff;
     width: 100%;
     max-width: 250px;

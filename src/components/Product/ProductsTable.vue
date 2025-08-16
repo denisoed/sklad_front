@@ -218,7 +218,7 @@ function goToProduct(product) {
   }
   
   :deep(.q-table) {
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
   }
 }
