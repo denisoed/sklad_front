@@ -1,7 +1,8 @@
 <template>
   <div class="finance-tab flex column q-gap-md">
     <FilterDates @on-change="load" />
-    <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
+
+    <!-- Cash register -->
     <div
       class="costs_type full-width flex items-center q-pa-md border-radius-sm"
       style="background-color: rgb(255 0 255 / 8%);"
@@ -20,6 +21,8 @@
         <span v-else>{{ formatPrice(priceTotal) }}</span>
       </div>
     </div>
+
+    <!-- Expenses -->
     <div
       class="costs_type full-width flex items-center q-pa-md border-radius-sm"
       style="background-color: rgb(255 0 0 / 8%);"
@@ -38,6 +41,8 @@
         <span v-else>{{ formatPrice(costsSum) }}</span>
       </div>
     </div>
+
+    <!-- Statistic -->
     <div class="finance-tab-cards full-width q-gap-md">
       <div
         v-for="(c, i) of statisticFinance"
@@ -55,6 +60,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Chart -->
+    <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
   </div>
 </template>
 

@@ -132,7 +132,9 @@ function onChangeSklad(id) {
 }
 
 function onLongPressSklad(id) {
-  router.push(`/sklad/${id}`)
+  if (id !== ALL_TAB.value.id) {
+    router.push(`/sklad/${id}`)
+  }
 }
 
 function onChangeType(id) {

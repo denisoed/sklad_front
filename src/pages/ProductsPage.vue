@@ -13,7 +13,7 @@
         :list="skladsTabs"
         :selected-id="selectedSkladId"
         scroll-to-active-tab
-        class="q-mb-md"
+        class="q-mb-md mini-tabs-sklads"
         @on-change="onChangeSklad"
         @long-press="onLongPressSklad"
       />
@@ -398,7 +398,9 @@ function toggleViewMode() {
 }
 
 function onLongPressSklad(id) {
-  router.push(`/sklad/${id}`)
+  if (id !== ALL_TAB.value.id) {
+    router.push(`/sklad/${id}`)
+  }
 }
 
 onBeforeMount(() => {
@@ -454,13 +456,6 @@ watch(
 .products {
   :deep(.small-card_color) {
     display: none;
-  }
-
-  :deep(.mini-tabs-categories) {
-    .small-card {
-      width: auto;
-      min-width: 100px;
-    }
   }
 }
 
