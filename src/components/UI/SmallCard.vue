@@ -33,8 +33,7 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .small-card {
-  width: 140px;
-  min-width: 140px;
+  min-width: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
