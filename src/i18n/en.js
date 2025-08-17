@@ -380,6 +380,7 @@ export default ({
     categoriesLabel: 'Categories',
     productsLabel: 'Products',
     countUnitsForSize: 'Number of units for size',
+    typesLabel: 'Reports',
   },
   mainSettings: {
     title: 'Main settings',

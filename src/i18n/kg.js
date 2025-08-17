@@ -380,6 +380,7 @@ export default ({
     categoriesLabel: 'Категориялар',
     productsLabel: 'Товарлар',
     countUnitsForSize: 'Өлчөм үчүн бирдик саны',
+    typesLabel: 'Отчеттор',
   },
   mainSettings: {
     title: 'Негизги баптоолор',

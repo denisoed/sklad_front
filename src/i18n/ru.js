@@ -157,7 +157,7 @@ export default ({
   footer: {
     home: 'Главная',
     products: 'Товары',
-    statistic: 'Отчеты',
+    statistic: 'Отчёты',
     bucket: 'Корзина',
   },
   auth: {
@@ -380,6 +380,7 @@ export default ({
     categoriesLabel: 'Категории',
     productsLabel: 'Товары',
     countUnitsForSize: 'Кол-во единиц для размера',
+    typesLabel: 'Отчёты',
   },
   mainSettings: {
     title: 'Основные Настройки',
@@ -610,7 +611,7 @@ export default ({
     cannotDeleteAllSizes: 'Нельзя удалять все размеры разом. Только один размер за раз.',
   },
   statistics: {
-    reportsAllWarehouses: 'Отчеты по всем складам',
+    reportsAllWarehouses: 'Отчёты по всем складам',
     returnToWarehouse: 'Вернуть на склад',
     returnConfirm: 'Хотите вернуть этот товар на склад?',
     return: 'Вернуть',
@@ -693,12 +694,12 @@ export default ({
     seeHistory :'Видит страницу История',
     seeSettings :'Видит страницу Настройки',
     seeCosts :'Видит страницу Расходы',
-    seeReports :'Видит страницу Отчеты',
+    seeReports :'Видит страницу Отчёты',
     seeOriginalPrice :'Видит Оптовую цену',
     seeStock :'Видит страницу Остатки',
-    seeNetPrice :'Отчеты: блок Чистый доход',
-    seeStatisticTableActions :'Отчеты: кнопки управления в таблице',
-    seeStatisticFinance :'Отчеты: блок Финансы',
+    seeNetPrice :'Отчёты: блок Чистый доход',
+    seeStatisticTableActions :'Отчёты: кнопки управления в таблице',
+    seeStatisticFinance :'Отчёты: блок Финансы',
     seeCategories :'Видит страницу Категории',
     canRemoveProduct :'Удалять товар',
     canSellProduct :'Продавать товар',
