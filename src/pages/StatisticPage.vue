@@ -137,6 +137,12 @@ function onLongPressSklad(id) {
 
 function onChangeType(id) {
   selectedType.value = id
+  if (id === 0) {
+    fetchSalesTabData(selectedSkladId.value)
+  }
+  if (id === 1) {
+    fetchFinanceTabData(selectedSkladId.value)
+  }
 }
 
 watch(sklads, (val) => {
