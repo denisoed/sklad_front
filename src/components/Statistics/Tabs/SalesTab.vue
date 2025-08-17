@@ -15,12 +15,6 @@
 
 <script setup>
 import { useQuasar } from 'quasar'
-import {
-  watch,
-} from 'vue'
-import { useRoute } from 'vue-router'
-import useDate from 'src/modules/useDate'
-import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
 import useHistory from 'src/modules/useHistory'
 import useHelpers from 'src/modules/useHelpers'
@@ -42,9 +36,10 @@ defineOptions({
   name: 'SalesTab'
 })
 
+const emit = defineEmits(['on-return-product'])
+
 const { t: $t } = useI18n()
 const $q = useQuasar()
-const { params } = useRoute()
 const { profile } = useProfile()
 
 const {
@@ -62,19 +57,15 @@ const {
 } = useHistory()
 const { showSuccess, showError } = useHelpers()
 const {
-  loadActivities,
   loadingActivities,
   listActivities,
-  refetchActivities,
   soldCount,
   origPriceTotal,
   newPriceTotal,
   discountTotal
 } = useStatistics()
-const { getCurrentMonth } = useDate()
 
 const { formatPrice } = useMoney()
-const { sklads } = useSklads()
 
 async function remove(activity) {
   try {
@@ -92,7 +83,7 @@ async function remove(activity) {
         id: activity.id
       });
       if (!deleteActivityError.value) {
-        refetchActivities()
+        emit('on-return-product', activity)
         createHistory({
           userId: +profile.value?.id || null,
           productId: +activity?.product?.id || null,
@@ -138,21 +129,4 @@ function returnProduct(activity) {
     remove(activity);
   })
 }
-
-function load(dates) {
-  const defaultDates = dates || { dates: getCurrentMonth() }
-  const where = {
-    sklad: params?.skladId || sklads.value?.map(s => s.id) || [],
-    ...defaultDates,
-  }
-  loadActivities(where)
-}
-
-watch(sklads, (val) => {
-  if (val?.length || params?.skladId) {
-    load()
-  }
-}, {
-  immediate: true
-})
 </script>

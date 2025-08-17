@@ -35,7 +35,7 @@
           v-if="loadingListCostsSum"
           size="1em"
         />
-        <span v-else>{{ costsSum }}</span>
+        <span v-else>{{ formatPrice(costsSum) }}</span>
       </div>
     </div>
     <div class="finance-tab-cards full-width q-gap-md">
@@ -61,22 +61,13 @@
 <script setup>
 import {
   computed,
-  watch,
 } from 'vue'
-import { useRoute } from 'vue-router'
-import useDate from 'src/modules/useDate'
-import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
 import FilterDates from 'src/components/FilterDates.vue'
 import LineChart from 'src/components/Charts/LineChart.vue'
-import { useLazyQuery } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
 import moment from 'moment'
-import {
-  STATISTIC_FINANCE,
-} from 'src/graphql/types'
 import { useI18n } from 'vue-i18n'
-import { LIST_COSTS_SUM } from 'src/graphql/costs'
 import { FILTER_FORMAT } from 'src/config'
 
 defineOptions({
@@ -84,31 +75,18 @@ defineOptions({
 })
 
 const { t: $t } = useI18n()
-const { params } = useRoute()
-const {
-  result: statisticFinanceResult,
-  loading: statisticFinanceLoading,
-  load: loadStatisticFinance,
-} = useLazyQuery(STATISTIC_FINANCE)
-const {
-  load: loadListCostsSum,
-  result: resultListCostsSum,
-  loading: loadingListCostsSum
-} = useLazyQuery(LIST_COSTS_SUM)
 
 const {
   priceTotal,
-  loadActivities,
   listActivities,
-  totalRevenue,
   loadingActivities,
-  fetchStatisticActivities,
-  loadingStatisticActivities
+  loadingStatisticActivities,
+  statisticFinance,
+  loadingListCostsSum,
+  costsSum
 } = useStatistics()
-const { getCurrentMonth } = useDate()
 
 const { formatPrice } = useMoney()
-const { sklads } = useSklads()
 
 const lineChartCategories = Array.from({ length: moment().daysInMonth() }, (_, i) => moment().startOf('month').add(i, 'days').format(FILTER_FORMAT))
 const lineChartSeries = computed(() => {
@@ -126,62 +104,6 @@ const lineChartSeries = computed(() => {
       }),
     }
   ]
-})
-
-const costsSum = computed(() => formatPrice(resultListCostsSum.value?.listCostsSum?.sum))
-const statisticFinance = computed(() => {
-  const data = statisticFinanceResult.value?.statisticFinance
-  return [
-    {
-      label: $t('statistics.marginalIncome'),
-      value: formatPrice(totalRevenue.value),
-      bg: 'rgb(0 255 255 / 8%)'
-    },
-    {
-      label: $t('statistics.expectedIncomeFromGoods'),
-      value: formatPrice(data?.incomeFromAvailableProducts),
-      bg: 'rgb(0 255 0 / 8%)'
-    },
-    {
-      label: $t('statistics.goodsWholesaleValue'),
-      value: formatPrice(data?.sumAvailableProductsWholesalePrice),
-      bg: 'rgb(255 255 0 / 8%)'
-    },
-  ]
-})
-
-function load(dates) {
-  const defaultDates = dates || { dates: getCurrentMonth() }
-  const where = {
-    sklad: params?.skladId || sklads.value?.map(s => s.id) || [],
-    ...defaultDates,
-  }
-  loadActivities(where)
-  fetchStatisticActivities(where)
-  loadStatisticFinance(
-    null,
-    {
-      where: {
-        sklad: params?.skladId
-      }
-    },
-    { fetchPolicy: 'network-only' }
-  )
-  loadListCostsSum(
-    null,
-    {
-      where
-    },
-    { fetchPolicy: 'network-only' }
-  )
-}
-
-watch(sklads, (val) => {
-  if (val?.length || params?.skladId) {
-    load()
-  }
-}, {
-  immediate: true
 })
 </script>
 

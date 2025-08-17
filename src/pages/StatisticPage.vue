@@ -23,7 +23,10 @@
       />
 
       <!-- Sales -->
-      <SalesTab v-if="selectedType === 0" />
+      <SalesTab
+        v-if="selectedType === 0"
+        @on-return-product="() => fetchSalesTabData(selectedSkladId)"
+      />
 
       <!-- Finance -->
       <FinanceTab v-if="selectedType === 1" v-permissions="[READ_STATISTIC_FINANCE]" />
@@ -34,7 +37,8 @@
 <script setup>
 import {
   computed,
-  ref
+  ref,
+  watch
 } from 'vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import SalesTab from 'src/components/Statistics/Tabs/SalesTab.vue'
@@ -44,8 +48,10 @@ import {
   READ_STATISTIC_FINANCE
 } from 'src/permissions'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import useSklads from 'src/modules/useSklads'
+import useStatistics from 'src/modules/useStatistics'
+import useDate from 'src/modules/useDate'
 
 defineOptions({
   name: 'StatisticPage'
@@ -54,6 +60,14 @@ defineOptions({
 const { t: $t } = useI18n()
 const { sklads } = useSklads()
 const router = useRouter()
+const { params } = useRoute()
+const { getCurrentMonth } = useDate()
+const {
+  fetchActivities,
+  fetchStatisticActivities,
+  fetchStatisticFinance,
+  fetchListCostsSum
+} = useStatistics()
 
 const selectedType = ref(0)
 const selectedSkladId = ref(0)
@@ -81,15 +95,40 @@ const skladsTabs = computed(() => {
   return [ALL_TAB.value, ...sklads.value]
 })
 
+function fetchSalesTabData(skladId, dates) {
+  const defaultDates = dates || { dates: getCurrentMonth() }
+  const where = {
+    sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
+    ...defaultDates,
+  }
+  fetchActivities(where)
+}
+
+function fetchFinanceTabData(skladId, dates) {
+  const defaultDates = dates || { dates: getCurrentMonth() }
+  const where = {
+    sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
+    ...defaultDates,
+  }
+  fetchActivities(where)
+  fetchStatisticActivities(where)
+  fetchStatisticFinance({
+    sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
+  })
+  fetchListCostsSum(where)
+}
+
 function onChangeSklad(id) {
   selectedSkladId.value = id
-  selectedType.value = ALL_TAB.value.id
-  router.replace({
-    query: {
-      skladId: id,
-    }
-  })
-  // loadData()
+  if (id !== ALL_TAB.value.id) {
+    router.replace({ query: { skladId: id } })
+  }
+  if (selectedType.value === 0) {
+    fetchSalesTabData(id)
+  }
+  if (selectedType.value === 1) {
+    fetchFinanceTabData(id)
+  }
 }
 
 function onLongPressSklad(id) {
@@ -99,6 +138,15 @@ function onLongPressSklad(id) {
 function onChangeType(id) {
   selectedType.value = id
 }
+
+watch(sklads, (val) => {
+  if (val?.length || params?.skladId) {
+    fetchSalesTabData()
+    fetchFinanceTabData()
+  }
+}, {
+  immediate: true
+})
 </script>
 
 <style lang="scss" scoped>

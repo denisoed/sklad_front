@@ -98,7 +98,7 @@ const qDateLocale = computed(() => ({
 const calendarDate = ref(props.selectedToday ? moment().startOf(DAY).format(FILTER_FORMAT) : null)
 const localSelectedTab = ref(props.selectedTab)
 
-function loadActivities(dates = null) {
+function fetchActivities(dates = null) {
   emit('on-change', dates)
 }
 
@@ -119,7 +119,7 @@ function onChangeTab(val) {
   } else {
     params = { dates: [moment().startOf(DAY).format(FILTER_FORMAT)]}
   }
-  loadActivities(params)
+  fetchActivities(params)
 }
 
 function filterByCalendar() {
@@ -133,7 +133,7 @@ function filterByCalendar() {
   const flatted = dates.flat(1)
   const formattedDates = flatted.map(fd => moment(fd).format(FILTER_FORMAT))
   localSelectedTab.value = null
-  loadActivities({ dates: formattedDates })
+  fetchActivities({ dates: formattedDates })
 }
 
 function clear() {
