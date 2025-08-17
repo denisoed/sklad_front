@@ -1,8 +1,9 @@
 <template>
-  <div class="finance-tab">
+  <div class="finance-tab flex column q-gap-md">
     <FilterDates @on-change="load" />
+    <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
     <div
-      class="costs_type flex items-center q-pa-md q-mb-md q-mt-md border-radius-sm"
+      class="costs_type full-width flex items-center q-pa-md border-radius-sm"
       style="background-color: rgb(255 0 255 / 8%);"
     >
       <div class="costs_type-label flex items-center q-gap-sm q-ma-none">
@@ -20,7 +21,7 @@
       </div>
     </div>
     <div
-      class="costs_type flex items-center q-pa-md q-mb-md border-radius-sm"
+      class="costs_type full-width flex items-center q-pa-md border-radius-sm"
       style="background-color: rgb(255 0 0 / 8%);"
     >
       <div class="costs_type-label flex items-center q-gap-sm q-ma-none">
@@ -37,7 +38,7 @@
         <span v-else>{{ costsSum }}</span>
       </div>
     </div>
-    <div class="finance-tab-cards q-gap-md">
+    <div class="finance-tab-cards full-width q-gap-md">
       <div
         v-for="(c, i) of statisticFinance"
         :key="i"
@@ -67,13 +68,16 @@ import useDate from 'src/modules/useDate'
 import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
 import FilterDates from 'src/components/FilterDates.vue'
+import LineChart from 'src/components/Charts/LineChart.vue'
 import { useLazyQuery } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
+import moment from 'moment'
 import {
   STATISTIC_FINANCE,
 } from 'src/graphql/types'
 import { useI18n } from 'vue-i18n'
 import { LIST_COSTS_SUM } from 'src/graphql/costs'
+import { FILTER_FORMAT } from 'src/config'
 
 defineOptions({
   name: 'FinanceTab'
@@ -95,6 +99,7 @@ const {
 const {
   priceTotal,
   loadActivities,
+  listActivities,
   totalRevenue,
   loadingActivities,
   fetchStatisticActivities,
@@ -104,6 +109,24 @@ const { getCurrentMonth } = useDate()
 
 const { formatPrice } = useMoney()
 const { sklads } = useSklads()
+
+const lineChartCategories = Array.from({ length: moment().daysInMonth() }, (_, i) => moment().startOf('month').add(i, 'days').format(FILTER_FORMAT))
+const lineChartSeries = computed(() => {
+  return [
+    {
+      name: $t('businessGoal.cash'),
+      data: lineChartCategories.map(d => {
+        const values = listActivities.value.filter(a => moment(a.created_at).format(FILTER_FORMAT) === d)
+        const total = values.reduce((prev, next) => {
+          const countUnits = next.countSizes || next.size?.split(', ')?.length || 1;
+          const discount = next.percentageDiscount ? ((next.newPrice / 100) * next.discount) : next.discount
+          return (prev + (next.newPrice * countUnits)) - discount
+        }, 0);
+        return total || 0
+      }),
+    }
+  ]
+})
 
 const costsSum = computed(() => formatPrice(resultListCostsSum.value?.listCostsSum?.sum))
 const statisticFinance = computed(() => {

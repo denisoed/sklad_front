@@ -629,7 +629,7 @@ export default ({
     week: 'неделя',
     month: 'месяц',
     year: 'год',
-    earned: 'заработано',
+    earned: 'выручка',
     sold: 'продано',
   },
   error: {

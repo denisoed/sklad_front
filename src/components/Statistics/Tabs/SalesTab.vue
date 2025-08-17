@@ -1,7 +1,6 @@
 <template>
   <div class="sales-tab flex column q-gap-md">
     <FilterDates @on-change="load" />
-    <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
     <StatisticTable
       :list-activities="listActivities"
       :loading-activities="loadingActivities"
@@ -18,7 +17,6 @@
 import { useQuasar } from 'quasar'
 import {
   watch,
-  computed,
 } from 'vue'
 import { useRoute } from 'vue-router'
 import useDate from 'src/modules/useDate'
@@ -28,11 +26,9 @@ import useHistory from 'src/modules/useHistory'
 import useHelpers from 'src/modules/useHelpers'
 import FilterDates from 'src/components/FilterDates.vue'
 import StatisticTable from 'src/components/StatisticTable.vue'
-import LineChart from 'src/components/Charts/LineChart.vue'
 import { useMutation } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
 import useProfile from 'src/modules/useProfile'
-import moment from 'moment'
 import {
   UPDATE_PRODUCT,
   DELETE_ACTIVITY
@@ -41,7 +37,6 @@ import {
   HISTORY_RETURN
 } from 'src/config'
 import { useI18n } from 'vue-i18n'
-import { FILTER_FORMAT } from 'src/config'
 
 defineOptions({
   name: 'SalesTab'
@@ -80,24 +75,6 @@ const { getCurrentMonth } = useDate()
 
 const { formatPrice } = useMoney()
 const { sklads } = useSklads()
-
-const lineChartCategories = Array.from({ length: moment().daysInMonth() }, (_, i) => moment().startOf('month').add(i, 'days').format(FILTER_FORMAT))
-const lineChartSeries = computed(() => {
-  return [
-    {
-      name: $t('businessGoal.cash'),
-      data: lineChartCategories.map(d => {
-        const values = listActivities.value.filter(a => moment(a.created_at).format(FILTER_FORMAT) === d)
-        const total = values.reduce((prev, next) => {
-          const countUnits = next.countSizes || next.size?.split(', ')?.length || 1;
-          const discount = next.percentageDiscount ? ((next.newPrice / 100) * next.discount) : next.discount
-          return (prev + (next.newPrice * countUnits)) - discount
-        }, 0);
-        return total || 0
-      }),
-    }
-  ]
-})
 
 async function remove(activity) {
   try {

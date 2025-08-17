@@ -11,14 +11,10 @@
       />
 
       <!-- Sales -->
-      <keep-alive>
-        <SalesTab v-if="selectedType === 0" />
-      </keep-alive>
+      <SalesTab v-if="selectedType === 0" />
 
       <!-- Finance -->
-      <keep-alive>
-        <FinanceTab v-if="selectedType === 1" v-permissions="[READ_STATISTIC_FINANCE]" />
-      </keep-alive>
+      <FinanceTab v-if="selectedType === 1" v-permissions="[READ_STATISTIC_FINANCE]" />
     </div>
   </q-page>
 </template>
