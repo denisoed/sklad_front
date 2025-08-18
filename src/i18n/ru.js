@@ -600,6 +600,8 @@ export default ({
     editing: 'Редактирование товара',
     creating: 'Создание товара',
     draft: 'Черновик',
+    clearDraft: 'Удалить черновик',
+    clearDraftDescription: 'Вы уверены, что хотите удалить этот черновик?',
   },
   errors: {
     photoUploadError: 'Не удалось загрузить фото. Проблемы на сервере.',

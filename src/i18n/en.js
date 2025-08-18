@@ -600,6 +600,8 @@ export default ({
     editing: 'Editing product',
     creating: 'Creating product',
     draft: 'Draft',
+    clearDraft: 'Clear draft',
+    clearDraftDescription: 'Are you sure you want to clear this draft?',
   },
   errors: {
     photoUploadError: 'Failed to upload photo. Server issues.',
