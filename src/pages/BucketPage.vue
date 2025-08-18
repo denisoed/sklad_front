@@ -166,11 +166,11 @@ import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
 import { useMutation } from "@vue/apollo-composable";
 import {
-  CREATE_ACTIVITY,
   UPDATE_PRODUCT,
   UPDATE_SALE_PRODUCT,
   DELETE_SALE_PRODUCT
 } from 'src/graphql/types'
+import { CREATE_ACTIVITY } from 'src/graphql/activity'
 
 defineOptions({
   name: 'BucketPage'

@@ -6,25 +6,24 @@ import { useStatisticsStore } from 'src/stores/statistics'
 import { apolloClient } from 'src/boot/apollo'
 import { useI18n } from 'vue-i18n'
 import {
-  LIST_ACTIVITIES,
   STATISTIC_ACTIVITIES,
   STATISTIC_FINANCE,
 } from 'src/graphql/types'
+import useActivity from 'src/modules/useActivity'
 
 const useStatistics = () => {
   const { formatPrice } = useMoney()
   const statisticsStore = useStatisticsStore()
   const { t: $t } = useI18n()
+  const { listActivities: activities } = useActivity()
 
   const listActivities = computed(() => {
-    const activities = statisticsStore.getListActivities || []
-    return activities.map(a => ({
+    return activities.value.map(a => ({
       ...a,
       created_at: moment(a.created_at).local().format(DISPLAY_FORMAT)
     }));
   })
 
-  const loadingActivities = computed(() => statisticsStore.getLoadingActivities)
   const loadingStatisticActivities = computed(() => statisticsStore.getLoadingStatisticActivities)
   const loadingStatisticFinance = computed(() => statisticsStore.getLoadingStatisticFinance)
 
@@ -115,26 +114,6 @@ const useStatistics = () => {
     }
   }
 
-  async function fetchActivities(where) {
-    try {
-      statisticsStore.setLoadingActivities(true)
-      const { data } = await apolloClient.query({
-        query: LIST_ACTIVITIES,
-        variables: {
-          where,
-          sort: 'created_at:desc',
-        },
-        fetchPolicy: 'network-only'
-      })
-      statisticsStore.setListActivities(data?.listActivities)
-      return data?.listActivities
-    } catch (error) {
-      console.error(error)
-    } finally {
-      statisticsStore.setLoadingActivities(false)
-    }
-  }
-
   async function fetchStatisticActivities(where) {
     try {
       statisticsStore.setLoadingStatisticActivities(true)
@@ -156,10 +135,7 @@ const useStatistics = () => {
 
   return {
     priceTotal,
-    fetchActivities,
-    loadingActivities,
     soldCount,
-    listActivities,
     origPriceTotal,
     newPriceTotal,
     discountTotal,

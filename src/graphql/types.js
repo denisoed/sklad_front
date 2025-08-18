@@ -225,44 +225,6 @@ export const PRODUCTS_WITH_MIN_SIZES = gql`
   }
 `
 
-export const LIST_ACTIVITIES = gql`
-  query ListActivities($where: JSON, $sort: String) {
-    listActivities(where: $where, sort: $sort) {
-      id
-      name
-      origPrice
-      newPrice
-      size
-      discount
-      percentageDiscount
-      created_at
-      countSizes,
-      product {
-        id
-        sizes {
-          id
-          size
-        }
-        sklad {
-          id
-          name
-        }
-        countSizes
-      }
-    }
-  }
-`
-
-export const DELETE_ACTIVITY = gql`
-  mutation DeleteActivity($id: ID!) {
-    deleteActivity(input: { where: { id: $id }}) {
-      activity {
-        id
-      }
-    }
-  }
-`
-
 export const STATISTIC_FINANCE = gql`
   query StatisticFinance($where: JSON!) {
     statisticFinance(where: $where) {
@@ -276,37 +238,6 @@ export const STATISTIC_ACTIVITIES = gql`
   query StatisticActivities($where: JSON!) {
     statisticActivities(where: $where) {
       totalRevenue
-    }
-  }
-`
-
-export const ACTIVITIES = gql`
-  query($where: JSON) {
-    activities(where: $where) {
-      name
-      origPrice
-      newPrice
-      size
-      discount
-      percentageDiscount
-      created_at
-      countSizes
-    }
-  }
-`
-
-export const CREATE_ACTIVITY = gql`
-  mutation CreateActivity($data: ActivityInput!) {
-    createActivity(input: { data: $data }) {
-      activity {
-        name
-        origPrice
-        newPrice
-        size
-        discount
-        percentageDiscount
-        countSizes
-      }
     }
   }
 `

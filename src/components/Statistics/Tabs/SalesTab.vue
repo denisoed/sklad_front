@@ -21,10 +21,13 @@ import StatisticTable from 'src/components/StatisticTable.vue'
 import { useMutation } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
 import useProfile from 'src/modules/useProfile'
+import useActivity from 'src/modules/useActivity'
 import {
-  UPDATE_PRODUCT,
-  DELETE_ACTIVITY
+  UPDATE_PRODUCT
 } from 'src/graphql/types'
+import {
+  DELETE_ACTIVITY
+} from 'src/graphql/activity'
 import {
   HISTORY_RETURN
 } from 'src/config'
@@ -54,9 +57,8 @@ const {
   createHistory,
 } = useHistory()
 const { showSuccess, showError } = useHelpers()
+const { listActivities, loadingActivities } = useActivity()
 const {
-  loadingActivities,
-  listActivities,
   soldCount,
   origPriceTotal,
   newPriceTotal,
