@@ -13,7 +13,7 @@
         :list="skladsTabs"
         :selected-id="selectedSkladId"
         scroll-to-active-tab
-        class="q-mb-md"
+        class="q-mb-md mini-tabs-sklads"
         @on-change="onChangeSklad"
         @long-press="onLongPressSklad"
       />
@@ -154,7 +154,7 @@ import { useBulkStore } from 'src/stores/bulk'
 
 import FiltersComp from 'src/components/FiltersComp.vue'
 import ProductControls from 'src/components/ProductControls.vue'
-import MiniTabs from 'src/components/Product/MiniTabs.vue'
+import MiniTabs from 'src/components/MiniTabs.vue'
 import ProductsGrid from 'src/components/Product/ProductsGrid.vue'
 import ProductsTable from 'src/components/Product/ProductsTable.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
@@ -182,7 +182,7 @@ const { bulkProducts } = storeToRefs(bulkStore)
 
 const ALL_TAB = computed(() => ({
   id: 0,
-  name: $t('products.all'),
+  name: $t('common.all'),
   color: '#fff'
 }))
 
@@ -398,7 +398,9 @@ function toggleViewMode() {
 }
 
 function onLongPressSklad(id) {
-  router.push(`/sklad/${id}`)
+  if (id !== ALL_TAB.value.id) {
+    router.push(`/sklad/${id}`)
+  }
 }
 
 onBeforeMount(() => {
@@ -454,13 +456,6 @@ watch(
 .products {
   :deep(.small-card_color) {
     display: none;
-  }
-
-  :deep(.mini-tabs-categories) {
-    .small-card {
-      width: auto;
-      min-width: 100px;
-    }
   }
 }
 

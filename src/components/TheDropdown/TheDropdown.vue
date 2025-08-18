@@ -49,7 +49,7 @@ function toggle() {
 <style lang="scss" scoped>
 .dropdown {
   box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
 
   &--outline {
     border: 1px solid var(--border-color);

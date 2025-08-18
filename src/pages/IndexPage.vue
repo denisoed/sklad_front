@@ -131,7 +131,7 @@ watch(sklads, (val) => {
     width: 100%;
     min-width: 140px;
     height: 112px;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     border: 2px dashed var(--border-color);
 
     &--active {
@@ -169,7 +169,7 @@ watch(sklads, (val) => {
     align-items: center;
     justify-content: center;
     position: relative;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
     overflow: hidden;
     cursor: pointer;

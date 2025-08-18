@@ -74,26 +74,29 @@
         </q-td>
       </q-tr>
     </template>
-    <template #bottom>
-      <div class="text-subtitle2">{{ $t('product.soldUnits') }} <b>{{ soldCount }}</b></div>
+    <template #top>
+      <div class="flex items-center justify-between full-width">
+        <div class="text-subtitle2">{{ $t('product.soldUnits') }}</div>
+        <div class="text-subtitle2">{{ soldCount || 0 }} {{ $t('common.pieces') }}</div>
+      </div>
     </template>
-    <template #bottom-row>
+    <template #top-row>
       <q-tr>
-        <q-td class="text-left text-bold">
+        <q-td class="text-left text-bold accent-bg">
           {{ $t('common.total') }}
         </q-td>
-        <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right text-bold">
+        <q-td v-permissions="[READ_ORIGINAL_PRICE]" class="text-right text-bold accent-bg">
           {{ origPriceTotal }}
         </q-td>
-        <q-td class="text-right text-bold">
+        <q-td class="text-right text-bold accent-bg">
           {{ newPriceTotal }}
         </q-td>
-        <q-td class="text-right text-bold">
+        <q-td class="text-right text-bold accent-bg">
           {{ discountTotal }}
         </q-td>
-        <q-td class="text-right text-bold" />
-        <q-td class="text-right text-bold" />
-        <q-td v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right text-bold" />
+        <q-td class="text-right text-bold accent-bg" />
+        <q-td class="text-right text-bold accent-bg" />
+        <q-td v-permissions="[READ_STATISTIC_TABLE_ACTIONS]" class="text-right text-bold accent-bg" />
       </q-tr>
     </template>
   </q-table>
@@ -165,6 +168,10 @@ function handleRowClick(event, row) {
     &:hover {
       background-color: rgba(0, 0, 0, 0.04);
     }
+  }
+
+  .accent-bg {
+    background-color: rgba(var(--q-primary-rgb), 0.1);
   }
 }
 </style> 

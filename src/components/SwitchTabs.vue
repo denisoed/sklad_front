@@ -54,14 +54,13 @@ watch(() => props.selectedTab, (val) => {
 
 <style lang="scss" scoped>
 $tab-height: 35px;
-$tab-border-radius: 35px;
 
 .tab-slider--tabs {
   width: auto;
   display: flex;
   flex-wrap: nowrap;
 	position: relative;
-	border-radius: $tab-border-radius;
+	border-radius: var(--border-radius-sm);
 	overflow: hidden;
 	height: $tab-height;
 	user-select: none;
@@ -79,7 +78,7 @@ $tab-border-radius: 35px;
   top: 0;
   left: 0;
   transition: all 250ms ease-in-out;
-  border-radius: $tab-border-radius;
+  border-radius: var(--border-radius-sm);
 }
 
 .tab-slider--trigger {

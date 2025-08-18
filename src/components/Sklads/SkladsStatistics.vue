@@ -65,7 +65,7 @@ const props = defineProps({
 const { ids } = toRefs(props)
 const selected = ref(TABS.value[2])
 const {
-  loadActivities,
+  fetchActivities,
   soldCount,
   loadingActivities,
   listActivities,
@@ -81,7 +81,7 @@ function load(params) {
       sklad: ids.value,
       ...(params || defaultParams)
     }
-    loadActivities(where)
+    fetchActivities(where)
   }
 }
 

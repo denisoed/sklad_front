@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    all: 'Баары',
     select: 'Тап',
     sell: 'Сатуу',
     more: 'Көп',
@@ -292,7 +293,6 @@ export default ({
     },
   },
   products: {
-    all: 'Баары',
     lowStock: 'Аз калган',
     colors: 'Түстөр',
     sizes: 'Өлчөмдөр',
@@ -380,6 +380,7 @@ export default ({
     categoriesLabel: 'Категориялар',
     productsLabel: 'Товарлар',
     countUnitsForSize: 'Өлчөм үчүн бирдик саны',
+    typesLabel: 'Отчеттор',
   },
   mainSettings: {
     title: 'Негизги баптоолор',
@@ -610,6 +611,7 @@ export default ({
     cannotDeleteAllSizes: 'Баарын бир учурда өчүрүү мүмкүн эмес.',
   },
   statistics: {
+    sales: 'Сатуу',
     reportsAllWarehouses: 'Бардык складдардын отчеттору',
     returnToWarehouse: 'Складга кайтаруу',
     returnConfirm: 'Бул товарды складга кайтаруу?',

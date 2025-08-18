@@ -207,7 +207,7 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     position: relative;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
     background-color: #fff;
     cursor: pointer;

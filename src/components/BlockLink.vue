@@ -63,7 +63,7 @@ export default defineComponent({
     height: 100px;
     min-height: 100px;
     box-shadow: var(--box-shadow);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     text-decoration: none;
     cursor: pointer;
     flex: 1;

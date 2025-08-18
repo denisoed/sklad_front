@@ -55,7 +55,7 @@ const {
   sklad,
 } = useSklads()
 const { params } = useRoute()
-const { loadActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
+const { fetchActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
 const { formatPrice } = useMoney()
 
 const pageTitle = computed(() => sklad.value?.name || $t('common.warehouse'))
@@ -67,7 +67,7 @@ onBeforeMount(() => {
     sklad: params?.skladId,
     created_at_gte: moment().startOf(YEAR).format(FILTER_FORMAT)
   }
-  loadActivities(where)
+  fetchActivities(where)
 })
 </script>
 

@@ -144,7 +144,7 @@ function onChangeCashSum(val) {
 
 <style lang="scss" scoped>
 .pay-methods {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
 
   &_title {
     opacity: 0.7;

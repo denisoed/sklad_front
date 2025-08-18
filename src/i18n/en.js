@@ -39,6 +39,7 @@ export default ({
     },
   },
   common: {
+    all: 'All',
     select: 'Select',
     sell: 'Sell',
     more: 'More',
@@ -292,7 +293,6 @@ export default ({
     },
   },
   products: {
-    all: 'All',
     lowStock: 'Low stock',
     colors: 'Colors',
     sizes: 'Sizes',
@@ -380,6 +380,7 @@ export default ({
     categoriesLabel: 'Categories',
     productsLabel: 'Products',
     countUnitsForSize: 'Number of units for size',
+    typesLabel: 'Reports',
   },
   mainSettings: {
     title: 'Main settings',
@@ -610,6 +611,7 @@ export default ({
     cannotDeleteAllSizes: 'Cannot delete all sizes at once. Only one size at a time.',
   },
   statistics: {
+    sales: 'Sales',
     reportsAllWarehouses: 'Reports for all warehouses',
     returnToWarehouse: 'Return to warehouse',
     returnConfirm: 'Do you want to return this product to warehouse?',

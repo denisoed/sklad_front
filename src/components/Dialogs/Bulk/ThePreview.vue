@@ -126,6 +126,6 @@ function next() {
 .bulk-preview-color {
   width: 32px;
   height: 16px;
-  border-radius: 3px;
+  border-radius: var(--border-radius-xs);
 }
 </style>

@@ -939,7 +939,7 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
   .product-page_discount {
     background-color: rgba($color: red, $alpha: 0.1);
-    border-radius: 3px;
+    border-radius: var(--border-radius-xs);
 
     &-dates {
       width: 250px;
@@ -950,7 +950,7 @@ onBeforeUnmount(() => {
       color: var(--text-black);
       margin-bottom: 8px;
       background-color: rgba($color: red, $alpha: 0.1);
-      border-radius: 3px;
+      border-radius: var(--border-radius-xs);
     }
   }
 

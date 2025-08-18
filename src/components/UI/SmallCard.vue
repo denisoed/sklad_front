@@ -33,14 +33,13 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .small-card {
-  width: 140px;
-  min-width: 140px;
+  min-width: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   box-shadow: var(--box-shadow);
   overflow: hidden;
   cursor: pointer;

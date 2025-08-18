@@ -66,7 +66,7 @@
 
           <div v-if="sizes?.length" class="q-gap-sm flex column">
             <div
-              style="border: 1px solid var(--border-color);border-radius: var(--border-radius)"
+              style="border: 1px solid var(--border-color);border-radius: var(--border-radius-sm)"
               class="flex column overflow-hidden"
             >
               <SizeItem

@@ -110,14 +110,14 @@ export default defineComponent({
     position: relative;
     margin-top: auto;
     background: var(--main-bg);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
     z-index: 2;
   }
   
   &_lang {
     background: var(--main-bg);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     box-shadow: var(--box-shadow);
   }
 

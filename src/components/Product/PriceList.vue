@@ -122,7 +122,7 @@ watch([selected, formData], debouncedWatch, {
 
 <style lang="scss" scoped>
 .pay-methods {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
 
   &_title {
     opacity: 0.7;
@@ -134,7 +134,7 @@ watch([selected, formData], debouncedWatch, {
     line-height: normal;
     border: 1px solid var(--q-primary);
     padding: 4px;
-    border-radius: 4px;
+    border-radius: var(--border-radius-xs);
   }
   
   &_body {

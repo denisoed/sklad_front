@@ -37,7 +37,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chart-card {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-sm);
   box-shadow: var(--box-shadow);
   white-space: nowrap;
 
