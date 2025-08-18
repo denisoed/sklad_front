@@ -34,6 +34,17 @@
         </div>
         
         <div class="flex items-center q-gap-sm">
+          <!-- Enable checkbox -->
+          <q-btn
+            v-if="viewMode === VIEW_TABLE"
+            :icon="isSelectedMode ? 'mdi-checkbox-multiple-blank' : 'mdi-checkbox-multiple-blank-outline'"
+            @click="isSelectedMode = !isSelectedMode"
+            text-color="primary"
+            push
+            round
+            size="sm"
+          />
+
           <!-- View Mode Toggle -->
           <q-btn
             :icon="viewMode === VIEW_GRID ? 'mdi-view-list' : 'mdi-view-grid'"
@@ -73,6 +84,7 @@
         <ProductsTable
           v-else
           :products="products"
+          :is-selected-mode="isSelectedMode"
           v-model:bulk-products="bulkProducts"
           @open-image-preview="onOpenImagePreview"
           @add-count-to-bucket="onAddCountToBucket"
@@ -208,6 +220,7 @@ const selectedFilters = reactive({})
 const countModalVisible = ref(false)
 const sizesModalVisible = ref(false)
 const selectedProduct = ref(null)
+const isSelectedMode = ref(false)
 
 const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
 

@@ -16,20 +16,17 @@
         :class="{ 'table-row-highlight': highlightRowId === props.row.id }"
       >
         <!-- Actions -->
-        <q-td key="actions" :props="props" @click.stop>
+        <q-td v-if="isSelectedMode" key="select" :props="props" @click.stop>
+          <q-checkbox
+            v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: props.row?.sklad?.id }"
+            :model-value="bulkProducts"
+            @update:model-value="$emit('update:bulkProducts', $event)"
+            :val="props.row"
+          />
+        </q-td>
+  
+        <q-td v-else key="actions" :props="props" @click.stop>
           <div class="flex flex-row no-wrap q-gutter-md justify-center">
-            <!-- View Product -->
-            <q-btn
-              round
-              push
-              size="sm"
-              icon="mdi-eye"
-              class="hidden"
-              text-color="primary"
-              :to="`/sklad/${props.row?.sklad?.id}/product/${props.row.id}`"
-            />
-            
-            <!-- Add to Basket -->
             <q-btn
               v-permissions="{ permissions: [CAN_SELL_PRODUCT], skladId: props.row?.sklad?.id }"
               round
@@ -100,16 +97,6 @@
             </div>
           </div>
         </q-td>
-
-        <!-- Checkbox -->
-        <q-td key="select" :props="props" @click.stop>
-          <q-checkbox
-            v-permissions="{ permissions: [CAN_UPDATE_PRODUCT], skladId: props.row?.sklad?.id }"
-            :model-value="bulkProducts"
-            @update:model-value="$emit('update:bulkProducts', $event)"
-            :val="props.row"
-          />
-        </q-td>
       </q-tr>
     </template>
   </q-table>
@@ -128,7 +115,7 @@ defineOptions({
   name: 'ProductsTable'
 })
 
-defineProps({
+const props = defineProps({
   products: {
     type: Array,
     default: () => []
@@ -136,6 +123,10 @@ defineProps({
   bulkProducts: {
     type: Array,
     default: () => []
+  },
+  isSelectedMode: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -154,7 +145,13 @@ const router = useRouter()
 const highlightRowId = ref(null)
 
 const columns = computed(() => [
-  {
+  props.isSelectedMode ? {
+    name: 'select',
+    label: $t('common.select'),
+    field: 'select',
+    align: 'center',
+    style: 'width: 120px'
+  } : {
     name: 'actions',
     label: $t('common.sell'),
     field: 'actions',
@@ -187,13 +184,6 @@ const columns = computed(() => [
     field: 'price',
     align: 'left',
     style: 'width: 120px'
-  },
-  {
-    name: 'select',
-    label: $t('common.select'),
-    field: 'select',
-    align: 'center',
-    style: 'width: 50px'
   },
 ])
 
