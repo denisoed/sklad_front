@@ -55,6 +55,7 @@ import useSklads from 'src/modules/useSklads'
 import useStatistics from 'src/modules/useStatistics'
 import useDate from 'src/modules/useDate'
 import FilterDates from 'src/components/FilterDates.vue'
+import useCosts from 'src/modules/useCosts'
 
 defineOptions({
   name: 'StatisticPage'
@@ -68,9 +69,11 @@ const { getCurrentMonth } = useDate()
 const {
   fetchActivities,
   fetchStatisticActivities,
-  fetchStatisticFinance,
-  fetchListCostsSum
+  fetchStatisticFinance
 } = useStatistics()
+const {
+  fetchCosts
+} = useCosts()
 
 const selectedType = ref(0)
 const selectedSkladId = ref(0)
@@ -113,8 +116,8 @@ function fetchFinanceTabDynamicData(skladId, dates) {
     sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
     ...defaultDates,
   }
+  fetchCosts(where)
   fetchActivities(where)
-  fetchListCostsSum(where)
 }
 
 function fetchFinanceTabStaticData(skladId, dates) {

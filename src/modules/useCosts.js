@@ -14,9 +14,14 @@ const useCosts = () => {
   const profileStore = useProfileStore()
 
   const userId = computed(() => profileStore.getProfile?.id)
+  const costsLoading = computed(() => costsStore.isLoading)
   const costs = computed(() => costsStore.getCosts)
-
-  const costsLoading = ref(false)
+  const costsTotal = computed(() => {
+    return costs.value.reduce((prev, next) => {
+      const sum = prev + next.sum
+      return sum
+    }, 0);
+  })
 
   const {
     mutate: create,
@@ -66,7 +71,7 @@ const useCosts = () => {
 
   async function fetchCosts(args) {
     try {
-      costsLoading.value = true
+      costsStore.setLoading(true)
       const newParams = args || { dates: [moment().startOf(DAY).format(FILTER_FORMAT)] }
       const { data } = await apolloClient.query({
         query: LIST_COSTS,
@@ -83,7 +88,7 @@ const useCosts = () => {
     } catch (error) {
       console.error(error)
     } finally {
-      costsLoading.value = false
+      costsStore.setLoading(false)
     }
   }
 
@@ -99,7 +104,8 @@ const useCosts = () => {
     costsLoading,
     updateCost,
     updateError,
-    updateLoading
+    updateLoading,
+    costsTotal
   }
 }
 

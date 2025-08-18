@@ -10,7 +10,6 @@ import {
   STATISTIC_ACTIVITIES,
   STATISTIC_FINANCE,
 } from 'src/graphql/types'
-import { LIST_COSTS_SUM } from 'src/graphql/costs'
 
 const useStatistics = () => {
   const { formatPrice } = useMoney()
@@ -28,7 +27,6 @@ const useStatistics = () => {
   const loadingActivities = computed(() => statisticsStore.getLoadingActivities)
   const loadingStatisticActivities = computed(() => statisticsStore.getLoadingStatisticActivities)
   const loadingStatisticFinance = computed(() => statisticsStore.getLoadingStatisticFinance)
-  const loadingListCostsSum = computed(() => statisticsStore.getLoadingListCostsSum)
 
   const totalRevenue = computed(() => {
     const statisticActivities = statisticsStore.getStatisticActivities || {}
@@ -98,8 +96,6 @@ const useStatistics = () => {
     ]
   })
 
-  const costsSum = computed(() => statisticsStore.getListCostsSum?.sum)
-
   async function fetchStatisticFinance(where) {
     try {
       statisticsStore.setLoadingStatisticFinance(true)
@@ -158,25 +154,6 @@ const useStatistics = () => {
     }
   }
 
-  async function fetchListCostsSum(where) {
-    try {
-      statisticsStore.setLoadingListCostsSum(true)
-      const { data } = await apolloClient.query({
-        query: LIST_COSTS_SUM,
-        variables: {
-          where,
-        },
-        fetchPolicy: 'network-only'
-      })
-      statisticsStore.setListCostsSum(data?.listCostsSum)
-      return data?.listCostsSum
-    } catch (error) {
-      console.error(error)
-    } finally {
-      statisticsStore.setLoadingListCostsSum(false)
-    }
-  }
-
   return {
     priceTotal,
     fetchActivities,
@@ -192,9 +169,6 @@ const useStatistics = () => {
     fetchStatisticFinance,
     loadingStatisticFinance,
     statisticFinance,
-    fetchListCostsSum,
-    loadingListCostsSum,
-    costsSum
   }
 }
 

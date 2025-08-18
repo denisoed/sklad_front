@@ -1,5 +1,8 @@
 <template>
-  <div class="line-chart block-bg full-width">
+  <div
+    class="line-chart block-bg full-width"
+    :class="{ 'line-chart--series-1': series.length === 1 }"
+  >
     <VueApexCharts
       width="100%"
       height="300px"
@@ -25,9 +28,13 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  colors: {
+    type: Array,
+    default: () => ['var(--q-primary)']
+  }
 })
 
-const { categories, series } = toRefs(props)
+const { categories, series, colors } = toRefs(props)
 
 function getThemeMode() {
   const isDark = LocalStorage.getItem(IS_DARK_MODE)
@@ -39,7 +46,7 @@ const chartOptions = computed(() => ({
   theme: {
     mode: getThemeMode()
   },
-  colors: ['var(--q-primary)'],
+  colors: colors.value,
   chart: {
     id: 'line-chart',
     toolbar: {
@@ -93,11 +100,16 @@ const chartOptions = computed(() => ({
   :deep(.vue-apexcharts) {
     background: var(--block-bg);
     border-radius: var(--border-radius-sm);
-    min-height: auto !important;
-    max-height: 300px;
     
     .apexcharts-svg {
       border-radius: var(--border-radius-sm);
+    }
+  }
+
+  &--series-1 {
+    :deep(.vue-apexcharts) {
+      min-height: auto !important;
+      max-height: 300px;
     }
   }
 }

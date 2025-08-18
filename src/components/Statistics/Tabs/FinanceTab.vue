@@ -3,7 +3,7 @@
     <!-- Cash register -->
     <div
       class="costs_type full-width flex items-center q-pa-md border-radius-sm"
-      style="background-color: rgb(255 0 255 / 8%);"
+      style="background-color: rgba(var(--q-primary-rgb), 0.3);"
     >
       <div class="costs_type-label flex items-center q-gap-sm q-ma-none">
         <q-icon name="mdi-arrow-up" size="xs" />
@@ -23,7 +23,7 @@
     <!-- Expenses -->
     <div
       class="costs_type full-width flex items-center q-pa-md border-radius-sm"
-      style="background-color: rgb(255 0 0 / 8%);"
+      style="background-color: rgb(255 117 73 / 30%);"
     >
       <div class="costs_type-label flex items-center q-gap-sm q-ma-none">
         <q-icon name="mdi-arrow-down" size="xs" />
@@ -33,10 +33,10 @@
       </div>
       <div class="costs_type-value q-ml-auto">
         <q-spinner
-          v-if="loadingListCostsSum"
+          v-if="costsLoading"
           size="1em"
         />
-        <span v-else>{{ formatPrice(costsSum) }}</span>
+        <span v-else>{{ formatPrice(costsTotal) }}</span>
       </div>
     </div>
 
@@ -62,7 +62,11 @@
     </div>
 
     <!-- Chart -->
-    <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
+    <LineChart
+      :categories="lineChartCategories"
+      :series="lineChartSeries"
+      :colors="['var(--q-primary)', 'var(--q-negative)']"
+    />
 
     <!-- Statistic -->
     <div class="flex column full-width">
@@ -95,6 +99,7 @@ import {
 import useMoney from 'src/modules/useMoney'
 import LineChart from 'src/components/Charts/LineChart.vue'
 import useStatistics from 'src/modules/useStatistics'
+import useCosts from 'src/modules/useCosts'
 import moment from 'moment'
 import { useI18n } from 'vue-i18n'
 import { FILTER_FORMAT } from 'src/config'
@@ -104,6 +109,7 @@ defineOptions({
 })
 
 const { t: $t } = useI18n()
+const { costs, costsTotal, costsLoading } = useCosts()
 
 const {
   priceTotal,
@@ -111,8 +117,6 @@ const {
   loadingActivities,
   loadingStatisticActivities,
   statisticFinance,
-  loadingListCostsSum,
-  costsSum,
   totalRevenue
 } = useStatistics()
 
@@ -132,7 +136,17 @@ const lineChartSeries = computed(() => {
         }, 0);
         return total || 0
       }),
-    }
+    },
+    {
+      name: $t('statistics.expenses'),
+      data: lineChartCategories.map(d => {
+        const values = costs.value.filter(a => moment(a.created_at).format(FILTER_FORMAT) === d)
+        const total = values.reduce((prev, next) => {
+          return prev + next.sum
+        }, 0);
+        return total || 0
+      }),
+    },
   ]
 })
 </script>
