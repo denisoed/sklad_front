@@ -509,8 +509,16 @@ export default ({
     marginFromEdge: 'Margin from paper edge in mm',
     marginHint: 'For margin calibration',
   },
+  defect: {
+    title: 'Defective product',
+    addDefectTitle: 'Add defective product',
+    defectAdded: 'Defective product added',
+    invalidCount: 'Invalid count',
+    invalidSizes: 'Invalid sizes',
+  },
   product: {
     title: 'Products',
+    defect: 'Defective product',
     printPriceLabels: 'Print price tags',
     controlPanel: 'Control panel',
     addToBasket: 'Product added to cart',

@@ -509,8 +509,16 @@ export default ({
     marginFromEdge: 'Отступ от края бумаги в mm',
     marginHint: 'Для колибровки отступа от края бумаги',
   },
+  defect: {
+    title: 'Бракованный товар',
+    addDefectTitle: 'Добавить бракованный товар',
+    defectAdded: 'Бракованный товар добавлен',
+    invalidCount: 'Неверное количество',
+    invalidSizes: 'Неверные размеры',
+  },
   product: {
     title: 'Товары',
+    defect: 'Бракованный товар',
     printPriceLabels: 'Печать ценников',
     controlPanel: 'Панель управления',
     addToBasket: 'Товар добавлен в корзину',

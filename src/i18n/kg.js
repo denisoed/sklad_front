@@ -510,8 +510,16 @@ export default ({
     marginFromEdge: 'Кагаз четинен аралык мм',
     marginHint: 'Аралыкты тууралоо үчүн',
   },
+  defect: {
+    title: 'Бракованный товар',
+    addDefectTitle: 'Бракованный товар кошуу',
+    defectAdded: 'Бракованный товар кошулду',
+    invalidCount: 'Жалпы саны',
+    invalidSizes: 'Өлчөмдөр',
+  },
   product: {
     title: 'Товарлар',
+    defect: 'Бракованный товар',
     printPriceLabels: 'Бааларды басуу',
     controlPanel: 'Башкаруу панели',
     addToBasket: 'Товар себетке кошулду',

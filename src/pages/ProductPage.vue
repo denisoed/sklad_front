@@ -44,6 +44,19 @@
                   </q-item-section>
                 </q-item>
                 <q-item
+                  clickable
+                  v-close-popup
+                  py="10px"
+                  @click="openDefectModal"
+                >
+                  <q-item-section>
+                    <div class="flex items-center">
+                      <q-icon name="mdi-cancel" class="q-mr-sm text-warning" size="xs" />
+                      <span class="text-warning">{{ $t('product.defect') }}</span>
+                    </div>
+                  </q-item-section>
+                </q-item>
+                <q-item
                   v-permissions="{ permissions: [CAN_REMOVE_PRODUCT], skladId: product?.sklad }"
                   clickable
                   v-close-popup
@@ -387,6 +400,19 @@
       :new-price="product?.withDiscount ? product?.discountPrice : product?.newPrice"
       @submit="onAddSizesToBucket(product, $event)"
     />
+    <ModalDefectCount
+      v-if="product?.useNumberOfSizes"
+      v-model="modalDefectCount"
+      :max="product?.countSizes"
+      @submit="onDefectCountSubmit"
+    />
+    <ModalDefectSizes
+      v-if="!product?.useNumberOfSizes"
+      v-model="modalDefectSizes"
+      :sizes="product?.sizes"
+      :selected="[]"
+      @submit="onDefectSizesSubmit"
+    />
   </q-page>
 </template>
 
@@ -443,6 +469,10 @@ import useCategories from 'src/modules/useCategories'
 import useEventBus from 'src/modules/useEventBus'
 import { useI18n } from 'vue-i18n'
 import useFeatures from 'src/modules/useFeatures'
+import ModalDefectCount from 'src/components/Dialogs/ModalDefectCount.vue'
+import ModalDefectSizes from 'src/components/Dialogs/ModalDefectSizes.vue'
+import useActivity from 'src/modules/useActivity'
+import { ACTIVITIES_TYPES } from 'src/config/activity'
 
 const DEFAULT_DATA = {
   id: null,
@@ -492,10 +522,13 @@ const {
   createProductError,
   createProductLoading
 } = useProduct()
+const { createActivity } = useActivity()
 const { sklads } = useSklads()
 
 const modalCountToBucket = ref(false)
 const modalSizesToBucket = ref(false)
+const modalDefectCount = ref(false)
+const modalDefectSizes = ref(false)
 
 const {
   isDuplicating,
@@ -933,6 +966,58 @@ watch(product, debouncedWatch)
 onBeforeUnmount(() => {
   offBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
 })
+
+function openDefectModal() {
+  if (product.useNumberOfSizes) {
+    modalDefectCount.value = true
+  } else {
+    modalDefectSizes.value = true
+  }
+}
+
+async function onDefectCountSubmit(payload) {
+  if (payload.countSizes > 0 && product.countSizes >= payload.countSizes) {
+    product.countSizes -= payload.countSizes
+    await updateProductById(params?.productId, { countSizes: product.countSizes })
+    await createActivity({
+      type: ACTIVITIES_TYPES.DEFECT,
+      name: product.name,
+      origPrice: product.origPrice,
+      newPrice: product.newPrice,
+      countSizes: payload.countSizes,
+      product: product.id,
+      sklad: product.sklad,
+      description: payload.description
+    })
+    showSuccess(t('defect.defectAdded'))
+    refetchEditProduct()
+  } else {
+    showError(t('defect.invalidCount'))
+  }
+}
+
+async function onDefectSizesSubmit(payload) {
+  if (payload.sizes && payload.sizes.length) {
+    const removedSizes = payload.sizes
+    product.sizes = product.sizes.filter(s => !removedSizes.some(r => r.size === s.size))
+    await updateProductById(params?.productId, { sizes: product.sizes.map(s => ({ size: s.size })) })
+    await createActivity({
+      type: ACTIVITIES_TYPES.DEFECT,
+      name: product.name,
+      origPrice: product.origPrice,
+      newPrice: product.newPrice,
+      size: removedSizes.map(s => s.size).join(', '),
+      countSizes: removedSizes.length,
+      product: product.id,
+      sklad: product.sklad,
+      description: payload.description
+    })
+    showSuccess(t('defect.defectAdded'))
+    refetchEditProduct()
+  } else {
+    showError(t('defect.invalidSizes'))
+  }
+}
 </script>
 
 <style lang="scss" scoped>
