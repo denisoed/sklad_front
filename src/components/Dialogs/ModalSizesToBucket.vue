@@ -14,12 +14,10 @@
         </div>
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
         <p
-          class="full-width text-left text-bold q-mb-none text-subtitle1"
+          class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm"
         >
           {{ title || $t('bucket.addToBasketTitle') }}
         </p>
-
-        <q-separator class="full-width q-my-sm" />
 
         <transition name="slide-fade" mode="out-in">
           <!-- Step 1 -->
@@ -28,7 +26,6 @@
             class="full-width"
           >
             <div class="full-width flex column q-gap-sm q-mb-sm">
-              <p class="q-mb-none">{{ $t('common.payment') }}</p>
               <PriceList
                 :prices="prices"
                 :default-price="newPrice"
