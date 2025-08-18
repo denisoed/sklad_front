@@ -22,8 +22,8 @@ const props = defineProps({
     default: () => []
   },
   series: {
-    type: Object,
-    default: () => {}
+    type: Array,
+    default: () => []
   },
 })
 

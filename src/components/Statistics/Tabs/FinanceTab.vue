@@ -40,6 +40,27 @@
       </div>
     </div>
 
+    <!-- Marginal income -->
+    <div
+      v-if="false"
+      class="costs_type full-width flex items-center q-pa-md border-radius-sm"
+      style="background-color: rgb(0 255 255 / 8%);"
+    >
+      <div class="costs_type-label flex items-center q-gap-sm q-ma-none">
+        <q-icon name="mdi-wallet" size="xs" />
+        <span>
+          {{ $t('statistics.marginalIncome') }}
+        </span>
+      </div>
+      <div class="costs_type-value q-ml-auto">
+        <q-spinner
+          v-if="loadingStatisticActivities"
+          size="1em"
+        />
+        <span v-else>{{ formatPrice(totalRevenue) }}</span>
+      </div>
+    </div>
+
     <!-- Chart -->
     <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
 
@@ -91,7 +112,8 @@ const {
   loadingStatisticActivities,
   statisticFinance,
   loadingListCostsSum,
-  costsSum
+  costsSum,
+  totalRevenue
 } = useStatistics()
 
 const { formatPrice } = useMoney()
@@ -100,7 +122,7 @@ const lineChartCategories = Array.from({ length: moment().daysInMonth() }, (_, i
 const lineChartSeries = computed(() => {
   return [
     {
-      name: $t('businessGoal.cash'),
+      name: $t('statistics.cashRegister'),
       data: lineChartCategories.map(d => {
         const values = listActivities.value.filter(a => moment(a.created_at).format(FILTER_FORMAT) === d)
         const total = values.reduce((prev, next) => {
