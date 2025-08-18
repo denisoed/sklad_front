@@ -2,8 +2,6 @@ import { defineStore } from 'pinia';
 
 export const useStatisticsStore = defineStore('statistics', {
   state: () => ({
-    listActivities: [],
-    loadingActivities: false,
     statisticActivities: {},
     loadingStatisticActivities: false,
     statisticFinance: {},
@@ -12,8 +10,6 @@ export const useStatisticsStore = defineStore('statistics', {
     loadingListCostsSum: false,
   }),
   getters: {
-    getListActivities: (state) => state.listActivities,
-    getLoadingActivities: (state) => state.loadingActivities,
     getStatisticActivities: (state) => state.statisticActivities,
     getLoadingStatisticActivities: (state) => state.loadingStatisticActivities,
     getStatisticFinance: (state) => state.statisticFinance,
@@ -22,12 +18,6 @@ export const useStatisticsStore = defineStore('statistics', {
     getLoadingListCostsSum: (state) => state.loadingListCostsSum,
   },
   actions: {
-    setListActivities(listActivities) {
-      this.listActivities = listActivities || [];
-    },
-    setLoadingActivities(loadingActivities) {
-      this.loadingActivities = loadingActivities || false;
-    },
     setStatisticActivities(statisticActivities) {
       this.statisticActivities = statisticActivities || {};
     },

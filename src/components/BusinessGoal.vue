@@ -41,6 +41,7 @@ import { FILTER_FORMAT, YEAR } from 'src/config'
 import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
 import useStatistics from 'src/modules/useStatistics'
+import useActivity from 'src/modules/useActivity'
 import PageTitle from 'src/components/PageTitle.vue'
 import ChartCard from 'src/components/Charts/ChartCard.vue'
 import { useRoute } from 'vue-router'
@@ -55,7 +56,8 @@ const {
   sklad,
 } = useSklads()
 const { params } = useRoute()
-const { fetchActivities, priceTotal, soldCount, loadingActivities } = useStatistics()
+const { loadingActivities, fetchActivities } = useActivity()
+const { priceTotal, soldCount } = useStatistics()
 const { formatPrice } = useMoney()
 
 const pageTitle = computed(() => sklad.value?.name || $t('common.warehouse'))

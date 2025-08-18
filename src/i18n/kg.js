@@ -107,6 +107,7 @@ export default ({
     reloadPage: 'Баракты жаңыртып көрүңүз',
     noAccess: 'Кирүү мүмкүн эмес',
     confirm: 'Тастыктоо',
+    quantityForSize: 'Өлчөмдөр үчүн санын тандаңыз',
   },
   calendar: {
     days: ['Жекшемби','Дүйшөмбү','Шейшемби','Шаршемби','Бейшемби','Жума','Ишемби'],
@@ -312,6 +313,7 @@ export default ({
       delete: 'Өчтү',
       sold: 'Сатылды',
       return: 'Кайтарылды',
+      defect: 'Брак',
     },
     descriptionTemplates: {
       productPrefix: 'Товар: {name}. ',
@@ -322,6 +324,8 @@ export default ({
       delete: 'Товар өчүрүлдү: {name}',
       createdWithSizes: '{name} - баа: {origPrice}/{newPrice}, өлчөмдөр: {sizes}',
       createdWithCount: '{name} - баа: {origPrice}/{newPrice}, саны: {count}{pieces}',
+      defectWithSizes: 'Товар: {name}, өлчөмдөр: {sizes}',
+      defectWithoutSizes: 'Товар: {name}, саны: {count}{pieces}',
       update: {
         name: 'Аталышы жаңырды',
         color: 'Түс жаңырды',
@@ -510,8 +514,17 @@ export default ({
     marginFromEdge: 'Кагаз четинен аралык мм',
     marginHint: 'Аралыкты тууралоо үчүн',
   },
+  defect: {
+    title: 'Бракованный товар',
+    dialogCountTitle: 'Бракованный товар санын көрсөтүү',
+    dialogSizesTitle: 'Бракованный өлчөмдөрүн тандаңыз',
+    defectAdded: 'Бракованный товар кошулду',
+    invalidCount: 'Жалпы саны',
+    invalidSizes: 'Өлчөмдөр',
+  },
   product: {
     title: 'Товарлар',
+    defect: 'Бракованный товар',
     printPriceLabels: 'Бааларды басуу',
     controlPanel: 'Башкаруу панели',
     addToBasket: 'Товар себетке кошулду',

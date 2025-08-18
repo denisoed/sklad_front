@@ -107,6 +107,7 @@ export default ({
     reloadPage: 'Reload page and try again',
     noAccess: 'No access',
     confirm: 'Confirm',
+    quantityForSize: 'Select quantity for size',
   },
   calendar: {
     days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
@@ -312,6 +313,7 @@ export default ({
       delete: 'Deleted',
       sold: 'Sold',
       return: 'Returned',
+      defect: 'Defect',
     },
     descriptionTemplates: {
       productPrefix: 'Product: {name}. ',
@@ -322,6 +324,8 @@ export default ({
       delete: 'Product deleted: {name}',
       createdWithSizes: '{name} - price: {origPrice}/{newPrice}, sizes: {sizes}',
       createdWithCount: '{name} - price: {origPrice}/{newPrice}, quantity: {count}{pieces}',
+      defectWithSizes: 'Product: {name}, sizes: {sizes}',
+      defectWithoutSizes: 'Product: {name}, quantity: {count}{pieces}',
       update: {
         name: 'Name updated',
         color: 'Color updated',
@@ -509,8 +513,17 @@ export default ({
     marginFromEdge: 'Margin from paper edge in mm',
     marginHint: 'For margin calibration',
   },
+  defect: {
+    title: 'Defective product',
+    dialogCountTitle: 'Specify the number of defective units',
+    dialogSizesTitle: 'Specify defective sizes',
+    defectAdded: 'Defective product added',
+    invalidCount: 'Invalid count',
+    invalidSizes: 'Invalid sizes',
+  },
   product: {
     title: 'Products',
+    defect: 'Defective product',
     printPriceLabels: 'Print price tags',
     controlPanel: 'Control panel',
     addToBasket: 'Product added to cart',

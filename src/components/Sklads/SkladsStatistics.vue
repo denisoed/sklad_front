@@ -30,6 +30,7 @@ import SwitchTabs from 'src/components/SwitchTabs.vue'
 import moment from 'moment'
 import { FILTER_FORMAT, DAY, WEEK, MONTH, YEAR } from 'src/config'
 import useStatistics from 'src/modules/useStatistics'
+import useActivity from 'src/modules/useActivity'
 import useDate from 'src/modules/useDate'
 import useMoney from 'src/modules/useMoney'
 import { useI18n } from 'vue-i18n'
@@ -65,12 +66,10 @@ const props = defineProps({
 const { ids } = toRefs(props)
 const selected = ref(TABS.value[2])
 const {
-  fetchActivities,
   soldCount,
-  loadingActivities,
-  listActivities,
   priceTotal
 } = useStatistics()
+const { listActivities, loadingActivities, fetchActivities } = useActivity()
 const { formatPrice } = useMoney()
 const { getCurrentMonth, getCurrentWeek } = useDate()
 

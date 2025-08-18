@@ -100,6 +100,7 @@ import useMoney from 'src/modules/useMoney'
 import LineChart from 'src/components/Charts/LineChart.vue'
 import useStatistics from 'src/modules/useStatistics'
 import useCosts from 'src/modules/useCosts'
+import useActivity from 'src/modules/useActivity'
 import moment from 'moment'
 import { useI18n } from 'vue-i18n'
 import { FILTER_FORMAT } from 'src/config'
@@ -113,12 +114,11 @@ const { costs, costsTotal, costsLoading } = useCosts()
 
 const {
   priceTotal,
-  listActivities,
-  loadingActivities,
   loadingStatisticActivities,
   statisticFinance,
   totalRevenue
 } = useStatistics()
+const { listActivities, loadingActivities } = useActivity()
 
 const { formatPrice } = useMoney()
 

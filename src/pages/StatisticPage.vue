@@ -53,6 +53,7 @@ import useStatistics from 'src/modules/useStatistics'
 import useDate from 'src/modules/useDate'
 import FilterDates from 'src/components/FilterDates.vue'
 import useCosts from 'src/modules/useCosts'
+import useActivity from 'src/modules/useActivity'
 
 defineOptions({
   name: 'StatisticPage'
@@ -64,13 +65,15 @@ const router = useRouter()
 const { params } = useRoute()
 const { getCurrentMonth } = useDate()
 const {
-  fetchActivities,
   fetchStatisticActivities,
   fetchStatisticFinance
 } = useStatistics()
 const {
   fetchCosts
 } = useCosts()
+const {
+  fetchActivities,
+} = useActivity()
 
 const selectedType = ref(0)
 const selectedSkladId = ref(0)

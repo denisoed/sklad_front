@@ -107,6 +107,7 @@ export default ({
     reloadPage: 'Перезагрузите страницу, попробуйте еще раз',
     noAccess: 'Нет доступа',
     confirm: 'Подтвердить',
+    quantityForSize: 'Выберите кол-во для размера',
   },
   calendar: {
     days: ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
@@ -312,6 +313,7 @@ export default ({
       delete: 'Удален',
       sold: 'Продан',
       return: 'Возврат',
+      defect: 'Брак',
     },
     descriptionTemplates: {
       productPrefix: 'Товар: {name}. ',
@@ -322,6 +324,8 @@ export default ({
       delete: 'Удален товар: {name}',
       createdWithSizes: '{name} - цена: {origPrice}/{newPrice}, размеры: {sizes}',
       createdWithCount: '{name} - цена: {origPrice}/{newPrice}, кол-во: {count}{pieces}',
+      defectWithSizes: 'Товар: {name}, размеры: {sizes}',
+      defectWithoutSizes: 'Товар: {name}, кол-во: {count}{pieces}',
       update: {
         name: 'Обновлено название',
         color: 'Обновлён цвет',
@@ -509,8 +513,17 @@ export default ({
     marginFromEdge: 'Отступ от края бумаги в mm',
     marginHint: 'Для колибровки отступа от края бумаги',
   },
+  defect: {
+    title: 'Бракованный товар',
+    dialogCountTitle: 'Укажите кол-во бракованных единиц',
+    dialogSizesTitle: 'Укажите бракованные размеры',
+    defectAdded: 'Бракованный товар добавлен',
+    invalidCount: 'Неверное количество',
+    invalidSizes: 'Неверные размеры',
+  },
   product: {
     title: 'Товары',
+    defect: 'Бракованный товар',
     printPriceLabels: 'Печать ценников',
     controlPanel: 'Панель управления',
     addToBasket: 'Товар добавлен в корзину',

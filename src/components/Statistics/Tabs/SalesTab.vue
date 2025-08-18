@@ -21,10 +21,13 @@ import StatisticTable from 'src/components/StatisticTable.vue'
 import { useMutation } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'
 import useProfile from 'src/modules/useProfile'
+import useActivity from 'src/modules/useActivity'
 import {
-  UPDATE_PRODUCT,
-  DELETE_ACTIVITY
+  UPDATE_PRODUCT
 } from 'src/graphql/types'
+import {
+  DELETE_ACTIVITY
+} from 'src/graphql/activity'
 import {
   HISTORY_RETURN
 } from 'src/config'
@@ -54,9 +57,8 @@ const {
   createHistory,
 } = useHistory()
 const { showSuccess, showError } = useHelpers()
+const { listActivities, loadingActivities } = useActivity()
 const {
-  loadingActivities,
-  listActivities,
   soldCount,
   origPriceTotal,
   newPriceTotal,
@@ -68,7 +70,7 @@ const { formatPrice } = useMoney()
 async function remove(activity) {
   try {
     const currentSizes = activity.product.sizes.map(s => ({ size: s.size }));
-    const activitySizes = (activity.size?.split(', ')).map(size => ({ size }));
+    const activitySizes = (activity.size?.split(', '))?.map(size => ({ size })) || [];
     await updateProduct({
       id: activity.product.id,
       data: {
@@ -101,7 +103,7 @@ async function remove(activity) {
     } else {
       showError($t('statistics.returnError'))
     }
-  } catch {
+  } catch (error) {
     showError($t('statistics.returnError'))
   }
 }

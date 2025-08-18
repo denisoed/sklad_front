@@ -65,7 +65,7 @@
         </template>
       </q-table>
     </div>
-    <FilterHistory
+    <FilterHistoryDialog
       :opened="openedFilterHistory"
       :users="skladUsers"
       @close="openedFilterHistory = false"
@@ -89,7 +89,7 @@
 import moment from 'moment'
 import { computed, onBeforeMount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import FilterHistory from 'src/components/FilterHistory.vue'
+import FilterHistoryDialog from 'src/components/Dialogs/FilterHistoryDialog.vue'
 import useSklads from 'src/modules/useSklads'
 import useHistory from 'src/modules/useHistory'
 import useDate from 'src/modules/useDate'

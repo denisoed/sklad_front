@@ -60,7 +60,7 @@ $tab-height: 35px;
   display: flex;
   flex-wrap: nowrap;
 	position: relative;
-	border-radius: var(--border-radius-sm);
+	border-radius: 50px;
 	overflow: hidden;
 	height: $tab-height;
 	user-select: none;
@@ -78,7 +78,7 @@ $tab-height: 35px;
   top: 0;
   left: 0;
   transition: all 250ms ease-in-out;
-  border-radius: var(--border-radius-sm);
+  border-radius: 50px;
 }
 
 .tab-slider--trigger {
