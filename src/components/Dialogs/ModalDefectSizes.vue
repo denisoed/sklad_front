@@ -32,12 +32,12 @@
                   <q-btn
                     v-for="(s, i) of listSizes"
                     :key="i"
-                    :color="!selectedSizes.some(sz => sz.size === s.size) ? 'white' : 'primary'"
+                    :color="!s.countSelected ? 'white' : 'primary'"
                     text-color="white"
-                    :outline="!selectedSizes.some(sz => sz.size === s.size)"
+                    :outline="!s.countSelected"
                     push
                     class="btn-sizes-btn border-radius-sm"
-                    :disable="!s.has"
+                    :disable="s.countSelected >= s.count"
                     @click="toggleSize(s)"
                   >
                     <span>{{ s.size }}
@@ -68,7 +68,7 @@
                   icon="mdi-check"
                   push
                   @click="submit"
-                  :disable="!selectedSizes.length || !desc"
+                  :disable="!selectedSizes || !desc"
                 />
               </div>
             </div>
@@ -137,35 +137,11 @@ const props = defineProps({
 })
 
 const { selected, sizes, description } = toRefs(props)
-const selectedSizes = ref([...selected.value])
 const desc = ref(description.value)
-
 const isStepTwo = ref(false)
 const selectedSize = ref(null)
 const selectedCounts = ref(null)
-
-function removeItemOnce(arr, value) {
-  const index = arr.map(s => s.size).indexOf(value.size)
-  if (index > -1) {
-    arr.splice(index, 1)
-  }
-  return arr
-}
-
-function toggleSize(size) {
-  if (size.count > 1) {
-    selectedSize.value = size
-    selectedCounts.value = getCountSize(size.size, selectedSizes.value)
-    isStepTwo.value = true
-    return
-  }
-  const exists = selectedSizes.value.some(s => s.size === size.size)
-  if (exists) {
-    selectedSizes.value = removeItemOnce(selectedSizes.value, size)
-  } else {
-    selectedSizes.value.push(size)
-  }
-}
+const listSizes = ref([])
 
 function getCountSize(size, sizesArr) {
   let count = 0
@@ -177,18 +153,37 @@ function getCountSize(size, sizesArr) {
   return count
 }
 
-const listSizes = computed(() => {
+function createListSizes() {
   const uniqueSizes = [...new Set(sizes.value.map(s => s.size))]
-  return uniqueSizes.map(size => {
+  listSizes.value = uniqueSizes.map(size => {
     const count = getCountSize(size, sizes.value)
     return {
       size,
-      countSelected: getCountSize(size, selectedSizes.value),
+      countSelected: 0,
       count,
       has: sizes.value.some(s => s.size === size)
     }
   })
-})
+}
+
+function toggleSize(sizeObj) {
+  if (sizeObj.count > 1) {
+    selectedSize.value = sizeObj
+    selectedCounts.value = sizeObj.countSelected
+    isStepTwo.value = true
+    return
+  }
+  // Для единичных размеров просто переключаем 0/1
+  listSizes.value = listSizes.value.map(ls => {
+    if (ls.size === sizeObj.size) {
+      return {
+        ...ls,
+        countSelected: ls.countSelected === 0 ? 1 : 0
+      }
+    }
+    return ls
+  })
+}
 
 function onChangeCount(count) {
   selectedCounts.value = count
@@ -196,21 +191,37 @@ function onChangeCount(count) {
 
 function setSizeWithCounts() {
   isStepTwo.value = false
-  selectedSizes.value = selectedSizes.value.filter(s => s.size !== selectedSize.value.size)
-  for (let i = 0; i < selectedCounts.value; i++) {
-    selectedSizes.value.push(selectedSize.value)
-  }
+  listSizes.value = listSizes.value.map(ls => {
+    if (ls.size === selectedSize.value.size) {
+      return {
+        ...ls,
+        countSelected: selectedCounts.value !== null ? selectedCounts.value : ls.countSelected
+      }
+    }
+    return ls
+  })
   selectedSize.value = null
   selectedCounts.value = null
 }
 
 function close() {
+  isStepTwo.value = false
+  selectedCounts.value = null
+  selectedSize.value = null
+  desc.value = ''
+  listSizes.value = []
   emit('update:modelValue', false)
 }
 
 function submit() {
+  const resultSizes = []
+  listSizes.value.forEach(ls => {
+    for (let i = 0; i < ls.countSelected; i++) {
+      resultSizes.push({ size: ls.size })
+    }
+  })
   emit('submit', {
-    sizes: selectedSizes.value,
+    sizes: resultSizes,
     description: desc.value
   })
   close()
@@ -218,9 +229,23 @@ function submit() {
 
 watch(() => props.modelValue, (val) => {
   if (val) {
-    selectedSizes.value = [...selected.value]
     desc.value = description.value
+    createListSizes()
+    // Если есть selected, выставляем countSelected
+    if (selected.value && selected.value.length) {
+      selected.value.forEach(sel => {
+        const idx = listSizes.value.findIndex(ls => ls.size === sel.size)
+        if (idx !== -1) {
+          listSizes.value[idx].countSelected += 1
+        }
+      })
+    }
   }
+})
+
+const selectedSizes = computed(() => {
+  // Для дизейбла кнопки
+  return listSizes.value.reduce((acc, ls) => acc + ls.countSelected, 0)
 })
 </script>
 

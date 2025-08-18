@@ -63,7 +63,7 @@
                   py="10px"
                 >
                   <q-item-section
-                    @click="cancel('remove')"
+                    @click="remove()"
                   >
                     <div class="flex items-center">
                       <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
@@ -100,30 +100,14 @@
         <div class="row">
           <div class="col-12 q-mb-md">
             <template v-if="!isLoadingData">
-              <div
-                v-if="isDuplicating"
-                class="flex items-center border-radius-sm q-pa-sm q-mb-md q-px-md"
-                style="background-color: rgb(0 255 0 / 8%);"
-              >
-                <span>{{ $t('product.duplicatingProduct', { id: duplicatedFromID }) }}</span>
-                <q-icon name="mdi-content-duplicate" class="q-ml-auto" color="green-5" size="sm" />
-              </div>
-              <div
-                v-if="isDraft && !editProduct?.product?.id && !isDuplicating"
-                class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
-                style="background-color: rgb(255 255 0 / 8%);"
-              >
-                <span class="q-mr-sm">{{ $t('product.draft') }}</span>
-                <q-icon name="mdi-pencil-outline" class="q-ml-auto" color="yellow-5" size="sm" />
-              </div>
-              <div
-                v-if="product.withDiscount"
-                class="flex items-center q-pa-sm q-mb-md q-px-md border-radius-sm"
-                style="background-color: rgb(255 0 0 / 8%);"
-              >
-                <span class="q-mr-sm">{{ $t('product.hasPromotion') }}</span>
-                <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="sm" />
-              </div>
+              <ProductStatusBadges
+                :is-duplicating="isDuplicating"
+                :duplicated-from-i-d="duplicatedFromID"
+                :is-draft="isDraft"
+                :edit-product="editProduct"
+                :product="product"
+                @clear-draft="clearDraft"
+              />
             </template>
 
             <!-- Sklads -->
@@ -244,7 +228,7 @@
                   ]"
                 />
               </template>
-              <div class="flex items-center no-wrap q-px-md q-py-sm product-page_discount">
+              <div class="flex items-center no-wrap q-px-md q-py-sm product-page_discount border-radius-sm">
                 <div v-if="product.discountDays" class="q-mr-sm product-page_discount-dates">
                   <p class="q-mr-md q-mb-sm">
                     {{ $t('product.promotionDates') }}
@@ -477,6 +461,7 @@ import { ACTIVITIES_TYPES } from 'src/config/activity'
 import useHistory from 'src/modules/useHistory'
 import { HISTORY_DEFECT } from 'src/config'
 import useProfile from 'src/modules/useProfile'
+import ProductStatusBadges from 'src/components/Product/ProductStatusBadges.vue'
 
 const DEFAULT_DATA = {
   id: null,
@@ -581,7 +566,7 @@ const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
 const voiceCreateOpen = ref(false)
 const isLoadingData = ref(true)
-const isDraft = hasDraft()
+const isDraft = ref(false)
 const isVoiceFeatureEnabled = computed(() => isFeatureEnabled('voiceCreate'))
 
 function onChangeSizes(sizes) {
@@ -674,12 +659,6 @@ function setColorName(item) {
   product.colorName = item.name
 }
 
-function resetAll() {
-  Object.assign(product, DEFAULT_DATA)
-  clearDraft()
-  clearDuplicateData()
-}
-
 async function onAddCountToBucket(item, payload) {
   await addCountToBucket({
     ...item,
@@ -701,8 +680,9 @@ async function onAddSizesToBucket(item, payload) {
 }
 
 function clearDraft() {
-  clearDraftAction();
-  clearDuplicateData();
+  clearDraftAction()
+  clearDuplicateData()
+  isDraft.value = false
 }
 
 function getTypeSizeId() {
@@ -792,15 +772,15 @@ function duplicateProduct() {
   duplicateProductAction(product)
 }
 
-function cancel(type) {
+function remove() {
   $q.dialog({
-    title: type === 'remove' ? t('product.deleteConfirmTitle') : t('product.resetConfirmTitle'),
-    message: type === 'remove' ? t('product.deleteConfirmMessage') : t('product.resetConfirmMessage'),
+    title: t('product.deleteConfirmTitle'),
+    message: t('product.deleteConfirmMessage'),
     cancel: true,
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: type === 'remove' ? t('common.delete') : t('product.reset'),
+      label: t('common.delete'),
       push: true
     },
     cancel: {
@@ -810,13 +790,9 @@ function cancel(type) {
       push: true
     }
   }).onOk(async () => {
-    if (type === 'reset') {
-      resetAll()
-    } else {
-      await removeProduct(params?.productId, editProduct.value?.product)
-      showSuccess(t('product.deleteSuccess'))
-      push('/products')
-    }
+    await removeProduct(params?.productId, editProduct.value?.product)
+    showSuccess(t('product.deleteSuccess'))
+    push('/products')
   })
 }
 
@@ -919,59 +895,6 @@ async function handleProductCategotyBySklad(skladId) {
   product.category = editProduct.value?.product?.category?.id
 }
 
-watch(allUserCategories, (newValue) => {
-  if (newValue?.length) {
-    setCategoryFromParams()
-  }
-})
-
-watch(editProduct, (newValue) => {
-  if (newValue?.product) {
-    Object.assign(product, {
-      ...newValue.product,
-      sklad: newValue.product.sklad?.id,
-      category: newValue.product.category?.id,
-      image: newValue.product.image?.url,
-      imageId: newValue.product.image?.id
-    })
-    Object.assign(copiedProductForDirty, {
-      ...product,
-      prices: [...(product.prices || [])]
-    })
-  } else {
-    const draft = loadDraft()
-    if (draft) {
-      Object.assign(product, draft)
-    }
-  }
-}, {
-  immediate: true
-});
-
-watch(sklads, (val) => {
-  if (val?.length) {
-    loadData();
-  }
-}, {
-  immediate: true
-});
-
-// Subscribe to global duplicate event
-onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
-
-watch(() => product.sklad, (skladId) => {
-  handleProductCategotyBySklad(skladId)
-});
-
-const debouncedWatch = debounce(() => {
-  saveDraft(product)
-}, 1000);
-
-watch(product, debouncedWatch)
-
-onBeforeUnmount(() => {
-  offBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
-})
 
 function openDefectModal() {
   if (product.useNumberOfSizes) {
@@ -1021,10 +944,28 @@ async function onDefectCountSubmit(payload) {
   }
 }
 
+function subtractArrays(arr, toRemove, key) {
+  let counts = new Map();
+
+  for (let obj of toRemove) {
+    let val = obj[key];
+    counts.set(val, (counts.get(val) || 0) + 1);
+  }
+
+  return arr.filter(obj => {
+    let val = obj[key];
+    if (counts.get(val) > 0) {
+      counts.set(val, counts.get(val) - 1);
+      return false;
+    }
+    return true;
+  });
+}
+
 async function onDefectSizesSubmit(payload) {
   if (payload.sizes && payload.sizes.length) {
     const removedSizes = payload.sizes
-    product.sizes = product.sizes.filter(s => !removedSizes.some(r => r.size === s.size))
+    product.sizes = subtractArrays(product.sizes, removedSizes, 'size')
     await updateProductById(params?.productId, { sizes: product.sizes.map(s => ({ size: s.size })) })
     await createActivity({
       type: ACTIVITIES_TYPES.DEFECT,
@@ -1044,12 +985,68 @@ async function onDefectSizesSubmit(payload) {
     showError(t('defect.invalidSizes'))
   }
 }
+
+watch(allUserCategories, (newValue) => {
+  if (newValue?.length) {
+    setCategoryFromParams()
+  }
+})
+
+watch(editProduct, (newValue) => {
+  if (newValue?.product) {
+    Object.assign(product, {
+      ...newValue.product,
+      sklad: newValue.product.sklad?.id,
+      category: newValue.product.category?.id,
+      image: newValue.product.image?.url,
+      imageId: newValue.product.image?.id
+    })
+    Object.assign(copiedProductForDirty, {
+      ...product,
+      prices: [...(product.prices || [])]
+    })
+  } else {
+    const draft = loadDraft()
+    if (draft) {
+      isDraft.value = true
+      Object.assign(product, draft)
+    }
+  }
+}, {
+  immediate: true
+});
+
+watch(sklads, (val) => {
+  if (val?.length) {
+    loadData();
+  }
+}, {
+  immediate: true
+});
+
+// Subscribe to global duplicate event
+onBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+
+watch(() => product.sklad, (skladId) => {
+  handleProductCategotyBySklad(skladId)
+});
+
+const debouncedWatch = debounce(() => {
+  if (!product.id) {
+    saveDraft(product)
+  }
+}, 1000);
+
+watch(product, debouncedWatch)
+
+onBeforeUnmount(() => {
+  offBus(BUS_EVENTS.DUPLICATE_PRODUCT, duplicateProduct)
+})
 </script>
 
 <style lang="scss" scoped>
   .product-page_discount {
     background-color: rgba($color: red, $alpha: 0.1);
-    border-radius: var(--border-radius-xs);
 
     &-dates {
       width: 250px;

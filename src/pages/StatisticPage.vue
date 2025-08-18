@@ -54,6 +54,7 @@ import useDate from 'src/modules/useDate'
 import FilterDates from 'src/components/FilterDates.vue'
 import useCosts from 'src/modules/useCosts'
 import useActivity from 'src/modules/useActivity'
+import { ACTIVITIES_TYPES } from 'src/config/activity'
 
 defineOptions({
   name: 'StatisticPage'
@@ -106,7 +107,7 @@ function fetchSalesTabData(skladId, dates) {
     sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
     ...defaultDates,
   }
-  fetchActivities(where)
+  fetchActivities({ ...where, type: ACTIVITIES_TYPES.SALE })
 }
 
 function fetchFinanceTabDynamicData(skladId, dates) {
@@ -116,7 +117,7 @@ function fetchFinanceTabDynamicData(skladId, dates) {
     ...defaultDates,
   }
   fetchCosts(where)
-  fetchActivities(where)
+  fetchActivities({ ...where, type: ACTIVITIES_TYPES.SALE })
 }
 
 function fetchFinanceTabStaticData(skladId, dates) {
