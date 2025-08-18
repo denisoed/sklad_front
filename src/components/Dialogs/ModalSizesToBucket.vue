@@ -112,7 +112,7 @@
             <InputPlusMinus
               :max="selectedSize.count"
               :model-value="selectedSize.countSelected"
-              :label="`${$t('bucket.quantityForSale')}: <b>${selectedSize.size}</b>`"
+              :label="`${$t('common.quantityForSize')}: <b>${selectedSize.size}</b>`"
               class="q-my-auto"
               @update:model-value="onChangeCount"
             />

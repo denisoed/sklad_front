@@ -107,6 +107,7 @@ export default ({
     reloadPage: 'Reload page and try again',
     noAccess: 'No access',
     confirm: 'Confirm',
+    quantityForSize: 'Select quantity for size',
   },
   calendar: {
     days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
@@ -514,7 +515,8 @@ export default ({
   },
   defect: {
     title: 'Defective product',
-    addDefectTitle: 'Add defective product',
+    dialogCountTitle: 'Specify the number of defective units',
+    dialogSizesTitle: 'Specify defective sizes',
     defectAdded: 'Defective product added',
     invalidCount: 'Invalid count',
     invalidSizes: 'Invalid sizes',

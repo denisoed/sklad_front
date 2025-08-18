@@ -107,6 +107,7 @@ export default ({
     reloadPage: 'Баракты жаңыртып көрүңүз',
     noAccess: 'Кирүү мүмкүн эмес',
     confirm: 'Тастыктоо',
+    quantityForSize: 'Өлчөмдөр үчүн санын тандаңыз',
   },
   calendar: {
     days: ['Жекшемби','Дүйшөмбү','Шейшемби','Шаршемби','Бейшемби','Жума','Ишемби'],
@@ -515,7 +516,8 @@ export default ({
   },
   defect: {
     title: 'Бракованный товар',
-    addDefectTitle: 'Бракованный товар кошуу',
+    dialogCountTitle: 'Бракованный товар санын көрсөтүү',
+    dialogSizesTitle: 'Бракованный өлчөмдөрүн тандаңыз',
     defectAdded: 'Бракованный товар кошулду',
     invalidCount: 'Жалпы саны',
     invalidSizes: 'Өлчөмдөр',

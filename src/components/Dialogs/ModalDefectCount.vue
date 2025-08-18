@@ -11,7 +11,7 @@
         </div>
         <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
           <p class="full-width text-left text-bold q-mb-none text-subtitle1">
-            {{ title || $t('defect.addDefectTitle') }}
+            {{ title || $t('defect.dialogCountTitle') }}
           </p>
           <q-separator class="full-width q-mt-sm q-mb-md" />
           <div class="full-width flex column q-gap-sm">

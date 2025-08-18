@@ -1036,7 +1036,7 @@ async function onDefectSizesSubmit(payload) {
       sklad: product.sklad,
       description: payload.description
     })
-    createDefectHistory(product, profile.value)
+    createDefectHistory({ ...product, sizes: removedSizes }, profile.value)
     showSuccess(t('defect.defectAdded'))
     refetchEditProduct()
   } else {
