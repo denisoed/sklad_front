@@ -385,6 +385,7 @@ export default ({
     productsLabel: 'Товары',
     countUnitsForSize: 'Кол-во единиц для размера',
     typesLabel: 'Отчёты',
+    deleteConfirmMessage: 'При удалении выбранных товаров, они пропадут со склада навсегда',
   },
   mainSettings: {
     title: 'Основные Настройки',

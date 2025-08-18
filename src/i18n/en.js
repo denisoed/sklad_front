@@ -385,6 +385,7 @@ export default ({
     productsLabel: 'Products',
     countUnitsForSize: 'Number of units for size',
     typesLabel: 'Reports',
+    deleteConfirmMessage: 'When deleted, the selected products will be removed from the warehouse permanently',
   },
   mainSettings: {
     title: 'Main settings',
