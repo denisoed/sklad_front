@@ -312,6 +312,7 @@ export default ({
       delete: 'Өчтү',
       sold: 'Сатылды',
       return: 'Кайтарылды',
+      defect: 'Брак',
     },
     descriptionTemplates: {
       productPrefix: 'Товар: {name}. ',
@@ -322,6 +323,8 @@ export default ({
       delete: 'Товар өчүрүлдү: {name}',
       createdWithSizes: '{name} - баа: {origPrice}/{newPrice}, өлчөмдөр: {sizes}',
       createdWithCount: '{name} - баа: {origPrice}/{newPrice}, саны: {count}{pieces}',
+      defectWithSizes: 'Товар: {name}, өлчөмдөр: {sizes}',
+      defectWithoutSizes: 'Товар: {name}, саны: {count}{pieces}',
       update: {
         name: 'Аталышы жаңырды',
         color: 'Түс жаңырды',

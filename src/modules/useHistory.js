@@ -13,7 +13,8 @@ import {
   HISTORY_RETURN,
   HISTORY_DELETE,
   HISTORY_CREATE,
-  HISTORY_UPDATE
+  HISTORY_UPDATE,
+  HISTORY_DEFECT
 } from 'src/config'
 import { apolloClient } from 'src/boot/apollo'
 import { useRoute } from 'vue-router'
@@ -110,6 +111,16 @@ const useHistory = () => {
     const newPrice = json?.newPrice || 0
 
     const descrs = {
+        [HISTORY_DEFECT]: json?.sizes?.length
+          ? $t('history.descriptionTemplates.defectWithSizes', {
+            name: json?.name,
+            sizes: sizesList,
+          })
+        : $t('history.descriptionTemplates.defectWithoutSizes', {
+            name: json?.name,
+            count,
+            pieces,
+          }),
       [HISTORY_SOLD]: json?.sizes?.length
         ? $t('history.descriptionTemplates.soldWithSizes', {
             productPrefix,

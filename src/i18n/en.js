@@ -312,6 +312,7 @@ export default ({
       delete: 'Deleted',
       sold: 'Sold',
       return: 'Returned',
+      defect: 'Defect',
     },
     descriptionTemplates: {
       productPrefix: 'Product: {name}. ',
@@ -322,6 +323,8 @@ export default ({
       delete: 'Product deleted: {name}',
       createdWithSizes: '{name} - price: {origPrice}/{newPrice}, sizes: {sizes}',
       createdWithCount: '{name} - price: {origPrice}/{newPrice}, quantity: {count}{pieces}',
+      defectWithSizes: 'Product: {name}, sizes: {sizes}',
+      defectWithoutSizes: 'Product: {name}, quantity: {count}{pieces}',
       update: {
         name: 'Name updated',
         color: 'Color updated',

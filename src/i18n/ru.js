@@ -312,6 +312,7 @@ export default ({
       delete: 'Удален',
       sold: 'Продан',
       return: 'Возврат',
+      defect: 'Брак',
     },
     descriptionTemplates: {
       productPrefix: 'Товар: {name}. ',
@@ -322,6 +323,8 @@ export default ({
       delete: 'Удален товар: {name}',
       createdWithSizes: '{name} - цена: {origPrice}/{newPrice}, размеры: {sizes}',
       createdWithCount: '{name} - цена: {origPrice}/{newPrice}, кол-во: {count}{pieces}',
+      defectWithSizes: 'Товар: {name}, размеры: {sizes}',
+      defectWithoutSizes: 'Товар: {name}, кол-во: {count}{pieces}',
       update: {
         name: 'Обновлено название',
         color: 'Обновлён цвет',

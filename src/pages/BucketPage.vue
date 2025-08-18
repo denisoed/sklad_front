@@ -275,6 +275,7 @@ async function update(selectedItem, newData) {
 async function remove(product, payload) {
   isLoading.value = true
   const newSizes = [...product.sizes, ...payload?.sizes || []]
+  console.log(deleteSaleProductError.value);
   await updateProduct({
     id: product.id,
     data: {

@@ -1,15 +1,17 @@
 export const HISTORY_ACTIONS_COLORS = {
   create: '#00FF00',
-  update: '#FFFF00',
+  update: '#FF00FF',
   delete: '#FF0000',
   sold: '#0000FF',
-  return: '#FF0000'
+  return: '#FF0000',
+  defect: '#FFFF00'
 }
 export const HISTORY_CREATE = 'create'
 export const HISTORY_UPDATE = 'update'
 export const HISTORY_DELETE = 'delete'
 export const HISTORY_SOLD = 'sold'
 export const HISTORY_RETURN = 'return'
+export const HISTORY_DEFECT = 'defect'
 
 export const MAIN_COLOR_DARK = '#222831'
 export const MAIN_COLOR_LIGHT = '#f7f7f7'
@@ -41,7 +43,6 @@ export const ACCENT_COLORS = [
   { name: 'amethyst', value: '#9B7BB8', rgb: '155, 123, 184' },
   { name: 'terracotta', value: '#C65D7B', rgb: '198, 93, 123' },
   { name: 'indigo', value: '#5A6FA8', rgb: '90, 111, 168' },
-
 ]
 
 // Localstorage keys

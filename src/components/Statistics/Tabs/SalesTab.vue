@@ -70,7 +70,7 @@ const { formatPrice } = useMoney()
 async function remove(activity) {
   try {
     const currentSizes = activity.product.sizes.map(s => ({ size: s.size }));
-    const activitySizes = (activity.size?.split(', ')).map(size => ({ size }));
+    const activitySizes = (activity.size?.split(', '))?.map(size => ({ size })) || [];
     await updateProduct({
       id: activity.product.id,
       data: {
@@ -103,7 +103,7 @@ async function remove(activity) {
     } else {
       showError($t('statistics.returnError'))
     }
-  } catch {
+  } catch (error) {
     showError($t('statistics.returnError'))
   }
 }

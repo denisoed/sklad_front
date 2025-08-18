@@ -473,6 +473,9 @@ import ModalDefectCount from 'src/components/Dialogs/ModalDefectCount.vue'
 import ModalDefectSizes from 'src/components/Dialogs/ModalDefectSizes.vue'
 import useActivity from 'src/modules/useActivity'
 import { ACTIVITIES_TYPES } from 'src/config/activity'
+import useHistory from 'src/modules/useHistory'
+import { HISTORY_DEFECT } from 'src/config'
+import useProfile from 'src/modules/useProfile'
 
 const DEFAULT_DATA = {
   id: null,
@@ -510,6 +513,7 @@ const { replace, push } = useRouter()
 const { showSuccess, showError } = useHelpers()
 const { openDialog } = useDialog()
 const { sizes, fetchSizes } = useSizes()
+const { createHistory } = useHistory()
 const {
   addSizesToBucket,
   addCountToBucket,
@@ -524,6 +528,7 @@ const {
 } = useProduct()
 const { createActivity } = useActivity()
 const { sklads } = useSklads()
+const { profile } = useProfile()
 
 const modalCountToBucket = ref(false)
 const modalSizesToBucket = ref(false)
@@ -975,6 +980,24 @@ function openDefectModal() {
   }
 }
 
+function createDefectHistory(payload, profile) {
+  createHistory({
+    userId: +profile?.id || null,
+    skladId: +payload?.sklad || null,
+    productId: +payload?.id || null,
+    skladName: sklads.value?.find(s => s.id === payload?.sklad)?.name || null,
+    telegramId: +profile?.telegramId || null,
+    fullname: profile?.fullname,
+    email: profile?.email,
+    json: {
+      sizes: payload.sizes.map(s => s.size),
+      countSizes: payload.countSizes,
+      name: payload.name,
+    },
+    action: HISTORY_DEFECT,
+  })
+}
+
 async function onDefectCountSubmit(payload) {
   if (payload.countSizes > 0 && product.countSizes >= payload.countSizes) {
     product.countSizes -= payload.countSizes
@@ -989,6 +1012,7 @@ async function onDefectCountSubmit(payload) {
       sklad: product.sklad,
       description: payload.description
     })
+    createDefectHistory(product, profile.value)
     showSuccess(t('defect.defectAdded'))
     refetchEditProduct()
   } else {
@@ -1012,6 +1036,7 @@ async function onDefectSizesSubmit(payload) {
       sklad: product.sklad,
       description: payload.description
     })
+    createDefectHistory(product, profile.value)
     showSuccess(t('defect.defectAdded'))
     refetchEditProduct()
   } else {
