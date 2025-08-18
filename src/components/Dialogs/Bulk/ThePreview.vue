@@ -22,7 +22,7 @@
           </q-td>
           <q-td key="actions" :props="props" class="text-right">
             <q-btn
-              icon="mdi-trash-can-outline"
+              icon="mdi-minus"
               round
               color="deep-orange"
               size="sm"

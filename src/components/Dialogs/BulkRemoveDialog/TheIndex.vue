@@ -16,7 +16,9 @@
         </div>
         <q-card-section class="flex items-center no-wrap column row items-center no-wrap q-pb-xl">
           <div class="relative full-width">
-            <div class="text-h6 q-mb-sm">{{ title }}</div>
+            <p class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm">
+              {{ title }}
+            </p>
             <BulkPreview
               v-show="step === 1"
               @on-next="next"
