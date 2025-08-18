@@ -1,6 +1,5 @@
 <template>
   <div class="sales-tab flex column q-gap-md">
-    <FilterDates @on-change="load" />
     <StatisticTable
       :list-activities="listActivities"
       :loading-activities="loadingActivities"
@@ -18,7 +17,6 @@ import { useQuasar } from 'quasar'
 import useMoney from 'src/modules/useMoney'
 import useHistory from 'src/modules/useHistory'
 import useHelpers from 'src/modules/useHelpers'
-import FilterDates from 'src/components/FilterDates.vue'
 import StatisticTable from 'src/components/StatisticTable.vue'
 import { useMutation } from '@vue/apollo-composable'
 import useStatistics from 'src/modules/useStatistics'

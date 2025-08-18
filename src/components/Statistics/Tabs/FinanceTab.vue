@@ -1,7 +1,5 @@
 <template>
   <div class="finance-tab flex column q-gap-md">
-    <FilterDates @on-change="load" />
-
     <!-- Cash register -->
     <div
       class="costs_type full-width flex items-center q-pa-md border-radius-sm"
@@ -42,27 +40,30 @@
       </div>
     </div>
 
+    <!-- Chart -->
+    <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
+
     <!-- Statistic -->
-    <div class="finance-tab-cards full-width q-gap-md">
-      <div
-        v-for="(c, i) of statisticFinance"
-        :key="i"
-        class="finance-tab-card q-pa-md"
-        :style="`background-color: ${c.bg};`"
-      >
-        <div class="finance-tab-card_title" v-html="c.label" />
-        <div class="finance-tab-card_value">
-          <q-spinner
-            v-if="statisticFinanceLoading || loadingStatisticActivities"
-            size="1em"
-          />
-          <span v-else>{{ c.value }}</span>
+    <div class="flex column full-width">
+      <p class="q-mb-sm text-subtitle2">{{ $t('statistics.reports') }}</p>
+      <div class="finance-tab-cards full-width q-gap-md">
+        <div
+          v-for="(c, i) of statisticFinance"
+          :key="i"
+          class="finance-tab-card q-pa-md"
+          :style="`background-color: ${c.bg};`"
+        >
+          <div class="finance-tab-card_title" v-html="c.label" />
+          <div class="finance-tab-card_value">
+            <q-spinner
+              v-if="statisticFinanceLoading || loadingStatisticActivities"
+              size="1em"
+            />
+            <span v-else>{{ c.value }}</span>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Chart -->
-    <LineChart :categories="lineChartCategories" :series="lineChartSeries" />
   </div>
 </template>
 
@@ -71,7 +72,6 @@ import {
   computed,
 } from 'vue'
 import useMoney from 'src/modules/useMoney'
-import FilterDates from 'src/components/FilterDates.vue'
 import LineChart from 'src/components/Charts/LineChart.vue'
 import useStatistics from 'src/modules/useStatistics'
 import moment from 'moment'

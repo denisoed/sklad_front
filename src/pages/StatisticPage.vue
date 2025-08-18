@@ -22,6 +22,8 @@
         @on-change="onChangeType"
       />
 
+      <FilterDates @on-change="onChangeDates" class="q-mb-md" />
+
       <!-- Sales -->
       <SalesTab
         v-if="selectedType === 0"
@@ -52,6 +54,7 @@ import { useRouter, useRoute } from 'vue-router'
 import useSklads from 'src/modules/useSklads'
 import useStatistics from 'src/modules/useStatistics'
 import useDate from 'src/modules/useDate'
+import FilterDates from 'src/components/FilterDates.vue'
 
 defineOptions({
   name: 'StatisticPage'
@@ -104,18 +107,26 @@ function fetchSalesTabData(skladId, dates) {
   fetchActivities(where)
 }
 
-function fetchFinanceTabData(skladId, dates) {
+function fetchFinanceTabDynamicData(skladId, dates) {
   const defaultDates = dates || { dates: getCurrentMonth() }
   const where = {
     sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
     ...defaultDates,
   }
   fetchActivities(where)
-  fetchStatisticActivities(where)
+  fetchListCostsSum(where)
+}
+
+function fetchFinanceTabStaticData(skladId, dates) {
+  const defaultDates = dates || { dates: getCurrentMonth() }
+  const where = {
+    sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
+    ...defaultDates,
+  }
   fetchStatisticFinance({
     sklad: skladId || params?.skladId || sklads.value?.map(s => s.id) || [],
   })
-  fetchListCostsSum(where)
+  fetchStatisticActivities(where)
 }
 
 function onChangeSklad(id) {
@@ -127,7 +138,7 @@ function onChangeSklad(id) {
     fetchSalesTabData(id)
   }
   if (selectedType.value === 1) {
-    fetchFinanceTabData(id)
+    fetchFinanceTabDynamicData(id)
   }
 }
 
@@ -143,14 +154,29 @@ function onChangeType(id) {
     fetchSalesTabData(selectedSkladId.value)
   }
   if (id === 1) {
-    fetchFinanceTabData(selectedSkladId.value)
+    fetchFinanceTabStaticData()
+    fetchFinanceTabDynamicData(selectedSkladId.value)
+  }
+}
+
+function onChangeDates(dates) {
+  if (selectedType.value === 0) {
+    fetchSalesTabData(selectedSkladId.value, dates)
+  }
+  if (selectedType.value === 1) {
+    fetchFinanceTabDynamicData(selectedSkladId.value, dates)
   }
 }
 
 watch(sklads, (val) => {
   if (val?.length || params?.skladId) {
-    fetchSalesTabData()
-    fetchFinanceTabData()
+    if (selectedType.value === 0) {
+      fetchSalesTabData()
+    }
+    if (selectedType.value === 1) {
+      fetchFinanceTabDynamicData()
+      fetchFinanceTabStaticData()
+    }
   }
 }, {
   immediate: true
