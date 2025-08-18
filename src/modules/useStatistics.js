@@ -1,7 +1,5 @@
-import moment from 'moment'
 import { computed } from 'vue'
 import useMoney from 'src/modules/useMoney'
-import { DISPLAY_FORMAT } from 'src/config'
 import { useStatisticsStore } from 'src/stores/statistics'
 import { apolloClient } from 'src/boot/apollo'
 import { useI18n } from 'vue-i18n'
@@ -15,14 +13,7 @@ const useStatistics = () => {
   const { formatPrice } = useMoney()
   const statisticsStore = useStatisticsStore()
   const { t: $t } = useI18n()
-  const { listActivities: activities } = useActivity()
-
-  const listActivities = computed(() => {
-    return activities.value.map(a => ({
-      ...a,
-      created_at: moment(a.created_at).local().format(DISPLAY_FORMAT)
-    }));
-  })
+  const { listActivities } = useActivity()
 
   const loadingStatisticActivities = computed(() => statisticsStore.getLoadingStatisticActivities)
   const loadingStatisticFinance = computed(() => statisticsStore.getLoadingStatisticFinance)
