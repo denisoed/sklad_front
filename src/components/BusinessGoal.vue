@@ -38,6 +38,7 @@ import moment from 'moment'
 import { computed, onBeforeMount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { FILTER_FORMAT, YEAR } from 'src/config'
+import { ACTIVITIES_TYPES } from 'src/config/activity'
 import useSklads from 'src/modules/useSklads'
 import useMoney from 'src/modules/useMoney'
 import useStatistics from 'src/modules/useStatistics'
@@ -65,11 +66,11 @@ const skladGoal = computed(() => formatPrice(sklad.value?.goal))
 const formattedPriceTotal = computed(() => formatPrice(priceTotal.value))
 
 onBeforeMount(() => {
-  const where = {
+  fetchActivities({
     sklad: params?.skladId,
+    type: ACTIVITIES_TYPES.SALE,
     created_at_gte: moment().startOf(YEAR).format(FILTER_FORMAT)
-  }
-  fetchActivities(where)
+  })
 })
 </script>
 

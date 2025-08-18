@@ -29,6 +29,7 @@ import LineChart from 'src/components/Charts/LineChart.vue'
 import SwitchTabs from 'src/components/SwitchTabs.vue'
 import moment from 'moment'
 import { FILTER_FORMAT, DAY, WEEK, MONTH, YEAR } from 'src/config'
+import { ACTIVITIES_TYPES } from 'src/config/activity'
 import useStatistics from 'src/modules/useStatistics'
 import useActivity from 'src/modules/useActivity'
 import useDate from 'src/modules/useDate'
@@ -76,11 +77,11 @@ const { getCurrentMonth, getCurrentWeek } = useDate()
 function load(params) {
   if (ids.value?.length) {
     const defaultParams = { dates: getCurrentMonth() }
-    const where = {
+    fetchActivities({
       sklad: ids.value,
+      type: ACTIVITIES_TYPES.SALE,
       ...(params || defaultParams)
-    }
-    fetchActivities(where)
+    })
   }
 }
 

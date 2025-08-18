@@ -943,10 +943,28 @@ async function onDefectCountSubmit(payload) {
   }
 }
 
+function subtractArrays(arr, toRemove, key) {
+  let counts = new Map();
+
+  for (let obj of toRemove) {
+    let val = obj[key];
+    counts.set(val, (counts.get(val) || 0) + 1);
+  }
+
+  return arr.filter(obj => {
+    let val = obj[key];
+    if (counts.get(val) > 0) {
+      counts.set(val, counts.get(val) - 1);
+      return false;
+    }
+    return true;
+  });
+}
+
 async function onDefectSizesSubmit(payload) {
   if (payload.sizes && payload.sizes.length) {
     const removedSizes = payload.sizes
-    product.sizes = product.sizes.filter(s => !removedSizes.some(r => r.size === s.size))
+    product.sizes = subtractArrays(product.sizes, removedSizes, 'size')
     await updateProductById(params?.productId, { sizes: product.sizes.map(s => ({ size: s.size })) })
     await createActivity({
       type: ACTIVITIES_TYPES.DEFECT,

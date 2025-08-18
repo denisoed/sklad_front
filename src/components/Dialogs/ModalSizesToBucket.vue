@@ -13,18 +13,17 @@
           <div class="dialog-close-line" />
         </div>
       <q-card-section class="flex no-wrap column row items-center no-wrap q-pb-xl">
-        <p
-          class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm"
-        >
-          {{ title || $t('bucket.addToBasketTitle') }}
-        </p>
-
         <transition name="slide-fade" mode="out-in">
           <!-- Step 1 -->
           <div
             v-if="!isStepTwo"
             class="full-width"
           >
+            <p
+              class="full-width text-left text-bold q-mb-none text-subtitle1 q-mb-sm"
+            >
+              {{ title || $t('bucket.addToBasketTitle') }}
+            </p>
             <div class="full-width flex column q-gap-sm q-mb-sm">
               <PriceList
                 :prices="prices"
