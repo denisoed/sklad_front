@@ -83,7 +83,7 @@ const ALL_TAB = computed(() => ({
 const typeTabs = computed(() => ([
   {
     id: 0,
-    name: 'Продажи',
+    name: $t('statistics.sales'),
     color: '#fff',
   },
   {

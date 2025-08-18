@@ -611,6 +611,7 @@ export default ({
     cannotDeleteAllSizes: 'Cannot delete all sizes at once. Only one size at a time.',
   },
   statistics: {
+    sales: 'Sales',
     reportsAllWarehouses: 'Reports for all warehouses',
     returnToWarehouse: 'Return to warehouse',
     returnConfirm: 'Do you want to return this product to warehouse?',

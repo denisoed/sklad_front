@@ -611,6 +611,7 @@ export default ({
     cannotDeleteAllSizes: 'Баарын бир учурда өчүрүү мүмкүн эмес.',
   },
   statistics: {
+    sales: 'Сатуу',
     reportsAllWarehouses: 'Бардык складдардын отчеттору',
     returnToWarehouse: 'Складга кайтаруу',
     returnConfirm: 'Бул товарды складга кайтаруу?',

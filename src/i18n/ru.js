@@ -611,6 +611,7 @@ export default ({
     cannotDeleteAllSizes: 'Нельзя удалять все размеры разом. Только один размер за раз.',
   },
   statistics: {
+    sales: 'Продажи',
     reportsAllWarehouses: 'Отчёты по всем складам',
     returnToWarehouse: 'Вернуть на склад',
     returnConfirm: 'Хотите вернуть этот товар на склад?',
