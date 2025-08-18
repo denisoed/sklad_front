@@ -31,7 +31,7 @@
       />
 
       <!-- Finance -->
-      <FinanceTab v-if="selectedType === 1" v-permissions="[READ_STATISTIC_FINANCE]" />
+      <FinanceTab v-if="selectedType === 1" />
     </div>
   </q-page>
 </template>
@@ -46,9 +46,6 @@ import PageTitle from 'src/components/PageTitle.vue'
 import SalesTab from 'src/components/Statistics/Tabs/SalesTab.vue'
 import FinanceTab from 'src/components/Statistics/Tabs/FinanceTab.vue'
 import MiniTabs from 'src/components/MiniTabs.vue'
-import {
-  READ_STATISTIC_FINANCE
-} from 'src/permissions'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import useSklads from 'src/modules/useSklads'
@@ -87,13 +84,12 @@ const typeTabs = computed(() => ([
   {
     id: 0,
     name: 'Продажи',
-    color: '#fff'
+    color: '#fff',
   },
   {
     id: 1,
     name: $t('statistics.finances'),
-    color: '#fff',
-    disabled: !READ_STATISTIC_FINANCE
+    color: '#fff'
   }
 ]))
 
