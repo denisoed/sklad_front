@@ -4,6 +4,7 @@ import moment from 'moment'
 import { DISPLAY_FORMAT } from 'src/config'
 import {
   LIST_ACTIVITIES,
+  CREATE_ACTIVITY,
 } from 'src/graphql/activity'
 import { useActivitiesStore } from 'src/stores/activities'
 
@@ -39,7 +40,23 @@ const useActivity = () => {
     }
   }
 
+  async function createActivity(payload) {
+    try {
+      activitiesStore.setLoadingActivities(true)
+      const { data } = await apolloClient.mutate({
+        mutation: CREATE_ACTIVITY,
+        variables: { data: payload }
+      })
+      return data?.createActivity
+    } catch (error) {
+      console.error(error)
+    } finally {
+      activitiesStore.setLoadingActivities(false)
+    }
+  }
+
   return {
+    createActivity,
     fetchActivities,
     listActivities,
     loadingActivities,

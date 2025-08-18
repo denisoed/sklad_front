@@ -4,6 +4,7 @@ export const CREATE_ACTIVITY = gql`
   mutation CreateActivity($data: ActivityInput!) {
     createActivity(input: { data: $data }) {
       activity {
+        type
         name
         origPrice
         newPrice
@@ -30,6 +31,7 @@ export const LIST_ACTIVITIES = gql`
   query ListActivities($where: JSON, $sort: String) {
     listActivities(where: $where, sort: $sort) {
       id
+      type
       name
       origPrice
       newPrice

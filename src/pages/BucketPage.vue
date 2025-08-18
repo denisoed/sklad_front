@@ -170,7 +170,8 @@ import {
   UPDATE_SALE_PRODUCT,
   DELETE_SALE_PRODUCT
 } from 'src/graphql/types'
-import { CREATE_ACTIVITY } from 'src/graphql/activity'
+import useActivity from 'src/modules/useActivity'
+import { ACTIVITIES_TYPES } from 'src/config/activity'
 
 defineOptions({
   name: 'BucketPage'
@@ -185,6 +186,7 @@ const { t: $t } = useI18n()
 const { showSuccess, showError } = useHelpers()
 const { sklads } = useSklads()
 const { profile } = useProfile()
+const { createActivity } = useActivity()
 const {
   loadBucketProducts,
   forceRefreshBucket,
@@ -206,9 +208,6 @@ const {
 const {
   mutate: updateSaleProduct,
 } = useMutation(UPDATE_SALE_PRODUCT)
-const {
-  mutate: createActivity,
-} = useMutation(CREATE_ACTIVITY)
 
 const isLoading = ref(false)
 const selectedProduct = ref(null)
@@ -372,17 +371,16 @@ function toSell() {
           action: HISTORY_SOLD,
         })
         createActivity({
-          data: {
-            sklad: saleProduct.sklad.id,
-            name: saleProduct.product.name,
-            origPrice: saleProduct.product.origPrice,
-            newPrice: getNewPrice(saleProduct.product),
-            size: (saleProduct.sizes.map(s => s.size)).join(', '),
-            discount: saleProduct.discount,
-            percentageDiscount: saleProduct.percentageDiscount,
-            product: saleProduct.product.id,
-            countSizes: saleProduct.countSizes
-          }
+          type: ACTIVITIES_TYPES.SALE,
+          sklad: saleProduct.sklad.id,
+          name: saleProduct.product.name,
+          origPrice: saleProduct.product.origPrice,
+          newPrice: getNewPrice(saleProduct.product),
+          size: (saleProduct.sizes.map(s => s.size)).join(', '),
+          discount: saleProduct.discount,
+          percentageDiscount: saleProduct.percentageDiscount,
+          product: saleProduct.product.id,
+          countSizes: saleProduct.countSizes
         })
         await deleteSaleProduct({
           id: saleProduct.id,
