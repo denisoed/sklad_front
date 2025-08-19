@@ -29,20 +29,19 @@
                 >
                   <template #body="props">
                     <q-tr :props="props">
-                      <q-td :props="props" class="text-left" key="info">
+                      <q-td :props="props" class="text-left" :class="{ 'accent-bg': getAccentBg(props.row) }" key="info">
                         <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
                         <div class="text-bold">{{ props.row.name }}</div>
                       </q-td>
-                      <q-td :props="props" class="text-left" key="sizes">
-                        <div v-if="props.row.useNumberOfSizes" class="q-pa-sm">
-                          <InputPlusMinus
-                            :min="1"
-                            :max="props.row.countSizes"
-                            :model-value="props.row.qty"
-                            @update:model-value="val => updateQty(props.row, val)"
-                            :label="$t('common.quantity')"
-                          />
-                        </div>
+                      <q-td :props="props" class="text-left" :class="{ 'accent-bg': getAccentBg(props.row) }" key="sizes">
+                        <InputPlusMinus
+                          v-if="props.row.useNumberOfSizes"
+                          :min="0"
+                          :max="props.row.countSizes"
+                          :model-value="props.row.qty"
+                          @update:model-value="val => updateQty(props.row, val)"
+                          :label="$t('common.quantity')"
+                        />
                         <div v-else class="btn-sizes_list">
                           <template v-for="(sizeObj, idx) in getSizesListForRow(props.row)" :key="idx">
                             <q-btn
@@ -59,7 +58,7 @@
                           </template>
                         </div>
                       </q-td>
-                      <q-td :props="props" class="text-center" key="action">
+                      <q-td :props="props" class="text-center" :class="{ 'accent-bg': getAccentBg(props.row) }" key="action">
                         <q-btn
                           color="negative"
                           icon="mdi-minus"
@@ -170,7 +169,7 @@ watch(() => props.modelValue, (val) => {
   if (val) {
     localItems.value = props.items.map(item => {
       if (item.useNumberOfSizes) {
-        return { ...item, qty: item.qty || 1 }
+        return { ...item, qty: item.qty || 0 }
       }
       return { ...item, selectedSizes: item.selectedSizes ? [...item.selectedSizes] : [] }
     })
@@ -186,6 +185,13 @@ function getCountSize(size, sizesArr) {
     }
   })
   return count
+}
+
+function getAccentBg(row) {
+  if (row.useNumberOfSizes) {
+    return row.qty > 0
+  }
+  return row.selectedSizes && row.selectedSizes.length > 0
 }
 
 function getSizesListForRow(row) {
@@ -304,13 +310,19 @@ function updateQty(row, val) {
     overflow: hidden;
   }
 }
+
 .btn-sizes_list {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
+
 .btn-sizes-btn {
   min-width: 0;
   flex: 0 1 auto;
+}
+
+.accent-bg {
+  background-color: rgba(var(--q-primary-rgb), 0.1);
 }
 </style>
