@@ -34,7 +34,16 @@
                         <div class="text-bold">{{ props.row.name }}</div>
                       </q-td>
                       <q-td :props="props" class="text-left" key="sizes">
-                        <div class="btn-sizes_list">
+                        <div v-if="props.row.useNumberOfSizes" class="q-pa-sm">
+                          <InputPlusMinus
+                            :min="1"
+                            :max="props.row.countSizes"
+                            :model-value="props.row.qty"
+                            @update:model-value="val => updateQty(props.row, val)"
+                            :label="$t('common.quantity')"
+                          />
+                        </div>
+                        <div v-else class="btn-sizes_list">
                           <template v-for="(sizeObj, idx) in getSizesListForRow(props.row)" :key="idx">
                             <q-btn
                               :color="sizeObj.countSelected ? 'primary' : 'white'"
@@ -68,7 +77,7 @@
               <q-separator class="full-width q-my-md" />
               <div class="flex justify-between full-width no-wrap q-gap-md">
                 <q-btn class="button-size" color="grey" icon="mdi-close" push @click="close" />
-                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="submit" :disable="!hasAllSizesSelected" />
+                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="submit" :disable="!hasAllSelected" />
               </div>
             </div>
             <!-- Step 2 -->
@@ -124,7 +133,7 @@ const props = defineProps({
   title: String,
   items: {
     type: Array,
-    default: () => [] // [{id, name, sku, sizes: [{size, count}], selectedSizes: []}]
+    default: () => []
   }
 })
 
@@ -143,7 +152,7 @@ const columns = [
   },
   {
     name: 'sizes',
-    label: $t('common.sizes'),
+    label: `${$t('common.sizes')}/${$t('common.quantity')}`,
     field: 'sizes',
     align: 'left',
     style: 'min-width: 120px'
@@ -159,7 +168,12 @@ const columns = [
 
 watch(() => props.modelValue, (val) => {
   if (val) {
-    localItems.value = props.items.map(item => ({ ...item, selectedSizes: item.selectedSizes ? [...item.selectedSizes] : [] }))
+    localItems.value = props.items.map(item => {
+      if (!item.sizes || !item.sizes.length) {
+        return { ...item, qty: item.qty || 1 }
+      }
+      return { ...item, selectedSizes: item.selectedSizes ? [...item.selectedSizes] : [] }
+    })
     step.value = 1
   }
 })
@@ -196,14 +210,12 @@ function onSizeBtnClick(row, sizeObj) {
     step.value = 2
     return
   }
-  // Для count == 1, просто переключаем выбранность
   const idx = localItems.value.findIndex(i => i.id === row.id)
   if (idx !== -1) {
     const selectedSizes = localItems.value[idx].selectedSizes || []
     if (sizeObj.countSelected === 0) {
       selectedSizes.push({ size: sizeObj.size })
     } else {
-      // удалить все выбранные этого размера
       localItems.value[idx].selectedSizes = selectedSizes.filter(sel => sel.size !== sizeObj.size)
       return
     }
@@ -219,9 +231,7 @@ function setSizeWithCounts() {
   if (!selectedRow.value || !selectedSize.value) return
   const idx = localItems.value.findIndex(i => i.id === selectedRow.value.id)
   if (idx !== -1) {
-    // Удаляем все выбранные этого размера
     localItems.value[idx].selectedSizes = (localItems.value[idx].selectedSizes || []).filter(sel => sel.size !== selectedSize.value.size)
-    // Добавляем нужное количество
     for (let i = 0; i < (selectedCounts.value || 0); i++) {
       localItems.value[idx].selectedSizes.push({ size: selectedSize.value.size })
     }
@@ -244,18 +254,37 @@ function close() {
   emit('update:modelValue', false)
 }
 
-const hasAllSizesSelected = computed(() => localItems.value.every(i => i.selectedSizes && i.selectedSizes.length > 0))
+const hasAllSelected = computed(() =>
+  localItems.value.length > 0 &&
+  localItems.value.every(i => {
+    if (i.useNumberOfSizes) {
+      return i.qty && i.qty > 0
+    }
+    return i.selectedSizes && i.selectedSizes.length > 0
+  })
+)
 
 function submit() {
-  emit('submit', { items: localItems.value.filter(i => i.selectedSizes && i.selectedSizes.length > 0) })
+  emit('submit', {
+    items: localItems.value.filter(i => {
+      if (i.useNumberOfSizes) {
+        return i.qty && i.qty > 0
+      }
+      return i.selectedSizes && i.selectedSizes.length > 0
+    }).map(i => {
+      if (i.useNumberOfSizes) {
+        return { id: i.id, name: i.name, qty: i.qty }
+      }
+      return { id: i.id, name: i.name, selectedSizes: i.selectedSizes }
+    })
+  })
 }
 
-function groupSelectedSizes(selectedSizes) {
-  const map = new Map()
-  selectedSizes.forEach(s => {
-    map.set(s.size, (map.get(s.size) || 0) + 1)
-  })
-  return Array.from(map.entries()).map(([size, count]) => ({ size, count }))
+function updateQty(row, val) {
+  const idx = localItems.value.findIndex(i => i.id === row.id)
+  if (idx !== -1) {
+    localItems.value[idx].qty = val
+  }
 }
 </script>
 
