@@ -12,8 +12,13 @@
     >
       {{ name?.[0] }}
     </div>
-    <div class="small-card_name">
-      {{ name }}
+    <div class="flex items-center justify-center q-gap-sm small-card_name">
+      <q-icon
+        v-if="icon"
+        :name="icon"
+        :size="iconSize"
+      />
+      <span>{{ name }}</span>
     </div>
   </div>
 </template>
@@ -27,6 +32,14 @@ const props = defineProps({
   color: {
     type: String,
     required: true,
+  },
+  icon: {
+    type: String,
+    default: '',
+  },
+  iconSize: {
+    type: String,
+    default: '16px',
   },
 })
 </script>
@@ -46,9 +59,6 @@ const props = defineProps({
 
   &_name {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     height: 100%;
     font-size: 14px;

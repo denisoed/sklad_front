@@ -108,6 +108,7 @@ export default ({
     noAccess: 'No access',
     confirm: 'Confirm',
     quantityForSize: 'Select quantity for size',
+    exclude: 'Exclude',
   },
   calendar: {
     days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
