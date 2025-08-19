@@ -169,7 +169,7 @@ const columns = [
 watch(() => props.modelValue, (val) => {
   if (val) {
     localItems.value = props.items.map(item => {
-      if (!item.sizes || !item.sizes.length) {
+      if (item.useNumberOfSizes) {
         return { ...item, qty: item.qty || 1 }
       }
       return { ...item, selectedSizes: item.selectedSizes ? [...item.selectedSizes] : [] }

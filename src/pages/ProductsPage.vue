@@ -244,7 +244,8 @@ function openBundleModal() {
       useNumberOfSizes: p.useNumberOfSizes,
       sizes: p.sizes.map(s => ({ size: s.size, count: 1 })),
       countSizes: p.countSizes,
-      selectedSizes: []
+      selectedSizes: [],
+      qty: p.qty || 0
     }
   })
   bundleSizesModalVisible.value = true
