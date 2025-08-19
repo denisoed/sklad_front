@@ -223,6 +223,13 @@ h6 {
   }
 }
 
+.q-table--dark.q-table--vertical-separator
+.q-table__top,
+.q-table--dark.q-table--cell-separator
+.q-table__top {
+  border-color: var(--border-color);
+}
+
 // Input fields border radius
 .q-field__control,
 .q-input .q-field__control-container,
