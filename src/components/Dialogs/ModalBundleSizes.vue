@@ -14,7 +14,7 @@
           </p>
           <q-separator class="full-width q-mt-sm q-mb-md" />
           <transition name="slide-fade" mode="out-in">
-            <!-- Step 1: Список товаров -->
+            <!-- Step 1 -->
             <div v-if="step === 1" class="full-width">
               <div class="full-width q-mb-md">
                 <q-table
@@ -30,38 +30,35 @@
                   <template #body="props">
                     <q-tr :props="props">
                       <q-td :props="props" class="text-left" key="info">
+                        <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
                         <div class="text-bold">{{ props.row.name }}</div>
-                        <div class="text-caption">{{ props.row.sku }}</div>
                       </q-td>
                       <q-td :props="props" class="text-left" key="sizes">
-                        <template v-if="props.row.selectedSizes && props.row.selectedSizes.length">
-                          <div class="btn-sizes_list">
-                            <template v-for="(group, idx) in groupSelectedSizes(props.row.selectedSizes)" :key="idx">
-                              <q-btn
-                                :color="group.count > 0 ? 'primary' : 'white'"
-                                text-color="white"
-                                push
-                                class="btn-sizes-btn border-radius-sm q-mr-xs q-mb-xs"
-                              >
-                                <span>{{ group.size }}<sup v-if="group.count > 1">{{ group.count > 1 ? `(${group.count} ${$t('common.pieces')})` : '' }}</sup></span>
-                                <q-badge v-if="group.count > 1" color="red" floating>{{ group.count }}</q-badge>
-                              </q-btn>
-                            </template>
-                          </div>
-                        </template>
-                        <template v-else>
-                          <span>{{ $t('common.select') }}</span>
-                        </template>
+                        <div class="btn-sizes_list">
+                          <template v-for="(sizeObj, idx) in getSizesListForRow(props.row)" :key="idx">
+                            <q-btn
+                              :color="sizeObj.countSelected ? 'primary' : 'white'"
+                              text-color="white"
+                              :outline="!sizeObj.countSelected"
+                              push
+                              class="btn-sizes-btn border-radius-sm q-mr-xs q-mb-xs"
+                              @click="onSizeBtnClick(props.row, sizeObj)"
+                            >
+                              <span>{{ sizeObj.size }}<sup v-if="sizeObj.count > 1">{{ sizeObj.count > 1 ? `(${sizeObj.count} ${$t('common.pieces')})` : '' }}</sup></span>
+                              <q-badge v-if="sizeObj.countSelected > 1" color="red" floating>{{ sizeObj.countSelected }}</q-badge>
+                            </q-btn>
+                          </template>
+                        </div>
                       </q-td>
-                      <q-td :props="props" class="text-right" key="action">
+                      <q-td :props="props" class="text-center" key="action">
                         <q-btn
-                          color="primary"
-                          icon="mdi-pencil"
+                          color="negative"
+                          icon="mdi-minus"
                           round
                           dense
                           size="sm"
-                          @click="openSizesStep(props.row)"
-                          :aria-label="$t('common.select')"
+                          @click="removeItem(props.row)"
+                          :aria-label="$t('common.delete')"
                         />
                       </q-td>
                     </q-tr>
@@ -71,40 +68,26 @@
               <q-separator class="full-width q-my-md" />
               <div class="flex justify-between full-width no-wrap q-gap-md">
                 <q-btn class="button-size" color="grey" icon="mdi-close" push @click="close" />
-                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="submit" :disable="!hasAnySizes" />
+                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="submit" :disable="!hasAllSizesSelected" />
               </div>
             </div>
-            <!-- Step 2: Список размеров для товара -->
+            <!-- Step 2 -->
             <div v-else-if="step === 2" class="full-width full-height flex column">
-              <div class="q-mb-md">
-                <div class="text-bold q-mb-xs">{{ selectedItem.name }}</div>
-                <div class="text-caption">{{ selectedItem.sku }}</div>
-              </div>
-              <div class="full-width flex column">
-                <p class="q-mb-sm">{{ $t('common.sizes') }}</p>
-                <div class="btn-sizes_list">
-                  <q-btn
-                    v-for="(s, i) in sizesList"
-                    :key="i"
-                    :color="!s.countSelected ? 'white' : 'primary'"
-                    text-color="white"
-                    :outline="!s.countSelected"
-                    push
-                    class="btn-sizes-btn border-radius-sm"
-                    @click="toggleSize(s)"
-                  >
-                    <span>{{ s.size }}<sup v-if="s.count > 1">{{ s.count > 1 ? `(${s.count} ${$t('common.pieces')})` : '' }}</sup></span>
-                    <q-badge v-if="s.countSelected > 1" color="red" floating>{{ s.countSelected }}</q-badge>
-                  </q-btn>
-                </div>
-              </div>
+              <InputPlusMinus
+                :max="selectedSize.count"
+                :min="0"
+                :model-value="selectedCounts"
+                :label="`${$t('common.quantityForSize')}: <b>${selectedSize.size}</b>`"
+                class="q-my-auto"
+                @update:model-value="onChangeCount"
+              />
               <q-separator class="full-width q-my-md" />
               <div class="flex no-wrap q-gap-md">
                 <q-btn class="button-size" color="grey" icon="mdi-arrow-left" push @click="step = 1" />
-                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="saveSizesForItem" />
+                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="setSizeWithCounts" />
               </div>
             </div>
-            <!-- Step 3: Ввод количества для размера -->
+            <!-- Step 3 -->
             <div v-else-if="step === 3" class="full-width full-height flex column">
               <InputPlusMinus
                 :max="selectedSize.count"
@@ -145,12 +128,11 @@ const props = defineProps({
   }
 })
 
-const step = ref(1) // 1 - товары, 2 - размеры, 3 - количество
-const selectedItem = ref({})
-const sizesList = ref([])
+const step = ref(1)
 const localItems = ref([])
 const selectedSize = ref(null)
 const selectedCounts = ref(null)
+const selectedRow = ref(null)
 
 const columns = [
   {
@@ -170,8 +152,8 @@ const columns = [
     name: 'action',
     label: '',
     field: 'action',
-    align: 'right',
-    style: 'width: 60px'
+    align: 'center',
+    style: 'width: 40px'
   }
 ]
 
@@ -192,11 +174,10 @@ function getCountSize(size, sizesArr) {
   return count
 }
 
-function createListSizes(row) {
+function getSizesListForRow(row) {
   const uniqueSizes = [...new Set((row.sizes || []).map(s => s.size))]
-  sizesList.value = uniqueSizes.map(size => {
+  return uniqueSizes.map(size => {
     const count = getCountSize(size, row.sizes)
-    // сколько уже выбрано
     const selected = row.selectedSizes ? row.selectedSizes.filter(sel => sel.size === size).length : 0
     return {
       size,
@@ -207,29 +188,27 @@ function createListSizes(row) {
   })
 }
 
-function openSizesStep(row) {
-  selectedItem.value = row
-  createListSizes(row)
-  step.value = 2
-}
-
-function toggleSize(sizeObj) {
+function onSizeBtnClick(row, sizeObj) {
   if (sizeObj.count > 1) {
+    selectedRow.value = row
     selectedSize.value = sizeObj
     selectedCounts.value = sizeObj.countSelected
-    step.value = 3
+    step.value = 2
     return
   }
-  // Для единичных размеров просто переключаем 0/1
-  sizesList.value = sizesList.value.map(ls => {
-    if (ls.size === sizeObj.size) {
-      return {
-        ...ls,
-        countSelected: ls.countSelected === 0 ? 1 : 0
-      }
+  // Для count == 1, просто переключаем выбранность
+  const idx = localItems.value.findIndex(i => i.id === row.id)
+  if (idx !== -1) {
+    const selectedSizes = localItems.value[idx].selectedSizes || []
+    if (sizeObj.countSelected === 0) {
+      selectedSizes.push({ size: sizeObj.size })
+    } else {
+      // удалить все выбранные этого размера
+      localItems.value[idx].selectedSizes = selectedSizes.filter(sel => sel.size !== sizeObj.size)
+      return
     }
-    return ls
-  })
+    localItems.value[idx].selectedSizes = selectedSizes
+  }
 }
 
 function onChangeCount(count) {
@@ -237,72 +216,46 @@ function onChangeCount(count) {
 }
 
 function setSizeWithCounts() {
-  step.value = 2
-  sizesList.value = sizesList.value.map(ls => {
-    if (ls.size === selectedSize.value.size) {
-      return {
-        ...ls,
-        countSelected: selectedCounts.value !== null ? selectedCounts.value : ls.countSelected
-      }
-    }
-    return ls
-  })
-  selectedSize.value = null
-  selectedCounts.value = null
-}
-
-function saveSizesForItem() {
-  const idx = localItems.value.findIndex(i => i.id === selectedItem.value.id)
+  if (!selectedRow.value || !selectedSize.value) return
+  const idx = localItems.value.findIndex(i => i.id === selectedRow.value.id)
   if (idx !== -1) {
-    localItems.value[idx].selectedSizes = []
-    sizesList.value.forEach(s => {
-      for (let i = 0; i < s.countSelected; i++) {
-        localItems.value[idx].selectedSizes.push({ size: s.size })
-      }
-    })
+    // Удаляем все выбранные этого размера
+    localItems.value[idx].selectedSizes = (localItems.value[idx].selectedSizes || []).filter(sel => sel.size !== selectedSize.value.size)
+    // Добавляем нужное количество
+    for (let i = 0; i < (selectedCounts.value || 0); i++) {
+      localItems.value[idx].selectedSizes.push({ size: selectedSize.value.size })
+    }
   }
   step.value = 1
+  selectedSize.value = null
+  selectedCounts.value = null
+  selectedRow.value = null
 }
 
-function sizesSummary(row) {
-  if (!row.selectedSizes?.length) return $t('common.select')
-  // Группируем только выбранные размеры
-  const grouped = row.selectedSizes.reduce((acc, s) => {
-    acc[s.size] = (acc[s.size] || 0) + 1
-    return acc
-  }, {})
-  // Оставляем только те, где выбрано больше 0
-  const filtered = Object.entries(grouped).filter(([size, count]) => count > 0)
-  if (!filtered.length) return $t('common.select')
-  return filtered.map(([size, count]) => `${size}×${count}`).join(', ')
+function removeItem(row) {
+  localItems.value = localItems.value.filter(item => item.id !== row.id)
 }
 
 function close() {
   step.value = 1
   selectedCounts.value = null
   selectedSize.value = null
-  sizesList.value = []
+  selectedRow.value = null
   emit('update:modelValue', false)
 }
 
-const hasAnySizes = computed(() => localItems.value.some(i => i.selectedSizes && i.selectedSizes.length > 0))
+const hasAllSizesSelected = computed(() => localItems.value.every(i => i.selectedSizes && i.selectedSizes.length > 0))
 
 function submit() {
   emit('submit', { items: localItems.value.filter(i => i.selectedSizes && i.selectedSizes.length > 0) })
-  close()
 }
 
 function groupSelectedSizes(selectedSizes) {
-  // Группируем по size
   const map = new Map()
   selectedSizes.forEach(s => {
     map.set(s.size, (map.get(s.size) || 0) + 1)
   })
-  // Возвращаем массив объектов { size, count }
   return Array.from(map.entries()).map(([size, count]) => ({ size, count }))
-}
-function groupLabel(group) {
-  return group.count > 1 ? `${group.size}×${group.count}` : `${group.size}`
 }
 </script>
 
@@ -325,7 +278,7 @@ function groupLabel(group) {
 .btn-sizes_list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px;
 }
 .btn-sizes-btn {
   min-width: 0;

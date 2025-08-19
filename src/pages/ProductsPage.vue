@@ -242,10 +242,6 @@ const bundleItems = ref([])
 const bundleSizesModalVisible = ref(false)
 const bundleSizesItems = ref([])
 
-const confirmDialogVisible = ref(false)
-const confirmDialogPayload = ref(null)
-const confirmDialogType = ref('count') // 'count' | 'sizes'
-
 const $q = useQuasar()
 
 function openBundleModal() {
@@ -313,23 +309,9 @@ function onBundleSizesSubmit(payload) {
       push: true
     }
   }).onOk(() => {
+    bundleSizesModalVisible.value = false
     console.log('Bundle with sizes created:', payload)
   })
-  bundleSizesModalVisible.value = false
-}
-
-function onConfirmBundle() {
-  if (confirmDialogType.value === 'count') {
-    console.log('Bundle created:', confirmDialogPayload.value)
-  } else {
-    console.log('Bundle with sizes created:', confirmDialogPayload.value)
-  }
-  confirmDialogVisible.value = false
-  confirmDialogPayload.value = null
-}
-function onCancelBundle() {
-  confirmDialogVisible.value = false
-  confirmDialogPayload.value = null
 }
 
 const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
