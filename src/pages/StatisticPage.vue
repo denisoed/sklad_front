@@ -3,6 +3,15 @@
     <div class="container">
       <PageTitle :title="$t('statistics.reportsAllWarehouses')" />
 
+      <p class="q-mb-sm text-subtitle2">{{ $t('pages.typesLabel') }}</p>
+      <MiniTabs
+        :list="typeTabs"
+        :selected-id="selectedType"
+        scroll-to-active-tab
+        class="mini-tabs-types q-mb-sm"
+        @on-change="onChangeType"
+      />
+
       <p class="q-mb-sm text-subtitle2">{{ $t('pages.warehousesLabel') }}</p>
       <MiniTabs
         :list="skladsTabs"
@@ -11,15 +20,6 @@
         class="q-mb-md"
         @on-change="onChangeSklad"
         @long-press="onLongPressSklad"
-      />
-
-      <p class="q-mb-sm text-subtitle2">{{ $t('pages.typesLabel') }}</p>
-      <MiniTabs
-        :list="typeTabs"
-        :selected-id="selectedType"
-        scroll-to-active-tab
-        class="q-mb-lg"
-        @on-change="onChangeType"
       />
 
       <FilterDates @on-change="onChangeDates" class="q-mb-md" />
@@ -89,11 +89,15 @@ const typeTabs = computed(() => ([
     id: 0,
     name: $t('statistics.sales'),
     color: '#fff',
+    icon: 'mdi-chart-line',
+    iconSize: '16px'
   },
   {
     id: 1,
     name: $t('statistics.finances'),
-    color: '#fff'
+    color: '#fff',
+    icon: 'mdi-cash-multiple',
+    iconSize: '20px'
   }
 ]))
 
@@ -189,5 +193,11 @@ watch(sklads, (val) => {
 <style lang="scss" scoped>
 :deep(.small-card_color) {
   display: none;
+}
+
+.mini-tabs-types {
+  :deep(.small-card) {
+    min-width: 120px;
+  }
 }
 </style>

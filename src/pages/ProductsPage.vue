@@ -13,7 +13,7 @@
         :list="skladsTabs"
         :selected-id="selectedSkladId"
         scroll-to-active-tab
-        class="q-mb-md mini-tabs-sklads"
+        class="q-mb-sm mini-tabs-sklads"
         @on-change="onChangeSklad"
         @long-press="onLongPressSklad"
       />
@@ -37,7 +37,7 @@
           <!-- Enable checkbox -->
           <q-btn
             v-if="viewMode === VIEW_TABLE"
-            :icon="isSelectedMode ? 'mdi-checkbox-multiple-blank' : 'mdi-checkbox-multiple-blank-outline'"
+            :icon="isSelectedMode ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'"
             @click="isSelectedMode = !isSelectedMode"
             text-color="primary"
             push
@@ -498,5 +498,11 @@ watch(
 
 .text-underline {
   text-decoration: underline;
+}
+
+.mini-tabs-sklads {
+  :deep(.small-card) {
+    min-width: 120px;
+  }
 }
 </style>

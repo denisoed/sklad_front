@@ -8,19 +8,18 @@
     >
       <template #body="props">
         <q-tr :props="props">
-          <q-td class="text-left">
-            <q-img width="40px" :src="props.row.image?.url" />
+          <q-td class="text-center">
+            <q-avatar size="40px">
+              <q-img width="40px" :src="props.row.image?.url" />
+            </q-avatar>
           </q-td>
           <q-td class="text-left">
             {{ props.row.name }}
           </q-td>
-          <q-td class="text-left">
-            <div
-              class="bulk-preview-color"
-              :style="`background-color: ${props.row.color};`"
-            />
+          <q-td class="text-center">
+            <ColorDisplay size="16px" :color="props.row.color" />
           </q-td>
-          <q-td key="actions" :props="props" class="text-right">
+          <q-td key="actions" :props="props" class="text-center">
             <q-btn
               icon="mdi-minus"
               round
@@ -59,6 +58,7 @@ import TableComp from 'src/components/TableComp.vue'
 import { useBulkStore } from 'src/stores/bulk'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
+import ColorDisplay from 'src/components/ColorDisplay.vue'
 
 defineOptions({
   name: 'BulkPreview'
@@ -79,7 +79,7 @@ const COLUMNS = computed(() => [
     name: 'image',
     label: $t('common.image'),
     field: 'image',
-    align: 'left',
+    align: 'center',
   },
   {
     name: 'name',
@@ -91,13 +91,13 @@ const COLUMNS = computed(() => [
     name: 'color',
     label: $t('common.color'),
     field: 'color',
-    align: 'left',
+    align: 'center',
   },
   {
     name: 'actions',
-    label: '',
+    label: $t('common.exclude'),
     field: 'actions',
-    align: 'right',
+    align: 'center',
   },
 ])
 
@@ -121,11 +121,3 @@ function next() {
   emit('on-next')
 }
 </script>
-
-<style lang="scss" scoped>
-.bulk-preview-color {
-  width: 32px;
-  height: 16px;
-  border-radius: var(--border-radius-xs);
-}
-</style>

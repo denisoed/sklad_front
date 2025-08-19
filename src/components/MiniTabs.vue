@@ -5,6 +5,8 @@
       :key="s.id"
       :name="s.name"
       :color="s.color"
+      :icon="s.icon"
+      :icon-size="s.iconSize"
       class="mini-tabs_card"
       :class="{ 'mini-tabs_card--active': sId === s.id }"
       v-ripple
