@@ -7,16 +7,11 @@
     </div>
     <div class="full-width flex justify-center q-pb-lg q-pt-xs">
       <div class="product-controls_wrap">
-        <BulkRemoveDialog
-          v-model="removeDialog"
-          v-permissions="[CAN_REMOVE_PRODUCT]"
-          @on-finish="onFinishRemove"
-        />
         <q-btn
           round
           push
           size="md"
-          color="deep-orange"
+          text-color="deep-orange"
           @click="openRemoveDialog"
         >
           <q-icon
@@ -28,11 +23,23 @@
           push
           size="md"
           class="q-ml-md"
-          color="primary"
+          text-color="primary"
           @click="openEditDialog"
         >
           <q-icon
             name="mdi-pencil"
+          />
+        </q-btn>
+        <q-btn
+          round
+          push
+          size="md"
+          class="q-ml-md"
+          text-color="primary"
+          @click="$emit('on-create-bundle')"
+        >
+          <q-icon
+            name="mdi-cube-unfolded"
           />
         </q-btn>
         <BulkPrintDialog
@@ -69,6 +76,12 @@
         </q-btn>
       </div>
     </div>
+
+    <BulkRemoveDialog
+      v-model="removeDialog"
+      v-permissions="[CAN_REMOVE_PRODUCT]"
+      @on-finish="onFinishRemove"
+    />
 
     <BulkUpdateDialog
       v-model="updateDialog"

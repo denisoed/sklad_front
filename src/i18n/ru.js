@@ -735,4 +735,8 @@ export default ({
     week: { one: 'неделя', few: 'недели', many: 'недель' },
     month: { one: 'месяц', few: 'месяца', many: 'месяцев' },
   },
+  bundle: {
+    dialogSizesTitle: 'Соберите набор из товаров',
+    dialogSizesDescription: 'Нужно выбрать размеры для каждого товара, которые попадут в набор.',
+  }
 })

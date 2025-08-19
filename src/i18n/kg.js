@@ -735,4 +735,8 @@ export default ({
     week: { one: 'жума', few: 'жума', many: 'жума' },
     month: { one: 'ай', few: 'ай', many: 'ай' },
   },
+  bundle: {
+    dialogSizesTitle: 'Товарлардан набор түзүү',
+    dialogSizesDescription: 'Товарлардын өлчөмдөрүн тандаңыз, ал наборга кирет.',
+  }
 })

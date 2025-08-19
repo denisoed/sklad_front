@@ -124,6 +124,7 @@
       @on-close="onCloseBulk"
       @on-finish-remove="onFinishRemove"
       @on-finish-update="onFinishUpdate"
+      @on-create-bundle="openBundleModal"
     />
 
     <!-- Image Preview Dialog -->
@@ -150,6 +151,18 @@
       :new-price="selectedProduct?.withDiscount ? selectedProduct?.discountPrice : selectedProduct?.newPrice"
       @submit="onAddSizesToBucket(selectedProduct, $event)"
     />
+
+    <!-- Bundle Modal -->
+    <ModalBundleCount
+      v-model="bundleModalVisible"
+      :items="bundleItems"
+      @submit="onBundleSubmit"
+    />
+    <ModalBundleSizes
+      v-model="bundleSizesModalVisible"
+      :items="bundleSizesItems"
+      @submit="onBundleSizesSubmit"
+    />
   </q-page>
 </template>
 
@@ -163,6 +176,7 @@ import useBucket from 'src/modules/useBucket'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk'
+import { useQuasar } from 'quasar'
 
 import FiltersComp from 'src/components/FiltersComp.vue'
 import ProductControls from 'src/components/ProductControls.vue'
@@ -172,6 +186,8 @@ import ProductsTable from 'src/components/Product/ProductsTable.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
 import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
+import ModalBundleCount from 'src/components/Dialogs/ModalBundleCount.vue'
+import ModalBundleSizes from 'src/components/Dialogs/ModalBundleSizes.vue'
 
 const VIEW_TABLE = 'table'
 const VIEW_GRID = 'grid'
@@ -221,6 +237,100 @@ const countModalVisible = ref(false)
 const sizesModalVisible = ref(false)
 const selectedProduct = ref(null)
 const isSelectedMode = ref(false)
+const bundleModalVisible = ref(false)
+const bundleItems = ref([])
+const bundleSizesModalVisible = ref(false)
+const bundleSizesItems = ref([])
+
+const confirmDialogVisible = ref(false)
+const confirmDialogPayload = ref(null)
+const confirmDialogType = ref('count') // 'count' | 'sizes'
+
+const $q = useQuasar()
+
+function openBundleModal() {
+  // Определяем, есть ли среди выбранных товаров товары с размерами
+  const withSizes = (bulkProducts.value || []).some(p => Array.isArray(p.sizes) && p.sizes.length)
+  if (withSizes) {
+    bundleSizesItems.value = (bulkProducts.value || []).filter(p => Array.isArray(p.sizes) && p.sizes.length).map(p => ({
+      id: p.id,
+      name: p.name,
+      sku: p.sku,
+      sizes: p.sizes.map(s => ({ size: s.size, count: 1 })),
+      selectedSizes: []
+    }))
+    bundleSizesModalVisible.value = true
+  } else {
+    bundleItems.value = (bulkProducts.value || []).map(p => ({
+      id: p.id,
+      name: p.name,
+      sku: p.sku,
+      max: p.countSizes || 9999,
+      qty: 1
+    }))
+    bundleModalVisible.value = true
+  }
+}
+
+function onBundleSubmit(payload) {
+  $q.dialog({
+    title: $t('bundle.confirmTitle'),
+    message: $t('bundle.confirmText'),
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'primary',
+      label: $t('common.confirm'),
+      push: true
+    },
+    cancel: {
+      color: 'grey',
+      textColor: 'white',
+      label: $t('common.cancel'),
+      push: true
+    }
+  }).onOk(() => {
+    console.log('Bundle created:', payload)
+  })
+  bundleModalVisible.value = false
+}
+
+function onBundleSizesSubmit(payload) {
+  $q.dialog({
+    title: $t('bundle.confirmTitle'),
+    message: $t('bundle.confirmText'),
+    cancel: true,
+    persistent: true,
+    ok: {
+      color: 'primary',
+      label: $t('common.confirm'),
+      push: true
+    },
+    cancel: {
+      color: 'grey',
+      textColor: 'white',
+      label: $t('common.cancel'),
+      push: true
+    }
+  }).onOk(() => {
+    console.log('Bundle with sizes created:', payload)
+  })
+  bundleSizesModalVisible.value = false
+}
+
+function onConfirmBundle() {
+  if (confirmDialogType.value === 'count') {
+    console.log('Bundle created:', confirmDialogPayload.value)
+  } else {
+    console.log('Bundle with sizes created:', confirmDialogPayload.value)
+  }
+  confirmDialogVisible.value = false
+  confirmDialogPayload.value = null
+}
+function onCancelBundle() {
+  confirmDialogVisible.value = false
+  confirmDialogPayload.value = null
+}
 
 const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
 
