@@ -42,7 +42,7 @@
                           @update:model-value="val => updateQty(props.row, val)"
                           :label="$t('common.quantity')"
                         />
-                        <div v-else class="btn-sizes_list">
+                        <div v-else class="btn-sizes_list q-mt-xs">
                           <template v-for="(sizeObj, idx) in getSizesListForRow(props.row)" :key="idx">
                             <q-btn
                               :color="sizeObj.countSelected ? 'primary' : 'white'"
@@ -154,7 +154,7 @@ const columns = [
     label: `${$t('common.sizes')}/${$t('common.quantity')}`,
     field: 'sizes',
     align: 'left',
-    style: 'min-width: 120px'
+    style: 'min-width: 200px'
   },
   {
     name: 'action',
