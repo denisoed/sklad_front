@@ -11,6 +11,7 @@ export const HOME_ROUTE = '/'
 export const MAIN_SETTINGS_ROUTE = '/main-settings'
 export const BUCKET_ROUTE = '/bucket'
 export const PRODUCTS_ROUTE = '/products'
+export const CREATE_BUNDLE_ROUTE = '/create-bundle'
 export const STATISTIC_ROUTE = '/statistic'
 
 export const HEADER_ROUTES = [
@@ -21,6 +22,7 @@ export const MAIN_ROUTES = [
   { path: MAIN_SETTINGS_ROUTE, component: () => import('pages/MainSettings.vue') },
   { path: BUCKET_ROUTE, component: () => import('pages/BucketPage.vue') },
   { path: PRODUCTS_ROUTE, component: () => import('src/pages/ProductsPage.vue') },
+  { path: CREATE_BUNDLE_ROUTE, component: () => import('src/pages/CreateBundlePage.vue') },
   { path: STATISTIC_ROUTE, component: () => import('src/pages/StatisticPage.vue') },
   { path: '/product/:productId', component: () => import('pages/ProductPage.vue') },
   {

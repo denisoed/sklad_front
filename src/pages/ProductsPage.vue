@@ -124,7 +124,6 @@
       @on-close="onCloseBulk"
       @on-finish-remove="onFinishRemove"
       @on-finish-update="onFinishUpdate"
-      @on-create-bundle="openBundleModal"
     />
 
     <!-- Image Preview Dialog -->
@@ -152,12 +151,7 @@
       @submit="onAddSizesToBucket(selectedProduct, $event)"
     />
 
-    <!-- Bundle Modal -->
-    <ModalBundleSizes
-      v-model="bundleSizesModalVisible"
-      :items="bundleSizesItems"
-      @submit="onBundleSizesSubmit"
-    />
+
   </q-page>
 </template>
 
@@ -171,7 +165,6 @@ import useBucket from 'src/modules/useBucket'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useBulkStore } from 'src/stores/bulk'
-import { useQuasar } from 'quasar'
 
 import FiltersComp from 'src/components/FiltersComp.vue'
 import ProductControls from 'src/components/ProductControls.vue'
@@ -181,7 +174,6 @@ import ProductsTable from 'src/components/Product/ProductsTable.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
 import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ImagePreviewDialog from 'src/components/ImagePreviewDialog.vue'
-import ModalBundleSizes from 'src/components/Dialogs/ModalBundleSizes.vue'
 
 const VIEW_TABLE = 'table'
 const VIEW_GRID = 'grid'
@@ -231,48 +223,8 @@ const countModalVisible = ref(false)
 const sizesModalVisible = ref(false)
 const selectedProduct = ref(null)
 const isSelectedMode = ref(false)
-const bundleSizesModalVisible = ref(false)
-const bundleSizesItems = ref([])
 
-const $q = useQuasar()
 
-function openBundleModal() {
-  bundleSizesItems.value = (bulkProducts.value || []).map(p => {
-    return {
-      id: p.id,
-      name: p.name,
-      useNumberOfSizes: p.useNumberOfSizes,
-      sizes: p.sizes.map(s => ({ size: s.size, count: 1 })),
-      countSizes: p.countSizes,
-      selectedSizes: [],
-      qty: p.qty || 0
-    }
-  })
-  bundleSizesModalVisible.value = true
-}
-
-function onBundleSizesSubmit(payload) {
-  $q.dialog({
-    title: $t('bundle.confirmTitle'),
-    message: $t('bundle.confirmText'),
-    cancel: true,
-    persistent: true,
-    ok: {
-      color: 'primary',
-      label: $t('common.confirm'),
-      push: true
-    },
-    cancel: {
-      color: 'grey',
-      textColor: 'white',
-      label: $t('common.cancel'),
-      push: true
-    }
-  }).onOk(() => {
-    console.log('Bundle created:', payload)
-    bundleSizesModalVisible.value = false
-  })
-}
 
 const viewMode = ref(localStorage.getItem('products-view-mode') || VIEW_TABLE)
 

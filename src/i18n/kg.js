@@ -109,6 +109,10 @@ export default ({
     confirm: 'Тастыктоо',
     quantityForSize: 'Өлчөмдөр үчүн санын тандаңыз',
     exclude: 'Исключить',
+    step: 'Кадам',
+    next: 'Кийинки',
+    previous: 'Мурунку',
+    back: 'Артка',
   },
   calendar: {
     days: ['Жекшемби','Дүйшөмбү','Шейшемби','Шаршемби','Бейшемби','Жума','Ишемби'],
@@ -739,5 +743,12 @@ export default ({
   bundle: {
     dialogSizesTitle: 'Товарлардан набор түзүү',
     dialogSizesDescription: 'Товарлардын өлчөмдөрүн тандаңыз, ал наборга кирет.',
+    createBundleTitle: 'Набор түзүү',
+    selectedProducts: 'Тандалган товарлар',
+    step2Placeholder: 'Наборду конфигурациялоо (иштелүүдө)',
+    createBundle: 'Набор түзүү',
+    selectSizeQuantity: 'Санды тандаңыз',
+    selectSizeQuantityDescription: '{size} өлчөмү үчүн санды тандаңыз (максимум: {max})',
+    warningDescription: 'Наборга кирет товарлар, тандалган өлчөмдөр/сандары бар товарлардан турат.'
   }
 })

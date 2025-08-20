@@ -36,7 +36,7 @@
           size="md"
           class="q-ml-md"
           text-color="primary"
-          @click="$emit('on-create-bundle')"
+          @click="goToCreateBundle"
         >
           <q-icon
             name="mdi-cube-unfolded"
@@ -94,6 +94,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import BulkUpdateDialog from 'src/components/Dialogs/BulkUpdateDialog/TheIndex.vue'
 import BulkRemoveDialog from 'src/components/Dialogs/BulkRemoveDialog/TheIndex.vue'
 import BulkPrintDialog from 'src/components/Dialogs/BulkPrintDialog/index.vue'
@@ -102,6 +103,7 @@ import { CAN_UPDATE_PRODUCT, CAN_REMOVE_PRODUCT } from 'src/permissions'
 const emit = defineEmits(['on-finish-update', 'on-finish-remove', 'on-finish-print', 'on-close'])
 
 const { t: $t } = useI18n()
+const router = useRouter()
 
 const props = defineProps({
   show: {
@@ -127,6 +129,10 @@ function onFinishRemove() {
 
 function onFinishPrint() {
   emit('on-finish-print')
+}
+
+function goToCreateBundle() {
+  router.push('/create-bundle')
 }
 
 function close() {

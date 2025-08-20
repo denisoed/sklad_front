@@ -109,6 +109,10 @@ export default ({
     confirm: 'Confirm',
     quantityForSize: 'Select quantity for size',
     exclude: 'Exclude',
+    step: 'Step',
+    next: 'Next',
+    previous: 'Previous',
+    back: 'Back',
   },
   calendar: {
     days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
@@ -739,5 +743,12 @@ export default ({
   bundle: {
     dialogSizesTitle: 'Collect a bundle from products',
     dialogSizesDescription: 'You need to select sizes for each product that will be in the bundle.',
+    createBundleTitle: 'Create Bundle',
+    selectedProducts: 'Selected Products',
+    step2Placeholder: 'Bundle Configuration (in development)',
+    createBundle: 'Create Bundle',
+    selectSizeQuantity: 'Select Quantity',
+    selectSizeQuantityDescription: 'Select quantity for size {size} (maximum: {max})',
+    warningDescription: 'Only products with selected sizes/quantities will be included in the bundle',
   }
 })

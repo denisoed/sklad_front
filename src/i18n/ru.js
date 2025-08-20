@@ -98,6 +98,10 @@ export default ({
     amount: 'Сумма',
     total: 'Итог',
     recordsPerPage: 'Записей на странице',
+    step: 'Шаг',
+    next: 'Далее',
+    previous: 'Назад',
+    back: 'Назад',
     success: 'Успешно',
     error: 'Ошибка',
     unknownError: 'Неизвестная ошибка',
@@ -741,5 +745,12 @@ export default ({
     dialogSizesDescription: 'Нужно выбрать размеры для каждого товара, чтобы они попали в набор.',
     confirmTitle: 'Собираем набор?',
     confirmText: 'Вы уверены, что хотите собрать набор из выбранных товаров?',
+    createBundleTitle: 'Создание набора',
+    selectedProducts: 'Выбрано товаров',
+    step2Placeholder: 'Настройка набора (в разработке)',
+    createBundle: 'Создать набор',
+    selectSizeQuantity: 'Выберите количество',
+    selectSizeQuantityDescription: 'Выберите количество для размера {size} (максимум: {max})',
+    warningDescription: 'В набор попадут только те товары, у которых выбраны размеры/кол-во',
   }
 })
