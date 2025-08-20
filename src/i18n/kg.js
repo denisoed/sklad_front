@@ -386,6 +386,7 @@ export default ({
     productsLabel: 'Товарлар',
     countUnitsForSize: 'Өлчөм үчүн бирдик саны',
     typesLabel: 'Отчеттор',
+    deleteConfirmMessage: 'Өчүрүлгөндө тандалган товарлар складынан толук өчөт',
   },
   mainSettings: {
     title: 'Негизги баптоолор',

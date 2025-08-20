@@ -165,6 +165,7 @@
                   tabindex="4"
                   class="full-width"
                   data-scroller="name"
+                  clearable
                   enterkeyhint="done"
                 />
               </div>
