@@ -51,9 +51,9 @@
         </div>
 
         <!-- Products Table -->
-        <div v-if="products?.length" class="products-table-container">
+        <div v-if="localProducts?.length" class="products-table-container">
           <q-table
-            :rows="products"
+            :rows="localProducts"
             :columns="columns"
             row-key="id"
             flat
@@ -68,7 +68,7 @@
                   <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
                   <div class="text-bold">{{ props.row.name }}</div>
                 </q-td>
-                <q-td :props="props" class="text-left" key="sizes">
+                <q-td :props="props" class="text-left" :class="{ 'accent-bg': getAccentBg(props.row) }" key="sizes">
                   <InputPlusMinus
                     v-if="props.row.useNumberOfSizes"
                     :min="0"
@@ -197,6 +197,7 @@ const step = ref(1)
 const selectedSkladId = ref(0)
 const selectedCategoryId = ref(0)
 const selectedProducts = ref([])
+const localProducts = ref([])
 const sizeModalVisible = ref(false)
 const selectedSize = ref(null)
 const selectedProduct = ref(null)
@@ -275,7 +276,12 @@ function getSizesListForRow(row) {
 }
 
 function onProductSelect(product) {
-  if (product.selected) {
+  // Check if product is selected based on its state
+  const isSelected = product.useNumberOfSizes 
+    ? (product.qty > 0)
+    : (product.selectedSizes && product.selectedSizes.length > 0)
+  
+  if (isSelected) {
     if (!selectedProducts.value.find(p => p.id === product.id)) {
       selectedProducts.value.push({
         id: product.id,
@@ -300,46 +306,34 @@ function onSizeBtnClick(product, sizeObj) {
     return
   }
   
-  const idx = products.value.findIndex(p => p.id === product.id)
+  const idx = localProducts.value.findIndex(p => p.id === product.id)
   if (idx !== -1) {
-    if (!products.value[idx].selectedSizes) {
-      products.value[idx].selectedSizes = []
-    }
-    
-    const selectedSizes = products.value[idx].selectedSizes
+    const selectedSizes = localProducts.value[idx].selectedSizes || []
     if (sizeObj.countSelected === 0) {
       selectedSizes.push({ size: sizeObj.size })
     } else {
-      products.value[idx].selectedSizes = selectedSizes.filter(sel => sel.size !== sizeObj.size)
+      localProducts.value[idx].selectedSizes = selectedSizes.filter(sel => sel.size !== sizeObj.size)
       return
     }
+    localProducts.value[idx].selectedSizes = selectedSizes
     
     // Update selected products
-    onProductSelect(products.value[idx])
+    onProductSelect(localProducts.value[idx])
   }
 }
 
 function onSizeSelectionSubmit(count) {
   if (!selectedProduct.value || !selectedSize.value) return
   
-  const idx = products.value.findIndex(p => p.id === selectedProduct.value.id)
+  const idx = localProducts.value.findIndex(p => p.id === selectedProduct.value.id)
   if (idx !== -1) {
-    if (!products.value[idx].selectedSizes) {
-      products.value[idx].selectedSizes = []
-    }
-    
-    // Remove existing selections for this size
-    products.value[idx].selectedSizes = products.value[idx].selectedSizes.filter(
-      sel => sel.size !== selectedSize.value.size
-    )
-    
-    // Add new selections
+    localProducts.value[idx].selectedSizes = (localProducts.value[idx].selectedSizes || []).filter(sel => sel.size !== selectedSize.value.size)
     for (let i = 0; i < count; i++) {
-      products.value[idx].selectedSizes.push({ size: selectedSize.value.size })
+      localProducts.value[idx].selectedSizes.push({ size: selectedSize.value.size })
     }
     
     // Update selected products
-    onProductSelect(products.value[idx])
+    onProductSelect(localProducts.value[idx])
   }
   
   sizeModalVisible.value = false
@@ -348,10 +342,12 @@ function onSizeSelectionSubmit(count) {
 }
 
 function updateQty(product, val) {
-  const idx = products.value.findIndex(p => p.id === product.id)
+  const idx = localProducts.value.findIndex(p => p.id === product.id)
   if (idx !== -1) {
-    products.value[idx].qty = val
-    onProductSelect(products.value[idx])
+    localProducts.value[idx].qty = val
+    
+    // Update selected products
+    onProductSelect(localProducts.value[idx])
   }
 }
 
@@ -422,6 +418,21 @@ async function loadData() {
 onBeforeMount(() => {
   loadData()
 })
+
+watch(
+  products,
+  (val) => {
+    if (val) {
+      localProducts.value = val.map(item => {
+        if (item.useNumberOfSizes) {
+          return { ...item, qty: item.qty || 0 }
+        }
+        return { ...item, selectedSizes: item.selectedSizes ? [...item.selectedSizes] : [] }
+      })
+    }
+  },
+  { immediate: true }
+)
 
 watch(
   sklads,

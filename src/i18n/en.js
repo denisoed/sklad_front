@@ -749,6 +749,6 @@ export default ({
     createBundle: 'Create Bundle',
     selectSizeQuantity: 'Select Quantity',
     selectSizeQuantityDescription: 'Select quantity for size {size} (maximum: {max})',
-    warningDescription: 'Only products with selected sizes/quantities will be included in the bundle',
+    warningDescription: 'Only products with selected sizes or quantities will be included in the bundle',
   }
 })
