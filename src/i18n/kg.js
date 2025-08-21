@@ -749,6 +749,7 @@ export default ({
     createBundle: 'Набор түзүү',
     selectSizeQuantity: 'Санды тандаңыз',
     selectSizeQuantityDescription: '{size} өлчөмү үчүн санды тандаңыз (максимум: {max})',
-    warningDescription: 'Наборга кирет товарлар, тандалган өлчөмдөр же сандары бар товарлардан турат.'
+    warningDescription: 'Наборга кирет товарлар, тандалган өлчөмдөр же сандары бар товарлардан турат.',
+    viewSelected: 'Тандалгандарды көрүү'
   }
 })

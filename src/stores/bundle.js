@@ -103,6 +103,11 @@ export const useBundleStore = defineStore('bundle', {
       this.selectedProducts = this.selectedProducts.filter(sp => 
         localProducts.some(lp => lp.id === sp.id)
       );
+    },
+    
+    // Update selected products from modal
+    updateSelectedProducts(updatedItems) {
+      this.selectedProducts = updatedItems;
     }
   },
 });

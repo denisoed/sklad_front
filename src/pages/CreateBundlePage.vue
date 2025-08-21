@@ -48,6 +48,15 @@
             <p class="q-mb-none text-subtitle2">{{ $t('pages.selected') }}</p>
             <q-badge color="primary" :label="bundleStore.getSelectedProductsCount" />
           </div>
+          <q-btn
+            v-if="bundleStore.getSelectedProductsCount > 0"
+            color="primary"
+            icon="mdi-eye"
+            size="sm"
+            push
+            round
+            @click="showSelectedProducts"
+          />
         </div>
 
         <!-- Products Table -->
@@ -169,6 +178,13 @@
       :max-count="selectedSize?.count || 0"
       @submit="onSizeSelectionSubmit"
     />
+
+    <!-- Bundle Sizes Modal -->
+    <ModalBundleSizes
+      v-model="bundleSizesModalVisible"
+      :items="bundleStore.getSelectedProducts"
+      @submit="onBundleSizesSubmit"
+    />
   </q-page>
 </template>
 
@@ -184,6 +200,7 @@ import { useBundleStore } from 'src/stores/bundle'
 import MiniTabs from 'src/components/MiniTabs.vue'
 import InputPlusMinus from 'src/components/InputPlusMinus.vue'
 import ModalSizeSelection from 'src/components/Dialogs/ModalSizeSelection.vue'
+import ModalBundleSizes from 'src/components/Dialogs/ModalBundleSizes.vue'
 import PageTitle from 'src/components/PageTitle.vue'
 import AlertBox from 'src/components/AlertBox.vue'
 
@@ -203,6 +220,7 @@ const localProducts = ref([])
 const sizeModalVisible = ref(false)
 const selectedSize = ref(null)
 const selectedProduct = ref(null)
+const bundleSizesModalVisible = ref(false)
 
 const { sklads } = useSklads()
 const { categories: categoriesResult, fetchCategories } = useCategories()
@@ -368,6 +386,30 @@ function previousStep() {
 function createBundle() {
   // TODO: Implement bundle creation logic
   console.log('Creating bundle with products:', bundleStore.getSelectedProducts)
+}
+
+function showSelectedProducts() {
+  bundleSizesModalVisible.value = true
+}
+
+function onBundleSizesSubmit(data) {
+  // Sync local products with updated selections
+  localProducts.value = localProducts.value.map(product => {
+    const updatedProduct = data.items.find(item => item.id === product.id)
+    if (updatedProduct) {
+      bundleStore.updateProductSelection(product.id, {
+        qty: updatedProduct.qty || 0,
+        selectedSizes: updatedProduct.selectedSizes || []
+      })
+      if (product.useNumberOfSizes) {
+        return { ...product, qty: updatedProduct.qty || 0 }
+      } else {
+        return { ...product, selectedSizes: updatedProduct.selectedSizes || [] }
+      }
+    }
+    return product
+  })
+  bundleSizesModalVisible.value = false
 }
 
 function getAccentBg(row) {

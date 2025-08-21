@@ -752,5 +752,6 @@ export default ({
     selectSizeQuantity: 'Выберите количество',
     selectSizeQuantityDescription: 'Выберите количество для размера {size} (максимум: {max})',
     warningDescription: 'В набор попадут только те товары, у которых выбраны размеры или кол-во',
+    viewSelected: 'Просмотреть выбранные'
   }
 })

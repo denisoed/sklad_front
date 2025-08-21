@@ -750,5 +750,6 @@ export default ({
     selectSizeQuantity: 'Select Quantity',
     selectSizeQuantityDescription: 'Select quantity for size {size} (maximum: {max})',
     warningDescription: 'Only products with selected sizes or quantities will be included in the bundle',
+    viewSelected: 'View Selected'
   }
 })
