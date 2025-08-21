@@ -46,7 +46,7 @@
         <div class="flex items-center justify-between q-mb-md block-bg q-pl-md q-pr-xs q-py-xs border-radius-xxxl">
           <div class="flex items-center q-gap-sm">
             <p class="q-mb-none text-subtitle2">{{ $t('pages.selected') }}</p>
-            <q-badge color="primary" :label="selectedProducts.length" />
+            <q-badge color="primary" :label="bundleStore.getSelectedProductsCount" />
           </div>
         </div>
 
@@ -133,7 +133,7 @@
       </div>
 
       <!-- Navigation Buttons -->
-      <div class="create-bundle_controls flex justify-between full-width q-mt-xl">
+      <div class="create-bundle_controls flex justify-between full-width q-mt-lg">
         <q-btn
           v-if="step > 1"
           color="grey"
@@ -173,12 +173,13 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, ref, reactive, watch } from 'vue'
+import { computed, onBeforeMount, onUnmounted, ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import useSklads from 'src/modules/useSklads'
 import useProduct from 'src/modules/useProduct'
 import useCategories from 'src/modules/useCategories'
+import { useBundleStore } from 'src/stores/bundle'
 
 import MiniTabs from 'src/components/MiniTabs.vue'
 import InputPlusMinus from 'src/components/InputPlusMinus.vue'
@@ -192,11 +193,12 @@ defineOptions({
 
 const { t: $t } = useI18n()
 const router = useRouter()
+const bundleStore = useBundleStore()
 
 const step = ref(1)
-const selectedSkladId = ref(0)
-const selectedCategoryId = ref(0)
-const selectedProducts = ref([])
+const selectedSkladId = ref(bundleStore.getSelectedSkladId)
+const selectedCategoryId = ref(bundleStore.getSelectedCategoryId)
+const selectedProducts = computed(() => bundleStore.getSelectedProducts)
 const localProducts = ref([])
 const sizeModalVisible = ref(false)
 const selectedSize = ref(null)
@@ -248,7 +250,7 @@ const categories = computed(() => {
 })
 
 const canProceed = computed(() => {
-  return selectedProducts.value.length > 0
+  return bundleStore.getSelectedProductsCount > 0
 })
 
 function getCountSize(size, sizesArr) {
@@ -282,19 +284,17 @@ function onProductSelect(product) {
     : (product.selectedSizes && product.selectedSizes.length > 0)
   
   if (isSelected) {
-    if (!selectedProducts.value.find(p => p.id === product.id)) {
-      selectedProducts.value.push({
-        id: product.id,
-        name: product.name,
-        useNumberOfSizes: product.useNumberOfSizes,
-        sizes: product.sizes || [],
-        countSizes: product.countSizes,
-        selectedSizes: product.selectedSizes || [],
-        qty: product.qty || 0
-      })
-    }
+    bundleStore.addSelectedProduct({
+      id: product.id,
+      name: product.name,
+      useNumberOfSizes: product.useNumberOfSizes,
+      sizes: product.sizes || [],
+      countSizes: product.countSizes,
+      selectedSizes: product.selectedSizes || [],
+      qty: product.qty || 0
+    })
   } else {
-    selectedProducts.value = selectedProducts.value.filter(p => p.id !== product.id)
+    bundleStore.removeSelectedProduct(product.id)
   }
 }
 
@@ -363,13 +363,11 @@ function previousStep() {
   }
 }
 
-function goBack() {
-  router.back()
-}
+
 
 function createBundle() {
   // TODO: Implement bundle creation logic
-  console.log('Creating bundle with products:', selectedProducts.value)
+  console.log('Creating bundle with products:', bundleStore.getSelectedProducts)
 }
 
 function getAccentBg(row) {
@@ -382,17 +380,32 @@ function getAccentBg(row) {
 function onChangeSklad(id) {
   selectedSkladId.value = id
   selectedCategoryId.value = ALL_TAB.value.id
+  bundleStore.setSelectedSklad(id)
+  bundleStore.setSelectedCategory(ALL_TAB.value.id)
   loadData()
 }
 
 function onChangeCategory(id) {
   selectedCategoryId.value = id
+  bundleStore.setSelectedCategory(id)
   loadData()
 }
 
 function onLongPressSklad(id) {
   if (id !== ALL_TAB.value.id) {
     router.push(`/sklad/${id}`)
+  }
+}
+
+function restoreSelections() {
+  const restoredProducts = bundleStore.restoreProductSelections(products.value)
+  if (restoredProducts) {
+    localProducts.value = restoredProducts.map(item => {
+      if (item.useNumberOfSizes) {
+        return { ...item, qty: item.qty || 0 }
+      }
+      return { ...item, selectedSizes: item.selectedSizes ? [...item.selectedSizes] : [] }
+    })
   }
 }
 
@@ -413,22 +426,31 @@ async function loadData() {
     },
     sizes: sizes?.length ? sizes : null
   })
+  
+  // Sync store with new products and restore selections
+  if (products.value) {
+    restoreSelections()
+  }
 }
 
 onBeforeMount(() => {
+  // Initialize store with current selections
+  bundleStore.setSelectedSklad(selectedSkladId.value)
+  bundleStore.setSelectedCategory(selectedCategoryId.value)
   loadData()
+})
+
+onUnmounted(() => {
+  // Clear only navigation state when component is unmounted
+  // Keep selectedProducts for persistence between tab changes
+  bundleStore.clearNavigationState()
 })
 
 watch(
   products,
   (val) => {
-    if (val) {
-      localProducts.value = val.map(item => {
-        if (item.useNumberOfSizes) {
-          return { ...item, qty: item.qty || 0 }
-        }
-        return { ...item, selectedSizes: item.selectedSizes ? [...item.selectedSizes] : [] }
-      })
+    if (val && !localProducts.value.length) {
+      restoreSelections()
     }
   },
   { immediate: true }
