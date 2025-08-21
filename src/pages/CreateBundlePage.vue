@@ -331,6 +331,8 @@ function onSizeBtnClick(product, sizeObj) {
       selectedSizes.push({ size: sizeObj.size })
     } else {
       localProducts.value[idx].selectedSizes = selectedSizes.filter(sel => sel.size !== sizeObj.size)
+      // Update selected products after removing size
+      onProductSelect(localProducts.value[idx])
       return
     }
     localProducts.value[idx].selectedSizes = selectedSizes
