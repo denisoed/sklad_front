@@ -75,7 +75,9 @@
               <q-tr :props="props">
                 <q-td :props="props" class="text-left" :class="{ 'accent-bg': getAccentBg(props.row) }" key="info">
                   <div class="text-caption text-grey-6">#{{ props.row.id }}</div>
-                  <div class="text-bold">{{ props.row.name }}</div>
+                  <div class="text-bold cursor-pointer text-primary" @click="goToProduct(props.row.id)">
+                    {{ props.row.name }}
+                  </div>
                 </q-td>
                 <q-td :props="props" class="text-left" :class="{ 'accent-bg': getAccentBg(props.row) }" key="sizes">
                   <InputPlusMinus
@@ -439,6 +441,10 @@ function onLongPressSklad(id) {
   if (id !== ALL_TAB.value.id) {
     router.push(`/sklad/${id}`)
   }
+}
+
+function goToProduct(productId) {
+  router.push(`/product/${productId}`)
 }
 
 function restoreSelections() {
