@@ -63,7 +63,7 @@
                   py="10px"
                 >
                   <q-item-section
-                    @click="remove()"
+                    @click="remove"
                   >
                     <div class="flex items-center">
                       <q-icon name="mdi-trash-can-outline" class="q-mr-sm text-deep-orange" size="xs" />
@@ -76,6 +76,8 @@
           </q-btn>
         </template>
       </PageTitle>
+    </div>
+    <div class="container">
 
       <h6
         class="full-width text-center text-grey-5"
@@ -201,61 +203,15 @@
               @on-change="onPriceChange"
             />
           </div>
-          <div
-            class="full-width border-radius-sm"
-            style="border: 1px solid var(--border-color);"
-          >
-            <q-checkbox
-              v-model="product.withDiscount"
-              :label="$t('product.setPromotionalPrice')"
-              class="full-width"
-            />
-            <div v-if="product.withDiscount" class="col-12 q-pa-sm">
-              <template v-if="product.discountDays">
-                <p v-if="!isDiscountToday" class="flex items-center no-wrap q-px-sm product-page_discount-not-today">
-                  <span class="q-mr-sm">{{ $t('product.noPromotionToday') }}</span>
-                  <q-icon class="mdi mdi-alert-circle q-ml-auto" color="red-5" size="xs" />
-                </p>
-                <InputPrice
-                  v-model="product.discountPrice"
-                  :label="$t('product.promotionalPricePerUnit')"
-                  clear
-                  tabindex="7"
-                  :rules="[
-                    val => val?.length || $t('validation.promotionalPriceRequired'),
-                    val => +val !== 0 || $t('validation.promotionalPriceRequired'),
-                    val => +(val.replace(/[^\d\.\-]/g, '')) < +product.newPrice || $t('validation.promotionalPriceLowerThanRetail')
-                  ]"
-                />
-              </template>
-              <div class="flex items-center no-wrap q-px-md q-py-sm product-page_discount border-radius-sm">
-                <div v-if="product.discountDays" class="q-mr-sm product-page_discount-dates">
-                  <p class="q-mr-md q-mb-sm">
-                    {{ $t('product.promotionDates') }}
-                  </p>
-                  <div class="flex q-gap-xs">
-                    <q-chip
-                      v-for="(day, i) of product.discountDays"
-                      :key="i"
-                      dense
-                      outline
-                      size="12px"
-                      color="negative"
-                    >
-                      <span class="text-white">{{ day }}</span>
-                    </q-chip>
-                  </div>
-                </div>
-                <p v-else class="q-mr-md q-mb-none">{{ $t('product.selectPromotionDates') }}</p>
-                <FilterDates
-                  class="q-ml-auto"
-                  :with-buttons="false"
-                  disable-prev-dates
-                  @on-change="setDiscount"
-                />
-              </div>
-            </div>
-          </div>
+
+          <!-- Discount -->
+          <ProductDiscount
+            v-model:with-discount="product.withDiscount"
+            v-model:discount-days="product.discountDays"
+            v-model:discount-price="product.discountPrice"
+            v-model:new-price="product.newPrice"
+            v-model:is-discount-today="isDiscountToday"
+          />
 
           <!-- Sizes -->
           <div class="col-12">
@@ -375,7 +331,6 @@
       :new-price="product?.withDiscount ? product?.discountPrice : product?.newPrice"
       @submit="onAddCountToBucket(product, $event)"
     />
-
     <ModalSizesToBucket
       v-if="!product?.useNumberOfSizes"
       v-model="modalSizesToBucket"
@@ -408,11 +363,11 @@ import { useMutation, useLazyQuery } from '@vue/apollo-composable'
 import useProduct from 'src/modules/useProduct'
 import useHelpers from 'src/modules/useHelpers'
 import useSklads from 'src/modules/useSklads'
-import FilterDates from 'src/components/FilterDates.vue'
 import InputPlusMinus from 'src/components/InputPlusMinus.vue'
 import ModalCountToBucket from 'src/components/Dialogs/ModalCountToBucket.vue'
 import ModalSizesToBucket from 'src/components/Dialogs/ModalSizesToBucket.vue'
 import ProductSizes from 'src/components/Product/ProductSizes.vue'
+import ProductDiscount from 'src/components/Product/ProductDiscount.vue'
 import {
   UPLOAD,
   DELETE_FILE,
@@ -534,8 +489,7 @@ const {
   clearDraft:
   clearDraftAction,
   saveDraft,
-  loadDraft,
-  hasDraft
+  loadDraft
 } = useDraft()
 
 // Event bus for global communication
@@ -548,7 +502,6 @@ const {
 } = useMutation(UPLOAD)
 const {
   mutate: removeImage,
-  loading: removeImageLoading,
 } = useMutation(DELETE_FILE)
 const {
   load: getEditProduct,
@@ -812,10 +765,6 @@ function setCategoryFromParams() {
   }
 }
 
-function setDiscount({ dates }) {
-  product.discountDays = dates
-}
-
 function onChangeImage(image) {
   product.image = image
 }
@@ -1045,22 +994,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-  .product-page_discount {
-    background-color: rgba($color: red, $alpha: 0.1);
-
-    &-dates {
-      width: 250px;
-      max-width: 250px;
-    }
-
-    &-not-today {
-      color: var(--text-black);
-      margin-bottom: 8px;
-      background-color: rgba($color: red, $alpha: 0.1);
-      border-radius: var(--border-radius-xs);
-    }
-  }
-
   .product-page_controls {
     position: sticky;
     bottom: 100px;
