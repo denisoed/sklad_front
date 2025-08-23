@@ -30,18 +30,6 @@
             name="mdi-pencil"
           />
         </q-btn>
-        <q-btn
-          round
-          push
-          size="md"
-          class="q-ml-md"
-          text-color="primary"
-          @click="goToCreateBundle"
-        >
-          <q-icon
-            name="mdi-cube-unfolded"
-          />
-        </q-btn>
         <BulkPrintDialog
           :title="$t('product.printPriceLabels')"
           @on-finish="onFinishPrint"
@@ -129,10 +117,6 @@ function onFinishRemove() {
 
 function onFinishPrint() {
   emit('on-finish-print')
-}
-
-function goToCreateBundle() {
-  router.push('/create-bundle')
 }
 
 function close() {

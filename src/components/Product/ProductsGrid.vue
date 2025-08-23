@@ -2,7 +2,7 @@
   <div>
     <CardProduct
       v-for="(p, i) of products"
-      :key="i"
+      :key="`${p.id}-${i}`"
       :id="p.id"
       :name="p.name"
       :orig-price="p.origPrice"
@@ -63,42 +63,40 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
 import CardProduct from 'src/components/Product/CardProduct.vue'
 import {
   CAN_SELL_PRODUCT,
   CAN_UPDATE_PRODUCT
 } from 'src/permissions'
+import { useBulkStore } from 'src/stores/bulk'
+import { storeToRefs } from 'pinia'
 
-export default defineComponent({
-  name: 'ProductsGrid',
-  components: {
-    CardProduct
+
+const bulkStore = useBulkStore()
+const { bulkProducts } = storeToRefs(bulkStore)
+
+defineOptions({
+  name: 'ProductsGrid'
+})
+
+const props = defineProps({
+  products: {
+    type: Array,
+    default: () => []
   },
-  props: {
-    products: {
-      type: Array,
-      default: () => []
-    },
-    bulkProducts: {
-      type: Array,
-      default: () => []
-    }
-  },
-  emits: [
-    'openImagePreview',
-    'addCountToBucket',
-    'addSizesToBucket',
-    'update:bulkProducts',
-    'openCountModal',
-    'openSizesModal'
-  ],
-  setup() {
-    return {
-      CAN_SELL_PRODUCT,
-      CAN_UPDATE_PRODUCT
-    }
+  bulkProducts: {
+    type: Array,
+    default: () => []
   }
 })
+
+const emits = defineEmits([
+  'openImagePreview',
+  'addCountToBucket',
+  'addSizesToBucket',
+  'update:bulkProducts',
+  'openCountModal',
+  'openSizesModal'
+])
 </script> 
