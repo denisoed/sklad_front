@@ -1,9 +1,9 @@
 <template>
-  <ProductPage :is-edit="false" />
+  <ProductForm :is-edit="false" />
 </template>
 
 <script setup>
-import ProductPage from 'src/pages/ProductPage.vue';
+import ProductForm from 'src/components/Product/ProductForm.vue';
 import useProductDuplication from 'src/modules/useProductDuplication';
 import { onUnmounted } from 'vue';
 
