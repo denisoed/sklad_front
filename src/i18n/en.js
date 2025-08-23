@@ -741,8 +741,8 @@ export default ({
     month: { one: 'month', few: 'months', many: 'months' },
   },
   bundle: {
-    dialogSizesTitle: 'Collect a bundle from products',
-    dialogSizesDescription: 'You need to select sizes for each product that will be in the bundle.',
+    dialogSizesTitle: 'Selected products for bundle',
+    dialogSizesDescription: 'Products that will be in the bundle',
     createBundleTitle: 'Create Bundle',
     selectedProducts: 'Selected Products',
     step2Placeholder: 'Bundle Configuration (in development)',

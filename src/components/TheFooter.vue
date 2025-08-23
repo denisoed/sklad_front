@@ -101,6 +101,7 @@ const CREATE_SKLAD_ID = 'create-sklad'
 const CREATE_CATEGORY_ID = 'create-category'
 const CREATE_PRODUCT_ID = 'create-product'
 const CREATE_COST_ID = 'create-cost'
+const CREATE_BUNDLE_ID = 'create-bundle'
 
 // Base actions
 const baseActions = [
@@ -108,6 +109,13 @@ const baseActions = [
     id: CREATE_COST_ID,
     icon: 'mdi-cash-multiple',
     label: $t('costs.create'),
+    disabled: false,
+    divider: true
+  },
+  {
+    id: CREATE_BUNDLE_ID,
+    icon: 'mdi-cube-unfolded',
+    label: $t('bundle.createBundle'),
     disabled: false,
     divider: true
   },
@@ -166,6 +174,11 @@ function handleActionClick(action) {
   if (action.id === CREATE_PRODUCT_ID) {
     router.push('/create-product')
   }
+
+  if (action.id === CREATE_BUNDLE_ID) {
+    router.push('/create-bundle')
+  }
+
   closeMenu()
 }
 

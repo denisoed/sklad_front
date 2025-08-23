@@ -397,22 +397,54 @@ function showSelectedProducts() {
 }
 
 function onBundleSizesSubmit(data) {
+  // Get IDs of products that should remain selected
+  const remainingProductIds = data.items.map(item => item.id)
+  
+  // Remove products that are no longer in the selection from store
+  bundleStore.selectedProducts.forEach(product => {
+    if (!remainingProductIds.includes(product.id)) {
+      bundleStore.removeSelectedProduct(product.id)
+    }
+  })
+  
+  // Update remaining products with new selections
+  data.items.forEach(updatedProduct => {
+    // Check if product should remain selected (has quantity or sizes)
+    const shouldRemainSelected = updatedProduct.useNumberOfSizes 
+      ? (updatedProduct.qty && updatedProduct.qty > 0)
+      : (updatedProduct.selectedSizes && updatedProduct.selectedSizes.length > 0)
+    
+    if (shouldRemainSelected) {
+      bundleStore.updateProductSelection(updatedProduct.id, {
+        qty: updatedProduct.qty || 0,
+        selectedSizes: updatedProduct.selectedSizes || []
+      })
+    } else {
+      // Remove product if it has no quantity or sizes
+      bundleStore.removeSelectedProduct(updatedProduct.id)
+    }
+  })
+  
   // Sync local products with updated selections
   localProducts.value = localProducts.value.map(product => {
     const updatedProduct = data.items.find(item => item.id === product.id)
     if (updatedProduct) {
-      bundleStore.updateProductSelection(product.id, {
-        qty: updatedProduct.qty || 0,
-        selectedSizes: updatedProduct.selectedSizes || []
-      })
+      // Product exists in modal - update with new data
       if (product.useNumberOfSizes) {
         return { ...product, qty: updatedProduct.qty || 0 }
       } else {
         return { ...product, selectedSizes: updatedProduct.selectedSizes || [] }
       }
+    } else {
+      // Product was removed from modal - reset selections but keep in table
+      if (product.useNumberOfSizes) {
+        return { ...product, qty: 0 }
+      } else {
+        return { ...product, selectedSizes: [] }
+      }
     }
-    return product
   })
+  
   bundleSizesModalVisible.value = false
 }
 

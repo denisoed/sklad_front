@@ -9,7 +9,7 @@
           <h6 class="full-width text-left text-bold q-my-none text-subtitle1">
             {{ title || $t('bundle.dialogSizesTitle') }}
           </h6>
-          <p class="full-width text-left q-mb-none text-subtitle2 text-grey-5">
+          <p class="full-width text-left q-mb-none text-subtitle2 text-grey-5 hidden">
             {{ $t('bundle.dialogSizesDescription') }}
           </p>
           <q-separator class="full-width q-mt-sm q-mb-md" />
@@ -76,7 +76,7 @@
               <q-separator class="full-width q-my-md" />
               <div class="flex justify-between full-width no-wrap q-gap-md">
                 <q-btn class="button-size" color="grey" icon="mdi-close" push @click="close" />
-                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="submit" :disable="!hasAllSelected" />
+                <q-btn class="button-size" color="primary" icon="mdi-check" push @click="submit" />
               </div>
             </div>
             <!-- Step 2 -->
@@ -260,16 +260,6 @@ function close() {
   emit('update:modelValue', false)
 }
 
-const hasAllSelected = computed(() =>
-  localItems.value.length > 0 &&
-  localItems.value.every(i => {
-    if (i.useNumberOfSizes) {
-      return i.qty && i.qty > 0
-    }
-    return i.selectedSizes && i.selectedSizes.length > 0
-  })
-)
-
 function submit() {
   emit('submit', {
     items: localItems.value.filter(i => {
@@ -279,9 +269,9 @@ function submit() {
       return i.selectedSizes && i.selectedSizes.length > 0
     }).map(i => {
       if (i.useNumberOfSizes) {
-        return { id: i.id, name: i.name, qty: i.qty }
+        return { id: i.id, name: i.name, qty: i.qty, useNumberOfSizes: i.useNumberOfSizes }
       }
-      return { id: i.id, name: i.name, selectedSizes: i.selectedSizes }
+      return { id: i.id, name: i.name, selectedSizes: i.selectedSizes, useNumberOfSizes: i.useNumberOfSizes }
     })
   })
 }

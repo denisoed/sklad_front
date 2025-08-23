@@ -741,8 +741,8 @@ export default ({
     month: { one: 'ай', few: 'ай', many: 'ай' },
   },
   bundle: {
-    dialogSizesTitle: 'Товарлардан набор түзүү',
-    dialogSizesDescription: 'Товарлардын өлчөмдөрүн тандаңыз, ал наборга кирет.',
+    dialogSizesTitle: 'Тандалган товарлар',
+    dialogSizesDescription: 'Наборга кирет товарлар',
     createBundleTitle: 'Набор түзүү',
     selectedProducts: 'Тандалган товарлар',
     step2Placeholder: 'Наборду конфигурациялоо (иштелүүдө)',

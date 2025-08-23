@@ -741,8 +741,8 @@ export default ({
     month: { one: 'месяц', few: 'месяца', many: 'месяцев' },
   },
   bundle: {
-    dialogSizesTitle: 'Соберите набор из товаров',
-    dialogSizesDescription: 'Нужно выбрать размеры для каждого товара, чтобы они попали в набор.',
+    dialogSizesTitle: 'Выбранные товары для набора',
+    dialogSizesDescription: 'Список товаров, которые будут в наборе',
     confirmTitle: 'Собираем набор?',
     confirmText: 'Вы уверены, что хотите собрать набор из выбранных товаров?',
     createBundleTitle: 'Создание набора',
