@@ -607,7 +607,7 @@ export default ({
     creating: 'Creating product',
     draft: 'Draft',
     clearDraft: 'Clear draft',
-    clearDraftDescription: 'Are you sure you want to clear this draft?',
+    clearDraftDescription: 'Are you sure you want to clear the draft?',
   },
   errors: {
     photoUploadError: 'Failed to upload photo. Server issues.',

@@ -14,8 +14,7 @@
       style="background-color: rgb(255 255 0 / 8%);"
     >
       <span class="q-mr-sm">{{ $t('product.draft') }}</span>
-      <q-icon name="mdi-pencil-outline" class="q-ml-auto" color="yellow-5" size="sm" />
-      <div class="flex items-center q-gap-sm q-ml-auto hidden">
+      <div class="flex items-center q-gap-sm q-ml-auto">
         <q-btn
           v-if="isDraft && !editProduct?.product?.id && !isDuplicating"
           class="q-ml-auto"
@@ -66,7 +65,7 @@ function clearDraft() {
     persistent: true,
     ok: {
       color: 'deep-orange',
-      label: $t('common.delete'),
+      label: $t('common.clear'),
       push: true
     },
     cancel: {

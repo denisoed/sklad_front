@@ -78,7 +78,6 @@
       </PageTitle>
     </div>
     <div class="container">
-
       <h6
         class="full-width text-center text-grey-5"
         v-if="loadingProduct"
@@ -98,6 +97,7 @@
         class="q-gap-md"
         @submit="submit(isEdit ? 'update' : 'create')"
         @validation-error="onValidationError"
+        ref="formRef"
       >
         <div class="row">
           <div class="col-12 q-mb-md">
@@ -375,7 +375,7 @@ import {
 } from 'src/graphql/types'
 import {
   computed,
-  ref,
+ref,
   reactive,
   watch,
   onBeforeUnmount,
@@ -471,10 +471,11 @@ const { createActivity } = useActivity()
 const { sklads } = useSklads()
 const { profile } = useProfile()
 
-const modalCountToBucket = ref(false)
-const modalSizesToBucket = ref(false)
-const modalDefectCount = ref(false)
-const modalDefectSizes = ref(false)
+const modalCountToBucket =ref(false)
+const modalSizesToBucket =ref(false)
+const modalDefectCount =ref(false)
+const modalDefectSizes =ref(false)
+const formRef = ref(null)
 
 const {
   isDuplicating,
@@ -517,9 +518,9 @@ const { isEnabled: isFeatureEnabled } = useFeatures()
 
 const product = reactive({ ...DEFAULT_DATA })
 const copiedProductForDirty = reactive({})
-const voiceCreateOpen = ref(false)
-const isLoadingData = ref(true)
-const isDraft = ref(false)
+const voiceCreateOpen =ref(false)
+const isLoadingData =ref(true)
+const isDraft =ref(false)
 const isVoiceFeatureEnabled = computed(() => isFeatureEnabled('voiceCreate'))
 
 function onChangeSizes(sizes) {
@@ -636,6 +637,8 @@ function clearDraft() {
   clearDraftAction()
   clearDuplicateData()
   isDraft.value = false
+  Object.assign(product, { ...DEFAULT_DATA })
+  formRef.value?.reset()
 }
 
 function getTypeSizeId() {

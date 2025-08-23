@@ -607,7 +607,7 @@ export default ({
     creating: 'Товар түзүү',
     draft: 'Черновик',
     clearDraft: 'Черновик өчүрүү',
-    clearDraftDescription: 'Чын эле өчүрөсүзбү?',
+    clearDraftDescription: 'Чын эле очитуу?',
   },
   errors: {
     photoUploadError: 'Сүрөт жүктөлгөн жок. Сервер ката.',
